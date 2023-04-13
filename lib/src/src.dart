@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/form.dart';
+import 'package:lottie/lottie.dart';
 
 class FormStack {
   // Ensures end-users cannot initialize the class.
@@ -24,11 +25,14 @@ class FormStack {
     String name = "default",
     String? googleMapAPIKey,
     GeoLocationResult? initialPosition,
+    String? backgroundAnimationFile,
     required List<FormStep> steps,
   }) {
     var list = LinkedList<FormStep>();
     list.addAll(steps);
-    FormWizard form = FormWizard(list, googleMapAPIKey: googleMapAPIKey);
+    FormWizard form = FormWizard(list,
+        googleMapAPIKey: googleMapAPIKey,
+        backgroundAnimationFile: backgroundAnimationFile);
     _forms.putIfAbsent(name, () => form);
     return this;
   }
@@ -66,7 +70,14 @@ class _FormStackViewState extends State<FormStackView> {
               )));
           return false;
         },
-        child: child);
+        child: widget.formKitForm.backgroundAnimationFile != null
+            ? Stack(
+                children: [
+                  Lottie.asset(widget.formKitForm.backgroundAnimationFile!),
+                  child,
+                ],
+              )
+            : child);
   }
 
   onUpdate(FormStep formStep) {

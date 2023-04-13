@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 abstract class FormStackForm {
   Identifier? id;
+  String? backgroundAnimationFile;
   LinkedList<FormStep> steps;
   String? googleMapAPIKey;
   GeoLocationResult? initialPosition;
@@ -18,6 +19,7 @@ abstract class FormStackForm {
   FormStackForm(this.steps,
       {this.id,
       this.onUpdate,
+      this.backgroundAnimationFile,
       this.onValidtionError,
       this.googleMapAPIKey,
       this.initialPosition}) {
@@ -89,5 +91,8 @@ abstract class FormStackForm {
 
 class FormWizard extends FormStackForm {
   FormWizard(super.steps,
-      {super.googleMapAPIKey, super.initialPosition, super.id});
+      {super.googleMapAPIKey,
+      super.initialPosition,
+      super.id,
+      super.backgroundAnimationFile});
 }
