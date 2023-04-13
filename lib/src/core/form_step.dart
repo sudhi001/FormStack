@@ -111,7 +111,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                               Lottie.asset(formStep.titleIconAnimationFile!)),
                       const SizedBox(height: 7)
                     ],
-                    if (title != null) ...[
+                    if (title != null && title!.isNotEmpty) ...[
                       Text(title ?? "",
                           style: display == Display.medium
                               ? Theme.of(context).textTheme.headlineMedium
@@ -125,16 +125,20 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                           textAlign: TextAlign.center),
                       const SizedBox(height: 7)
                     ],
-                    Text(text ?? "",
-                        style: display == Display.medium
-                            ? Theme.of(context).textTheme.titleLarge
-                            : (display == Display.large
-                                ? Theme.of(context).textTheme.headlineSmall
-                                : (display == Display.extraLarge
-                                    ? Theme.of(context).textTheme.headlineSmall
-                                    : Theme.of(context).textTheme.bodyLarge)),
-                        textAlign: TextAlign.center),
-                    const SizedBox(height: 14),
+                    if (text != null && text!.isNotEmpty) ...[
+                      Text(text ?? "",
+                          style: display == Display.medium
+                              ? Theme.of(context).textTheme.titleLarge
+                              : (display == Display.large
+                                  ? Theme.of(context).textTheme.headlineSmall
+                                  : (display == Display.extraLarge
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                      : Theme.of(context).textTheme.bodyLarge)),
+                          textAlign: TextAlign.center),
+                      const SizedBox(height: 14),
+                    ],
                     StatefulBuilder(
                         key: errorKey,
                         builder: (context, setState) {
