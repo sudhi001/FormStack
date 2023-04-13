@@ -6,17 +6,14 @@ import 'package:formstack/src/step/global_input_widget.dart';
 class QuestionStep extends FormStep<QuestionStep> {
   final String? title;
   final String? text;
-  final String nextButtonText;
   final InputType inputType;
   final Function(String)? onValidationError;
   final List<Options>? options;
   final int? numberOfLines;
   final bool autoTrigger;
-  
 
   QuestionStep(
       {super.id,
-      this.nextButtonText = "Next",
       this.title = "",
       required this.inputType,
       this.text,
@@ -26,6 +23,9 @@ class QuestionStep extends FormStep<QuestionStep> {
       this.options,
       this.autoTrigger = false,
       this.numberOfLines,
+      super.nextButtonText,
+      super.backButtonText,
+      super.cancelButtonText,
       super.cancellable})
       : super();
 
@@ -82,7 +82,13 @@ class QuestionStep extends FormStep<QuestionStep> {
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
         return ChoiceInputWidget.multiple(
-            this, formKitForm, text, resultFormat!, title, options);
+          this,
+          formKitForm,
+          text,
+          resultFormat!,
+          title,
+          options,
+        );
 
       default:
     }

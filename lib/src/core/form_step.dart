@@ -12,11 +12,18 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   Identifier? id;
   dynamic result;
   ResultFormat? resultFormat;
+  String nextButtonText;
+  String backButtonText;
+  String cancelButtonText;
+
 
   FormStep(
       {this.id,
       this.isOptional = false,
       this.cancellable = true,
+      this.nextButtonText="Next",
+      this.backButtonText="Back",
+      this.cancelButtonText="Cancel",
       this.resultFormat}) {
     id ??= StepIdentifier();
   }
@@ -27,20 +34,13 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   final String? title;
   final String? text;
   final String? hint;
-  final String previousButtonText;
-  final String nextButtonText;
-  final String cancelButtonText;
-  final String skipButtonText;
   final FormStackForm formKitForm;
   final T formStep;
   const FormStepView(this.formKitForm, this.formStep, this.text,
       {super.key,
       this.hint = "",
-      this.title,
-      this.previousButtonText = "Back",
-      this.nextButtonText = "Next",
-      this.cancelButtonText = "Cancel",
-      this.skipButtonText = "Skip"});
+      this.title
+      });
 
   Widget buildWithFrom(BuildContext context, T formStep);
 
@@ -67,10 +67,6 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
     super.hint = "",
     super.title,
     this.display = Display.normal,
-    super.previousButtonText = "Back",
-    super.nextButtonText = "Next",
-    super.cancelButtonText = "Cancel",
-    super.skipButtonText = "Skip",
   });
 
   final GlobalKey<State> errorKey = GlobalKey<State>();
@@ -88,7 +84,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                 actions: [
                   IconButton(
                     constraints: const BoxConstraints.expand(width: 80),
-                    icon: Text(cancelButtonText),
+                    icon: Text(formStep.cancelButtonText),
                     onPressed: onCancel,
                   ),
                 ],
@@ -154,7 +150,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
             ),
           ),
         ),
-        bottomNavigationBar: nextButtonText.isNotEmpty
+        bottomNavigationBar: formStep.nextButtonText.isNotEmpty
             ? SafeArea(
                 child: SizedBox(
                   height: kToolbarHeight * 2,
@@ -165,7 +161,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                       child: CupertinoButton(
                         color: Colors.blue,
                         onPressed: onNext,
-                        child: Text(nextButtonText),
+                        child: Text(formStep.nextButtonText),
                       ),
                     ),
                   ),

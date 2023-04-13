@@ -6,19 +6,20 @@ import 'package:formstack/src/form.dart';
 class CompletionStep extends FormStep {
   final String? title;
   final String? text;
-  final String buttonText;
   final Display display;
   final Function(Map<String, dynamic>)? onFinish;
 
   CompletionStep(
       {super.id,
-      this.buttonText = "Finish",
       this.title,
       this.text,
       this.display = Display.normal,
       super.isOptional = false,
       this.onFinish,
       super.resultFormat,
+      super.nextButtonText = "Finish",
+      super.backButtonText,
+      super.cancelButtonText,
       super.cancellable})
       : super();
   @override
@@ -27,7 +28,7 @@ class CompletionStep extends FormStep {
     resultFormat =
         resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss a");
     return _CompletionStepView(formKitForm, this, text,
-        title: title, display: display, nextButtonText: buttonText);
+        title: title, display: display);
   }
 }
 
@@ -39,7 +40,6 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
     super.text, {
     super.title,
     super.display = Display.normal,
-    super.nextButtonText,
   });
 
   @override

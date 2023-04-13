@@ -18,6 +18,9 @@ class InstructionStep extends FormStep {
       this.text,
       this.display = Display.normal,
       super.isOptional = false,
+      super.nextButtonText,
+      super.backButtonText,
+      super.cancelButtonText,
       super.resultFormat,
       super.cancellable})
       : super();
