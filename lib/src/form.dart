@@ -12,6 +12,7 @@ abstract class FormStackForm {
   String? googleMapAPIKey;
   Alignment? backgroundAlignment;
   GeoLocationResult? initialPosition;
+  Color primaryColor;
   Function(FormStep)? onUpdate;
   Function(Map<String, dynamic> result)? onFinish;
   Function(String)? onValidtionError;
@@ -23,6 +24,7 @@ abstract class FormStackForm {
       this.onUpdate,
       this.backgroundAnimationFile,
       this.onValidtionError,
+      this.primaryColor = Colors.black,
       this.googleMapAPIKey,
       this.backgroundAlignment,
       this.initialPosition}) {

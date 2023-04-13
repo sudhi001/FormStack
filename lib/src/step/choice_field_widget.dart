@@ -65,7 +65,7 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
                     trailing: selectedKey.contains(options[index].key)
                         ? Icon(
                             Icons.check,
-                            color: Theme.of(context).primaryColor,
+                            color: formKitForm.primaryColor,
                           )
                         : null,
                   ),
