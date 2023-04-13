@@ -16,6 +16,8 @@ class StringExpressionEvaluator {
         return input == right;
       case '!=':
         return input != right;
+      case 'FOR_ALL':
+        return true;
       case 'IN':
         return input.contains(right);
       default:
@@ -36,6 +38,8 @@ class InExpressionEvaluator {
         return input == right;
       case '!=':
         return input != right;
+      case 'FOR_ALL':
+        return true;
       case 'IN':
         return input.toString().contains(right);
       default:

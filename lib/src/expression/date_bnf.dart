@@ -7,26 +7,28 @@ import 'package:intl/intl.dart';
 ///  the corresponding value of the given date expression.
 ///
 class DateTimeExpressionEvaluator {
-    DateTimeExpressionEvaluator._();
+  DateTimeExpressionEvaluator._();
   static bool evaluateCondition(String condition, DateTime date) {
     var parts = condition.split(' ');
-    var left = parseExpression(parts[0], date);
-    var right = parseExpression(parts[2], date);
-    var operator = parts[1];
+    var left = parts.isNotEmpty ? parseExpression(parts[0], date) : null;
+    var right = parts.length > 1 ? parseExpression(parts[2], date) : null;
+    var operator = parts.length > 1 ? parts[1] : parts[0];
 
     switch (operator) {
       case '<':
-        return left.isBefore(right);
+        return left!.isBefore(right!);
       case '>':
-        return left.isAfter(right);
+        return left!.isAfter(right!);
       case '<=':
-        return !left.isAfter(right);
+        return !left!.isAfter(right!);
       case '>=':
-        return !left.isBefore(right);
+        return !left!.isBefore(right!);
       case '=':
-        return left.isAtSameMomentAs(right);
+        return left!.isAtSameMomentAs(right!);
       case '!=':
-        return !left.isAtSameMomentAs(right);
+        return !left!.isAtSameMomentAs(right!);
+      case 'FOR_ALL':
+        return true;
       default:
         throw ArgumentError('Invalid operator: $operator');
     }
