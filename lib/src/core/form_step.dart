@@ -103,9 +103,9 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                     if (formStep.titleIconAnimationFile != null) ...[
                       Container(
                           constraints: const BoxConstraints(
-                              minWidth: 100,
-                              maxWidth: 400,
-                              minHeight: 100,
+                              minWidth: 75,
+                              maxWidth: 300,
+                              minHeight: 75,
                               maxHeight: 300),
                           child:
                               Lottie.asset(formStep.titleIconAnimationFile!)),
