@@ -37,6 +37,7 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
             const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 300),
         child: StatefulBuilder(builder: (context, setState) {
           return ListView.separated(
+              padding: EdgeInsets.zero,
               physics: const ClampingScrollPhysics(),
               separatorBuilder: (context, index) =>
                   const Divider(color: Colors.grey, thickness: 1),
