@@ -175,18 +175,22 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
             ? SafeArea(
                 child: SizedBox(
                   height: kToolbarHeight * 2,
-                  child: Center(
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 3),
-                        child: ButtonTheme(
-                          minWidth: 300.0,
-                          height: 50.0,
-                          child: ElevatedButton(
-                            onPressed: onFinish,
-                            child: Text(formStep.nextButtonText),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ButtonTheme(
+                            minWidth: 300.0,
+                            height: 50.0,
+                            child: ElevatedButton(
+                              onPressed: onFinish,
+                              child: Text(formStep.nextButtonText),
+                            ),
                           ),
-                        )),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
