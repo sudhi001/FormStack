@@ -23,6 +23,7 @@ class CompletionStep extends FormStep {
       super.isOptional = false,
       this.onFinish,
       super.resultFormat,
+      super.relevantIdentifier,
       super.titleIconAnimationFile,
       this.onBeforeFinishCallback,
       super.nextButtonText = "Finish",

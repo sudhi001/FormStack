@@ -17,6 +17,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   String? titleIconAnimationFile;
   String backButtonText;
   String cancelButtonText;
+  Identifier? relevantIdentifier;
 
   FormStep(
       {this.id,
@@ -25,6 +26,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.nextButtonText = "Next",
       this.backButtonText = "Back",
       this.titleIconAnimationFile,
+      this.relevantIdentifier,
       this.cancelButtonText = "Cancel",
       this.resultFormat}) {
     id ??= StepIdentifier();

@@ -15,6 +15,7 @@ abstract class FormStackForm {
   Function(FormStep)? onUpdate;
   Function(Map<String, dynamic> result)? onFinish;
   Function(String)? onValidtionError;
+  Map<String, dynamic> relevantStack = {};
 
   Map<StepIdentifier, NavigationRule> navigationRuleMap = {};
   FormStackForm(this.steps,
@@ -41,13 +42,21 @@ abstract class FormStackForm {
   }
 
   void clearResult() {
+    relevantStack.clear();
     for (var entry in steps) {
       entry.result = null;
     }
   }
 
   void nextStep(FormStep? currentStep) {
-    FormStep? nextStep = currentStep?.next;
+    FormStep? nextStep;
+    if (currentStep?.relevantIdentifier == null) {
+      nextStep = currentStep?.next;
+    } else {
+      nextStep = steps.firstWhere(
+          (element) => element.id!.id == currentStep?.relevantIdentifier!.id);
+      relevantStack.putIfAbsent(nextStep.id!.id!, () => currentStep);
+    }
     if (nextStep != null) {
       onUpdate?.call(nextStep);
     } else {
@@ -71,7 +80,12 @@ abstract class FormStackForm {
   }
 
   void backStep(FormStep? currentStep) {
-    FormStep? nextStep = currentStep?.previous;
+    FormStep? nextStep;
+    if (relevantStack.containsKey(currentStep?.id?.id)) {
+      nextStep = relevantStack[currentStep?.id?.id];
+    } else {
+      nextStep = currentStep?.previous;
+    }
     if (nextStep != null) {
       onUpdate?.call(nextStep);
     }
