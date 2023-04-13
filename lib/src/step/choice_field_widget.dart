@@ -62,12 +62,12 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
                       );
                     },
                     title: Text(options[index].text),
-                    trailing: selectedKey.contains(options[index].key)
-                        ? Icon(
-                            Icons.check,
-                            color: formKitForm.primaryColor,
-                          )
-                        : null,
+                    trailing: autoTrigger
+                        ? Icon(Icons.arrow_forward_ios,
+                            color: formKitForm.primaryColor)
+                        : (selectedKey.contains(options[index].key)
+                            ? Icon(Icons.check, color: formKitForm.primaryColor)
+                            : null),
                   ),
               itemCount: options.length,
               shrinkWrap: true);
