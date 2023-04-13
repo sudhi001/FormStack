@@ -178,17 +178,14 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: ButtonTheme(
-                            minWidth: 300.0,
-                            height: 50.0,
-                            child: ElevatedButton(
-                              onPressed: onFinish,
-                              child: Text(formStep.nextButtonText),
-                            ),
-                          ),
-                        ),
+                        ElevatedButton(
+                            onPressed: onFinish,
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(200, 50),
+                                maximumSize: const Size(400, 70)),
+                            child: Text(formStep.nextButtonText)),
                       ],
                     ),
                   ),
