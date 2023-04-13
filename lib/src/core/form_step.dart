@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/src/core/identifiers.dart';
 import 'package:formstack/src/core/result_format.dart';

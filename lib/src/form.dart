@@ -58,12 +58,13 @@ abstract class FormStackForm {
     } else {
       for (RelevantCondition element in currentStep!.relevantConditions!) {
         if (element.isValid(currentStep.result)) {
-          nextStep = steps.firstWhere((e) => e.id!.id == element.identifier.id);
+          nextStep = steps
+              .firstWhere((e) => (e.id?.id ?? "") == element.identifier.id);
           break;
         }
       }
       if (nextStep != null) {
-        relevantStack.putIfAbsent(nextStep.id!.id!, () => currentStep);
+        relevantStack.putIfAbsent((nextStep.id?.id ?? ""), () => currentStep);
       } else {
         nextStep = currentStep.next;
       }
@@ -86,10 +87,10 @@ abstract class FormStackForm {
           DateResultType dateResultType = cast(entry.resultFormat);
           String formattedDate =
               DateFormat(dateResultType.format).format(entry.result);
-          result.putIfAbsent(entry.id!.id!, () => formattedDate);
+          result.putIfAbsent((entry.id?.id ?? ""), () => formattedDate);
         }
       } else {
-        result.putIfAbsent(entry.id!.id!, () => entry.result);
+        result.putIfAbsent((entry.id?.id ?? ""), () => entry.result);
       }
     }
   }
