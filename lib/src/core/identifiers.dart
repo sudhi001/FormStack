@@ -25,11 +25,9 @@ class GenericIdentifier extends Identifier {
   GenericIdentifier({super.id});
 }
 
-abstract class RelevantCondition {
+class RelevantCondition {
   Identifier identifier;
-  dynamic result;
-  RelevantCondition({required this.identifier, dynamic result});
-  bool isValid() {
-    return true;
-  }
+  Function(dynamic) isValid;
+  RelevantCondition({required this.identifier, required this.isValid});
+ 
 }
