@@ -179,7 +179,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 3),
-                      child: OutlinedButton(
+                      child: ElevatedButton(
                         onPressed: onFinish,
                         child: Text(formStep.nextButtonText),
                       ),
