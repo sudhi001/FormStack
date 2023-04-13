@@ -26,12 +26,14 @@ class FormStack {
     String? googleMapAPIKey,
     GeoLocationResult? initialPosition,
     String? backgroundAnimationFile,
+    Alignment? backgroundAlignment,
     required List<FormStep> steps,
   }) {
     var list = LinkedList<FormStep>();
     list.addAll(steps);
     FormWizard form = FormWizard(list,
         googleMapAPIKey: googleMapAPIKey,
+        backgroundAlignment: backgroundAlignment,
         backgroundAnimationFile: backgroundAnimationFile);
     _forms.putIfAbsent(name, () => form);
     return this;
@@ -73,10 +75,11 @@ class _FormStackViewState extends State<FormStackView> {
       child: Scaffold(
           body: widget.formKitForm.backgroundAnimationFile != null
               ? Stack(
-                  alignment: Alignment.center,
+                  alignment: widget.formKitForm.backgroundAlignment ??
+                      Alignment.center,
                   children: [
                     Lottie.asset(widget.formKitForm.backgroundAnimationFile!,
-                        fit: BoxFit.fill),
+                        fit: BoxFit.cover),
                     child,
                   ],
                 )

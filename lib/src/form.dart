@@ -10,6 +10,7 @@ abstract class FormStackForm {
   String? backgroundAnimationFile;
   LinkedList<FormStep> steps;
   String? googleMapAPIKey;
+  Alignment? backgroundAlignment;
   GeoLocationResult? initialPosition;
   Function(FormStep)? onUpdate;
   Function(Map<String, dynamic> result)? onFinish;
@@ -22,6 +23,7 @@ abstract class FormStackForm {
       this.backgroundAnimationFile,
       this.onValidtionError,
       this.googleMapAPIKey,
+      this.backgroundAlignment,
       this.initialPosition}) {
     id ??= FormIdentifier();
   }
@@ -93,6 +95,7 @@ class FormWizard extends FormStackForm {
   FormWizard(super.steps,
       {super.googleMapAPIKey,
       super.initialPosition,
+      super.backgroundAlignment,
       super.id,
       super.backgroundAnimationFile});
 }
