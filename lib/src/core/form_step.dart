@@ -177,13 +177,16 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                   height: kToolbarHeight * 2,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 3),
-                      child: ElevatedButton(
-                        onPressed: onFinish,
-                        child: Text(formStep.nextButtonText),
-                      ),
-                    ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 3),
+                        child: ButtonTheme(
+                          minWidth: 300.0,
+                          height: 50.0,
+                          child: ElevatedButton(
+                            onPressed: onFinish,
+                            child: Text(formStep.nextButtonText),
+                          ),
+                        )),
                   ),
                 ),
               )
