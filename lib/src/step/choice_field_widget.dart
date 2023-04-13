@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
@@ -60,7 +61,7 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
                           }
                         },
                       );
-                      Feedback.forTap(context);
+                      HapticFeedback.selectionClick();
                     },
                     title: Text(options[index].text),
                     trailing: autoTrigger

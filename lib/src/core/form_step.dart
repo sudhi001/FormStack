@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:formstack/src/core/identifiers.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/form.dart';
@@ -92,7 +93,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                     constraints: const BoxConstraints.expand(width: 80),
                     icon: Text(formStep.cancelButtonText),
                     onPressed: () {
-                      Feedback.forTap(context);
+                      HapticFeedback.selectionClick();
                       onBack();
                     },
                   ),
@@ -185,7 +186,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                       children: [
                         ElevatedButton(
                             onPressed: () {
-                              Feedback.forTap(context);
+                              HapticFeedback.selectionClick();
                               onNextButtonClick();
                             },
                             style: ElevatedButton.styleFrom(
