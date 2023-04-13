@@ -11,9 +11,9 @@ class ListExpressionEvaluator {
 
     switch (operator) {
       case 'IN':
-        return input.contains(right);
+        return input.asMap().containsValue(right);
       case 'NOT_IN':
-        return !input.contains(right);
+        return !input.asMap().containsValue(right);
       default:
         throw ArgumentError('Invalid operator: $operator');
     }
