@@ -74,6 +74,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   Widget buildWithFrom(BuildContext context, T formStep) {
     Widget? inputWidget = buildWInputWidget(context, formStep);
     return Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: formStep.cancellable
             ? AppBar(
                 leading: IconButton(

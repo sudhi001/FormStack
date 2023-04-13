@@ -61,23 +61,25 @@ class _FormStackViewState extends State<FormStackView> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              showCloseIcon: true,
-              closeIconColor: Colors.white,
-              content: Text(
-                "System back navigation prevented. Please use \"Back\" button.",
-              )));
-          return false;
-        },
-        child: widget.formKitForm.backgroundAnimationFile != null
-            ? Stack(
-                children: [
-                  Lottie.asset(widget.formKitForm.backgroundAnimationFile!),
-                  child,
-                ],
-              )
-            : child);
+      onWillPop: () async {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            showCloseIcon: true,
+            closeIconColor: Colors.white,
+            content: Text(
+              "System back navigation prevented. Please use \"Back\" button.",
+            )));
+        return false;
+      },
+      child: Scaffold(
+          body: widget.formKitForm.backgroundAnimationFile != null
+              ? Stack(
+                  children: [
+                    Lottie.asset(widget.formKitForm.backgroundAnimationFile!),
+                    child,
+                  ],
+                )
+              : child),
+    );
   }
 
   onUpdate(FormStep formStep) {
