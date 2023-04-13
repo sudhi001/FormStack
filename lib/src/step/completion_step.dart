@@ -53,7 +53,11 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
 
   @override
   Widget? buildWInputWidget(BuildContext context, CompletionStep formStep) {
-    return const CircularProgressIndicator.adaptive();
+    return const SizedBox(
+      height: 100.0,
+      width: 100.0,
+      child: CircularProgressIndicator(),
+    );
   }
 
   @override
