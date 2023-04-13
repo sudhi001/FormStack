@@ -60,6 +60,7 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
                           }
                         },
                       );
+                      Feedback.forTap(context);
                     },
                     title: Text(options[index].text),
                     trailing: autoTrigger

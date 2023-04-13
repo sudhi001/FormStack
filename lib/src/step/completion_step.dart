@@ -67,7 +67,7 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
   Widget? buildWInputWidget(BuildContext context, CompletionStep formStep) {
     if (autoTrigger) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        onFinish();
+        onNextButtonClick();
       });
     }
     return StatefulBuilder(

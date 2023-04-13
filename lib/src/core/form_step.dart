@@ -49,7 +49,7 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   void onNext();
   void onBack();
   void onCancel();
-  void onFinish();
+  void onNextButtonClick();
   void onLoding(bool isLoading);
   Future<bool> onBeforeFinish(Map<String, dynamic> result);
 
@@ -89,9 +89,13 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                 ),
                 actions: [
                   IconButton(
-                      constraints: const BoxConstraints.expand(width: 80),
-                      icon: Text(formStep.cancelButtonText),
-                      onPressed: onCancel),
+                    constraints: const BoxConstraints.expand(width: 80),
+                    icon: Text(formStep.cancelButtonText),
+                    onPressed: () {
+                      Feedback.forTap(context);
+                      onBack();
+                    },
+                  ),
                 ],
               )
             : null,
@@ -180,7 +184,10 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                            onPressed: onFinish,
+                            onPressed: () {
+                              Feedback.forTap(context);
+                              onNextButtonClick();
+                            },
                             style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(200, 50),
                                 maximumSize: const Size(400, 70)),
@@ -212,7 +219,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   }
 
   @override
-  void onFinish() async {
+  void onNextButtonClick() async {
     if (isProcessing) return;
     setLoading(true);
     formKitForm.generateResult();
