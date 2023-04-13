@@ -1,3 +1,5 @@
+import 'package:formstack/formstack.dart';
+import 'package:formstack/src/expression/date_bnf.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = const Uuid();
@@ -25,9 +27,35 @@ class GenericIdentifier extends Identifier {
   GenericIdentifier({super.id});
 }
 
-class RelevantCondition {
+abstract class RelevantCondition {
   Identifier identifier;
-  Function(dynamic) isValid;
-  RelevantCondition({required this.identifier, required this.isValid});
- 
+
+  RelevantCondition({required this.identifier});
+
+  bool isValid(dynamic result);
+}
+
+class DynamicConditionalRelevant extends RelevantCondition {
+  Function(dynamic)? isValidCallBack;
+  DynamicConditionalRelevant(
+      {required super.identifier, required this.isValidCallBack});
+
+  @override
+  bool isValid(dynamic result) {
+    return isValidCallBack!.call(result);
+  }
+}
+
+class ExpressionRelevant extends RelevantCondition {
+  final String expression;
+  ExpressionRelevant({required super.identifier, required this.expression});
+
+  @override
+  bool isValid(result) {
+    if (result is DateTime) {
+      return DateTimeExpressionEvaluator.evaluateDateCondition(
+          expression, cast<DateTime>(result)!);
+    }
+    return true;
+  }
 }
