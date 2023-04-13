@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:formstack/src/core/identifiers.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/form.dart';
+import 'package:lottie/lottie.dart';
 
 abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   bool isOptional;
@@ -13,6 +14,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   dynamic result;
   ResultFormat? resultFormat;
   String nextButtonText;
+  String? titleIconAnimationFile;
   String backButtonText;
   String cancelButtonText;
 
@@ -22,6 +24,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.cancellable = true,
       this.nextButtonText = "Next",
       this.backButtonText = "Back",
+      this.titleIconAnimationFile,
       this.cancelButtonText = "Cancel",
       this.resultFormat}) {
     id ??= StepIdentifier();
@@ -97,6 +100,17 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    if (formStep.titleIconAnimationFile != null) ...[
+                      Container(
+                          constraints: const BoxConstraints(
+                              minWidth: 100,
+                              maxWidth: 400,
+                              minHeight: 100,
+                              maxHeight: 300),
+                          child:
+                              Lottie.asset(formStep.titleIconAnimationFile!)),
+                      const SizedBox(height: 7)
+                    ],
                     if (title != null) ...[
                       Text(title ?? "",
                           style: display == Display.medium

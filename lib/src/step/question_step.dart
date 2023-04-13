@@ -23,6 +23,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       this.options,
       this.autoTrigger = false,
       this.numberOfLines,
+      super.titleIconAnimationFile,
       super.nextButtonText,
       super.backButtonText,
       super.cancelButtonText,
