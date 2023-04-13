@@ -27,6 +27,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.titleIconAnimationFile,
       super.nextButtonText,
       super.backButtonText,
+      super.titleIconMaxWidth,
       super.cancelButtonText,
       super.cancellable})
       : super();

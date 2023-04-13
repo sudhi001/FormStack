@@ -14,6 +14,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   dynamic result;
   ResultFormat? resultFormat;
   String nextButtonText;
+  double titleIconMaxWidth;
   String? titleIconAnimationFile;
   String backButtonText;
   String cancelButtonText;
@@ -25,6 +26,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.cancellable = true,
       this.nextButtonText = "Next",
       this.backButtonText = "Back",
+      this.titleIconMaxWidth = 300,
       this.titleIconAnimationFile,
       this.relevantConditions,
       this.cancelButtonText = "Cancel",

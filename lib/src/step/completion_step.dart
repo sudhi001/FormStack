@@ -27,6 +27,7 @@ class CompletionStep extends FormStep {
       super.relevantConditions,
       super.titleIconAnimationFile,
       this.onBeforeFinishCallback,
+      super.titleIconMaxWidth,
       super.nextButtonText = "Finish",
       super.backButtonText,
       this.autoTrigger = false,

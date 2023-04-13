@@ -19,6 +19,7 @@ class InstructionStep extends FormStep {
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
+      super.titleIconMaxWidth,
       super.titleIconAnimationFile,
       super.cancelButtonText,
       super.resultFormat,
