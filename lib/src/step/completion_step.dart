@@ -11,6 +11,7 @@ class CompletionStep extends FormStep {
   final String? title;
   final String? text;
   final Display display;
+  final bool? autoTrigger;
   final OnBeforeFinishCallback? onBeforeFinishCallback;
   final Function(Map<String, dynamic>)? onFinish;
 
@@ -25,6 +26,7 @@ class CompletionStep extends FormStep {
       this.onBeforeFinishCallback,
       super.nextButtonText = "Finish",
       super.backButtonText,
+      this.autoTrigger = false,
       super.cancelButtonText,
       super.cancellable})
       : super();
@@ -36,6 +38,7 @@ class CompletionStep extends FormStep {
     return _CompletionStepView(formKitForm, this, text,
         title: title,
         display: display,
+        autoTrigger: autoTrigger ?? false,
         onBeforeFinishCallback: onBeforeFinishCallback);
   }
 }
@@ -43,12 +46,14 @@ class CompletionStep extends FormStep {
 // ignore: must_be_immutable
 class _CompletionStepView extends InputWidgetView<CompletionStep> {
   final OnBeforeFinishCallback? onBeforeFinishCallback;
+  final bool autoTrigger;
   _CompletionStepView(
     super.formKitForm,
     super.formStep,
     super.text, {
     super.title,
     this.onBeforeFinishCallback,
+    required this.autoTrigger,
     super.display = Display.normal,
   });
   final GlobalKey<State> loadingKey = GlobalKey<State>();
@@ -56,6 +61,11 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
   bool isLoading = true;
   @override
   Widget? buildWInputWidget(BuildContext context, CompletionStep formStep) {
+    if (autoTrigger) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        onFinish();
+      });
+    }
     return StatefulBuilder(
         key: loadingKey,
         builder: (context, state) {
