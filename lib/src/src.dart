@@ -73,8 +73,10 @@ class _FormStackViewState extends State<FormStackView> {
       child: Scaffold(
           body: widget.formKitForm.backgroundAnimationFile != null
               ? Stack(
+                  alignment: Alignment.center,
                   children: [
-                    Lottie.asset(widget.formKitForm.backgroundAnimationFile!),
+                    Lottie.asset(widget.formKitForm.backgroundAnimationFile!,
+                        fit: BoxFit.fill),
                     child,
                   ],
                 )
