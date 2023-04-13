@@ -6,8 +6,8 @@ class ListExpressionEvaluator {
   ListExpressionEvaluator._();
   static bool evaluateCondition(String condition, List input) {
     var parts = condition.split(' ');
-    List right = parts[1].split(',');
     var operator = parts[0];
+    List right = parts.length > 1 ? parts[1].split(',') : [];
 
     switch (operator) {
       case 'IN':
