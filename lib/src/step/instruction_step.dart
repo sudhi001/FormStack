@@ -7,18 +7,16 @@ class InstructionStep extends FormStep {
   final String title;
   final String hint;
   final String? text;
-  final String buttonText;
   final Display display;
 
   InstructionStep(
       {super.id,
-      this.buttonText = "Start",
       this.title = "",
       this.hint = "",
       this.text,
       this.display = Display.normal,
       super.isOptional = false,
-      super.nextButtonText,
+      super.nextButtonText = "Start",
       super.backButtonText,
       super.cancelButtonText,
       super.resultFormat,

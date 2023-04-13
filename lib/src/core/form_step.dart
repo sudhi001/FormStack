@@ -16,14 +16,13 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   String backButtonText;
   String cancelButtonText;
 
-
   FormStep(
       {this.id,
       this.isOptional = false,
       this.cancellable = true,
-      this.nextButtonText="Next",
-      this.backButtonText="Back",
-      this.cancelButtonText="Cancel",
+      this.nextButtonText = "Next",
+      this.backButtonText = "Back",
+      this.cancelButtonText = "Cancel",
       this.resultFormat}) {
     id ??= StepIdentifier();
   }
@@ -37,10 +36,7 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   final FormStackForm formKitForm;
   final T formStep;
   const FormStepView(this.formKitForm, this.formStep, this.text,
-      {super.key,
-      this.hint = "",
-      this.title
-      });
+      {super.key, this.hint = "", this.title});
 
   Widget buildWithFrom(BuildContext context, T formStep);
 
