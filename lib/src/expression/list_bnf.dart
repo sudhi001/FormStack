@@ -1,5 +1,5 @@
 ///This grammar allows us to define list conditions with a comparison
-///operator (e.g.IN,NOT_IN) and one expressions,
+///operator (e.g.IN,NOT_IN, FOR_ALL), and one expressions,
 //(e.g., IN DEMO  or  NOT_IN DEMO).
 ///
 class ListExpressionEvaluator {
@@ -12,6 +12,8 @@ class ListExpressionEvaluator {
     switch (operator) {
       case 'IN':
         return right.every((element) => input.contains(element));
+      case 'FOR_ALL':
+        return true;
       case 'NOT_IN':
         return !right.every((element) => input.contains(element));
       default:
