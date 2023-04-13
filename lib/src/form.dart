@@ -17,6 +17,7 @@ abstract class FormStackForm {
   Function(Map<String, dynamic> result)? onFinish;
   Function(String)? onValidtionError;
   Map<String, dynamic> relevantStack = {};
+  Map<String, dynamic> result = {};
 
   Map<StepIdentifier, NavigationRule> navigationRuleMap = {};
   FormStackForm(this.steps,
@@ -72,21 +73,24 @@ abstract class FormStackForm {
       onUpdate?.call(nextStep);
     } else {
       onUpdate?.call(steps.first);
-      Map<String, dynamic> result = {};
-      for (var entry in steps) {
-        if (entry.result != null && entry.result is DateTime) {
-          if (entry.resultFormat != null) {
-            DateResultType dateResultType = cast(entry.resultFormat);
-            String formattedDate =
-                DateFormat(dateResultType.format).format(entry.result);
-            result.putIfAbsent(entry.id!.id!, () => formattedDate);
-          }
-        } else {
-          result.putIfAbsent(entry.id!.id!, () => entry.result);
-        }
-      }
-      clearResult();
       onFinish?.call(result);
+      clearResult();
+    }
+  }
+
+  void generateResult() {
+    result.clear();
+    for (var entry in steps) {
+      if (entry.result != null && entry.result is DateTime) {
+        if (entry.resultFormat != null) {
+          DateResultType dateResultType = cast(entry.resultFormat);
+          String formattedDate =
+              DateFormat(dateResultType.format).format(entry.result);
+          result.putIfAbsent(entry.id!.id!, () => formattedDate);
+        }
+      } else {
+        result.putIfAbsent(entry.id!.id!, () => entry.result);
+      }
     }
   }
 

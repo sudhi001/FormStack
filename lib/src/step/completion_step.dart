@@ -5,7 +5,8 @@ import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/form.dart';
 import 'package:lottie/lottie.dart';
 
-typedef OnBeforeFinishCallback = Future<bool> Function();
+typedef OnBeforeFinishCallback = Future<bool> Function(
+    Map<String, dynamic> result);
 
 class CompletionStep extends FormStep {
   final String? title;
@@ -94,13 +95,13 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
   }
 
   @override
-  Future<bool> onBeforeFinish() async {
+  Future<bool> onBeforeFinish(Map<String, dynamic> result) async {
     if (onBeforeFinishCallback != null) {
       isLoading = true;
-      isCompleted = await onBeforeFinishCallback!.call();
+      isCompleted = await onBeforeFinishCallback!.call(result);
     } else {
       await Future.delayed(const Duration(seconds: 1));
-      isCompleted = await super.onBeforeFinish();
+      isCompleted = await super.onBeforeFinish(result);
     }
 
     isLoading = false;

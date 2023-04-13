@@ -50,7 +50,7 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   void onCancel();
   void onFinish();
   void onLoding(bool isLoading);
-  Future<bool> onBeforeFinish();
+  Future<bool> onBeforeFinish(Map<String, dynamic> result);
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +88,9 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                 ),
                 actions: [
                   IconButton(
-                    constraints: const BoxConstraints.expand(width: 80),
-                    icon: Text(formStep.cancelButtonText),
-                    onPressed: onCancel,
-                  ),
+                      constraints: const BoxConstraints.expand(width: 80),
+                      icon: Text(formStep.cancelButtonText),
+                      onPressed: onCancel),
                 ],
               )
             : null,
@@ -212,7 +211,8 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   void onFinish() async {
     if (isProcessing) return;
     setLoading(true);
-    if (await onBeforeFinish()) {
+    formKitForm.generateResult();
+    if (await onBeforeFinish(formKitForm.result)) {
       setLoading(false);
       onNext();
     }
@@ -227,7 +227,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   }
 
   @override
-  Future<bool> onBeforeFinish() {
+  Future<bool> onBeforeFinish(Map<String, dynamic> result) {
     return Future.value(true);
   }
 
