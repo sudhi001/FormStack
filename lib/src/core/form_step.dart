@@ -154,22 +154,24 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
             ),
           ),
         ),
-        bottomNavigationBar: SafeArea(
-          child: SizedBox(
-            height: kToolbarHeight * 2,
-            child: Center(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
-                child: CupertinoButton(
-                  color: Colors.blue,
-                  onPressed: onNext,
-                  child: Text(nextButtonText),
+        bottomNavigationBar: nextButtonText.isNotEmpty
+            ? SafeArea(
+                child: SizedBox(
+                  height: kToolbarHeight * 2,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 3),
+                      child: CupertinoButton(
+                        color: Colors.blue,
+                        onPressed: onNext,
+                        child: Text(nextButtonText),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ));
+              )
+            : null);
   }
 
   bool isValid();

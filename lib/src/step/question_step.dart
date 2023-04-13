@@ -12,6 +12,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final List<Options>? options;
   final int? numberOfLines;
   final bool autoTrigger;
+  
 
   QuestionStep(
       {super.id,
