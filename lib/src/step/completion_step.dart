@@ -59,14 +59,20 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
     return StatefulBuilder(
         key: loadingKey,
         builder: (context, state) {
-          return isLoading
-              ? Lottie.asset(
-                  'packages/formstack/assets/lottiefiles/loading.json')
-              : isCompleted
-                  ? Lottie.asset(
-                      'packages/formstack/assetsassets/lottiefiles/success.json')
-                  : Lottie.asset(
-                      'packages/formstack/assets/lottiefiles/failed.json');
+          return ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 200.0,
+              maxWidth: 200.0,
+            ),
+            child: isLoading
+                ? Lottie.asset(
+                    'packages/formstack/assets/lottiefiles/loading.json')
+                : isCompleted
+                    ? Lottie.asset(
+                        'packages/formstack/assetsassets/lottiefiles/success.json')
+                    : Lottie.asset(
+                        'packages/formstack/assets/lottiefiles/failed.json'),
+          );
         });
   }
 
