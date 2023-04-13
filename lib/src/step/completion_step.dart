@@ -60,10 +60,13 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
         key: loadingKey,
         builder: (context, state) {
           return isLoading
-              ? Lottie.asset('assets/lottiefiles/loading.json')
+              ? Lottie.asset(
+                  'packages/formstack/lib/src/assets/lottiefiles/loading.json')
               : isCompleted
-                  ? Lottie.asset('assets/lottiefiles/success.json')
-                  : Lottie.asset('assets/lottiefiles/failed.json');
+                  ? Lottie.asset(
+                      'packages/formstack/lib/src/assetsassets/lottiefiles/success.json')
+                  : Lottie.asset(
+                      'packages/formstack/lib/src/assets/lottiefiles/failed.json');
         });
   }
 
