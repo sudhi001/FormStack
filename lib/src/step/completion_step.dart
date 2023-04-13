@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/form.dart';
+import 'package:lottie/lottie.dart';
 
 typedef OnBeforeFinishCallback = Future<bool> Function();
 
@@ -50,14 +51,20 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
     this.onBeforeFinishCallback,
     super.display = Display.normal,
   });
-
+  final GlobalKey<State> loadingKey = GlobalKey<State>();
+  bool isCompleted = false;
+  bool isLoading = true;
   @override
   Widget? buildWInputWidget(BuildContext context, CompletionStep formStep) {
-    return const SizedBox(
-      height: 100.0,
-      width: 100.0,
-      child: CircularProgressIndicator(),
-    );
+    return StatefulBuilder(
+        key: loadingKey,
+        builder: (context, state) {
+          return isLoading
+              ? Lottie.asset('assets/lottiefiles/loading.json')
+              : isCompleted
+                  ? Lottie.asset('assets/lottiefiles/success.json')
+                  : Lottie.asset('assets/lottiefiles/failed.json');
+        });
   }
 
   @override
@@ -66,11 +73,18 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
   }
 
   @override
-  Future<bool> onBeforeFinish() {
+  Future<bool> onBeforeFinish() async {
     if (onBeforeFinishCallback != null) {
-      return onBeforeFinishCallback!.call();
+      isLoading = true;
+      isCompleted = await onBeforeFinishCallback!.call();
+    } else {
+      await Future.delayed(const Duration(seconds: 1));
+      isCompleted = await super.onBeforeFinish();
     }
-    return super.onBeforeFinish();
+
+    isLoading = false;
+    loadingKey.currentState!.setState(() {});
+    return Future.value(isCompleted);
   }
 
   @override
