@@ -43,6 +43,9 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   void onNext();
   void onBack();
   void onCancel();
+  void onFinish();
+  void onLoding(bool isLoading);
+  Future<bool> onBeforeFinish();
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +159,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                           horizontal: 14, vertical: 3),
                       child: CupertinoButton(
                         color: Colors.blue,
-                        onPressed: onNext,
+                        onPressed: onFinish,
                         child: Text(formStep.nextButtonText),
                       ),
                     ),
@@ -169,7 +172,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   bool isValid();
   String validationError();
   dynamic resultValue();
-
+  bool isProcessing = false;
   Widget? buildWInputWidget(BuildContext context, T formStep);
 
   @override
@@ -182,6 +185,29 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   @override
   void onCancel() {
     formKitForm.cancelStep(formStep);
+  }
+
+  @override
+  void onFinish() async {
+    if (isProcessing) return;
+    setLoading(true);
+    if (await onBeforeFinish()) {
+      setLoading(false);
+      onNext();
+    }
+  }
+
+  @override
+  void onLoding(bool isLoading) {}
+
+  void setLoading(bool isLoading) {
+    isProcessing = isLoading;
+    onLoding(isProcessing);
+  }
+
+  @override
+  Future<bool> onBeforeFinish() {
+    return Future.value(true);
   }
 
   @override
