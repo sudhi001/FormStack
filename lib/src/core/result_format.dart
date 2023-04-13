@@ -1,6 +1,7 @@
 enum InputType {
   email,
   name,
+  password,
   date,
   dateTime,
   text,
@@ -19,6 +20,7 @@ abstract class ResultFormat {
   factory ResultFormat.email(String errorMsg) = _EmailResultType;
   factory ResultFormat.smile(String errorMsg) = _SmileResultType;
   factory ResultFormat.name(String errorMsg) = _NameResultType;
+  factory ResultFormat.password(String errorMsg) = _PasswordResultType;
   factory ResultFormat.text(String errorMsg) = _TextesultType;
   factory ResultFormat.number(String errorMsg) = _NumberResultType;
   factory ResultFormat.date(String errorMsg, String format) = DateResultType;
@@ -117,6 +119,21 @@ class _TextesultType extends ResultFormat {
   }
 }
 
+class _PasswordResultType extends ResultFormat {
+  final String errorMsg;
+  _PasswordResultType(this.errorMsg) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    return cast<String>(input)!.isValidPassword();
+  }
+
+  @override
+  String error() {
+    return errorMsg;
+  }
+}
+
 class _NameResultType extends ResultFormat {
   final String errorMsg;
   _NameResultType(this.errorMsg) : super._();
@@ -198,6 +215,12 @@ extension EmailValidator on String {
 
   bool isValidName() {
     return RegExp("[a-zA-Z]").hasMatch(this);
+  }
+
+  bool isValidPassword() {
+    return RegExp(
+            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+        .hasMatch(this);
   }
 
   bool isValidNumber() {

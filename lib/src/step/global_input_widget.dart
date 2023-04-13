@@ -58,6 +58,16 @@ class GlobalInputWidgetView extends TextFeildInputWidgetView {
       textCapitalization: TextCapitalization.words,
     );
   }
+  factory GlobalInputWidgetView.password(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return GlobalInputWidgetView(formKitForm, questionStep, text, resultFormat,
+        [LengthLimitingTextInputFormatter(30)],
+        title: title, keyboardType: TextInputType.visiblePassword);
+  }
   factory GlobalInputWidgetView.text(
       QuestionStep questionStep,
       FormStackForm formKitForm,
@@ -167,7 +177,7 @@ class SmileInputWidget extends SmileInputWidgetView {
 class ChoiceInputWidget extends ChoiceInputWidgetView {
   ChoiceInputWidget(super.formKitForm, super.formStep, super.text,
       super.resultFormat, super.options,
-      {super.key, super.title, super.singleSelection,super.autoTrigger});
+      {super.key, super.title, super.singleSelection, super.autoTrigger});
 
   factory ChoiceInputWidget.single(
       QuestionStep questionStep,
@@ -178,15 +188,8 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
       List<Options>? options,
       bool autoTrigger) {
     return ChoiceInputWidget(
-      formKitForm,
-      questionStep,
-      text,
-      resultFormat,
-      options ?? [],
-      title: title,
-      singleSelection: true,
-      autoTrigger:autoTrigger
-    );
+        formKitForm, questionStep, text, resultFormat, options ?? [],
+        title: title, singleSelection: true, autoTrigger: autoTrigger);
   }
   factory ChoiceInputWidget.multiple(
       QuestionStep questionStep,

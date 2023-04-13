@@ -45,6 +45,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.name("Please enter a valid name.");
         return GlobalInputWidgetView.name(
             this, formKitForm, text, resultFormat!, title);
+      case InputType.password:
+        resultFormat = resultFormat ??
+            ResultFormat.password("Please enter a valid password.");
+        return GlobalInputWidgetView.password(
+            this, formKitForm, text, resultFormat!, title);
       case InputType.text:
         resultFormat =
             resultFormat ?? ResultFormat.name("Please enter a valid data.");

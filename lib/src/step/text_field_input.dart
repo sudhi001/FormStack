@@ -43,6 +43,7 @@ class TextFeildInputWidgetView extends InputWidgetView<QuestionStep> {
           autocorrect: false,
           minLines: numberOfLines,
           maxLines: numberOfLines,
+          obscureText: keyboardType == TextInputType.visiblePassword,
           focusNode: _focusNode,
           controller: _controller,
           keyboardType: keyboardType,
