@@ -7,10 +7,11 @@ import 'package:intl/intl.dart';
 ///  the corresponding value of the given date expression.
 ///
 class DateTimeExpressionEvaluator {
-  static bool evaluateDateCondition(String condition, DateTime date) {
+    DateTimeExpressionEvaluator._();
+  static bool evaluateCondition(String condition, DateTime date) {
     var parts = condition.split(' ');
-    var left = parseDateExpression(parts[0], date);
-    var right = parseDateExpression(parts[2], date);
+    var left = parseExpression(parts[0], date);
+    var right = parseExpression(parts[2], date);
     var operator = parts[1];
 
     switch (operator) {
@@ -31,7 +32,7 @@ class DateTimeExpressionEvaluator {
     }
   }
 
-  static DateTime parseDateExpression(String expression, DateTime date) {
+  static DateTime parseExpression(String expression, DateTime date) {
     String format = "dd-MM-yyyy";
     var parts = expression.split('(');
     var functionName = parts[0];
