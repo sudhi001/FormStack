@@ -21,7 +21,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       this.onValidationError,
       super.isOptional = false,
       this.options,
-      super.relevantIdentifier,
+      super.relevantConditions,
       this.autoTrigger = false,
       this.numberOfLines,
       super.titleIconAnimationFile,

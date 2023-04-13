@@ -50,13 +50,23 @@ abstract class FormStackForm {
 
   void nextStep(FormStep? currentStep) {
     FormStep? nextStep;
-    if (currentStep?.relevantIdentifier == null) {
+    if (currentStep?.relevantConditions == null) {
       nextStep = currentStep?.next;
     } else {
-      nextStep = steps.firstWhere(
-          (element) => element.id!.id == currentStep?.relevantIdentifier!.id);
-      relevantStack.putIfAbsent(nextStep.id!.id!, () => currentStep);
+      for (RelevantCondition element in currentStep!.relevantConditions!) {
+        if (element.isValid()) {
+          nextStep =
+              steps.firstWhere((element) => element.id!.id == element.id!.id!);
+          break;
+        }
+      }
+      if (nextStep != null) {
+        relevantStack.putIfAbsent(nextStep.id!.id!, () => currentStep);
+      } else {
+        nextStep = currentStep.next;
+      }
     }
+
     if (nextStep != null) {
       onUpdate?.call(nextStep);
     } else {

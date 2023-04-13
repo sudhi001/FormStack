@@ -24,3 +24,12 @@ class InputIdentifier extends Identifier {}
 class GenericIdentifier extends Identifier {
   GenericIdentifier({super.id});
 }
+
+abstract class RelevantCondition {
+  Identifier identifier;
+  dynamic result;
+  RelevantCondition({required this.identifier, dynamic result});
+  bool isValid() {
+    return true;
+  }
+}

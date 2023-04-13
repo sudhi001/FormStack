@@ -23,7 +23,7 @@ class CompletionStep extends FormStep {
       super.isOptional = false,
       this.onFinish,
       super.resultFormat,
-      super.relevantIdentifier,
+      super.relevantConditions,
       super.titleIconAnimationFile,
       this.onBeforeFinishCallback,
       super.nextButtonText = "Finish",
@@ -104,6 +104,7 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
     }
 
     isLoading = false;
+    // ignore: invalid_use_of_protected_member
     loadingKey.currentState!.setState(() {});
     return Future.value(isCompleted);
   }
