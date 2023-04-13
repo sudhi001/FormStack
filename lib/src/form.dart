@@ -55,8 +55,7 @@ abstract class FormStackForm {
     } else {
       for (RelevantCondition element in currentStep!.relevantConditions!) {
         if (element.isValid(currentStep.result)) {
-          nextStep =
-              steps.firstWhere((element) => element.id!.id == element.id!.id!);
+          nextStep = steps.firstWhere((e) => e.id!.id == element.identifier.id);
           break;
         }
       }
