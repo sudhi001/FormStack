@@ -8,9 +8,13 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
   final ResultFormat resultFormat;
   final List<Options> options;
   final bool singleSelection;
+  final bool autoTrigger;
   ChoiceInputWidgetView(super.formKitForm, super.formStep, super.text,
       this.resultFormat, this.options,
-      {super.key, super.title, this.singleSelection = false});
+      {super.key,
+      super.title,
+      this.singleSelection = false,
+      this.autoTrigger = false});
 
   final FocusNode _focusNode = FocusNode();
   List<String> selectedKey = [];
@@ -49,6 +53,9 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
                             } else {
                               selectedKey.remove(options[index].key);
                             }
+                          }
+                          if (autoTrigger) {
+                            onNext();
                           }
                         },
                       );

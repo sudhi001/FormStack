@@ -167,7 +167,7 @@ class SmileInputWidget extends SmileInputWidgetView {
 class ChoiceInputWidget extends ChoiceInputWidgetView {
   ChoiceInputWidget(super.formKitForm, super.formStep, super.text,
       super.resultFormat, super.options,
-      {super.key, super.title, super.singleSelection});
+      {super.key, super.title, super.singleSelection,super.autoTrigger});
 
   factory ChoiceInputWidget.single(
       QuestionStep questionStep,
@@ -175,7 +175,8 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
       String? text,
       ResultFormat resultFormat,
       String? title,
-      List<Options>? options) {
+      List<Options>? options,
+      bool autoTrigger) {
     return ChoiceInputWidget(
       formKitForm,
       questionStep,
@@ -184,6 +185,7 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
       options ?? [],
       title: title,
       singleSelection: true,
+      autoTrigger:autoTrigger
     );
   }
   factory ChoiceInputWidget.multiple(

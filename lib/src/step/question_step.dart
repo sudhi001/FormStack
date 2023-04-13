@@ -11,6 +11,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final Function(String)? onValidationError;
   final List<Options>? options;
   final int? numberOfLines;
+  final bool autoTrigger;
 
   QuestionStep(
       {super.id,
@@ -22,6 +23,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       this.onValidationError,
       super.isOptional = false,
       this.options,
+      this.autoTrigger = false,
       this.numberOfLines,
       super.cancellable})
       : super();
@@ -73,8 +75,8 @@ class QuestionStep extends FormStep<QuestionStep> {
       case InputType.singleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        return ChoiceInputWidget.single(
-            this, formKitForm, text, resultFormat!, title, options);
+        return ChoiceInputWidget.single(this, formKitForm, text, resultFormat!,
+            title, options, autoTrigger);
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
