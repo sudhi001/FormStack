@@ -180,7 +180,6 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 3),
                       child: CupertinoButton(
-                        color: Colors.blue,
                         onPressed: onFinish,
                         child: Text(formStep.nextButtonText),
                       ),
