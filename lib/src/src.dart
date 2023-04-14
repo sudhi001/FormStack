@@ -38,7 +38,7 @@ class FormStack {
     return this;
   }
 
-  static FormStack buildFormFromJson(String data) {
+  FormStack buildFormFromJson(String data) {
     Map<String, dynamic>? body = json.decode(data);
     if (body != null) {
       body.forEach((key, value) {
