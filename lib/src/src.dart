@@ -78,8 +78,10 @@ class FormStack {
             formStep.add(step);
           } else if (element["type"] == "CompletionStep") {
             CompletionStep step = CompletionStep(
-                display: Display.values
-                    .firstWhere((e) => e.name == element?["display"]),
+                display: element?["display"] != null
+                    ? Display.values
+                        .firstWhere((e) => e.name == element?["display"])
+                    : Display.normal,
                 cancellable: element?["cancellable"],
                 autoTrigger: element?["autoTrigger"] ?? false,
                 relevantConditions: relevantConditions,
