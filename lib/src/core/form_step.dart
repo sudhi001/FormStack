@@ -14,7 +14,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   dynamic result;
   ResultFormat? resultFormat;
   String? nextButtonText;
-  double titleIconMaxWidth;
+  double? titleIconMaxWidth;
   String? titleIconAnimationFile;
   String? backButtonText;
   String? cancelButtonText;
@@ -110,9 +110,9 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                       Container(
                           constraints: BoxConstraints(
                               minWidth: 75,
-                              maxWidth: formStep.titleIconMaxWidth,
+                              maxWidth: formStep.titleIconMaxWidth ?? 300,
                               minHeight: 75,
-                              maxHeight: formStep.titleIconMaxWidth),
+                              maxHeight: formStep.titleIconMaxWidth ?? 300),
                           child:
                               Lottie.asset(formStep.titleIconAnimationFile!)),
                       const SizedBox(height: 7)
