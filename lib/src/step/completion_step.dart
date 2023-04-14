@@ -60,34 +60,30 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
     required this.autoTrigger,
     super.display = Display.normal,
   });
-  final GlobalKey<State> loadingKey = GlobalKey<State>();
+  bool autoTriggerCalled = false;
   bool isCompleted = false;
   bool isLoading = true;
   @override
   Widget? buildWInputWidget(BuildContext context, CompletionStep formStep) {
-    if (autoTrigger) {
+    if (autoTrigger && !autoTriggerCalled) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        autoTriggerCalled = true;
         onNextButtonClick();
       });
     }
-    return StatefulBuilder(
-        key: loadingKey,
-        builder: (context, state) {
-          return ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: 200.0,
-              maxWidth: 200.0,
-            ),
-            child: isLoading
-                ? Lottie.asset(
-                    'packages/formstack/assets/lottiefiles/loading.json')
-                : isCompleted
-                    ? Lottie.asset(
-                        'packages/formstack/assets/lottiefiles/success.json')
-                    : Lottie.asset(
-                        'packages/formstack/assets/lottiefiles/failed.json'),
-          );
-        });
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxHeight: 200.0,
+        maxWidth: 200.0,
+      ),
+      child: isLoading
+          ? Lottie.asset('packages/formstack/assets/lottiefiles/loading.json')
+          : isCompleted
+              ? Lottie.asset(
+                  'packages/formstack/assets/lottiefiles/success.json')
+              : Lottie.asset(
+                  'packages/formstack/assets/lottiefiles/failed.json'),
+    );
   }
 
   @override
@@ -107,7 +103,6 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
 
     isLoading = false;
     // ignore: invalid_use_of_protected_member
-    loadingKey.currentState!.setState(() {});
     return Future.value(isCompleted);
   }
 
