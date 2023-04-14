@@ -64,7 +64,7 @@ class FormStack {
                 options: options,
                 relevantConditions: relevantConditions,
                 cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"]??false,
+                autoTrigger: element?["autoTrigger"] ?? false,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
                 isOptional: element?["isOptional"],
@@ -81,7 +81,7 @@ class FormStack {
                 display: Display.values
                     .firstWhere((e) => e.name == element?["display"]),
                 cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"]??false,
+                autoTrigger: element?["autoTrigger"] ?? false,
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
@@ -157,30 +157,18 @@ class FormStack {
     return this;
   }
 
-  FormStack addOnFinishCallback(
-      Identifier identifier, Function(Map<String, dynamic>)? onFinish,
-      {String? formName = "default"}) {
+  FormStack addCompletionCallback(
+    Identifier identifier, {
+    String? formName = "default",
+    Function(Map<String, dynamic>)? onFinish,
+    OnBeforeFinishCallback? onBeforeFinishCallback,
+  }) {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
         if (entry is CompletionStep) {
           if (entry.id?.id == identifier.id) {
             entry.onFinish = onFinish;
-          }
-        }
-      }
-    }
-    return this;
-  }
-
-  FormStack addOnBeforeFinishCallback(
-      Identifier identifier, OnBeforeFinishCallback? onBeforeFinishCallback,
-      {String? formName = "default"}) {
-    FormStackForm? formStack = _forms[formName];
-    if (formStack != null) {
-      for (var entry in formStack.steps) {
-        if (entry is CompletionStep) {
-          if (entry.id?.id == identifier.id) {
             entry.onBeforeFinishCallback = onBeforeFinishCallback;
           }
         }
