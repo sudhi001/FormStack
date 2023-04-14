@@ -34,10 +34,13 @@ class DateTimeExpressionEvaluator {
     }
   }
 
-  static DateTime parseExpression(String expression, DateTime date) {
+  static DateTime? parseExpression(String expression, DateTime date) {
     String format = "dd-MM-yyyy";
     var parts = expression.split('(');
     var functionName = parts[0];
+    if (functionName == "FOR_ALL") {
+      return null;
+    }
     var argument = parts[1].substring(0, parts[1].length - 1);
 
     switch (functionName) {
