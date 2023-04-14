@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 ///This grammar allows us to define list conditions with a comparison
 ///operator (e.g.=,!= IN) and one expressions,
 //(e.g., IN DEMO  or  NOT_IN DEMO).
@@ -28,7 +26,7 @@ class StringExpressionEvaluator {
 
 class InExpressionEvaluator {
   InExpressionEvaluator._();
-  static bool evaluateCondition(String condition, Int input) {
+  static bool evaluateCondition(String condition, int input) {
     var parts = condition.split(' ');
     var operator = parts[0];
     dynamic right = parts.length > 1 ? parts[1] : "";

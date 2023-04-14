@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/expression/date_bnf.dart';
 import 'package:formstack/src/expression/list_bnf.dart';
@@ -65,10 +63,15 @@ class ExpressionRelevant extends RelevantCondition {
     } else if (result is String) {
       return StringExpressionEvaluator.evaluateCondition(
           expression, cast<String>(result)!);
-    } else if (result is Int) {
+    } else if (result is int) {
       return InExpressionEvaluator.evaluateCondition(
-          expression, cast<Int>(result)!);
+          expression, intOrStringValue(result));
     }
     return true;
+  }
+
+  int intOrStringValue(dynamic o) {
+    if (o is String) o = int.tryParse(o);
+    return o ?? 0;
   }
 }
