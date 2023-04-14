@@ -7,7 +7,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final String? title;
   final String? text;
   final InputType inputType;
-  final Function(String)? onValidationError;
+  Function(String)? onValidationError;
   final List<Options>? options;
   final int? numberOfLines;
   final bool autoTrigger;

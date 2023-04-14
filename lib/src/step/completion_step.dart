@@ -13,8 +13,8 @@ class CompletionStep extends FormStep {
   final String? text;
   final Display display;
   final bool? autoTrigger;
-  final OnBeforeFinishCallback? onBeforeFinishCallback;
-  final Function(Map<String, dynamic>)? onFinish;
+  OnBeforeFinishCallback? onBeforeFinishCallback;
+  Function(Map<String, dynamic>)? onFinish;
 
   CompletionStep(
       {super.id,

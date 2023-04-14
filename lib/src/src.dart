@@ -1,9 +1,8 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:formstack/src/core/form_step.dart';
-import 'package:formstack/src/core/result_format.dart';
-import 'package:formstack/src/form.dart';
+import 'package:formstack/formstack.dart';
 import 'package:lottie/lottie.dart';
 
 class FormStack {
@@ -39,9 +38,186 @@ class FormStack {
     return this;
   }
 
+  FormStack buildFormFromJson(String data) {
+    Map<String, dynamic>? body = json.decode(data);
+    if (body != null) {
+      body.forEach((key, value) {
+        List<FormStep> formStep = [];
+        List<dynamic>? tsteps = value?["steps"] ?? [];
+        tsteps?.forEach((element) {
+          List<RelevantCondition> relevantConditions = [];
+          cast<List>(element?["relevantConditions"])?.forEach((el) {
+            relevantConditions.add(ExpressionRelevant(
+                expression: el?["expression"],
+                identifier: GenericIdentifier(id: el?["id"])));
+          });
+
+          if (element["type"] == "QuestionStep") {
+            List<Options> options = [];
+            cast<List>(element?["options"])?.forEach((el) {
+              options.add(Options(el?["key"], el?["text"]));
+            });
+            InputType inputType = InputType.values
+                .firstWhere((e) => e.toString() == element?["inputType"]);
+            QuestionStep step = QuestionStep(
+                inputType: inputType,
+                options: options,
+                relevantConditions: relevantConditions,
+                cancellable: element?["cancellable"],
+                autoTrigger: element?["autoTrigger"],
+                backButtonText: element?["backButtonText"],
+                cancelButtonText: element?["cancelButtonText"],
+                isOptional: element?["isOptional"],
+                nextButtonText: element?["nextButtonText"],
+                numberOfLines: element?["numberOfLines"],
+                text: element?["text"],
+                title: element?["title"],
+                titleIconAnimationFile: element?["titleIconAnimationFile"],
+                titleIconMaxWidth: element?["titleIconMaxWidth"],
+                id: GenericIdentifier(id: element?["id"]));
+            formStep.add(step);
+          } else if (element["type"] == "CompletionStep") {
+            CompletionStep step = CompletionStep(
+                display: Display.values
+                    .firstWhere((e) => e.toString() == element?["display"]),
+                cancellable: element?["cancellable"],
+                autoTrigger: element?["autoTrigger"],
+                relevantConditions: relevantConditions,
+                backButtonText: element?["backButtonText"],
+                cancelButtonText: element?["cancelButtonText"],
+                isOptional: element?["isOptional"],
+                nextButtonText: element?["nextButtonText"],
+                text: element?["text"],
+                title: element?["title"],
+                titleIconAnimationFile: element?["titleIconAnimationFile"],
+                titleIconMaxWidth: element?["titleIconMaxWidth"],
+                id: GenericIdentifier(id: element?["id"]));
+            formStep.add(step);
+          } else if (element["type"] == "InstructionStep") {
+            InstructionStep step = InstructionStep(
+                display: Display.values
+                    .firstWhere((e) => e.toString() == element?["display"]),
+                cancellable: element?["cancellable"],
+                relevantConditions: relevantConditions,
+                backButtonText: element?["backButtonText"],
+                cancelButtonText: element?["cancelButtonText"],
+                isOptional: element?["isOptional"],
+                nextButtonText: element?["nextButtonText"],
+                text: element?["text"],
+                title: element?["title"],
+                titleIconAnimationFile: element?["titleIconAnimationFile"],
+                titleIconMaxWidth: element?["titleIconMaxWidth"],
+                id: GenericIdentifier(id: element?["id"]));
+            formStep.add(step);
+          }
+        });
+        form(
+            steps: formStep,
+            name: key,
+            googleMapAPIKey: value?["googleMapAPIKey"],
+            backgroundAnimationFile: value?["backgroundAnimationFile"],
+            backgroundAlignment:
+                alignmentFromString(value?["backgroundAlignment"]),
+            initialPosition: value?["initialPosition"] != null
+                ? GeoLocationResult(
+                    latitude: value?["initialPosition"]["latitude"],
+                    longitude: value?["initialPosition"]["longitude"])
+                : null);
+      });
+    }
+    return this;
+  }
+
+  FormStack addResultForm(Identifier identifier, ResultFormat? resultFormat,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms["formName"];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry.id?.id == identifier.id) {
+          entry.resultFormat = resultFormat;
+        }
+      }
+    }
+    return this;
+  }
+
+  FormStack addOnValidationError(
+      Identifier identifier, Function(String)? onValidationError,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is QuestionStep) {
+          if (entry.id?.id == identifier.id) {
+            entry.onValidationError = onValidationError;
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  FormStack addOnFinishCallback(
+      Identifier identifier, Function(Map<String, dynamic>)? onFinish,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is CompletionStep) {
+          if (entry.id?.id == identifier.id) {
+            entry.onFinish = onFinish;
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  FormStack addOnBeforeFinishCallback(
+      Identifier identifier, OnBeforeFinishCallback? onBeforeFinishCallback,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is CompletionStep) {
+          if (entry.id?.id == identifier.id) {
+            entry.onBeforeFinishCallback = onBeforeFinishCallback;
+          }
+        }
+      }
+    }
+    return this;
+  }
+
   Widget render({String name = "default"}) {
     return FormStackView(_forms[name]!); //.render();
   }
+}
+
+Alignment? alignmentFromString(String? aliment) {
+  if (aliment != null) {
+    switch (aliment) {
+      case "center":
+        return Alignment.center;
+      case "bottomCenter":
+        return Alignment.bottomCenter;
+      case "bottomLeft":
+        return Alignment.bottomLeft;
+      case "bottomRight":
+        return Alignment.bottomRight;
+      case "centerLeft":
+        return Alignment.centerLeft;
+      case "centerRight":
+        return Alignment.centerRight;
+      case "topCenter":
+        return Alignment.topCenter;
+      case "topLeft":
+        return Alignment.topLeft;
+      case "topRight":
+        return Alignment.topRight;
+    }
+  }
+  return null;
 }
 
 class FormStackView extends StatefulWidget {
