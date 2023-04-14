@@ -38,8 +38,12 @@ class FormStack {
     return this;
   }
 
-  Future<FormStack> buildFormFromJson(String data) async {
+  Future<FormStack> buildFormFromJsonString(String data) async {
     Map<String, dynamic>? body = await json.decode(data);
+    return buildFormFromJson(body);
+  }
+
+  Future<FormStack> buildFormFromJson(Map<String, dynamic>? body) async {
     if (body != null) {
       body.forEach((key, value) {
         List<FormStep> formStep = [];
