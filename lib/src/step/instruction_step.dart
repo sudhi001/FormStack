@@ -5,14 +5,12 @@ import 'package:formstack/src/form.dart';
 
 class InstructionStep extends FormStep {
   final String title;
-  final String hint;
   final String? text;
   final Display display;
 
   InstructionStep(
       {super.id,
       this.title = "",
-      this.hint = "",
       this.text,
       this.display = Display.normal,
       super.isOptional = false,
@@ -31,18 +29,14 @@ class InstructionStep extends FormStep {
     resultFormat =
         resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss a");
     return InstructionStepView(formKitForm, this, text,
-        title: title, hint: hint, display: display);
+        title: title, display: display);
   }
 }
 
 // ignore: must_be_immutable
 class InstructionStepView extends InputWidgetView<InstructionStep> {
   InstructionStepView(super.formKitForm, super.formStep, super.text,
-      {super.key,
-      super.hint,
-      super.title,
-      super.display = Display.normal,
-      cancellable});
+      {super.key, super.title, super.display = Display.normal, cancellable});
 
   @override
   Widget? buildWInputWidget(BuildContext context, InstructionStep formStep) {

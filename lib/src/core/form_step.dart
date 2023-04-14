@@ -70,7 +70,6 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
     super.formStep,
     super.text, {
     super.key,
-    super.hint = "",
     super.title,
     this.display = Display.normal,
   });
