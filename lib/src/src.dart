@@ -95,8 +95,10 @@ class FormStack {
             formStep.add(step);
           } else if (element["type"] == "InstructionStep") {
             InstructionStep step = InstructionStep(
-                display: Display.values
-                    .firstWhere((e) => e.name == element?["display"]),
+                display: element?["display"] != null
+                    ? Display.values
+                        .firstWhere((e) => e.name == element?["display"])
+                    : Display.normal,
                 cancellable: element?["cancellable"],
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
