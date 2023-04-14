@@ -10,7 +10,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   Function(String)? onValidationError;
   final List<Options>? options;
   final int? numberOfLines;
-  final bool autoTrigger;
+  final bool? autoTrigger;
 
   QuestionStep(
       {super.id,
@@ -85,7 +85,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
         return ChoiceInputWidget.single(this, formKitForm, text, resultFormat!,
-            title, options, autoTrigger);
+            title, options, autoTrigger ?? false);
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");

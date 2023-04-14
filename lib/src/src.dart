@@ -64,7 +64,7 @@ class FormStack {
                 options: options,
                 relevantConditions: relevantConditions,
                 cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"],
+                autoTrigger: element?["autoTrigger"]??false,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
                 isOptional: element?["isOptional"],
@@ -81,7 +81,7 @@ class FormStack {
                 display: Display.values
                     .firstWhere((e) => e.name == element?["display"]),
                 cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"],
+                autoTrigger: element?["autoTrigger"]??false,
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
