@@ -223,10 +223,9 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
     if (isProcessing) return;
     setLoading(true);
     formKitForm.generateResult();
-    if (await onBeforeFinish(formKitForm.result)) {
-      setLoading(false);
-      onNext();
-    }
+    await onBeforeFinish(formKitForm.result);
+    setLoading(false);
+    onNext();
   }
 
   @override
