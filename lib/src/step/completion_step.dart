@@ -14,7 +14,7 @@ class CompletionStep extends FormStep {
   final Display display;
   final bool? autoTrigger;
   OnBeforeFinishCallback? onBeforeFinishCallback;
-   Function(Map<String, dynamic>)? onFinish;
+  Function(Map<String, dynamic>)? onFinish;
 
   CompletionStep(
       {super.id,
@@ -108,6 +108,7 @@ class _CompletionStepView extends InputWidgetView<CompletionStep> {
     isLoading = false;
     // ignore: invalid_use_of_protected_member
     loadingKey.currentState!.setState(() {});
+    await Future.delayed(const Duration(seconds: 3));
     return Future.value(isCompleted);
   }
 
