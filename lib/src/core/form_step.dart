@@ -8,16 +8,16 @@ import 'package:formstack/src/form.dart';
 import 'package:lottie/lottie.dart';
 
 abstract class FormStep<T> extends LinkedListEntry<FormStep> {
-  bool isOptional;
-  bool cancellable;
+  bool? isOptional;
+  bool? cancellable;
   Identifier? id;
   dynamic result;
   ResultFormat? resultFormat;
-  String nextButtonText;
+  String? nextButtonText;
   double titleIconMaxWidth;
   String? titleIconAnimationFile;
-  String backButtonText;
-  String cancelButtonText;
+  String? backButtonText;
+  String? cancelButtonText;
   List<RelevantCondition>? relevantConditions;
 
   FormStep(
@@ -81,7 +81,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
     Widget? inputWidget = buildWInputWidget(context, formStep);
     return Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: formStep.cancellable
+        appBar: (formStep.cancellable ?? false)
             ? AppBar(
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back),
@@ -90,7 +90,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                 actions: [
                   IconButton(
                     constraints: const BoxConstraints.expand(width: 80),
-                    icon: Text(formStep.cancelButtonText),
+                    icon: Text(formStep.cancelButtonText ?? "Cancel"),
                     onPressed: () {
                       HapticFeedback.selectionClick();
                       onBack();
@@ -174,7 +174,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
             ),
           ),
         ),
-        bottomNavigationBar: formStep.nextButtonText.isNotEmpty
+        bottomNavigationBar: (formStep.nextButtonText?.isNotEmpty ?? true)
             ? SafeArea(
                 child: SizedBox(
                   height: kToolbarHeight * 2,
@@ -191,7 +191,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
                             style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(200, 50),
                                 maximumSize: const Size(400, 70)),
-                            child: Text(formStep.nextButtonText)),
+                            child: Text(formStep.nextButtonText ?? "Next")),
                       ],
                     ),
                   ),

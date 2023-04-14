@@ -58,7 +58,7 @@ class FormStack {
               options.add(Options(el?["key"], el?["text"]));
             });
             InputType inputType = InputType.values
-                .firstWhere((e) => e.toString() == element?["inputType"]);
+                .firstWhere((e) => e.name == element?["inputType"]);
             QuestionStep step = QuestionStep(
                 inputType: inputType,
                 options: options,
@@ -79,7 +79,7 @@ class FormStack {
           } else if (element["type"] == "CompletionStep") {
             CompletionStep step = CompletionStep(
                 display: Display.values
-                    .firstWhere((e) => e.toString() == element?["display"]),
+                    .firstWhere((e) => e.name == element?["display"]),
                 cancellable: element?["cancellable"],
                 autoTrigger: element?["autoTrigger"],
                 relevantConditions: relevantConditions,
@@ -96,7 +96,7 @@ class FormStack {
           } else if (element["type"] == "InstructionStep") {
             InstructionStep step = InstructionStep(
                 display: Display.values
-                    .firstWhere((e) => e.toString() == element?["display"]),
+                    .firstWhere((e) => e.name == element?["display"]),
                 cancellable: element?["cancellable"],
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
