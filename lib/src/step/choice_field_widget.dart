@@ -57,7 +57,7 @@ class ChoiceInputWidgetView extends InputWidgetView<QuestionStep> {
                             }
                           }
                           if (autoTrigger) {
-                            onNext();
+                            onNextButtonClick();
                           }
                         },
                       );
