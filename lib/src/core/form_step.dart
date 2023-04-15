@@ -222,6 +222,7 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
   void onNextButtonClick() async {
     if (isProcessing) return;
     setLoading(true);
+    formStep.result = resultValue();
     formKitForm.generateResult();
     await onBeforeFinish(formKitForm.result);
     setLoading(false);
@@ -243,7 +244,6 @@ abstract class InputWidgetView<T extends FormStep> extends FormStepView<T> {
 
   @override
   void onNext() {
-    formStep.result = resultValue();
     if (isValid()) {
       clearFocus();
       formKitForm.nextStep(formStep);
