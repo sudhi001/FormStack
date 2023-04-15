@@ -38,7 +38,7 @@ class CompletionStep extends FormStep {
   FormStepView buildView(FormStackForm formKitForm) {
     formKitForm.onFinish = onFinish;
     resultFormat =
-        resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss.SSS a");
+        resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss.SSSSSSS a");
     return _CompletionStepView(formKitForm, this, text,
         title: title,
         display: display,
