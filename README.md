@@ -23,14 +23,45 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 
 ## Screenshots
 
-<img src="./screenshots/img1.png" width="200" title=""/>
-<img src="./screenshots/img2.png" width="200" title=""/>
-<img src="./screenshots/img3.png" width="200" title=""/>
-<img src="./screenshots/img4.png" width="200" title=""/>
-<img src="./screenshots/img5.png" width="200" title=""/>
-<img src="./screenshots/img6.png" width="200" title=""/>
-<img src="./screenshots/img7.png" width="200" title=""/>
-<img src="./screenshots/img8.png" width="200" title=""/>
-<img src="./screenshots/img9.png" width="200" title=""/>
-<img src="./screenshots/img10.png" width="200" title=""/>
-<img src="./screenshots/img11.png" width="200" title=""/>
+<table>
+    <tbody>
+        <tr>
+            <td align="center" style="background-color: white">
+                <img src="https://i.ibb.co/ZzbVBJV/img1.png" alt="img1" border="0" width="225"/>
+     </td>
+<td align="center" style="background-color: white">
+				<img src="https://i.ibb.co/nPzjmZD/img2.png" alt="img2" border="0" width="225"/>
+ </td>
+<td align="center" style="background-color: white">
+	         <img src="https://i.ibb.co/4W9ywqM/img3.png" alt="img3" border="0" width="225"/>
+</td>
+</tr>
+<tr>
+<td align="center" style="background-color: white">
+<img src="https://i.ibb.co/471ykX0/img4.png" alt="img4" border="0" width="225"/>
+</td>
+ <td align="center" style="background-color: white">
+ <img src="https://i.ibb.co/JzvGHy4/img5.png" alt="img5" border="0" width="225"/>
+</td>
+<td align="center" style="background-color: white">
+<img src="https://i.ibb.co/61DWvSh/img6.png" alt="img6" border="0" width="225">
+</td>
+</tr>
+<tr>
+<td align="center" style="background-color: white">
+<img src="https://i.ibb.co/0hPvSWD/img7.png" alt="img7" border="0" width="225">
+</td><td align="center" style="background-color: white">
+<img src="https://i.ibb.co/jJd2nSp/img8.png" alt="img8" border="0" width="225">
+</td><td align="center" style="background-color: white">
+<img src="https://i.ibb.co/wLRftP3/img9.png" alt="img9" border="0" width="225">
+</td>
+</tr>
+<tr>
+<td align="center" style="background-color: white">
+<img src="https://i.ibb.co/7SrKKbM/img10.png" alt="img10" border="0" width="225">
+</td><td align="center" style="background-color: white">
+<img src="https://i.ibb.co/0MVPjBT/img11.png" alt="img11" border="0" width="225">
+</td><
+ </tr>
+</tbody>
+</table>
