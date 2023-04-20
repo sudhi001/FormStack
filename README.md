@@ -10,3 +10,13 @@ The primary goal of FormStack is to make it easy for developers to create dynami
 While the library was initially created to help developers create survey UIs, the focus has expanded to include any type of dynamic application UI. With FormStack, developers can create UIs that are responsive and adaptable to different devices and screen sizes.
 
 Overall, FormStack is a powerful tool for creating dynamic user interfaces in Flutter. It offers a flexible and customizable approach to UI design, allowing developers to create UIs that are easy to use and maintain.
+
+
+
+## Dart Versions
+
+- Dart >=2.19.6 < 3.0.0
+
+## Examples
+
+- [Simple Example](https://github.com/sudhi001/FormStack/tree/main/example) - an example of how to create a UI using FormStack.
