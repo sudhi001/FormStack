@@ -61,7 +61,7 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 <img src="https://i.ibb.co/7SrKKbM/img10.png" alt="img10" border="0" width="225">
 </td><td align="center" style="background-color: white">
 <img src="https://i.ibb.co/0MVPjBT/img11.png" alt="img11" border="0" width="225">
-</td><
+</td>
  </tr>
 </tbody>
 </table>
