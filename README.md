@@ -1,6 +1,12 @@
 
-# FormStack
 <p align="center">
+<img src="/screenshots/logo.png" width="100" alt="build">
+</p>
+<p align="center">
+<center><h1><b>FormStack</b></h1></center>
+</p>
+# 
+<p align="left">
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 </p>
 FormStack is a library designed to help developers create dynamic user interfaces in Flutter. Specifically, the library is focused on creating forms and surveys using a JSON or Dart language model.
