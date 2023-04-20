@@ -20,6 +20,20 @@ class FormStack {
     return _delegate[name]!;
   }
 
+  ///Clear your instant.
+  ///Are you sure to use this.
+  static void clearConfiguration() {
+    _delegate.clear();
+  }
+
+  ///Clear forms.
+  ///Clear Forms only.
+  static void clearForms({String name = "default"}) {
+    if (_delegate.containsKey(name)) {
+      _delegate.remove(name);
+    }
+  }
+
   FormStack form({
     String name = "default",
     String? googleMapAPIKey,
