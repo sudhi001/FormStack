@@ -1,9 +1,10 @@
 
 <p align="center">
-<img src="/screenshots/logo.png" width="100" alt="build">
+<img src="https://i.ibb.co/vcszHt9/logo.png" alt="logo" border="0" width="225">
 </p>
 <p align="center">
 <center><h1><b>FormStack</b></h1></center>
+<center><p>Comprehensive Library for Creating Dynamic Form</p></center>
 </p>
 # 
 <p align="left">
