@@ -1,7 +1,7 @@
 name: formstack
 description: A new Flutter package project.
 version: 0.1.1
-homepage:
+homepage: https://github.com/sudhi001/FormStack
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
