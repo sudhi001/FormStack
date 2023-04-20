@@ -20,3 +20,17 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 ## Examples
 
 - [Simple Example](https://github.com/sudhi001/FormStack/tree/main/example) - an example of how to create a UI using FormStack.
+
+## Screenshots
+
+<img src="./screenshots/img1.png" width="200" title=""/>
+<img src="./screenshots/img2.png" width="200" title=""/>
+<img src="./screenshots/img3.png" width="200" title=""/>
+<img src="./screenshots/img4.png" width="200" title=""/>
+<img src="./screenshots/img5.png" width="200" title=""/>
+<img src="./screenshots/img6.png" width="200" title=""/>
+<img src="./screenshots/img7.png" width="200" title=""/>
+<img src="./screenshots/img8.png" width="200" title=""/>
+<img src="./screenshots/img9.png" width="200" title=""/>
+<img src="./screenshots/img10.png" width="200" title=""/>
+<img src="./screenshots/img11.png" width="200" title=""/>
