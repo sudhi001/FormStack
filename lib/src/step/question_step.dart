@@ -1,7 +1,11 @@
 import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/core/result_format.dart';
-import 'package:formstack/src/form.dart';
-import 'package:formstack/src/step/global_input_widget.dart';
+import 'package:formstack/src/formstack_form.dart';
+import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/general_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
+import 'package:formstack/src/ui/views/step_view.dart';
 
 class QuestionStep extends FormStep<QuestionStep> {
   final String? title;
@@ -90,13 +94,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
         return ChoiceInputWidget.multiple(
-          this,
-          formKitForm,
-          text,
-          resultFormat!,
-          title,
-          options,
-        );
+            this, formKitForm, text, resultFormat!, title, options);
 
       default:
     }

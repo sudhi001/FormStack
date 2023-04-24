@@ -2,18 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
-
-enum DateInputFormats {
-  dateOnly,
-  dateTime,
-  timeOnly,
-}
+import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
-class DateInputWidgetView extends InputWidgetView<QuestionStep> {
+class DateInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final DateInputFormats format;
   DateInputWidgetView(
@@ -88,4 +82,10 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.mouse,
         // etc.
       };
+}
+
+enum DateInputFormats {
+  dateOnly,
+  dateTime,
+  timeOnly,
 }

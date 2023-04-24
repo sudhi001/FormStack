@@ -116,9 +116,21 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
           useMaterial3: true,
-          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo),
+          colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.blue, backgroundColor: Colors.white),
         ),
-        home: FormStack.api().render(),
+        home: const HomeScreen(),
         debugShowCheckedModeBanner: false);
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FormStack.api().render(),
+    );
   }
 }

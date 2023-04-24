@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/core/navigation_rule.dart';
 import 'package:intl/intl.dart';
 
@@ -13,7 +14,10 @@ abstract class FormStackForm {
   Alignment? backgroundAlignment;
   GeoLocationResult? initialPosition;
   Color primaryColor;
+  bool preventSystemBackNavigation;
   Function(FormStep)? onUpdate;
+  VoidCallback? onSystemNagiationBackClick;
+  Function(FormStackForm)? onRenderFormSatackForm;
   Function(Map<String, dynamic> result)? onFinish;
   Function(String)? onValidtionError;
   Map<String, dynamic> relevantStack = {};
@@ -23,10 +27,13 @@ abstract class FormStackForm {
   FormStackForm(this.steps,
       {this.id,
       this.onUpdate,
+      this.onRenderFormSatackForm,
       this.backgroundAnimationFile,
       this.onValidtionError,
+      this.onSystemNagiationBackClick,
       this.primaryColor = Colors.black,
       this.googleMapAPIKey,
+      this.preventSystemBackNavigation = false,
       this.backgroundAlignment,
       this.initialPosition}) {
     id ??= FormIdentifier();
@@ -66,7 +73,12 @@ abstract class FormStackForm {
       if (nextStep != null) {
         relevantStack.putIfAbsent((nextStep.id?.id ?? ""), () => currentStep);
       } else {
-        nextStep = currentStep.next;
+        FormStackForm? nextFormSatck = FormStack.formByInstaceAndName();
+        if (nextFormSatck != null) {
+          onRenderFormSatackForm?.call(nextFormSatck);
+        } else {
+          nextStep = currentStep.next;
+        }
       }
     }
 
@@ -112,8 +124,11 @@ abstract class FormStackForm {
     onUpdate?.call(steps.first);
   }
 
-  Widget render(Function(FormStep) onUpdate, {FormStep? formStep}) {
+  Widget render(Function(FormStep) onUpdate,
+      Function(FormStackForm)? onRenderFormSatackForm,
+      {FormStep? formStep}) {
     this.onUpdate = onUpdate;
+    this.onRenderFormSatackForm = onRenderFormSatackForm;
     if (formStep != null) {
       return formStep.buildView(this);
     }

@@ -1,3 +1,5 @@
+## 0.2.10
+* Documents updated and code optimisation.
 ## 0.1.4
 * Documents updated.
 ## 0.1.4

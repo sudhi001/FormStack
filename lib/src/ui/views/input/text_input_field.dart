@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/core/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
+import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
-class TextFeildInputWidgetView extends InputWidgetView<QuestionStep> {
+class TextFeildInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final List<TextInputFormatter> formatter;
   final TextCapitalization textCapitalization;

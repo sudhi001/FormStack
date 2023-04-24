@@ -1,3 +1,4 @@
+import 'package:formstack/src/expression/base_expression.dart';
 import 'package:intl/intl.dart';
 
 ///This grammar allows us to define date conditions with a comparison
@@ -6,12 +7,14 @@ import 'package:intl/intl.dart';
 ///  (e.g., YEAR(2023-04-13)). The YEAR, MONTH, and DAY functions return
 ///  the corresponding value of the given date expression.
 ///
-class DateTimeExpressionEvaluator {
-  DateTimeExpressionEvaluator._();
-  static bool evaluateCondition(String condition, DateTime date) {
+class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
+  DateTimeExpressionEvaluator(super.intput);
+
+  @override
+  bool isValid(String condition, DateTime input) {
     var parts = condition.split(' ');
-    var left = parts.isNotEmpty ? parseExpression(parts[0], date) : null;
-    var right = parts.length > 1 ? parseExpression(parts[2], date) : null;
+    var left = parts.isNotEmpty ? parseExpression(parts[0], input) : null;
+    var right = parts.length > 1 ? parseExpression(parts[2], input) : null;
     var operator = parts.length > 1 ? parts[1] : parts[0];
 
     switch (operator) {

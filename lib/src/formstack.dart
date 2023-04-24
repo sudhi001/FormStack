@@ -3,7 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:lottie/lottie.dart';
+import 'package:formstack/src/relevant/expression_relevant_condition.dart';
+import 'package:formstack/src/relevant/relevant_condition.dart';
+import 'package:formstack/src/ui/views/formstack_view.dart';
+import 'package:formstack/src/utils/alignment.dart';
 
 class FormStack {
   // Ensures end-users cannot initialize the class.
@@ -18,6 +21,11 @@ class FormStack {
       _delegate.putIfAbsent(name, () => FormStack._());
     }
     return _delegate[name]!;
+  }
+
+  static FormStackForm? formByInstaceAndName(
+      {String name = "default", String formName = "default"}) {
+    return api(name: name)._forms[formName];
   }
 
   ///Clear your instant.
@@ -179,6 +187,17 @@ class FormStack {
     return this;
   }
 
+  FormStack systemBackNavigation(
+      bool disabled, VoidCallback onBackNavigationClick,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      formStack.preventSystemBackNavigation = disabled;
+      formStack.onSystemNagiationBackClick = onBackNavigationClick;
+    }
+    return this;
+  }
+
   FormStack addCompletionCallback(
     Identifier identifier, {
     String? formName = "default",
@@ -200,82 +219,6 @@ class FormStack {
   }
 
   Widget render({String name = "default"}) {
-    return FormStackView(_forms[name]!); //.render();
-  }
-}
-
-Alignment? alignmentFromString(String? aliment) {
-  if (aliment != null) {
-    switch (aliment) {
-      case "center":
-        return Alignment.center;
-      case "bottomCenter":
-        return Alignment.bottomCenter;
-      case "bottomLeft":
-        return Alignment.bottomLeft;
-      case "bottomRight":
-        return Alignment.bottomRight;
-      case "centerLeft":
-        return Alignment.centerLeft;
-      case "centerRight":
-        return Alignment.centerRight;
-      case "topCenter":
-        return Alignment.topCenter;
-      case "topLeft":
-        return Alignment.topLeft;
-      case "topRight":
-        return Alignment.topRight;
-    }
-  }
-  return null;
-}
-
-class FormStackView extends StatefulWidget {
-  final FormStackForm formKitForm;
-  const FormStackView(this.formKitForm, {super.key});
-
-  @override
-  State<StatefulWidget> createState() => _FormStackViewState();
-}
-
-class _FormStackViewState extends State<FormStackView> {
-  late Widget child;
-  @override
-  void initState() {
-    super.initState();
-    child = widget.formKitForm.render(onUpdate);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            showCloseIcon: true,
-            closeIconColor: Colors.white,
-            content: Text(
-              "System back navigation prevented. Please use \"Back\" button.",
-            )));
-        return false;
-      },
-      child: Scaffold(
-          body: widget.formKitForm.backgroundAnimationFile != null
-              ? Stack(
-                  alignment: widget.formKitForm.backgroundAlignment ??
-                      Alignment.center,
-                  children: [
-                    Lottie.asset(widget.formKitForm.backgroundAnimationFile!,
-                        fit: BoxFit.cover),
-                    child,
-                  ],
-                )
-              : child),
-    );
-  }
-
-  onUpdate(FormStep formStep) {
-    setState(() {
-      child = widget.formKitForm.render(onUpdate, formStep: formStep);
-    });
+    return FormStackView(_forms[name]!);
   }
 }
