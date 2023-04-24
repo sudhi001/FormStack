@@ -208,6 +208,3 @@ Example: if you want to trigger a network call or something like that.
 If you come across any difficulties, don't hesitate to open an [issue](https://github.com/sudhi001/FormStack/issues) on GitHub. If you believe that the library lacks a particular feature, please create a [ticket](https://github.com/sudhi001/FormStack/issues) on GitHub, and I'll investigate it. Additionally, I welcome pull requests if you would like to contribute to the project.
 
 
-
-
-
