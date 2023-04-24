@@ -1,5 +1,6 @@
 {
 
+ 
     "full":
     {
       "steps":[
@@ -27,12 +28,14 @@
         },{
           "type": "QuestionStep",
           "title":"Full Questions - Email",
-          "inputType":"email"
+          "inputType":"email",
+          "isOptional":true
         },
         {
           "type": "QuestionStep",
           "title":"Full Questions - Name",
-          "inputType":"name"
+          "inputType":"name",
+          "isOptional":true
         },
         {
           "type": "QuestionStep",
@@ -42,22 +45,26 @@
         {
           "type": "QuestionStep",
           "title":"Full Questions - Date",
-          "inputType":"date"
+          "inputType":"date",
+          "isOptional":true
         },
         {
           "type": "QuestionStep",
           "title":"Full Questions - DateTime",
-          "inputType":"dateTime"
+          "inputType":"dateTime",
+          "isOptional":true
         },
         {
           "type": "QuestionStep",
           "title":"Full Questions - Time",
-          "inputType":"time"
+          "inputType":"time",
+          "isOptional":true
         },
         {
           "type": "QuestionStep",
           "title":"Full Questions - Number",
-          "inputType":"number"
+          "inputType":"number",
+          "isOptional":true
         },
         {
          "type": "QuestionStep",

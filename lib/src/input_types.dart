@@ -9,5 +9,5 @@ enum InputType {
   number,
   smile,
   singleChoice,
-  multipleChoice,
+  multipleChoice
 }

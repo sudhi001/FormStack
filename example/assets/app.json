@@ -13,12 +13,14 @@
           "options":[
              {"key":"AUTISM_M_CHAT_R","text":"Screenig Tool For Autism In Child M-CHAT-R"},
              {"key":"CALL_DRIVER","text":"Call Driver Now"},
-             {"key":"FULL_QUESTIONS","text":"Full Components"}
+             {"key":"FULL_QUESTIONS","text":"Full Components"},
+             {"key":"NEW_COMPONENTS","text":"New Components"}
           ],
           "id":"CHOICE",
           "relevantConditions":[{"id":"CALL_DRIVER","expression":"IN CALL_DRIVER"},
           {"id":"AUTISM_QUESTIONS","expression":"IN AUTISM_M_CHAT_R" ,"formName":"formOne"},
-          {"id":"FULL_QUESTIONS_START","expression":"IN FULL_QUESTIONS" ,"formName":"full"}
+          {"id":"FULL_QUESTIONS_START","expression":"IN FULL_QUESTIONS" ,"formName":"full"},
+          {"id":"","expression":"IN NEW_COMPONENTS" ,"formName":"new_form"}
         ]
         },{
           "type": "QuestionStep",

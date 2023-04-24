@@ -186,7 +186,10 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   @override
   void onNext() {
-    if (isValid()) {
+    if (formStep.isOptional ?? false) {
+      clearFocus();
+      formKitForm.nextStep(formStep);
+    } else if (isValid()) {
       clearFocus();
       formKitForm.nextStep(formStep);
     } else {

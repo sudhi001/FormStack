@@ -111,6 +111,17 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 
 
 ```
+### Load single json file from assets folder 
+``` dart
+     await FormStack.api() .loadFromAsset('assets/app.json');
+
+```
+### Load Mutiple json file from assets folder 
+``` dart
+     await FormStack.api()
+                      .loadFromAssets(['assets/app.json', 'assets/full.json']);
+
+```
 ### Read json file from assets to FormStack
 
 ```dart

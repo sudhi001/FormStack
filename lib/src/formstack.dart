@@ -1,13 +1,47 @@
 import 'dart:collection';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/relevant/expression_relevant_condition.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/formstack_view.dart';
-import 'package:formstack/src/utils/alignment.dart';
+import 'package:formstack/src/utils/parser.dart';
 
+///
+///
+/// FormStack - Comprehensive Library for Creating Dynamic Form
+///
+/// FormStack is a library designed to help developers create dynamic user interfaces in Flutter.
+///  Specifically, the library is focused on creating forms and surveys using a JSON or Dart language model.
+///
+/// The primary goal of FormStack is to make it easy for developers to create dynamic UIs without having to write a lot of code.
+///  By using a JSON or Dart model to define the structure of a form or survey, developers can quickly create UIs that are easy to customize and update.
+///
+///While the library was initially created to help developers create survey UIs, the focus has expanded to include any type of dynamic application UI.
+/// With FormStack, developers can create UIs that are responsive and adaptable to different devices and screen sizes.
+///
+///Overall, FormStack is a powerful tool for creating dynamic user interfaces in Flutter.
+///It offers a flexible and customizable approach to UI design, allowing developers to create UIs that are easy to use and maintain.
+///
+///```dart
+///
+///   await FormStack.api().loadFromAsset('assets/app.json');
+///
+///
+/// class SampleScreen extends StatelessWidget {
+///   const SampleScreen({super.key});
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     return Scaffold(
+///       body: FormStack.api().render(),
+///     );
+///   }
+/// }
+///
+///```
+///
+///
+///
 class FormStack {
   // Ensures end-users cannot initialize the class.
   FormStack._();
@@ -16,6 +50,10 @@ class FormStack {
 
   final Map<String, FormStackForm> _forms = {};
 
+  ///
+  ///Create the instnce for the app
+  /// name - instance name.
+  ///
   static FormStack api({String name = "default"}) {
     if (!_delegate.containsKey(name)) {
       _delegate.putIfAbsent(name, () => FormStack._());
@@ -23,6 +61,7 @@ class FormStack {
     return _delegate[name]!;
   }
 
+  /// Get the purticular from from different instance.
   static FormStackForm? formByInstaceAndName(
       {String name = "default", String formName = "default"}) {
     return api(name: name)._forms[formName];
@@ -34,22 +73,49 @@ class FormStack {
     _delegate.clear();
   }
 
-  ///Clear forms.
-  ///Clear Forms only.
+  ///Clear forms from instance name .
   static void clearForms({String name = "default"}) {
     if (_delegate.containsKey(name)) {
       _delegate.remove(name);
     }
   }
 
-  FormStack form({
-    String name = "default",
-    String? googleMapAPIKey,
-    GeoLocationResult? initialPosition,
-    String? backgroundAnimationFile,
-    Alignment? backgroundAlignment,
-    required List<FormStep> steps,
-  }) {
+  /// Load the form from dart language model
+  ///
+  ///```dart
+  ///FormStack.api().form(steps: [
+  ///   InstructionStep(
+  ///       id: GenericIdentifier(id: "IS_STARTED"),
+  ///       title: "Example Survey",
+  ///       text: "Simple survey example using dart model",
+  ///       cancellable: false),
+  ///   QuestionStep(
+  ///     title: "Name",
+  ///     text: "Your name",
+  ///     inputType: InputType.name,
+  ///     id: GenericIdentifier(id: "NAME"),
+  ///   )
+  ///   CompletionStep(
+  ///     id: GenericIdentifier(id: "IS_COMPLETED"),
+  ///     title: "Survey Completed",
+  ///     text: "ENd Of ",
+  ///     onFinish: (result) {
+  ///       debugPrint("Completed With Result : $result");
+  ///     },
+  ///   ),
+  /// ]);
+  ///
+  ///````
+  ///
+  ///
+  ///
+  FormStack form(
+      {String name = "default",
+      String? googleMapAPIKey,
+      GeoLocationResult? initialPosition,
+      String? backgroundAnimationFile,
+      Alignment? backgroundAlignment,
+      required List<FormStep> steps}) {
     var list = LinkedList<FormStep>();
     list.addAll(steps);
     FormWizard form = FormWizard(list,
@@ -61,102 +127,29 @@ class FormStack {
     return this;
   }
 
+  ///Load single json file from assets folder
+  Future<FormStack> loadFromAsset(String path) async {
+    return loadFromAssets([path]);
+  }
+
+  ///Import and parse multiple JSON files located in the assets folder.
+  Future<FormStack> loadFromAssets(List<String> files) async {
+    for (var element in files) {
+      String data = await rootBundle.loadString(element);
+      Parser.buildFormFromJson(this, json.decode(data));
+    }
+    return this;
+  }
+
+  /// Build the form from the JSON content
   Future<FormStack> buildFormFromJsonString(String data) async {
     Map<String, dynamic>? body = await json.decode(data);
     return buildFormFromJson(body);
   }
 
+  /// Build the from from Map (JSON)
   Future<FormStack> buildFormFromJson(Map<String, dynamic>? body) async {
-    if (body != null) {
-      body.forEach((key, value) {
-        List<FormStep> formStep = [];
-        List<dynamic>? tsteps = value?["steps"] ?? [];
-        tsteps?.forEach((element) {
-          List<RelevantCondition> relevantConditions = [];
-          cast<List>(element?["relevantConditions"])?.forEach((el) {
-            relevantConditions.add(ExpressionRelevant(
-                expression: el?["expression"],
-                formName: el?["formName"] ?? "",
-                identifier: GenericIdentifier(id: el?["id"])));
-          });
-
-          if (element["type"] == "QuestionStep") {
-            List<Options> options = [];
-            cast<List>(element?["options"])?.forEach((el) {
-              options.add(Options(el?["key"], el?["text"]));
-            });
-            InputType inputType = InputType.values
-                .firstWhere((e) => e.name == element?["inputType"]);
-            QuestionStep step = QuestionStep(
-                inputType: inputType,
-                options: options,
-                relevantConditions: relevantConditions,
-                cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"] ?? false,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                nextButtonText: element?["nextButtonText"],
-                numberOfLines: element?["numberOfLines"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          } else if (element["type"] == "CompletionStep") {
-            CompletionStep step = CompletionStep(
-                display: element?["display"] != null
-                    ? Display.values
-                        .firstWhere((e) => e.name == element?["display"])
-                    : Display.normal,
-                cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"] ?? false,
-                relevantConditions: relevantConditions,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                nextButtonText: element?["nextButtonText"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          } else if (element["type"] == "InstructionStep") {
-            InstructionStep step = InstructionStep(
-                display: element?["display"] != null
-                    ? Display.values
-                        .firstWhere((e) => e.name == element?["display"])
-                    : Display.normal,
-                cancellable: element?["cancellable"],
-                relevantConditions: relevantConditions,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                nextButtonText: element?["nextButtonText"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          }
-        });
-        form(
-            steps: formStep,
-            name: key,
-            googleMapAPIKey: value?["googleMapAPIKey"],
-            backgroundAnimationFile: value?["backgroundAnimationFile"],
-            backgroundAlignment:
-                alignmentFromString(value?["backgroundAlignment"]),
-            initialPosition: value?["initialPosition"] != null
-                ? GeoLocationResult(
-                    latitude: value?["initialPosition"]["latitude"],
-                    longitude: value?["initialPosition"]["longitude"])
-                : null);
-      });
-    }
+    Parser.buildFormFromJson(this, body);
     return this;
   }
 
@@ -173,6 +166,7 @@ class FormStack {
     return this;
   }
 
+  /// Add validation error listener
   FormStack addOnValidationError(
       Identifier identifier, Function(String)? onValidationError,
       {String? formName = "default"}) {
@@ -189,6 +183,7 @@ class FormStack {
     return this;
   }
 
+  /// Prevent System back navigation or getting call back when the user click the system back button.
   FormStack systemBackNavigation(
       bool disabled, VoidCallback onBackNavigationClick,
       {String? formName = "default"}) {
@@ -200,6 +195,7 @@ class FormStack {
     return this;
   }
 
+  /// Add the completion handler to add you logic when the form finish
   FormStack addCompletionCallback(
     Identifier identifier, {
     String? formName = "default",
@@ -220,6 +216,8 @@ class FormStack {
     return this;
   }
 
+  /// Render the form to the UI
+  /// Primary method to implement in you Widget tree.
   Widget render({String name = "default"}) {
     return FormStackView(_forms[name]!);
   }

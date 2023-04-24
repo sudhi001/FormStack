@@ -93,7 +93,6 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
         return ChoiceInputWidget.multiple(
             this, formKitForm, text, resultFormat!, title, options);
-
       default:
     }
     throw UnimplementedError();

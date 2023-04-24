@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
@@ -58,10 +56,8 @@ class HomeScreen extends StatelessWidget {
                 trailing: const Icon(Icons.arrow_forward_ios_outlined),
                 onTap: () async {
                   FormStack.clearForms();
-                  await FormStack.api().buildFormFromJson(await json
-                      .decode(await rootBundle.loadString('assets/app.json')));
-                  await FormStack.api().buildFormFromJson(await json
-                      .decode(await rootBundle.loadString('assets/full.json')));
+                  await FormStack.api()
+                      .loadFromAssets(['assets/app.json', 'assets/full.json']);
                   // ignore: use_build_context_synchronously
                   Navigator.push(
                       context,
