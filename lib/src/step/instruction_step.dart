@@ -1,6 +1,4 @@
-import 'package:formstack/src/form_step.dart';
-import 'package:formstack/src/result/result_format.dart';
-import 'package:formstack/src/formstack_form.dart';
+import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/instruction_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
@@ -8,6 +6,7 @@ class InstructionStep extends FormStep {
   final String title;
   final String? text;
   final Display display;
+  final List<Instruction>? instructions;
 
   InstructionStep(
       {super.id,
@@ -18,6 +17,7 @@ class InstructionStep extends FormStep {
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
+      this.instructions = const [],
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,
       super.cancelButtonText,

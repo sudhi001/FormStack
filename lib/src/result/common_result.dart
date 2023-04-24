@@ -9,3 +9,11 @@ class GeoLocationResult {
   final double longitude;
   GeoLocationResult({required this.latitude, required this.longitude});
 }
+
+class Instruction {
+  final String title;
+  final String? subTitle;
+  final String? trailing;
+  final String? leading;
+  Instruction(this.title, {this.subTitle, this.trailing, this.leading});
+}

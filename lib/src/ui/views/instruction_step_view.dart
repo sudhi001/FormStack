@@ -9,7 +9,28 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
 
   @override
   Widget? buildWInputWidget(BuildContext context, InstructionStep formStep) {
-    return null;
+    return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 300.0),
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            Instruction instruction = formStep.instructions![index];
+            return Center(
+                child: ListTile(
+                    title: Text(instruction.title),
+                    trailing: instruction.trailing == null
+                        ? null
+                        : Text(instruction.trailing ?? ""),
+                    leading: instruction.leading == null
+                        ? null
+                        : Text(instruction.leading ?? "",
+                            style: Theme.of(context).textTheme.headlineMedium),
+                    subtitle: instruction.subTitle == null
+                        ? null
+                        : Text(instruction.subTitle ?? "")));
+          },
+          itemCount: formStep.instructions?.length ?? 0,
+        ));
   }
 
   @override

@@ -63,6 +63,13 @@ class Parser {
                 id: GenericIdentifier(id: element?["id"]));
             formStep.add(step);
           } else if (element["type"] == "InstructionStep") {
+            List<Instruction> instructions = [];
+            cast<List>(element?["instructions"])?.forEach((el) {
+              instructions.add(Instruction(el?["title"],
+                  subTitle: el?["subTitle"],
+                  trailing: el?["trailing"],
+                  leading: el?["leading"]));
+            });
             InstructionStep step = InstructionStep(
                 display: element?["display"] != null
                     ? Display.values
@@ -73,6 +80,7 @@ class Parser {
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
                 isOptional: element?["isOptional"],
+                instructions: instructions,
                 nextButtonText: element?["nextButtonText"],
                 text: element?["text"],
                 title: element?["title"],
