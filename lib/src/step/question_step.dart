@@ -6,8 +6,7 @@ import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 class QuestionStep extends FormStep<QuestionStep> {
-  final String? title;
-  final String? text;
+
   final InputType inputType;
   Function(String)? onValidationError;
   final List<Options>? options;
@@ -16,9 +15,9 @@ class QuestionStep extends FormStep<QuestionStep> {
 
   QuestionStep(
       {super.id,
-      this.title = "",
+      super.title = "",
       required this.inputType,
-      this.text,
+      super.text,
       super.resultFormat,
       this.onValidationError,
       super.isOptional = false,

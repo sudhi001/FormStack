@@ -10,6 +10,8 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   bool? cancellable;
   Identifier? id;
   dynamic result;
+  String? title;
+  String? text;
   ResultFormat? resultFormat;
   String? nextButtonText;
   double? titleIconMaxWidth;
@@ -20,6 +22,8 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
 
   FormStep(
       {this.id,
+      this.title,
+      this.text,
       this.isOptional = false,
       this.cancellable = true,
       this.nextButtonText = "Next",

@@ -1,6 +1,7 @@
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/expression_relevant_condition.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
+import 'package:formstack/src/step/display_step.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 class Parser {
@@ -84,6 +85,21 @@ class Parser {
                 nextButtonText: element?["nextButtonText"],
                 text: element?["text"],
                 title: element?["title"],
+                titleIconAnimationFile: element?["titleIconAnimationFile"],
+                titleIconMaxWidth: element?["titleIconMaxWidth"],
+                id: GenericIdentifier(id: element?["id"]));
+            formStep.add(step);
+          } else if (element["type"] == "DisplayStep") {
+            DisplayStep step = DisplayStep(
+                cancellable: element?["cancellable"],
+                relevantConditions: relevantConditions,
+                backButtonText: element?["backButtonText"],
+                cancelButtonText: element?["cancelButtonText"],
+                isOptional: element?["isOptional"],
+                text: element?["text"],
+                title: element?["title"],
+                nextButtonText: element?["nextButtonText"],
+                url: element?["url"],
                 titleIconAnimationFile: element?["titleIconAnimationFile"],
                 titleIconMaxWidth: element?["titleIconMaxWidth"],
                 id: GenericIdentifier(id: element?["id"]));

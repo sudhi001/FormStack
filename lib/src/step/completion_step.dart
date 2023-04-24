@@ -8,8 +8,6 @@ typedef OnBeforeFinishCallback = Future<bool> Function(
     Map<String, dynamic> result);
 
 class CompletionStep extends FormStep {
-  final String? title;
-  final String? text;
   final Display display;
   final bool? autoTrigger;
   OnBeforeFinishCallback? onBeforeFinishCallback;
@@ -17,8 +15,8 @@ class CompletionStep extends FormStep {
 
   CompletionStep(
       {super.id,
-      this.title,
-      this.text,
+      super.title,
+      super.text,
       this.display = Display.normal,
       super.isOptional = false,
       this.onFinish,

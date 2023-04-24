@@ -36,39 +36,43 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ListTile(
-                trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoadFromObjectScreen(),
-                      ));
-                },
-                title: const Text("Load Form using Object"),
-                subtitle: const Text("Render UI by constructing dart objects"),
-              ),
-              ListTile(
-                trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                onTap: () async {
-                  FormStack.clearForms();
-                  await FormStack.api()
-                      .loadFromAssets(['assets/app.json', 'assets/full.json']);
-                  // ignore: use_build_context_synchronously
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoadFromJSONScreen(),
-                      ));
-                },
-                title: const Text("Load Form Json File"),
-                subtitle: const Text("Render UI by loading from json file"),
-              )
-            ]),
+        child: SizedBox(
+          width: 400,
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ListTile(
+                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoadFromObjectScreen(),
+                        ));
+                  },
+                  title: const Text("Load Form using Object"),
+                  subtitle:
+                      const Text("Render UI by constructing dart objects"),
+                ),
+                ListTile(
+                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                  onTap: () async {
+                    FormStack.clearForms();
+                    await FormStack.api().loadFromAssets(
+                        ['assets/app.json', 'assets/full.json']);
+                    // ignore: use_build_context_synchronously
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoadFromJSONScreen(),
+                        ));
+                  },
+                  title: const Text("Load Form Json File"),
+                  subtitle: const Text("Render UI by loading from json file"),
+                )
+              ]),
+        ),
       ),
     );
   }
