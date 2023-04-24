@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://i.ibb.co/vcszHt9/logo.png" alt="logo" border="0" width="350">
+<img src="https://i.ibb.co/vcszHt9/logo.png" alt="logo" border="0" width="300" height="300">
 </p>
 
 <h1 align="center"><b>FormStack</b></h1>
@@ -35,52 +35,6 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 
 - [DEMO APPLICATION Example](https://github.com/sudhi001/formstack_example_one) - Load from from json file..
 
-## Screenshots
-
-[![FormStack Demo Application Video](https://i.ibb.co/M1zxp7k/image.jpg)](https://youtu.be/afFNWkhQbJk "FormStack Demo")
-
-<table>
-    <tbody>
-        <tr>
-            <td align="center" style="background-color: white">
-                <img src="https://i.ibb.co/ZzbVBJV/img1.png" alt="img1" border="0" width="350"/>
-     </td>
-<td align="center" style="background-color: white">
-				<img src="https://i.ibb.co/nPzjmZD/img2.png" alt="img2" border="0" width="350"/>
- </td>
-<td align="center" style="background-color: white">
-	         <img src="https://i.ibb.co/4W9ywqM/img3.png" alt="img3" border="0" width="350"/>
-</td>
-</tr>
-<tr>
-<td align="center" style="background-color: white">
-<img src="https://i.ibb.co/471ykX0/img4.png" alt="img4" border="0" width="350"/>
-</td>
- <td align="center" style="background-color: white">
- <img src="https://i.ibb.co/JzvGHy4/img5.png" alt="img5" border="0" width="350"/>
-</td>
-<td align="center" style="background-color: white">
-<img src="https://i.ibb.co/61DWvSh/img6.png" alt="img6" border="0" width="350">
-</td>
-</tr>
-<tr>
-<td align="center" style="background-color: white">
-<img src="https://i.ibb.co/0hPvSWD/img7.png" alt="img7" border="0" width="350">
-</td><td align="center" style="background-color: white">
-<img src="https://i.ibb.co/jJd2nSp/img8.png" alt="img8" border="0" width="350">
-</td><td align="center" style="background-color: white">
-<img src="https://i.ibb.co/wLRftP3/img9.png" alt="img9" border="0" width="350">
-</td>
-</tr>
-<tr>
-<td align="center" style="background-color: white">
-<img src="https://i.ibb.co/7SrKKbM/img10.png" alt="img10" border="0" width="350">
-</td><td align="center" style="background-color: white">
-<img src="https://i.ibb.co/0MVPjBT/img11.png" alt="img11" border="0" width="350">
-</td>
- </tr>
-</tbody>
-</table>
 
 
 ## Implementation 
@@ -191,9 +145,63 @@ Example: if you want to trigger a network call or something like that.
 
 ```
 
+# Demo Application Video
+
+[![FormStack Demo Application Video](https://i.ibb.co/M1zxp7k/image.jpg)](https://youtu.be/afFNWkhQbJk "FormStack Demo")
+
+# Screenshots
+
+<table>
+   <tbody>
+      <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/ZzbVBJV/img1.png" alt="img1" border="0" width="450"/>
+         </td>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/nPzjmZD/img2.png" alt="img2" border="0" width="450"/>
+         </td>
+      </tr>
+        <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/4W9ywqM/img3.png" alt="img3" border="0" width="450"/>
+         </td>
+          <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/471ykX0/img4.png" alt="img4" border="0" width="450"/>
+         </td>
+      </tr>
+      <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/JzvGHy4/img5.png" alt="img5" border="0" width="450"/>
+         </td>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/61DWvSh/img6.png" alt="img6" border="0" width="450">
+         </td>
+      </tr>
+      <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/0hPvSWD/img7.png" alt="img7" border="0" width="450">
+         </td>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/jJd2nSp/img8.png" alt="img8" border="0" width="450">
+         </td>
+      </tr>
+      <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/7SrKKbM/img10.png" alt="img10" border="0" width="450">
+         </td>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/0MVPjBT/img11.png" alt="img11" border="0" width="450">
+         </td>
+      </tr>
+        <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://i.ibb.co/wLRftP3/img9.png" alt="img9" border="0" width="450">
+         </td>
+      </tr>
+   </tbody>
+</table>
 
 # Bugs or Requests
-
 
 If you come across any difficulties, don't hesitate to open an [issue](https://github.com/sudhi001/FormStack/issues) on GitHub. If you believe that the library lacks a particular feature, please create a [ticket](https://github.com/sudhi001/FormStack/issues) on GitHub, and I'll investigate it. Additionally, I welcome pull requests if you would like to contribute to the project.
 
