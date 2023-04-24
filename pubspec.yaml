@@ -15,6 +15,7 @@ dependencies:
   uuid: ^3.0.7
   reviews_slider: ^2.0.0
   lottie: ^2.3.2
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:

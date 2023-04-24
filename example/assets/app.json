@@ -1,0 +1,95 @@
+{
+
+    "default":
+    {
+      "steps":[
+        {
+          "type": "QuestionStep",
+          "title":"My Car",
+          "cancellable":false,
+          "nextButtonText":"",
+          "autoTrigger":true,
+          "inputType":"singleChoice",
+          "options":[
+             {"key":"AUTISM_M_CHAT_R","text":"Screenig Tool For Autism In Child M-CHAT-R"},
+             {"key":"CALL_DRIVER","text":"Call Driver Now"}
+          ],
+          "id":"CHOICE",
+          "relevantConditions":[{"id":"CALL_DRIVER","expression":"IN CALL_DRIVER"},
+          {"id":"AUTISM_QUESTIONS","expression":"IN AUTISM_M_CHAT_R" ,"formName":"formOne"}]
+        },{
+          "type": "QuestionStep",
+          "title":"Select Car",
+          "nextButtonText":"",
+          "autoTrigger":true,
+          "inputType":"singleChoice",
+          "options":[
+             {"key":"AUDI","text":"Audi"},
+             {"key":"BENZ","text":"Benz"},
+             {"key":"Suzuki","text":"Suzuki"}
+          ],
+          "id":"CAR_SELECTED",
+          "relevantConditions":[{"id":"SMILE","expression":"FOR_ALL"}]
+        },{
+          "type": "QuestionStep",
+          "title":"Call / Ping Driver",
+          "nextButtonText":"",
+          "autoTrigger":true,
+          "inputType":"singleChoice",
+          "options":[
+             {"key":"CALL","text":"Call"},
+             {"key":"PING","text":"PING"}
+          ],
+          "id":"CALL_DRIVER"
+        },
+        {
+         "type": "QuestionStep",
+         "title":"Are you Happy",
+         "text":"",
+         "inputType":"smile",
+         "id":"SMILE"
+       },
+        {
+          "type": "CompletionStep",
+          "autoTrigger":true,
+          "nextButtonText":"",
+          "title":"Please wait..",
+          "id":"IS_COMPLETED"
+        }
+      ]
+    
+   },
+    "formOne":{
+      "steps":[
+        {
+          "type": "InstructionStep",
+          "title":"Screenig Tool For Autism In Child M-CHAT-R",
+          "cancellable":true,
+          "id":"AUTISM_SCRENING_START"
+        },
+        {
+             "type": "QuestionStep",
+             "title":"Screenig Tool For Autism In Child M-CHAT-R",
+             "cancellable":true,
+             "nextButtonText":"",
+             "autoTrigger":true,
+             "inputType":"singleChoice",
+             "options":[
+                {"key":"LOGIN","text":"Login"},
+                {"key":"REGISTER","text":"Register"}
+             ],
+             "id":"AUTISM_QUESTIONS"
+        },
+       
+       {
+         "type": "CompletionStep",
+         "autoTrigger":true,
+         "nextButtonText":"",
+         "title":"Please wait..",
+         "id":"IS_COMPLETED"
+       }
+
+    ]
+   }
+}
+

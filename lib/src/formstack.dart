@@ -54,6 +54,7 @@ class FormStack {
     list.addAll(steps);
     FormWizard form = FormWizard(list,
         googleMapAPIKey: googleMapAPIKey,
+        fromInstanceName: name,
         backgroundAlignment: backgroundAlignment,
         backgroundAnimationFile: backgroundAnimationFile);
     _forms.putIfAbsent(name, () => form);
@@ -75,6 +76,7 @@ class FormStack {
           cast<List>(element?["relevantConditions"])?.forEach((el) {
             relevantConditions.add(ExpressionRelevant(
                 expression: el?["expression"],
+                formName: el?["formName"] ?? "",
                 identifier: GenericIdentifier(id: el?["id"])));
           });
 

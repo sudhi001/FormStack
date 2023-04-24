@@ -17,7 +17,7 @@ class _FormStackViewState extends State<FormStackView> {
   void initState() {
     super.initState();
     _formKitForm = widget.formKitForm;
-    child = widget.formKitForm.render(onUpdate, onUpdateFormStackForm);
+    child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
   }
 
   @override
@@ -50,7 +50,7 @@ class _FormStackViewState extends State<FormStackView> {
   onUpdateFormStackForm(FormStackForm formStackForm) {
     _formKitForm = formStackForm;
     setState(() {
-      child = widget.formKitForm.render(onUpdate, onUpdateFormStackForm);
+      child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
     });
   }
 }

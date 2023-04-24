@@ -1,5 +1,5 @@
 import 'dart:collection';
-
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 abstract class FormStackForm {
   Identifier? id;
+  String fromInstanceName;
   String? backgroundAnimationFile;
   LinkedList<FormStep> steps;
   String? googleMapAPIKey;
@@ -22,10 +23,12 @@ abstract class FormStackForm {
   Function(String)? onValidtionError;
   Map<String, dynamic> relevantStack = {};
   Map<String, dynamic> result = {};
+  FormStackForm? previousFormStackForm;
 
   Map<StepIdentifier, NavigationRule> navigationRuleMap = {};
   FormStackForm(this.steps,
       {this.id,
+      required this.fromInstanceName,
       this.onUpdate,
       this.onRenderFormSatackForm,
       this.backgroundAnimationFile,
@@ -63,22 +66,29 @@ abstract class FormStackForm {
     if (currentStep?.relevantConditions == null) {
       nextStep = currentStep?.next;
     } else {
+      String? formName;
       for (RelevantCondition element in currentStep!.relevantConditions!) {
         if (element.isValid(currentStep.result)) {
-          nextStep = steps
-              .firstWhere((e) => (e.id?.id ?? "") == element.identifier.id);
+          nextStep = steps.firstWhereOrNull(
+              (e) => (e.id?.id ?? "") == element.identifier.id);
+          formName = element.formName;
           break;
         }
       }
       if (nextStep != null) {
         relevantStack.putIfAbsent((nextStep.id?.id ?? ""), () => currentStep);
-      } else {
-        FormStackForm? nextFormSatck = FormStack.formByInstaceAndName();
+      } else if (formName?.isNotEmpty??false) {
+        FormStackForm? nextFormSatck = FormStack.formByInstaceAndName(
+            name: fromInstanceName, formName: formName!);
         if (nextFormSatck != null) {
+          nextFormSatck.previousFormStackForm = this;
           onRenderFormSatackForm?.call(nextFormSatck);
+          return;
         } else {
           nextStep = currentStep.next;
         }
+      } else {
+        nextStep = currentStep.next;
       }
     }
 
@@ -113,6 +123,10 @@ abstract class FormStackForm {
       nextStep = relevantStack[currentStep?.id?.id];
     } else {
       nextStep = currentStep?.previous;
+      if (previousFormStackForm != null) {
+        onRenderFormSatackForm?.call(previousFormStackForm!);
+        return;
+      }
     }
     if (nextStep != null) {
       onUpdate?.call(nextStep);
@@ -139,6 +153,7 @@ abstract class FormStackForm {
 class FormWizard extends FormStackForm {
   FormWizard(super.steps,
       {super.googleMapAPIKey,
+      required super.fromInstanceName,
       super.initialPosition,
       super.backgroundAlignment,
       super.id,
