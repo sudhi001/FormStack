@@ -14,8 +14,12 @@ class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
   bool isValid(String condition, DateTime input) {
     var parts = condition.split(' ');
     var left = parts.isNotEmpty ? parseExpression(parts[0], input) : null;
-    var right = parts.length > 1 ? parseExpression(parts[2], input) : null;
-    var operator = parts.length > 1 ? parts[1] : parts[0];
+    var operator = parts.length == 2
+        ? parts[0]
+        : parts.length > 1
+            ? parts[1]
+            : parts[0];
+    var right = parts.length > 2 ? parseExpression(parts[2], input) : null;
 
     switch (operator) {
       case '<':

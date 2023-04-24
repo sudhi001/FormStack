@@ -21,7 +21,8 @@
         "autoTrigger":true,
         "nextButtonText":"",
         "title":"Please wait..",
-        "id":"IS_COMPLETED"
+        "id":"IS_COMPLETED",
+        "relevantConditions":[{"id":"","expression":"FOR_ALL IS_COMPLETED", "formName":"default"}]
       }
     ]
 

@@ -49,6 +49,7 @@ class FormStack {
   static final Map<String, FormStack> _delegate = {};
 
   final Map<String, FormStackForm> _forms = {};
+  String instanceName = "";
 
   ///
   ///Create the instnce for the app
@@ -58,7 +59,9 @@ class FormStack {
     if (!_delegate.containsKey(name)) {
       _delegate.putIfAbsent(name, () => FormStack._());
     }
-    return _delegate[name]!;
+    FormStack formStack = _delegate[name]!;
+    formStack.instanceName = name;
+    return formStack;
   }
 
   /// Get the purticular from from different instance.
@@ -120,7 +123,7 @@ class FormStack {
     list.addAll(steps);
     FormWizard form = FormWizard(list,
         googleMapAPIKey: googleMapAPIKey,
-        fromInstanceName: name,
+        fromInstanceName: instanceName,
         backgroundAlignment: backgroundAlignment,
         backgroundAnimationFile: backgroundAnimationFile);
     _forms.putIfAbsent(name, () => form);
