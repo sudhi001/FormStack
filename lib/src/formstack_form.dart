@@ -3,7 +3,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
-import 'package:formstack/src/core/navigation_rule.dart';
 import 'package:intl/intl.dart';
 
 abstract class FormStackForm {
@@ -25,7 +24,6 @@ abstract class FormStackForm {
   Map<String, dynamic> result = {};
   FormStackForm? previousFormStackForm;
 
-  Map<StepIdentifier, NavigationRule> navigationRuleMap = {};
   FormStackForm(this.steps,
       {this.id,
       required this.fromInstanceName,
@@ -40,14 +38,6 @@ abstract class FormStackForm {
       this.backgroundAlignment,
       this.initialPosition}) {
     id ??= FormIdentifier();
-  }
-
-  NavigationRule? getRule(StepIdentifier stepIdentifier) =>
-      navigationRuleMap[stepIdentifier];
-
-  void setNavigationRule(
-      StepIdentifier identifier, NavigationRule navigationRule) {
-    navigationRuleMap[identifier] = navigationRule;
   }
 
   void validationError(String error) {
@@ -77,7 +67,7 @@ abstract class FormStackForm {
       }
       if (nextStep != null) {
         relevantStack.putIfAbsent((nextStep.id?.id ?? ""), () => currentStep);
-      } else if (formName?.isNotEmpty??false) {
+      } else if (formName?.isNotEmpty ?? false) {
         FormStackForm? nextFormSatck = FormStack.formByInstaceAndName(
             name: fromInstanceName, formName: formName!);
         if (nextFormSatck != null) {

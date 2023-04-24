@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:formstack/src/core/form_step.dart';
+import 'package:formstack/src/form_step.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:lottie/lottie.dart';
 

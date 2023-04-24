@@ -1,17 +1,3 @@
-enum InputType {
-  email,
-  name,
-  password,
-  date,
-  dateTime,
-  text,
-  time,
-  number,
-  smile,
-  singleChoice,
-  multipleChoice,
-}
-
 T? cast<T>(x) => x is T ? x : null;
 
 abstract class ResultFormat {
@@ -32,16 +18,20 @@ abstract class ResultFormat {
   String error();
 }
 
-class Options {
-  final String key;
-  final String text;
-  Options(this.key, this.text);
-}
+class DateResultType extends ResultFormat {
+  final String errorMsg;
+  final String format;
+  DateResultType(this.errorMsg, this.format) : super._();
 
-class GeoLocationResult {
-  final double latitude;
-  final double longitude;
-  GeoLocationResult({required this.latitude, required this.longitude});
+  @override
+  bool isValid(dynamic input) {
+    return cast<DateTime>(input) != null;
+  }
+
+  @override
+  String error() {
+    return errorMsg;
+  }
 }
 
 class _NoneResultType extends ResultFormat {
@@ -80,22 +70,6 @@ class _EmailResultType extends ResultFormat {
   @override
   bool isValid(dynamic input) {
     return cast<String>(input)!.isValidEmail();
-  }
-
-  @override
-  String error() {
-    return errorMsg;
-  }
-}
-
-class DateResultType extends ResultFormat {
-  final String errorMsg;
-  final String format;
-  DateResultType(this.errorMsg, this.format) : super._();
-
-  @override
-  bool isValid(dynamic input) {
-    return cast<DateTime>(input) != null;
   }
 
   @override

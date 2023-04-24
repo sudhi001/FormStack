@@ -1,5 +1,5 @@
-import 'package:formstack/src/core/form_step.dart';
-import 'package:formstack/src/core/result_format.dart';
+import 'package:formstack/src/form_step.dart';
+import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/formstack_form.dart';
 import 'package:formstack/src/ui/views/completion_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';

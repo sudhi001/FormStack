@@ -19,8 +19,6 @@ class FormIdentifier extends Identifier {}
 
 class StepIdentifier extends Identifier {}
 
-class InputIdentifier extends Identifier {}
-
 class GenericIdentifier extends Identifier {
   GenericIdentifier({super.id});
 }

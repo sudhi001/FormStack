@@ -1,0 +1,79 @@
+{
+
+    "full":
+    {
+      "steps":[
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - Single choice",
+          "cancellable":false,
+          "nextButtonText":"",
+          "autoTrigger":true,
+          "inputType":"singleChoice",
+          "options":[
+             {"key":"CHOICE_1","text":"Choice One"},
+             {"key":"CHOICE_2","text":"Choice Two"}
+          ]
+     
+        },{
+          "type": "QuestionStep",
+          "title":"Full Questions - Mutiple Choice",
+          "inputType":"multipleChoice",
+          "options":[
+             {"key":"AUDI","text":"Audi"},
+             {"key":"BENZ","text":"Benz"},
+             {"key":"Suzuki","text":"Suzuki"}
+          ]
+        },{
+          "type": "QuestionStep",
+          "title":"Full Questions - Email",
+          "inputType":"email"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - Name",
+          "inputType":"name"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - Password",
+          "inputType":"password"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - Date",
+          "inputType":"date"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - DateTime",
+          "inputType":"dateTime"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - Time",
+          "inputType":"time"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Full Questions - Number",
+          "inputType":"number"
+        },
+        {
+         "type": "QuestionStep",
+         "title":"Full Questions - SMILE",
+         "inputType":"smile",
+         "id":"SMILE"
+       },
+        {
+          "type": "CompletionStep",
+          "autoTrigger":true,
+          "nextButtonText":"",
+          "title":"Please wait..",
+          "id":"IS_COMPLETED"
+        }
+      ]
+    
+   }
+}
+

@@ -60,6 +60,8 @@ class HomeScreen extends StatelessWidget {
                   FormStack.clearForms();
                   await FormStack.api().buildFormFromJson(await json
                       .decode(await rootBundle.loadString('assets/app.json')));
+                  await FormStack.api().buildFormFromJson(await json
+                      .decode(await rootBundle.loadString('assets/full.json')));
                   // ignore: use_build_context_synchronously
                   Navigator.push(
                       context,

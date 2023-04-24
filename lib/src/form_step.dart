@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:formstack/src/relevant/relevant_condition.dart';
-import 'package:formstack/src/core/identifiers.dart';
-import 'package:formstack/src/core/result_format.dart';
+import 'package:formstack/src/result/identifiers.dart';
+import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/formstack_form.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 

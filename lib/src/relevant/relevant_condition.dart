@@ -1,4 +1,4 @@
-import 'package:formstack/src/core/identifiers.dart';
+import 'package:formstack/src/result/identifiers.dart';
 
 abstract class RelevantCondition {
   RelevantCondition({required this.identifier, this.formName});

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:formstack/src/core/result_format.dart';
+import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
 

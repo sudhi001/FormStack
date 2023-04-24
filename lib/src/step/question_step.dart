@@ -1,6 +1,4 @@
-import 'package:formstack/src/core/form_step.dart';
-import 'package:formstack/src/core/result_format.dart';
-import 'package:formstack/src/formstack_form.dart';
+import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/general_input_factory.dart';
