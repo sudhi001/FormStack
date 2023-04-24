@@ -9,9 +9,15 @@
            {"title":"Choice One","subTitle":"Selct at least one ","trailing":"Optional", "leading":"😫"},
            {"title":"Choice Two","trailing":"Optional", "leading":"😫"}
         ]
-   
       }
-
+      ,
+      {
+        "type": "CompletionStep",
+        "autoTrigger":true,
+        "nextButtonText":"",
+        "title":"Please wait..",
+        "id":"IS_COMPLETED"
+      }
     ]
 
   },
