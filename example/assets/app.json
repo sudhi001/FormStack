@@ -27,6 +27,7 @@
           "title":"Select Car",
           "nextButtonText":"",
           "autoTrigger":true,
+          "cancellable":true,
           "inputType":"singleChoice",
           "options":[
              {"key":"AUDI","text":"Audi"},
@@ -39,6 +40,7 @@
           "type": "QuestionStep",
           "title":"Call / Ping Driver",
           "nextButtonText":"",
+          "cancellable":true,
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
@@ -68,8 +70,8 @@
       "steps":[
         {
           "type": "InstructionStep",
-          "title":"The Modified Checklist for Autism in Toddlers, Revised (M-CHAT-R) ",
           "cancellable":true,
+          "title":"The Modified Checklist for Autism in Toddlers, Revised (M-CHAT-R) ",
           "id":"AUTISM_SCRENING_START"
         },
         {

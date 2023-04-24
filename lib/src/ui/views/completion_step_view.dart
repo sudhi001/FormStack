@@ -59,14 +59,14 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
       isLoading = true;
       isCompleted = await onBeforeFinishCallback!.call(result);
     } else {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 90));
       isCompleted = await super.onBeforeFinish(result);
     }
 
     isLoading = false;
     // ignore: invalid_use_of_protected_member
     loadingKey.currentState!.setState(() {});
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     return Future.value(isCompleted);
   }
 

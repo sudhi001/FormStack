@@ -2,6 +2,7 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/expression_relevant_condition.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/step/display_step.dart';
+import 'package:formstack/src/step/pop_step.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 class Parser {
@@ -103,6 +104,9 @@ class Parser {
                 titleIconAnimationFile: element?["titleIconAnimationFile"],
                 titleIconMaxWidth: element?["titleIconMaxWidth"],
                 id: GenericIdentifier(id: element?["id"]));
+            formStep.add(step);
+          } else if (element["type"] == "PopStep") {
+            PopStep step = PopStep(id: GenericIdentifier(id: element?["id"]));
             formStep.add(step);
           }
         });

@@ -60,31 +60,45 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       const SizedBox(height: 7)
                     ],
                     if (title != null && title!.isNotEmpty) ...[
-                      Text(title ?? "",
-                          style: display == Display.medium
-                              ? Theme.of(context).textTheme.headlineMedium
-                              : (display == Display.large
-                                  ? Theme.of(context).textTheme.headlineLarge
-                                  : (display == Display.extraLarge
-                                      ? Theme.of(context).textTheme.displaySmall
-                                      : Theme.of(context)
+                      Container(
+                          constraints:
+                              const BoxConstraints(minWidth: 75, maxWidth: 500),
+                          child: Text(title ?? "",
+                              style: display == Display.medium
+                                  ? Theme.of(context).textTheme.headlineMedium
+                                  : (display == Display.large
+                                      ? Theme.of(context)
                                           .textTheme
-                                          .headlineSmall)),
-                          textAlign: TextAlign.center),
+                                          .headlineLarge
+                                      : (display == Display.extraLarge
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .displaySmall
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall)),
+                              textAlign: TextAlign.center)),
                       const SizedBox(height: 7)
                     ],
                     if (text != null && text!.isNotEmpty) ...[
-                      Text(text ?? "",
-                          style: display == Display.medium
-                              ? Theme.of(context).textTheme.titleLarge
-                              : (display == Display.large
-                                  ? Theme.of(context).textTheme.headlineSmall
-                                  : (display == Display.extraLarge
+                      Container(
+                          constraints:
+                              const BoxConstraints(minWidth: 75, maxWidth: 500),
+                          child: Text(text ?? "",
+                              style: display == Display.medium
+                                  ? Theme.of(context).textTheme.titleLarge
+                                  : (display == Display.large
                                       ? Theme.of(context)
                                           .textTheme
                                           .headlineSmall
-                                      : Theme.of(context).textTheme.bodyLarge)),
-                          textAlign: TextAlign.center),
+                                      : (display == Display.extraLarge
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge)),
+                              textAlign: TextAlign.center)),
                       const SizedBox(height: 14),
                     ],
                     StatefulBuilder(

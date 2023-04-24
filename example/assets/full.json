@@ -4,6 +4,7 @@
     "steps":[
       {
         "type": "InstructionStep",
+        "cancellable":true,
         "title":"InstructionStep Title",
         "instructions":[
            {"title":"Choice One","subTitle":"Selct at least one ","trailing":"Optional", "leading":"😫"},
@@ -15,14 +16,22 @@
         "url":"https://www.youtube.com/embed/gBzgpoq86U8"
       }
       
-      ,
-      {
-        "type": "CompletionStep",
-        "autoTrigger":true,
+      ,{
+        "type": "QuestionStep",
+        "title":"Full Questions - Single choice",
+        "cancellable":true,
         "nextButtonText":"",
-        "title":"Please wait..",
-        "id":"IS_COMPLETED",
-        "relevantConditions":[{"id":"","expression":"FOR_ALL IS_COMPLETED", "formName":"default"}]
+        "autoTrigger":true,
+        "inputType":"singleChoice",
+        "options":[
+           {"key":"EXIT","text":"Exit"},
+           {"key":"RETURN_TO_MENU","text":"Return toMenu"}
+        ],
+        "relevantConditions":[{"id":"","expression":"IN RETURN_TO_MENU", "formName":"default"}
+      ]
+      },
+      {
+        "type": "PopStep"
       }
     ]
 
@@ -34,7 +43,7 @@
         {
           "type": "QuestionStep",
           "title":"Full Questions - Single choice",
-          "cancellable":false,
+          "cancellable":true,
           "nextButtonText":"",
           "autoTrigger":true,
           "inputType":"singleChoice",
@@ -106,6 +115,7 @@
           "title":"Please wait..",
           "id":"IS_COMPLETED"
         }
+
       ]
     
    }
