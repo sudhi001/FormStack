@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:formstack/src/form_step.dart';
+import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:lottie/lottie.dart';
 
@@ -265,8 +265,15 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                           onNextButtonClick();
                         },
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(200, 50),
-                            maximumSize: const Size(400, 70)),
+                            backgroundColor:
+                                formStep.buttonStyle?.backgroundColor,
+                            foregroundColor:
+                                formStep.buttonStyle?.foregroundColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                    formStep.buttonStyle?.borderRadius ?? 0))),
+                            minimumSize: const Size(300, 60),
+                            maximumSize: const Size(500, 80)),
                         child: Text(formStep.nextButtonText ?? "Next")),
                   ],
                 ),

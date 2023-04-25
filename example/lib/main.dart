@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(const MainApp());
@@ -22,7 +23,8 @@ class MainApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: Colors.blue, backgroundColor: Colors.white),
+              primarySwatch: Colors.blue,
+              backgroundColor: CupertinoColors.white),
         ),
         home: const HomeScreen(),
         debugShowCheckedModeBanner: false);

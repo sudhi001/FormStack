@@ -14,6 +14,7 @@ class DisplayStep extends FormStep {
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
+      super.buttonStyle,
       super.crossAxisAlignmentContent,
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,

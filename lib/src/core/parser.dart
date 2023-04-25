@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/core/ui_style.dart';
 import 'package:formstack/src/relevant/expression_relevant_condition.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/step/display_step.dart';
@@ -41,6 +42,7 @@ class ParserUtils {
                     CrossAxisAlignment.center,
                 cancellable: element?["cancellable"],
                 autoTrigger: element?["autoTrigger"] ?? false,
+                   buttonStyle: UIStyle.from(element?["buttonStyle"]),
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
@@ -68,6 +70,7 @@ class ParserUtils {
                 crossAxisAlignmentContent: textAlignmentFromString(
                         element?["crossAxisAlignmentContent"] ?? "center") ??
                     CrossAxisAlignment.center,
+                buttonStyle: UIStyle.from(element?["buttonStyle"]),
                 cancellable: element?["cancellable"],
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
@@ -83,6 +86,7 @@ class ParserUtils {
             formStep.add(step);
           } else if (element["type"] == "DisplayStep") {
             DisplayStep step = DisplayStep(
+                buttonStyle: UIStyle.from(element?["buttonStyle"]),
                 cancellable: element?["cancellable"],
                 crossAxisAlignmentContent: textAlignmentFromString(
                         element?["crossAxisAlignmentContent"] ?? "center") ??
@@ -123,6 +127,7 @@ class ParserUtils {
                         element?["crossAxisAlignmentContent"] ?? "center") ??
                     CrossAxisAlignment.center,
                 cancellable: element?["cancellable"],
+                buttonStyle: UIStyle.from(element?["buttonStyle"]),
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
@@ -158,13 +163,14 @@ class ParserUtils {
       List<RelevantCondition> relevantConditions) {
     List<Options> options = [];
     cast<List>(element?["options"])?.forEach((el) {
-      options.add(Options(el?["key"], el?["text"]));
+      options.add(Options(el?["key"], el?["title"], subTitle: el?["subTitle"]));
     });
     InputType inputType =
         InputType.values.firstWhere((e) => e.name == element?["inputType"]);
     QuestionStep step = QuestionStep(
         inputType: inputType,
         options: options,
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
         crossAxisAlignmentContent: textAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
@@ -175,6 +181,10 @@ class ParserUtils {
         cancellable: element?["cancellable"],
         hint: element?["hint"],
         label: element?["label"],
+        componentsStyle: element?["componentsStyle"] != null
+            ? ComponentsStyle.values
+                .firstWhere((e) => e.name == element?["componentsStyle"])
+            : ComponentsStyle.minimal,
         inputStyle: element?["inputStyle"] != null
             ? InputStyle.values
                 .firstWhere((e) => e.name == element?["inputStyle"])

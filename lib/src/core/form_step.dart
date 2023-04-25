@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:formstack/src/core/ui_style.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/result/identifiers.dart';
 import 'package:formstack/src/result/result_format.dart';
@@ -24,18 +25,22 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   List<RelevantCondition>? relevantConditions;
   bool componentOnly;
   Display display;
+  ComponentsStyle componentsStyle;
   CrossAxisAlignment crossAxisAlignmentContent;
+  UIStyle? buttonStyle;
   FormStep(
       {this.id,
       this.title,
       this.text,
       this.hint,
+      this.buttonStyle,
       this.crossAxisAlignmentContent = CrossAxisAlignment.center,
       this.display = Display.normal,
       this.componentOnly = false,
       this.isOptional = false,
       this.cancellable = true,
       this.label,
+      this.componentsStyle = ComponentsStyle.minimal,
       this.nextButtonText = "Next",
       this.backButtonText = "Back",
       this.titleIconMaxWidth = 300,
@@ -51,3 +56,5 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
 enum Display { small, normal, medium, large, extraLarge }
 
 enum InputStyle { basic, underLined, outline }
+
+enum ComponentsStyle { minimal, basic }

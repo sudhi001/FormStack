@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/formstack_view.dart';
-import 'package:formstack/src/utils/parser.dart';
+import 'package:formstack/src/core/parser.dart';
 
 ///
 ///

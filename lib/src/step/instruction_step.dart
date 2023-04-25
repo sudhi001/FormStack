@@ -11,6 +11,7 @@ class InstructionStep extends FormStep {
       super.text,
       super.display = Display.normal,
       super.isOptional = false,
+      super.buttonStyle,
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,

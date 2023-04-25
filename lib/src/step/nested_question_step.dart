@@ -14,6 +14,7 @@ class NestedQuestionStep extends FormStep {
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
+      super.buttonStyle,
       this.questions = const [],
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,

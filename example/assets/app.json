@@ -10,12 +10,13 @@
           "nextButtonText":"",
           "autoTrigger":true,
           "inputType":"singleChoice",
+          "componentsStyle":"basic",
           "options":[
-             {"key":"AUTISM_M_CHAT_R","text":"Screenig Tool For Autism In Child M-CHAT-R"},
-             {"key":"CALL_DRIVER","text":"Call Driver Now"},
-             {"key":"FULL_QUESTIONS","text":"Full Components"},
-             {"key":"NEW_COMPONENTS","text":"New Components"},
-             {"key":"LOGIN","text":"Login Form"}
+             {"key":"AUTISM_M_CHAT_R","title":"Screenig Tool For Autism In Child M-CHAT-R", "subTitle":"Demo information"},
+             {"key":"CALL_DRIVER","title":"Call Driver Now"},
+             {"key":"FULL_QUESTIONS","title":"Full Components"},
+             {"key":"NEW_COMPONENTS","title":"New Components"},
+             {"key":"LOGIN","title":"Login Form"}
           ],
           "id":"CHOICE",
           "relevantConditions":[{"id":"CALL_DRIVER","expression":"IN CALL_DRIVER"},
@@ -32,9 +33,9 @@
           "cancellable":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"AUDI","text":"Audi"},
-             {"key":"BENZ","text":"Benz"},
-             {"key":"Suzuki","text":"Suzuki"}
+             {"key":"AUDI","title":"Audi"},
+             {"key":"BENZ","title":"Benz"},
+             {"key":"Suzuki","title":"Suzuki"}
           ],
           "id":"CAR_SELECTED",
           "relevantConditions":[{"id":"SMILE","expression":"FOR_ALL"}]
@@ -46,8 +47,8 @@
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"CALL","text":"Call"},
-             {"key":"PING","text":"PING"}
+             {"key":"CALL","title":"Call"},
+             {"key":"PING","title":"PING"}
           ],
           "id":"CALL_DRIVER"
         },
@@ -83,9 +84,9 @@
              "autoTrigger":true,
              "inputType":"singleChoice",
              "options":[
-                {"key":"YES","text":"Yes"},
-                {"key":"NO","text":"No"},
-                {"key":"NOT_SURE","text":"Not Sure"}
+                {"key":"YES","title":"Yes"},
+                {"key":"NO","title":"No"},
+                {"key":"NOT_SURE","title":"Not Sure"}
              ],
              "id":"AUTISM_QUESTION_ONE"
         },
@@ -96,9 +97,9 @@
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"YES","text":"Yes"},
-             {"key":"NO","text":"No"},
-             {"key":"NOT_SURE","text":"Not Sure"}
+             {"key":"YES","title":"Yes"},
+             {"key":"NO","title":"No"},
+             {"key":"NOT_SURE","title":"Not Sure"}
           ],
           "id":"AUTISM_QUESTION_ONE"
      },
@@ -109,9 +110,9 @@
       "autoTrigger":true,
       "inputType":"singleChoice",
       "options":[
-         {"key":"YES","text":"Yes"},
-         {"key":"NO","text":"No"},
-         {"key":"NOT_SURE","text":"Not Sure"}
+         {"key":"YES","title":"Yes"},
+         {"key":"NO","title":"No"},
+         {"key":"NOT_SURE","title":"Not Sure"}
       ],
       "id":"AUTISM_QUESTION_ONE"
  },

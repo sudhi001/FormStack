@@ -12,8 +12,8 @@
             "crossAxisAlignmentContent":"start",
             "inputType":"singleChoice",
               "options":[
-              {"key":"EXIT","text":"Exit"},
-              {"key":"RETURN_TO_MENU","text":"Return toMenu"}
+              {"key":"EXIT","title":"Exit"},
+              {"key":"RETURN_TO_MENU","title":"Return toMenu"}
            ]
 
           },
@@ -48,8 +48,8 @@
         "autoTrigger":true,
         "inputType":"multipleChoice",
         "options":[
-           {"key":"EXIT","text":"Exit"},
-           {"key":"RETURN_TO_MENU","text":"Return toMenu"}
+           {"key":"EXIT","title":"Exit"},
+           {"key":"RETURN_TO_MENU","title":"Return toMenu"}
         ],
         "relevantConditions":[{"id":"","expression":"IN RETURN_TO_MENU", "formName":"default"}
       ]
@@ -106,8 +106,8 @@
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"CHOICE_1","text":"Choice One"},
-             {"key":"CHOICE_2","text":"Choice Two"}
+             {"key":"CHOICE_1","title":"Choice One"},
+             {"key":"CHOICE_2","title":"Choice Two"}
           ]
      
         },{
@@ -115,9 +115,9 @@
           "title":"Full Questions - Mutiple Choice",
           "inputType":"multipleChoice",
           "options":[
-             {"key":"AUDI","text":"Audi"},
-             {"key":"BENZ","text":"Benz"},
-             {"key":"Suzuki","text":"Suzuki"}
+             {"key":"AUDI","title":"Audi"},
+             {"key":"BENZ","title":"Benz"},
+             {"key":"Suzuki","title":"Suzuki"}
           ]
         },{
           "type": "QuestionStep",

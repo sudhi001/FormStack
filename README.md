@@ -58,8 +58,8 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"CAR_SELECTED","text":"Select A Car"},
-             {"key":"CALL_DRIVER","text":"Call Driver Now"}
+             {"key":"CAR_SELECTED","title":"Select A Car"},
+             {"key":"CALL_DRIVER","title":"Call Driver Now"}
           ],
           "id":"CHOICE",
           "relevantConditions":[{"id":"CALL_DRIVER","expression":"IN CALL_DRIVER"}]
@@ -71,9 +71,9 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"AUDI","text":"Audi"},
-             {"key":"BENZ","text":"Benz"},
-             {"key":"Suzuki","text":"Suzuki"}
+             {"key":"AUDI","title":"Audi"},
+             {"key":"BENZ","title":"Benz"},
+             {"key":"Suzuki","title":"Suzuki"}
           ],
           "id":"CAR_SELECTED",
           "relevantConditions":[{"id":"SMILE","expression":"FOR_ALL"}]
@@ -85,8 +85,8 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
           "autoTrigger":true,
           "inputType":"singleChoice",
           "options":[
-             {"key":"CALL","text":"Call"},
-             {"key":"PING","text":"PING"}
+             {"key":"CALL","title":"Call"},
+             {"key":"PING","title":"PING"}
           ],
           "id":"CALL_DRIVER"
         },

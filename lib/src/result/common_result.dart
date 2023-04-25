@@ -1,7 +1,8 @@
 class Options {
   final String key;
-  final String text;
-  Options(this.key, this.text);
+  final String title;
+  final String? subTitle;
+  Options(this.key, this.title, {this.subTitle = ""});
 }
 
 class GeoLocationResult {

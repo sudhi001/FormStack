@@ -30,8 +30,12 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       _focusNode.requestFocus();
     });
     return Container(
+        color: formStep.inputStyle != InputStyle.basic
+            ? const Color.fromRGBO(242, 242, 247, 1)
+            : null,
         decoration: formStep.inputStyle == InputStyle.basic
             ? const BoxDecoration(
+                color: Color.fromRGBO(242, 242, 247, 1),
                 border: Border(
                   top: BorderSide(color: Colors.grey),
                   bottom: BorderSide(color: Colors.grey),

@@ -1,4 +1,4 @@
-import 'package:formstack/src/form_step.dart';
+import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/formstack_form.dart';
 import 'package:formstack/src/ui/views/completion_step_view.dart';
@@ -16,6 +16,7 @@ class CompletionStep extends FormStep {
       {super.id,
       super.title,
       super.text,
+      super.buttonStyle,
       super.display = Display.normal,
       super.isOptional = false,
       this.onFinish,
