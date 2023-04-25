@@ -4,7 +4,7 @@
     "steps":[
       
       {
-        "type": "NestedStepView",
+        "type": "NestedStep",
         "title":"Nested question step demo",
         "steps":[
           {
@@ -65,9 +65,9 @@
   {
     "steps":[
       {
-        "type": "NestedStepView",
+        "type": "NestedStep",
         "title":"Login",
-        "questions":[
+        "steps":[
           {
             "type": "QuestionStep",
             "crossAxisAlignmentContent":"start",

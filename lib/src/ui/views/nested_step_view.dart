@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/step/nested_question_step.dart';
+import 'package:formstack/src/step/nested_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
-class NestedStepView extends BaseStepView<NestedQuestionStep> {
+class NestedStepView extends BaseStepView<NestedStep> {
   NestedStepView(super.formKitForm, super.formStep, super.text,
       {super.key, super.title, cancellable});
 
   List<BaseStepView> componets = [];
 
   @override
-  Widget? buildWInputWidget(BuildContext context, NestedQuestionStep formStep) {
+  Widget? buildWInputWidget(BuildContext context, NestedStep formStep) {
     if (componets.isEmpty) {
       formStep.steps?.forEach((element) {
         FormStep questions = element;

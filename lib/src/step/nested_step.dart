@@ -1,12 +1,12 @@
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/nested_questions_step_view.dart';
+import 'package:formstack/src/ui/views/nested_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
-class NestedQuestionStep extends FormStep {
-  static const String tag = "NestedStepView";
+class NestedStep extends FormStep {
+  static const String tag = "NestedStep";
   final List<FormStep>? steps;
 
-  NestedQuestionStep(
+  NestedStep(
       {super.id,
       super.title = "",
       super.text,

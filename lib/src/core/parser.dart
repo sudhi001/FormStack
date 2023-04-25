@@ -4,7 +4,7 @@ import 'package:formstack/src/core/ui_style.dart';
 import 'package:formstack/src/relevant/expression_relevant_condition.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/step/display_step.dart';
-import 'package:formstack/src/step/nested_question_step.dart';
+import 'package:formstack/src/step/nested_step.dart';
 import 'package:formstack/src/step/pop_step.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
@@ -193,7 +193,7 @@ class ParserUtils {
     cast<List>(element?["steps"])?.forEach((el) {
       _addFormStep(steps, el);
     });
-    return NestedQuestionStep(
+    return NestedStep(
         display: element?["display"] != null
             ? Display.values.firstWhere((e) => e.name == element?["display"])
             : Display.normal,
@@ -226,7 +226,7 @@ class ParserUtils {
       step.add(_createDisplay(element, getRelaventCondition(element)));
     } else if (element["type"] == PopStep.tag) {
       step.add(PopStep(id: GenericIdentifier(id: element?["id"])));
-    } else if (element["type"] == NestedQuestionStep.tag) {
+    } else if (element["type"] == NestedStep.tag) {
       step.add(createNestedStep(element, getRelaventCondition(element)));
     }
   }
