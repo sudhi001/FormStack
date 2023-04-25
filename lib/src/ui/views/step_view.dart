@@ -4,11 +4,11 @@ import 'package:formstack/formstack.dart';
 abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   final String? title;
   final String? text;
-  final String? hint;
+  final String? description;
   final FormStackForm formKitForm;
   final T formStep;
   const FormStepView(this.formKitForm, this.formStep, this.text,
-      {super.key, this.hint = "", this.title});
+      {super.key, this.description = "", this.title});
 
   Widget buildWithFrom(BuildContext context, T formStep);
 

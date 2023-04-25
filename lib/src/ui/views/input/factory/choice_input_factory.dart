@@ -1,6 +1,7 @@
 // ignore: must_be_immutable
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/input/choice_input_field.dart';
+
 ///
 /// Single & Mutiple choice compoents creation
 ///
@@ -10,9 +11,10 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
   ChoiceInputWidget(super.formKitForm, super.formStep, super.text,
       super.resultFormat, super.options,
       {super.key, super.title, super.singleSelection, super.autoTrigger});
-///
-///Create Single choice components.
-///
+
+  ///
+  ///Create Single choice components.
+  ///
   factory ChoiceInputWidget.single(
       QuestionStep questionStep,
       FormStackForm formKitForm,
@@ -25,6 +27,7 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
         formKitForm, questionStep, text, resultFormat, options ?? [],
         title: title, singleSelection: true, autoTrigger: autoTrigger);
   }
+
   ///
   /// Create mutiple choice components.
   ///

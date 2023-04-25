@@ -135,13 +135,16 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   /// Clear the component focus.
   void clearFocus();
+  void requestFocus();
 
   /// Create Coponents Of step
   Widget _createComponent(BuildContext context, Widget? inputWidget) {
     return Center(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.symmetric(
+              horizontal: formStep.display == Display.small ? 7 : 14,
+              vertical: formStep.display == Display.small ? 4 : 14),
           child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: formStep.crossAxisAlignmentContent,
@@ -151,10 +154,10 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       constraints: BoxConstraints(
                           minWidth: 75,
                           maxWidth: formStep.titleIconMaxWidth ?? 300,
-                          minHeight: 75,
+                          minHeight: 50,
                           maxHeight: formStep.titleIconMaxWidth ?? 300),
                       child: Lottie.asset(formStep.titleIconAnimationFile!)),
-                  const SizedBox(height: 7)
+                  _divisionPadding()
                 ],
                 if (title != null && title!.isNotEmpty) ...[
                   Container(
@@ -170,7 +173,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                                       : Theme.of(context)
                                           .textTheme
                                           .headlineSmall)))),
-                  const SizedBox(height: 7)
+                  _divisionPadding()
                 ],
                 if (text != null && text!.isNotEmpty) ...[
                   Container(
@@ -188,25 +191,27 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                                       : Theme.of(context)
                                           .textTheme
                                           .bodyLarge)))),
-                  const SizedBox(height: 7),
+                  _divisionPadding(),
                 ],
                 StatefulBuilder(
                     key: errorKey,
                     builder: (context, setState) {
-                      return Text(
-                        showError ? validationError() : "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .apply(color: Colors.red.shade900),
-                      );
+                      return showError
+                          ? Text(
+                              showError ? validationError() : "",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .apply(color: Colors.red.shade900),
+                            )
+                          : Container(width: 10);
                     }),
-                const SizedBox(height: 7),
+                _divisionPadding(),
                 if (inputWidget != null) ...[
                   inputWidget,
-                  const SizedBox(height: 7),
+                  _divisionPadding(),
                 ],
-                Text(hint ?? "",
+                Text(description ?? "",
                     style: formStep.display == Display.medium
                         ? Theme.of(context).textTheme.bodyMedium
                         : (formStep.display == Display.large
@@ -269,5 +274,9 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
             ),
           )
         : null;
+  }
+
+  Widget _divisionPadding() {
+    return SizedBox(height: formStep.display == Display.small ? 2 : 7);
   }
 }

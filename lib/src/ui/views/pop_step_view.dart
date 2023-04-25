@@ -32,4 +32,7 @@ class PopStepView extends BaseStepView<PopStep> {
 
   @override
   void clearFocus() {}
+
+  @override
+  void requestFocus() {}
 }

@@ -12,10 +12,16 @@ class NestedQuestionsStepView extends BaseStepView<NestedQuestionStep> {
 
   @override
   Widget? buildWInputWidget(BuildContext context, NestedQuestionStep formStep) {
-    formStep.questions?.forEach((element) {
-      QuestionStep questions = element;
-      questions.componentOnly = true;
-      componets.add(questions.buildView(formKitForm) as BaseStepView);
+    if (componets.isEmpty) {
+      formStep.questions?.forEach((element) {
+        QuestionStep questions = element;
+        questions.componentOnly = true;
+        componets.add(questions.buildView(formKitForm) as BaseStepView);
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Future.delayed(const Duration(milliseconds: 2));
+      requestFocus();
     });
     return ListView.builder(
       shrinkWrap: true,
@@ -45,14 +51,25 @@ class NestedQuestionsStepView extends BaseStepView<NestedQuestionStep> {
 
   @override
   resultValue() {
-    return DateTime.now();
+    Map<String, dynamic> result = {};
+    for (var element in componets) {
+      result.putIfAbsent(
+          element.formStep.id?.id ?? "", () => element.resultValue());
+    }
+    return result;
+  }
+
+  @override
+  void requestFocus() {
+    if (componets.isNotEmpty) {
+      componets.first.requestFocus();
+    }
   }
 
   @override
   void clearFocus() {}
 }
 
-
-  //  height: min(
-  //           MediaQuery.of(context).size.height - kToolbarHeight * 0.8, 1024),
-  //       width: min(MediaQuery.of(context).size.width * 0.8, 1024),
+//  height: min(
+//           MediaQuery.of(context).size.height - kToolbarHeight * 0.8, 1024),
+//       width: min(MediaQuery.of(context).size.width * 0.8, 1024),

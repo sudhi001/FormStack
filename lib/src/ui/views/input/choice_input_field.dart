@@ -89,6 +89,11 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   @override
+  void requestFocus() {
+    _focusNode.requestFocus();
+  }
+
+  @override
   dynamic resultValue() {
     return selectedKey;
   }

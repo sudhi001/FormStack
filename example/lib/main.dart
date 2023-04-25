@@ -61,6 +61,13 @@ class HomeScreen extends StatelessWidget {
                     FormStack.clearForms();
                     await FormStack.api().loadFromAssets(
                         ['assets/app.json', 'assets/full.json']);
+                    FormStack.api().addCompletionCallback(
+                      GenericIdentifier(id: "IS_COMPLETED"),
+                      formName: "login_form",
+                      onFinish: (p0) {
+                        debugPrint("$p0");
+                      },
+                    );
                     // ignore: use_build_context_synchronously
                     Navigator.push(
                         context,

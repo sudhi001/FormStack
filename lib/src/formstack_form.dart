@@ -101,6 +101,8 @@ abstract class FormStackForm {
               DateFormat(dateResultType.format).format(entry.result);
           result.putIfAbsent((entry.id?.id ?? ""), () => formattedDate);
         }
+      } else if (entry.result != null && entry.result is Map) {
+        result.addAll(entry.result);
       } else {
         result.putIfAbsent((entry.id?.id ?? ""), () => entry.result);
       }

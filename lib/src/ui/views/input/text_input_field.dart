@@ -37,7 +37,8 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
             bottom: BorderSide(color: Colors.grey),
           ),
         ),
-        constraints: const BoxConstraints(minWidth: 300, maxWidth: 400),
+        constraints:
+            const BoxConstraints(minWidth: 300, maxWidth: 400, minHeight: 50),
         child: TextFormField(
           autofocus: true,
           autocorrect: false,
@@ -51,15 +52,22 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
           validator: (input) =>
               resultFormat.isValid(_controller.text) ? null : validationError(),
           inputFormatters: formatter,
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-          ),
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: formStep.hint,
+              labelText: formStep.label,
+              hintStyle: Theme.of(context).textTheme.bodySmall),
         ));
   }
 
   @override
   bool isValid() {
     return resultFormat.isValid(_controller.text);
+  }
+
+  @override
+  void requestFocus() {
+    _focusNode.requestFocus();
   }
 
   @override

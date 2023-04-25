@@ -13,6 +13,8 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   dynamic result;
   String? title;
   String? text;
+  String? hint;
+  String? label;
   ResultFormat? resultFormat;
   String? nextButtonText;
   double? titleIconMaxWidth;
@@ -27,11 +29,13 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       {this.id,
       this.title,
       this.text,
+      this.hint,
       this.crossAxisAlignmentContent = CrossAxisAlignment.center,
       this.display = Display.normal,
       this.componentOnly = false,
       this.isOptional = false,
       this.cancellable = true,
+      this.label,
       this.nextButtonText = "Next",
       this.backButtonText = "Back",
       this.titleIconMaxWidth = 300,
@@ -44,4 +48,4 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   FormStepView buildView(FormStackForm formKitForm);
 }
 
-enum Display { normal, medium, large, extraLarge }
+enum Display { small, normal, medium, large, extraLarge }

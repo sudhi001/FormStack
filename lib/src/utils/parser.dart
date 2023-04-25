@@ -8,8 +8,8 @@ import 'package:formstack/src/step/pop_step.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 ///
-/// ParserUtils - to hanlde JSON parsing related process. 
-/// This class will change in future. 
+/// ParserUtils - to hanlde JSON parsing related process.
+/// This class will change in future.
 ///
 class ParserUtils {
   /// Build FormStep List from JSON
@@ -173,6 +173,8 @@ class ParserUtils {
             : Display.normal,
         relevantConditions: relevantConditions,
         cancellable: element?["cancellable"],
+        hint: element?["hint"],
+        label: element?["label"],
         autoTrigger: element?["autoTrigger"] ?? false,
         backButtonText: element?["backButtonText"],
         cancelButtonText: element?["cancelButtonText"],

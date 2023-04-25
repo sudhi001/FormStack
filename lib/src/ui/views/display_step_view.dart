@@ -64,5 +64,7 @@ class DisplayStepView extends BaseStepView<DisplayStep> {
   }
 
   @override
+  void requestFocus() {}
+  @override
   void clearFocus() {}
 }

@@ -18,6 +18,8 @@ class QuestionStep extends FormStep<QuestionStep> {
       required this.inputType,
       super.text,
       super.display,
+      super.hint,
+      super.label,
       super.resultFormat,
       this.onValidationError,
       super.isOptional = false,

@@ -69,6 +69,11 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   @override
+  void requestFocus() {
+    _focusNode.requestFocus();
+  }
+
+  @override
   void clearFocus() {
     _focusNode.unfocus();
   }
