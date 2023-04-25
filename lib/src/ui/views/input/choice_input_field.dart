@@ -92,8 +92,11 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                           )
                         : null,
                     trailing: autoTrigger
-                        ? Icon(Icons.arrow_forward_ios_rounded,
-                            color: formKitForm.primaryColor)
+                        ? const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.grey,
+                            size: 24,
+                          )
                         : (selectedKey.contains(options[index].key)
                             ? Icon(Icons.check, color: formKitForm.primaryColor)
                             : null),

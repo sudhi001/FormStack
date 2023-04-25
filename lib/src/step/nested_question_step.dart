@@ -3,7 +3,8 @@ import 'package:formstack/src/ui/views/nested_questions_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 class NestedQuestionStep extends FormStep {
-  final List<QuestionStep>? questions;
+  static const String tag = "NestedStepView";
+  final List<FormStep>? steps;
 
   NestedQuestionStep(
       {super.id,
@@ -15,7 +16,7 @@ class NestedQuestionStep extends FormStep {
       super.nextButtonText = "Start",
       super.backButtonText,
       super.buttonStyle,
-      this.questions = const [],
+      this.steps = const [],
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,
       super.cancelButtonText,
@@ -26,6 +27,6 @@ class NestedQuestionStep extends FormStep {
 
   @override
   FormStepView buildView(FormStackForm formKitForm) {
-    return NestedQuestionsStepView(formKitForm, this, text, title: title);
+    return NestedStepView(formKitForm, this, text, title: title);
   }
 }

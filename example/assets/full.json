@@ -2,10 +2,11 @@
   "new_form":
   {
     "steps":[
+      
       {
-        "type": "NestedQuestionStep",
+        "type": "NestedStepView",
         "title":"Nested question step demo",
-        "questions":[
+        "steps":[
           {
             "type": "QuestionStep",
             "text":"Full Questions - Single choice",
@@ -64,7 +65,7 @@
   {
     "steps":[
       {
-        "type": "NestedQuestionStep",
+        "type": "NestedStepView",
         "title":"Login",
         "questions":[
           {

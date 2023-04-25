@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 
 class UIStyle {
-  final Color backgroundColor;
-  final Color foregroundColor;
-  final double borderRadius;
+  ///
+  ///
+  ///```dart
+  ///     UIStyle(Colors.black,Colors.white, 10.0)
+  ///```
+  /// [borderRadius]
+  ///[foregroundColor]
+  ///[borderRadius]
+  ///
   UIStyle(this.backgroundColor, this.foregroundColor, this.borderRadius);
+
+  /// The [backgroundColor] is used for th background color..
+  final Color backgroundColor;
+
+  /// The [foregroundColor] is used for th foreground color..
+  final Color foregroundColor;
+
+  /// The [borderRadius] is used border radius or corner curve..
+  final double borderRadius;
 
   factory UIStyle.from(Map<String, dynamic>? style) {
     return UIStyle(

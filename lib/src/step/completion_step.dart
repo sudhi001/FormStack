@@ -8,6 +8,7 @@ typedef OnBeforeFinishCallback = Future<bool> Function(
     Map<String, dynamic> result);
 
 class CompletionStep extends FormStep {
+  static const String tag = "CompletionStep";
   final bool? autoTrigger;
   OnBeforeFinishCallback? onBeforeFinishCallback;
   Function(Map<String, dynamic>)? onFinish;

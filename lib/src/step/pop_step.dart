@@ -3,6 +3,7 @@ import 'package:formstack/src/ui/views/pop_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 class PopStep extends FormStep {
+  static const String tag = "PopStep";
   PopStep({super.id}) : super();
 
   @override

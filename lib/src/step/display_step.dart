@@ -3,8 +3,10 @@ import 'package:formstack/src/ui/views/display_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 class DisplayStep extends FormStep {
+  static const String tag = "DisplayStep";
   final String url;
-
+  final DisplayStepType displayStepType;
+  final List<DynamicData> data;
   DisplayStep(
       {super.id,
       this.url = "",
@@ -14,7 +16,10 @@ class DisplayStep extends FormStep {
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
+      super.componentsStyle,
       super.buttonStyle,
+      this.data = const [],
+      this.displayStepType = DisplayStepType.web,
       super.crossAxisAlignmentContent,
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,
@@ -27,3 +32,5 @@ class DisplayStep extends FormStep {
     return DisplayStepView(formKitForm, this, text, title: title);
   }
 }
+
+enum DisplayStepType { web, listTile }

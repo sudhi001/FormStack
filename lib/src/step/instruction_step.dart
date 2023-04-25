@@ -3,7 +3,9 @@ import 'package:formstack/src/ui/views/instruction_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 class InstructionStep extends FormStep {
-  final List<Instruction>? instructions;
+  static const String tag = "InstructionStep";
+
+  final List<DynamicData>? instructions;
 
   InstructionStep(
       {super.id,

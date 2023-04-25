@@ -6,6 +6,7 @@ import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 class QuestionStep extends FormStep<QuestionStep> {
+  static const String tag = "QuestionStep";
   final InputType inputType;
   Function(String)? onValidationError;
   final List<Options>? options;
@@ -18,7 +19,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.title = "",
       required this.inputType,
       super.text,
-      super.buttonStyle ,
+      super.buttonStyle,
       super.display,
       super.hint,
       super.label,

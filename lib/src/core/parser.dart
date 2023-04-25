@@ -21,126 +21,7 @@ class ParserUtils {
         List<FormStep> formStep = [];
         List<dynamic>? tsteps = value?["steps"] ?? [];
         tsteps?.forEach((element) {
-          List<RelevantCondition> relevantConditions = [];
-          cast<List>(element?["relevantConditions"])?.forEach((el) {
-            relevantConditions.add(ExpressionRelevant(
-                expression: el?["expression"],
-                formName: el?["formName"] ?? "",
-                identifier: GenericIdentifier(id: el?["id"])));
-          });
-
-          if (element["type"] == "QuestionStep") {
-            formStep.add(createQuestionStep(element, relevantConditions));
-          } else if (element["type"] == "CompletionStep") {
-            CompletionStep step = CompletionStep(
-                display: element?["display"] != null
-                    ? Display.values
-                        .firstWhere((e) => e.name == element?["display"])
-                    : Display.normal,
-                crossAxisAlignmentContent: textAlignmentFromString(
-                        element?["crossAxisAlignmentContent"] ?? "center") ??
-                    CrossAxisAlignment.center,
-                cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"] ?? false,
-                   buttonStyle: UIStyle.from(element?["buttonStyle"]),
-                relevantConditions: relevantConditions,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                nextButtonText: element?["nextButtonText"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          } else if (element["type"] == "InstructionStep") {
-            List<Instruction> instructions = [];
-            cast<List>(element?["instructions"])?.forEach((el) {
-              instructions.add(Instruction(el?["title"],
-                  subTitle: el?["subTitle"],
-                  trailing: el?["trailing"],
-                  leading: el?["leading"]));
-            });
-            InstructionStep step = InstructionStep(
-                display: element?["display"] != null
-                    ? Display.values
-                        .firstWhere((e) => e.name == element?["display"])
-                    : Display.normal,
-                crossAxisAlignmentContent: textAlignmentFromString(
-                        element?["crossAxisAlignmentContent"] ?? "center") ??
-                    CrossAxisAlignment.center,
-                buttonStyle: UIStyle.from(element?["buttonStyle"]),
-                cancellable: element?["cancellable"],
-                relevantConditions: relevantConditions,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                instructions: instructions,
-                nextButtonText: element?["nextButtonText"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          } else if (element["type"] == "DisplayStep") {
-            DisplayStep step = DisplayStep(
-                buttonStyle: UIStyle.from(element?["buttonStyle"]),
-                cancellable: element?["cancellable"],
-                crossAxisAlignmentContent: textAlignmentFromString(
-                        element?["crossAxisAlignmentContent"] ?? "center") ??
-                    CrossAxisAlignment.center,
-                relevantConditions: relevantConditions,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                text: element?["text"],
-                title: element?["title"],
-                nextButtonText: element?["nextButtonText"],
-                url: element?["url"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          } else if (element["type"] == "PopStep") {
-            PopStep step = PopStep(id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          } else if (element["type"] == "NestedQuestionStep") {
-            List<QuestionStep> questions = [];
-            cast<List>(element?["questions"])?.forEach((el) {
-              List<RelevantCondition> questionRelevantConditions = [];
-              cast<List>(el?["relevantConditions"])?.forEach((elItem) {
-                questionRelevantConditions.add(ExpressionRelevant(
-                    expression: elItem?["expression"],
-                    formName: elItem?["formName"] ?? "",
-                    identifier: GenericIdentifier(id: elItem?["id"])));
-              });
-              questions.add(createQuestionStep(el, questionRelevantConditions));
-            });
-            NestedQuestionStep step = NestedQuestionStep(
-                display: element?["display"] != null
-                    ? Display.values
-                        .firstWhere((e) => e.name == element?["display"])
-                    : Display.normal,
-                crossAxisAlignmentContent: textAlignmentFromString(
-                        element?["crossAxisAlignmentContent"] ?? "center") ??
-                    CrossAxisAlignment.center,
-                cancellable: element?["cancellable"],
-                buttonStyle: UIStyle.from(element?["buttonStyle"]),
-                relevantConditions: relevantConditions,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                questions: questions,
-                nextButtonText: element?["nextButtonText"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
-          }
+          _addFormStep(formStep, element);
         });
         formStack.form(
             steps: formStep,
@@ -159,7 +40,7 @@ class ParserUtils {
   }
 
   /// Build QuestionStep  from JSON
-  static QuestionStep createQuestionStep(Map<String, dynamic>? element,
+  static QuestionStep _createQuestion(Map<String, dynamic>? element,
       List<RelevantCondition> relevantConditions) {
     List<Options> options = [];
     cast<List>(element?["options"])?.forEach((el) {
@@ -201,5 +82,152 @@ class ParserUtils {
         titleIconMaxWidth: element?["titleIconMaxWidth"],
         id: GenericIdentifier(id: element?["id"]));
     return step;
+  }
+
+  static FormStep _createCompletion(
+      element, List<RelevantCondition> relevantConditions) {
+    return CompletionStep(
+        display: element?["display"] != null
+            ? Display.values.firstWhere((e) => e.name == element?["display"])
+            : Display.normal,
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        cancellable: element?["cancellable"],
+        autoTrigger: element?["autoTrigger"] ?? false,
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        relevantConditions: relevantConditions,
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        nextButtonText: element?["nextButtonText"],
+        text: element?["text"],
+        title: element?["title"],
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
+  }
+
+  static FormStep _createInstruction(
+      element, List<RelevantCondition> relevantConditions) {
+    List<DynamicData> instructions = [];
+    cast<List>(element?["instructions"])?.forEach((el) {
+      instructions.add(DynamicData(el?["title"],
+          subTitle: el?["subTitle"],
+          trailing: el?["trailing"],
+          leading: el?["leading"]));
+    });
+    return InstructionStep(
+        display: element?["display"] != null
+            ? Display.values.firstWhere((e) => e.name == element?["display"])
+            : Display.normal,
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        cancellable: element?["cancellable"],
+        relevantConditions: relevantConditions,
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        instructions: instructions,
+        nextButtonText: element?["nextButtonText"],
+        text: element?["text"],
+        title: element?["title"],
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
+  }
+
+  static FormStep _createDisplay(
+      element, List<RelevantCondition> relevantConditions) {
+    List<DynamicData> data = [];
+    cast<List>(element?["data"])?.forEach((el) {
+      data.add(DynamicData(el?["title"],
+          subTitle: el?["subTitle"],
+          trailing: el?["trailing"],
+          leading: el?["leading"]));
+    });
+    return DisplayStep(
+        data: data,
+        componentsStyle: element?["componentsStyle"] != null
+            ? ComponentsStyle.values
+                .firstWhere((e) => e.name == element?["componentsStyle"])
+            : ComponentsStyle.minimal,
+        displayStepType: element?["displayStepType"] != null
+            ? DisplayStepType.values
+                .firstWhere((e) => e.name == element?["displayStepType"])
+            : DisplayStepType.web,
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        cancellable: element?["cancellable"],
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        relevantConditions: relevantConditions,
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        text: element?["text"],
+        title: element?["title"],
+        nextButtonText: element?["nextButtonText"],
+        url: element?["url"] ?? "",
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
+  }
+
+  static List<RelevantCondition> getRelaventCondition(element) {
+    List<RelevantCondition> relevantConditions = [];
+    cast<List>(element?["relevantConditions"])?.forEach((el) {
+      relevantConditions.add(ExpressionRelevant(
+          expression: el?["expression"],
+          formName: el?["formName"] ?? "",
+          identifier: GenericIdentifier(id: el?["id"])));
+    });
+    return relevantConditions;
+  }
+
+  static FormStep createNestedStep(
+      element, List<RelevantCondition> relaventCondition) {
+    List<FormStep> steps = [];
+    cast<List>(element?["steps"])?.forEach((el) {
+      _addFormStep(steps, el);
+    });
+    return NestedQuestionStep(
+        display: element?["display"] != null
+            ? Display.values.firstWhere((e) => e.name == element?["display"])
+            : Display.normal,
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        cancellable: element?["cancellable"],
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        relevantConditions: getRelaventCondition(element),
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        steps: steps,
+        nextButtonText: element?["nextButtonText"],
+        text: element?["text"],
+        title: element?["title"],
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
+  }
+
+  static void _addFormStep(List<FormStep> step, element) {
+    if (element["type"] == QuestionStep.tag) {
+      step.add(_createQuestion(element, getRelaventCondition(element)));
+    } else if (element["type"] == CompletionStep.tag) {
+      step.add(_createCompletion(element, getRelaventCondition(element)));
+    } else if (element["type"] == InstructionStep.tag) {
+      step.add(_createInstruction(element, getRelaventCondition(element)));
+    } else if (element["type"] == DisplayStep.tag) {
+      step.add(_createDisplay(element, getRelaventCondition(element)));
+    } else if (element["type"] == PopStep.tag) {
+      step.add(PopStep(id: GenericIdentifier(id: element?["id"])));
+    } else if (element["type"] == NestedQuestionStep.tag) {
+      step.add(createNestedStep(element, getRelaventCondition(element)));
+    }
   }
 }

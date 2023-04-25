@@ -11,10 +11,10 @@ class GeoLocationResult {
   GeoLocationResult({required this.latitude, required this.longitude});
 }
 
-class Instruction {
+class DynamicData {
   final String title;
   final String? subTitle;
   final String? trailing;
   final String? leading;
-  Instruction(this.title, {this.subTitle, this.trailing, this.leading});
+  DynamicData(this.title, {this.subTitle, this.trailing, this.leading});
 }

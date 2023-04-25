@@ -14,7 +14,7 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
         child: ListView.builder(
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            Instruction instruction = formStep.instructions![index];
+            DynamicData instruction = formStep.instructions![index];
             return Center(
                 child: ListTile(
                     title: Text(instruction.title),
