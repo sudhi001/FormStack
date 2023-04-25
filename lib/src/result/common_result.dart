@@ -17,4 +17,19 @@ class DynamicData {
   final String? trailing;
   final String? leading;
   DynamicData(this.title, {this.subTitle, this.trailing, this.leading});
+
+  factory DynamicData.from(Map<String, dynamic> data) {
+    return DynamicData(data["title"],
+        subTitle: data["subTitle"],
+        trailing: data["trailing"],
+        leading: data["leading"]);
+  }
+
+  static List<DynamicData> parseDynamicData(List<dynamic> element) {
+    List<DynamicData> data = [];
+    for (var el in element) {
+      data.add(DynamicData.from(el));
+    }
+    return data;
+  }
 }

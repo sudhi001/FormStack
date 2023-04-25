@@ -110,13 +110,6 @@ class ParserUtils {
 
   static FormStep _createInstruction(
       element, List<RelevantCondition> relevantConditions) {
-    List<DynamicData> instructions = [];
-    cast<List>(element?["instructions"])?.forEach((el) {
-      instructions.add(DynamicData(el?["title"],
-          subTitle: el?["subTitle"],
-          trailing: el?["trailing"],
-          leading: el?["leading"]));
-    });
     return InstructionStep(
         display: element?["display"] != null
             ? Display.values.firstWhere((e) => e.name == element?["display"])
@@ -130,7 +123,8 @@ class ParserUtils {
         backButtonText: element?["backButtonText"],
         cancelButtonText: element?["cancelButtonText"],
         isOptional: element?["isOptional"],
-        instructions: instructions,
+        instructions: DynamicData.parseDynamicData(
+            cast<List>(element?["instructions"]) ?? []),
         nextButtonText: element?["nextButtonText"],
         text: element?["text"],
         title: element?["title"],
@@ -141,15 +135,15 @@ class ParserUtils {
 
   static FormStep _createDisplay(
       element, List<RelevantCondition> relevantConditions) {
-    List<DynamicData> data = [];
-    cast<List>(element?["data"])?.forEach((el) {
-      data.add(DynamicData(el?["title"],
-          subTitle: el?["subTitle"],
-          trailing: el?["trailing"],
-          leading: el?["leading"]));
-    });
+    // List<DynamicData> data = [];
+    // cast<List>(element?["data"])?.forEach((el) {
+    //   data.add(DynamicData(el?["title"],
+    //       subTitle: el?["subTitle"],
+    //       trailing: el?["trailing"],
+    //       leading: el?["leading"]));
+    // });
     return DisplayStep(
-        data: data,
+        data: DynamicData.parseDynamicData(cast<List>(element?["data"]) ?? []),
         componentsStyle: element?["componentsStyle"] != null
             ? ComponentsStyle.values
                 .firstWhere((e) => e.name == element?["componentsStyle"])
@@ -176,7 +170,7 @@ class ParserUtils {
         id: GenericIdentifier(id: element?["id"]));
   }
 
-  static List<RelevantCondition> getRelaventCondition(element) {
+  static List<RelevantCondition> _parseRelevant(element) {
     List<RelevantCondition> relevantConditions = [];
     cast<List>(element?["relevantConditions"])?.forEach((el) {
       relevantConditions.add(ExpressionRelevant(
@@ -202,7 +196,7 @@ class ParserUtils {
             CrossAxisAlignment.center,
         cancellable: element?["cancellable"],
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        relevantConditions: getRelaventCondition(element),
+        relevantConditions: _parseRelevant(element),
         backButtonText: element?["backButtonText"],
         cancelButtonText: element?["cancelButtonText"],
         isOptional: element?["isOptional"],
@@ -216,18 +210,19 @@ class ParserUtils {
   }
 
   static void _addFormStep(List<FormStep> step, element) {
-    if (element["type"] == QuestionStep.tag) {
-      step.add(_createQuestion(element, getRelaventCondition(element)));
-    } else if (element["type"] == CompletionStep.tag) {
-      step.add(_createCompletion(element, getRelaventCondition(element)));
-    } else if (element["type"] == InstructionStep.tag) {
-      step.add(_createInstruction(element, getRelaventCondition(element)));
-    } else if (element["type"] == DisplayStep.tag) {
-      step.add(_createDisplay(element, getRelaventCondition(element)));
-    } else if (element["type"] == PopStep.tag) {
+    var type = element["type"];
+    if (type == QuestionStep.tag) {
+      step.add(_createQuestion(element, _parseRelevant(element)));
+    } else if (type == CompletionStep.tag) {
+      step.add(_createCompletion(element, _parseRelevant(element)));
+    } else if (type == InstructionStep.tag) {
+      step.add(_createInstruction(element, _parseRelevant(element)));
+    } else if (type == DisplayStep.tag) {
+      step.add(_createDisplay(element, _parseRelevant(element)));
+    } else if (type == PopStep.tag) {
       step.add(PopStep(id: GenericIdentifier(id: element?["id"])));
-    } else if (element["type"] == NestedStep.tag) {
-      step.add(createNestedStep(element, getRelaventCondition(element)));
+    } else if (type == NestedStep.tag) {
+      step.add(createNestedStep(element, _parseRelevant(element)));
     }
   }
 }
