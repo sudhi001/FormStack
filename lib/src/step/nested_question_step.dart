@@ -1,11 +1,11 @@
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/instruction_step_view.dart';
+import 'package:formstack/src/ui/views/nested_questions_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
-class InstructionStep extends FormStep {
-  final List<Instruction>? instructions;
+class NestedQuestionStep extends FormStep {
+  final List<QuestionStep>? questions;
 
-  InstructionStep(
+  NestedQuestionStep(
       {super.id,
       super.title = "",
       super.text,
@@ -14,7 +14,7 @@ class InstructionStep extends FormStep {
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
-      this.instructions = const [],
+      this.questions = const [],
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,
       super.cancelButtonText,
@@ -25,8 +25,6 @@ class InstructionStep extends FormStep {
 
   @override
   FormStepView buildView(FormStackForm formKitForm) {
-    resultFormat =
-        resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss.SSSSSSS a");
-    return InstructionStepView(formKitForm, this, text, title: title);
+    return NestedQuestionsStepView(formKitForm, this, text, title: title);
   }
 }

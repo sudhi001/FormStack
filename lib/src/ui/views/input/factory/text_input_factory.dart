@@ -3,9 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/input/text_input_field.dart';
 
+///
+/// TextFeildWidgetView Create and disply all textfield like ui.
+///
+///
 // ignore: must_be_immutable
-class GlobalInputWidgetView extends TextFeildInputWidgetView {
-  GlobalInputWidgetView(super.formKitForm, super.formStep, super.text,
+class TextFeildWidgetView extends TextFieldInputWidgetView {
+  TextFeildWidgetView(super.formKitForm, super.formStep, super.text,
       super.resultFormat, super.formatter,
       {super.key,
       super.title,
@@ -13,13 +17,16 @@ class GlobalInputWidgetView extends TextFeildInputWidgetView {
       super.textCapitalization,
       super.numberOfLines = 1});
 
-  factory GlobalInputWidgetView.email(
+  ///
+  /// Creat Email input field
+  ///
+  factory TextFeildWidgetView.email(
       QuestionStep questionStep,
       FormStackForm formKitForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return GlobalInputWidgetView(
+    return TextFeildWidgetView(
       formKitForm,
       questionStep,
       text,
@@ -33,13 +40,17 @@ class GlobalInputWidgetView extends TextFeildInputWidgetView {
       textCapitalization: TextCapitalization.none,
     );
   }
-  factory GlobalInputWidgetView.name(
+
+  ///
+  /// Creat Name input field
+  ///
+  factory TextFeildWidgetView.name(
       QuestionStep questionStep,
       FormStackForm formKitForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return GlobalInputWidgetView(
+    return TextFeildWidgetView(
       formKitForm,
       questionStep,
       text,
@@ -53,37 +64,49 @@ class GlobalInputWidgetView extends TextFeildInputWidgetView {
       textCapitalization: TextCapitalization.words,
     );
   }
-  factory GlobalInputWidgetView.password(
+
+  ///
+  /// Creat Password input field
+  ///
+  factory TextFeildWidgetView.password(
       QuestionStep questionStep,
       FormStackForm formKitForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return GlobalInputWidgetView(formKitForm, questionStep, text, resultFormat,
+    return TextFeildWidgetView(formKitForm, questionStep, text, resultFormat,
         [LengthLimitingTextInputFormatter(30)],
         title: title, keyboardType: TextInputType.visiblePassword);
   }
-  factory GlobalInputWidgetView.text(
+
+  ///
+  /// Creat Text input field
+  ///
+  factory TextFeildWidgetView.text(
       QuestionStep questionStep,
       FormStackForm formKitForm,
       String? text,
       ResultFormat resultFormat,
       String? title,
       int? numberOfLines) {
-    return GlobalInputWidgetView(
+    return TextFeildWidgetView(
         formKitForm, questionStep, text, resultFormat, const [],
         title: title,
         keyboardType: TextInputType.multiline,
         textCapitalization: TextCapitalization.sentences,
         numberOfLines: numberOfLines);
   }
-  factory GlobalInputWidgetView.number(
+
+  ///
+  /// Creat Number input field
+  ///
+  factory TextFeildWidgetView.number(
       QuestionStep questionStep,
       FormStackForm formKitForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return GlobalInputWidgetView(
+    return TextFeildWidgetView(
       formKitForm,
       questionStep,
       text,

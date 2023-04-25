@@ -8,7 +8,6 @@ typedef OnBeforeFinishCallback = Future<bool> Function(
     Map<String, dynamic> result);
 
 class CompletionStep extends FormStep {
-  final Display display;
   final bool? autoTrigger;
   OnBeforeFinishCallback? onBeforeFinishCallback;
   Function(Map<String, dynamic>)? onFinish;
@@ -17,9 +16,10 @@ class CompletionStep extends FormStep {
       {super.id,
       super.title,
       super.text,
-      this.display = Display.normal,
+      super.display = Display.normal,
       super.isOptional = false,
       this.onFinish,
+      super.crossAxisAlignmentContent,
       super.resultFormat,
       super.relevantConditions,
       super.titleIconAnimationFile,
@@ -38,7 +38,6 @@ class CompletionStep extends FormStep {
         resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss.SSSSSSS a");
     return CompletionStepView(formKitForm, this, text,
         title: title,
-        display: display,
         autoTrigger: autoTrigger ?? false,
         onBeforeFinishCallback: onBeforeFinishCallback);
   }

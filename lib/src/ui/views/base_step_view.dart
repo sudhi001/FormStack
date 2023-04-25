@@ -4,164 +4,51 @@ import 'package:formstack/src/form_step.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:lottie/lottie.dart';
 
+///
+/// base class of al step view including any componets.
+/// Abstract class with basic compoents methods that required for form navigation and validation.
+///
 // ignore: must_be_immutable
 abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
-  final Display display;
-  BaseStepView(
-    super.formKitForm,
-    super.formStep,
-    super.text, {
-    super.key,
-    super.title,
-    this.display = Display.normal,
-  });
+  BaseStepView(super.formKitForm, super.formStep, super.text,
+      {super.key, super.title});
 
+  /// State of error widget
   final GlobalKey<State> errorKey = GlobalKey<State>();
+
+  /// state of error
   bool showError = false;
+
+  /// Build the Widget / Component to render on the basis o  FormStep object.
   @override
   Widget buildWithFrom(BuildContext context, T formStep) {
     Widget? inputWidget = buildWInputWidget(context, formStep);
-    return Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: (formStep.cancellable ?? false)
-            ? AppBar(
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: onBack,
-                ),
-                actions: [
-                  IconButton(
-                    constraints: const BoxConstraints.expand(width: 80),
-                    icon: Text(formStep.cancelButtonText ?? "Cancel"),
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      onBack();
-                    },
-                  ),
-                ],
-              )
-            : null,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (formStep.titleIconAnimationFile != null) ...[
-                      Container(
-                          constraints: BoxConstraints(
-                              minWidth: 75,
-                              maxWidth: formStep.titleIconMaxWidth ?? 300,
-                              minHeight: 75,
-                              maxHeight: formStep.titleIconMaxWidth ?? 300),
-                          child:
-                              Lottie.asset(formStep.titleIconAnimationFile!)),
-                      const SizedBox(height: 7)
-                    ],
-                    if (title != null && title!.isNotEmpty) ...[
-                      Container(
-                          constraints:
-                              const BoxConstraints(minWidth: 75, maxWidth: 500),
-                          child: Text(title ?? "",
-                              style: display == Display.medium
-                                  ? Theme.of(context).textTheme.headlineMedium
-                                  : (display == Display.large
-                                      ? Theme.of(context)
-                                          .textTheme
-                                          .headlineLarge
-                                      : (display == Display.extraLarge
-                                          ? Theme.of(context)
-                                              .textTheme
-                                              .displaySmall
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall)),
-                              textAlign: TextAlign.center)),
-                      const SizedBox(height: 7)
-                    ],
-                    if (text != null && text!.isNotEmpty) ...[
-                      Container(
-                          constraints:
-                              const BoxConstraints(minWidth: 75, maxWidth: 500),
-                          child: Text(text ?? "",
-                              style: display == Display.medium
-                                  ? Theme.of(context).textTheme.titleLarge
-                                  : (display == Display.large
-                                      ? Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall
-                                      : (display == Display.extraLarge
-                                          ? Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge)),
-                              textAlign: TextAlign.center)),
-                      const SizedBox(height: 14),
-                    ],
-                    StatefulBuilder(
-                        key: errorKey,
-                        builder: (context, setState) {
-                          return Text(
-                            showError ? validationError() : "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .apply(color: Colors.red.shade900),
-                          );
-                        }),
-                    const SizedBox(height: 7),
-                    if (inputWidget != null) ...[
-                      inputWidget,
-                      const SizedBox(height: 7),
-                    ],
-                    Text(hint ?? "",
-                        style: display == Display.medium
-                            ? Theme.of(context).textTheme.bodyMedium
-                            : (display == Display.large
-                                ? Theme.of(context).textTheme.bodyLarge
-                                : (display == Display.extraLarge
-                                    ? Theme.of(context).textTheme.bodyLarge
-                                    : Theme.of(context).textTheme.bodySmall)),
-                        textAlign: TextAlign.center),
-                  ]),
-            ),
-          ),
-        ),
-        bottomNavigationBar: (formStep.nextButtonText?.isNotEmpty ?? true)
-            ? SafeArea(
-                child: SizedBox(
-                  height: kToolbarHeight * 2,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              onNextButtonClick();
-                            },
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(200, 50),
-                                maximumSize: const Size(400, 70)),
-                            child: Text(formStep.nextButtonText ?? "Next")),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            : null);
+    return (formStep.componentOnly)
+        ? _createComponent(context, inputWidget)
+        : Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: _createAppBar(context),
+            body: _createComponent(context, inputWidget),
+            bottomNavigationBar: _createFooterView(context));
   }
 
+  /// Check if the step result is valid.
   bool isValid();
+
+  /// Return the validation error message
   String validationError();
+
+  /// Retrun the result value of the step.
   dynamic resultValue();
+  //// state of the step is processing on not .
   bool isProcessing = false;
+
+  /// Build the widget view.
   Widget? buildWInputWidget(BuildContext context, T formStep);
 
+  ///
+  ///Trigger when the user click on the back button
+  ///
   @override
   void onBack() {
     clearFocus();
@@ -169,11 +56,16 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     formKitForm.backStep(formStep);
   }
 
+  ///
+  ///Function triggern on When the user cancelled the step.
   @override
   void onCancel() {
     formKitForm.cancelStep(formStep);
   }
 
+  ///
+  ///Next button Click - Event trigger on when the user click on the next button
+  ///
   @override
   void onNextButtonClick() async {
     if (isProcessing) return;
@@ -185,19 +77,29 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     onNext();
   }
 
+  /// Trigger on Loading state
   @override
   void onLoding(bool isLoading) {}
 
+  ///
+  /// set Loading state
   void setLoading(bool isLoading) {
     isProcessing = isLoading;
     onLoding(isProcessing);
   }
+
+  ///
+  /// onBeforeFinish - To handle the finish action custom funtionality
+  ///
 
   @override
   Future<bool> onBeforeFinish(Map<String, dynamic> result) {
     return Future.value(true);
   }
 
+  ///
+  /// Move the Navigation to next step
+  ///
   @override
   void onNext() {
     if (formStep.isOptional ?? false) {
@@ -207,6 +109,22 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
       clearFocus();
       formKitForm.nextStep(formStep);
     } else {
+      showValidationError();
+    }
+  }
+
+  ///
+  /// Show validation Error and hide the validation mesage if it's valid
+  ///
+// ignore: invalid_use_of_protected_member
+  void showValidationError() {
+    if (isValid()) {
+      clearFocus();
+      // ignore: invalid_use_of_protected_member
+      errorKey.currentState!.setState(() {
+        showError = false;
+      });
+    } else {
       // ignore: invalid_use_of_protected_member
       errorKey.currentState!.setState(() {
         showError = true;
@@ -215,5 +133,141 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     }
   }
 
+  /// Clear the component focus.
   void clearFocus();
+
+  /// Create Coponents Of step
+  Widget _createComponent(BuildContext context, Widget? inputWidget) {
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: formStep.crossAxisAlignmentContent,
+              children: [
+                if (formStep.titleIconAnimationFile != null) ...[
+                  Container(
+                      constraints: BoxConstraints(
+                          minWidth: 75,
+                          maxWidth: formStep.titleIconMaxWidth ?? 300,
+                          minHeight: 75,
+                          maxHeight: formStep.titleIconMaxWidth ?? 300),
+                      child: Lottie.asset(formStep.titleIconAnimationFile!)),
+                  const SizedBox(height: 7)
+                ],
+                if (title != null && title!.isNotEmpty) ...[
+                  Container(
+                      constraints:
+                          const BoxConstraints(minWidth: 75, maxWidth: 500),
+                      child: Text(title ?? "",
+                          style: formStep.display == Display.medium
+                              ? Theme.of(context).textTheme.headlineMedium
+                              : (formStep.display == Display.large
+                                  ? Theme.of(context).textTheme.headlineLarge
+                                  : (formStep.display == Display.extraLarge
+                                      ? Theme.of(context).textTheme.displaySmall
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall)))),
+                  const SizedBox(height: 7)
+                ],
+                if (text != null && text!.isNotEmpty) ...[
+                  Container(
+                      constraints:
+                          const BoxConstraints(minWidth: 75, maxWidth: 500),
+                      child: Text(text ?? "",
+                          style: formStep.display == Display.medium
+                              ? Theme.of(context).textTheme.titleLarge
+                              : (formStep.display == Display.large
+                                  ? Theme.of(context).textTheme.headlineSmall
+                                  : (formStep.display == Display.extraLarge
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge)))),
+                  const SizedBox(height: 7),
+                ],
+                StatefulBuilder(
+                    key: errorKey,
+                    builder: (context, setState) {
+                      return Text(
+                        showError ? validationError() : "",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .apply(color: Colors.red.shade900),
+                      );
+                    }),
+                const SizedBox(height: 7),
+                if (inputWidget != null) ...[
+                  inputWidget,
+                  const SizedBox(height: 7),
+                ],
+                Text(hint ?? "",
+                    style: formStep.display == Display.medium
+                        ? Theme.of(context).textTheme.bodyMedium
+                        : (formStep.display == Display.large
+                            ? Theme.of(context).textTheme.bodyLarge
+                            : (formStep.display == Display.extraLarge
+                                ? Theme.of(context).textTheme.bodyLarge
+                                : Theme.of(context).textTheme.bodySmall)),
+                    textAlign: TextAlign.center),
+              ]),
+        ),
+      ),
+    );
+  }
+
+  /// Create To Appbar ui
+  PreferredSizeWidget? _createAppBar(BuildContext context) {
+    return (formStep.cancellable ?? false)
+        ? AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: onBack,
+            ),
+            actions: [
+              IconButton(
+                constraints: const BoxConstraints.expand(width: 80),
+                icon: Text(formStep.cancelButtonText ?? "Cancel"),
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                  onBack();
+                },
+              ),
+            ],
+          )
+        : null;
+  }
+
+  /// Create bottom navigation UI.
+  Widget? _createFooterView(BuildContext context) {
+    return (formStep.nextButtonText?.isNotEmpty ?? true)
+        ? SafeArea(
+            child: SizedBox(
+              height: kToolbarHeight * 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          onNextButtonClick();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 50),
+                            maximumSize: const Size(400, 70)),
+                        child: Text(formStep.nextButtonText ?? "Next")),
+                  ],
+                ),
+              ),
+            ),
+          )
+        : null;
+  }
 }

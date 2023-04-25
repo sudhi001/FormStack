@@ -139,7 +139,7 @@ class FormStack {
   Future<FormStack> loadFromAssets(List<String> files) async {
     for (var element in files) {
       String data = await rootBundle.loadString(element);
-      Parser.buildFormFromJson(this, json.decode(data));
+      ParserUtils.buildFormFromJson(this, json.decode(data));
     }
     return this;
   }
@@ -152,7 +152,7 @@ class FormStack {
 
   /// Build the from from Map (JSON)
   Future<FormStack> buildFormFromJson(Map<String, dynamic>? body) async {
-    Parser.buildFormFromJson(this, body);
+    ParserUtils.buildFormFromJson(this, body);
     return this;
   }
 

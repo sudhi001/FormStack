@@ -5,13 +5,13 @@ import 'package:formstack/src/step/question_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
-class TextFeildInputWidgetView extends BaseStepView<QuestionStep> {
+class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final List<TextInputFormatter> formatter;
   final TextCapitalization textCapitalization;
   final TextInputType keyboardType;
   final int? numberOfLines;
-  TextFeildInputWidgetView(super.formKitForm, super.formStep, super.text,
+  TextFieldInputWidgetView(super.formKitForm, super.formStep, super.text,
       this.resultFormat, this.formatter,
       {super.key,
       super.title,

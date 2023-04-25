@@ -16,7 +16,6 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
     super.title,
     this.onBeforeFinishCallback,
     required this.autoTrigger,
-    super.display = Display.normal,
   });
   final GlobalKey<State> loadingKey = GlobalKey<State>();
   bool isCompleted = false;

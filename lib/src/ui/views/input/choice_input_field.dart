@@ -37,41 +37,43 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
             const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 600),
         child: StatefulBuilder(builder: (context, setState) {
           return ListView.separated(
-              padding: EdgeInsets.zero,
-              physics: const ClampingScrollPhysics(),
-              separatorBuilder: (context, index) =>
-                  const Divider(color: Colors.grey, thickness: 1),
-              itemBuilder: (context, index) => ListTile(
-                    onTap: () {
-                      setState(
-                        () {
-                          if (singleSelection) {
-                            selectedKey.clear();
-                            selectedKey.add(options[index].key);
-                          } else {
-                            if (!selectedKey.contains(options[index].key)) {
-                              selectedKey.add(options[index].key);
-                            } else {
-                              selectedKey.remove(options[index].key);
-                            }
-                          }
-                          if (autoTrigger) {
-                            onNextButtonClick();
-                          }
-                        },
-                      );
-                      HapticFeedback.selectionClick();
-                    },
-                    title: Text(options[index].text),
-                    trailing: autoTrigger
-                        ? Icon(Icons.arrow_forward_ios,
-                            color: formKitForm.primaryColor)
-                        : (selectedKey.contains(options[index].key)
-                            ? Icon(Icons.check, color: formKitForm.primaryColor)
-                            : null),
-                  ),
-              itemCount: options.length,
-              shrinkWrap: true);
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            separatorBuilder: (context, index) =>
+                const Divider(color: Colors.grey, thickness: 1),
+            itemBuilder: (context, index) => ListTile(
+              onTap: () {
+                setState(
+                  () {
+                    if (singleSelection) {
+                      selectedKey.clear();
+                      selectedKey.add(options[index].key);
+                    } else {
+                      if (!selectedKey.contains(options[index].key)) {
+                        selectedKey.add(options[index].key);
+                      } else {
+                        selectedKey.remove(options[index].key);
+                      }
+                    }
+                    if (autoTrigger) {
+                      onNextButtonClick();
+                    }
+                  },
+                );
+                HapticFeedback.selectionClick();
+                showValidationError();
+              },
+              title: Text(options[index].text),
+              trailing: autoTrigger
+                  ? Icon(Icons.arrow_forward_ios,
+                      color: formKitForm.primaryColor)
+                  : (selectedKey.contains(options[index].key)
+                      ? Icon(Icons.check, color: formKitForm.primaryColor)
+                      : null),
+            ),
+            itemCount: options.length,
+          );
         }));
   }
 

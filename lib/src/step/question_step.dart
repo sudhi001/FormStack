@@ -1,7 +1,7 @@
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/general_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
@@ -17,13 +17,16 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.title = "",
       required this.inputType,
       super.text,
+      super.display,
       super.resultFormat,
       this.onValidationError,
       super.isOptional = false,
       this.options,
+      super.crossAxisAlignmentContent,
       super.relevantConditions,
       this.autoTrigger = false,
       this.numberOfLines,
+      super.componentOnly,
       super.titleIconAnimationFile,
       super.nextButtonText,
       super.backButtonText,
@@ -39,27 +42,27 @@ class QuestionStep extends FormStep<QuestionStep> {
       case InputType.email:
         resultFormat =
             resultFormat ?? ResultFormat.email("Please enter a valid email.");
-        return GlobalInputWidgetView.email(
+        return TextFeildWidgetView.email(
             this, formKitForm, text, resultFormat!, title);
       case InputType.name:
         resultFormat =
             resultFormat ?? ResultFormat.name("Please enter a valid name.");
-        return GlobalInputWidgetView.name(
+        return TextFeildWidgetView.name(
             this, formKitForm, text, resultFormat!, title);
       case InputType.password:
         resultFormat = resultFormat ??
             ResultFormat.password("Please enter a valid password.");
-        return GlobalInputWidgetView.password(
+        return TextFeildWidgetView.password(
             this, formKitForm, text, resultFormat!, title);
       case InputType.text:
         resultFormat =
             resultFormat ?? ResultFormat.name("Please enter a valid data.");
-        return GlobalInputWidgetView.text(
+        return TextFeildWidgetView.text(
             this, formKitForm, text, resultFormat!, title, numberOfLines);
       case InputType.number:
         resultFormat =
             resultFormat ?? ResultFormat.number("Please enter a valid number.");
-        return GlobalInputWidgetView.number(
+        return TextFeildWidgetView.number(
             this, formKitForm, text, resultFormat!, title);
       case InputType.date:
         resultFormat = resultFormat ??

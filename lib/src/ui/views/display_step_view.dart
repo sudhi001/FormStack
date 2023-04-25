@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:formstack/formstack.dart';
 import 'package:formstack/src/step/display_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
 import 'package:webviewx/webviewx.dart';
@@ -11,7 +10,7 @@ import 'package:webviewx/webviewx.dart';
 // ignore: must_be_immutable
 class DisplayStepView extends BaseStepView<DisplayStep> {
   DisplayStepView(super.formKitForm, super.formStep, super.text,
-      {super.key, super.title, super.display = Display.normal, cancellable});
+      {super.key, super.title, cancellable});
 
   @override
   Widget? buildWInputWidget(BuildContext context, DisplayStep formStep) {

@@ -5,7 +5,7 @@ import 'package:formstack/src/ui/views/base_step_view.dart';
 // ignore: must_be_immutable
 class InstructionStepView extends BaseStepView<InstructionStep> {
   InstructionStepView(super.formKitForm, super.formStep, super.text,
-      {super.key, super.title, super.display = Display.normal, cancellable});
+      {super.key, super.title,  cancellable});
 
   @override
   Widget? buildWInputWidget(BuildContext context, InstructionStep formStep) {

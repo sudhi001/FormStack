@@ -1,11 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/expression_relevant_condition.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/step/display_step.dart';
+import 'package:formstack/src/step/nested_question_step.dart';
 import 'package:formstack/src/step/pop_step.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
-class Parser {
+///
+/// ParserUtils - to hanlde JSON parsing related process. 
+/// This class will change in future. 
+///
+class ParserUtils {
+  /// Build FormStep List from JSON
   static void buildFormFromJson(
       FormStack formStack, Map<String, dynamic>? body) async {
     if (body != null) {
@@ -22,35 +29,16 @@ class Parser {
           });
 
           if (element["type"] == "QuestionStep") {
-            List<Options> options = [];
-            cast<List>(element?["options"])?.forEach((el) {
-              options.add(Options(el?["key"], el?["text"]));
-            });
-            InputType inputType = InputType.values
-                .firstWhere((e) => e.name == element?["inputType"]);
-            QuestionStep step = QuestionStep(
-                inputType: inputType,
-                options: options,
-                relevantConditions: relevantConditions,
-                cancellable: element?["cancellable"],
-                autoTrigger: element?["autoTrigger"] ?? false,
-                backButtonText: element?["backButtonText"],
-                cancelButtonText: element?["cancelButtonText"],
-                isOptional: element?["isOptional"],
-                nextButtonText: element?["nextButtonText"],
-                numberOfLines: element?["numberOfLines"],
-                text: element?["text"],
-                title: element?["title"],
-                titleIconAnimationFile: element?["titleIconAnimationFile"],
-                titleIconMaxWidth: element?["titleIconMaxWidth"],
-                id: GenericIdentifier(id: element?["id"]));
-            formStep.add(step);
+            formStep.add(createQuestionStep(element, relevantConditions));
           } else if (element["type"] == "CompletionStep") {
             CompletionStep step = CompletionStep(
                 display: element?["display"] != null
                     ? Display.values
                         .firstWhere((e) => e.name == element?["display"])
                     : Display.normal,
+                crossAxisAlignmentContent: textAlignmentFromString(
+                        element?["crossAxisAlignmentContent"] ?? "center") ??
+                    CrossAxisAlignment.center,
                 cancellable: element?["cancellable"],
                 autoTrigger: element?["autoTrigger"] ?? false,
                 relevantConditions: relevantConditions,
@@ -77,6 +65,9 @@ class Parser {
                     ? Display.values
                         .firstWhere((e) => e.name == element?["display"])
                     : Display.normal,
+                crossAxisAlignmentContent: textAlignmentFromString(
+                        element?["crossAxisAlignmentContent"] ?? "center") ??
+                    CrossAxisAlignment.center,
                 cancellable: element?["cancellable"],
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
@@ -93,6 +84,9 @@ class Parser {
           } else if (element["type"] == "DisplayStep") {
             DisplayStep step = DisplayStep(
                 cancellable: element?["cancellable"],
+                crossAxisAlignmentContent: textAlignmentFromString(
+                        element?["crossAxisAlignmentContent"] ?? "center") ??
+                    CrossAxisAlignment.center,
                 relevantConditions: relevantConditions,
                 backButtonText: element?["backButtonText"],
                 cancelButtonText: element?["cancelButtonText"],
@@ -107,6 +101,39 @@ class Parser {
             formStep.add(step);
           } else if (element["type"] == "PopStep") {
             PopStep step = PopStep(id: GenericIdentifier(id: element?["id"]));
+            formStep.add(step);
+          } else if (element["type"] == "NestedQuestionStep") {
+            List<QuestionStep> questions = [];
+            cast<List>(element?["questions"])?.forEach((el) {
+              List<RelevantCondition> questionRelevantConditions = [];
+              cast<List>(el?["relevantConditions"])?.forEach((elItem) {
+                questionRelevantConditions.add(ExpressionRelevant(
+                    expression: elItem?["expression"],
+                    formName: elItem?["formName"] ?? "",
+                    identifier: GenericIdentifier(id: elItem?["id"])));
+              });
+              questions.add(createQuestionStep(el, questionRelevantConditions));
+            });
+            NestedQuestionStep step = NestedQuestionStep(
+                display: element?["display"] != null
+                    ? Display.values
+                        .firstWhere((e) => e.name == element?["display"])
+                    : Display.normal,
+                crossAxisAlignmentContent: textAlignmentFromString(
+                        element?["crossAxisAlignmentContent"] ?? "center") ??
+                    CrossAxisAlignment.center,
+                cancellable: element?["cancellable"],
+                relevantConditions: relevantConditions,
+                backButtonText: element?["backButtonText"],
+                cancelButtonText: element?["cancelButtonText"],
+                isOptional: element?["isOptional"],
+                questions: questions,
+                nextButtonText: element?["nextButtonText"],
+                text: element?["text"],
+                title: element?["title"],
+                titleIconAnimationFile: element?["titleIconAnimationFile"],
+                titleIconMaxWidth: element?["titleIconMaxWidth"],
+                id: GenericIdentifier(id: element?["id"]));
             formStep.add(step);
           }
         });
@@ -124,5 +151,39 @@ class Parser {
                 : null);
       });
     }
+  }
+
+  /// Build QuestionStep  from JSON
+  static QuestionStep createQuestionStep(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions) {
+    List<Options> options = [];
+    cast<List>(element?["options"])?.forEach((el) {
+      options.add(Options(el?["key"], el?["text"]));
+    });
+    InputType inputType =
+        InputType.values.firstWhere((e) => e.name == element?["inputType"]);
+    QuestionStep step = QuestionStep(
+        inputType: inputType,
+        options: options,
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        display: element?["display"] != null
+            ? Display.values.firstWhere((e) => e.name == element?["display"])
+            : Display.normal,
+        relevantConditions: relevantConditions,
+        cancellable: element?["cancellable"],
+        autoTrigger: element?["autoTrigger"] ?? false,
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        nextButtonText: element?["nextButtonText"],
+        numberOfLines: element?["numberOfLines"],
+        text: element?["text"],
+        title: element?["title"],
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
+    return step;
   }
 }

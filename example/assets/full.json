@@ -3,6 +3,29 @@
   {
     "steps":[
       {
+        "type": "NestedQuestionStep",
+        "title":"Nested question step demo",
+        "questions":[
+          {
+            "type": "QuestionStep",
+            "text":"Full Questions - Single choice",
+            "crossAxisAlignmentContent":"start",
+            "inputType":"singleChoice",
+              "options":[
+              {"key":"EXIT","text":"Exit"},
+              {"key":"RETURN_TO_MENU","text":"Return toMenu"}
+           ]
+
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "text":"Full Questions -Email",
+            "inputType":"email"
+          }
+        ]
+      },
+      {
         "type": "InstructionStep",
         "cancellable":true,
         "title":"InstructionStep Title",
@@ -10,7 +33,8 @@
            {"title":"Choice One","subTitle":"Selct at least one ","trailing":"Optional", "leading":"😫"},
            {"title":"Choice Two","trailing":"Optional", "leading":"😫"}
         ]
-      }, {
+      }, 
+      {
         "type": "DisplayStep",
         "title":"Web url display is only supported for Android, IOs and Web. Please use iframe supported urls",
         "url":"https://www.youtube.com/embed/gBzgpoq86U8"
@@ -22,7 +46,7 @@
         "cancellable":true,
         "nextButtonText":"",
         "autoTrigger":true,
-        "inputType":"singleChoice",
+        "inputType":"multipleChoice",
         "options":[
            {"key":"EXIT","text":"Exit"},
            {"key":"RETURN_TO_MENU","text":"Return toMenu"}
