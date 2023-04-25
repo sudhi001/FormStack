@@ -67,6 +67,9 @@ class HomeScreen extends StatelessWidget {
                       onFinish: (p0) {
                         debugPrint("$p0");
                       },
+                      onBeforeFinishCallback: (result) async {
+                        return Future.value(true);
+                      },
                     );
                     // ignore: use_build_context_synchronously
                     Navigator.push(

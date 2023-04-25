@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:formstack/src/result/result_format.dart';
-import 'package:formstack/src/step/question_step.dart';
+import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
@@ -31,12 +30,14 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       _focusNode.requestFocus();
     });
     return Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey),
-            bottom: BorderSide(color: Colors.grey),
-          ),
-        ),
+        decoration: formStep.inputStyle == InputStyle.basic
+            ? const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey),
+                  bottom: BorderSide(color: Colors.grey),
+                ),
+              )
+            : null,
         constraints:
             const BoxConstraints(minWidth: 300, maxWidth: 400, minHeight: 50),
         child: TextFormField(
@@ -53,11 +54,25 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
               resultFormat.isValid(_controller.text) ? null : validationError(),
           inputFormatters: formatter,
           decoration: InputDecoration(
-              border: InputBorder.none,
+              enabledBorder: inputBoder(),
+              border: inputBoder(),
               hintText: formStep.hint,
               labelText: formStep.label,
               hintStyle: Theme.of(context).textTheme.bodySmall),
         ));
+  }
+
+  InputBorder inputBoder() {
+    switch (formStep.inputStyle) {
+      case InputStyle.basic:
+        return InputBorder.none;
+      case InputStyle.outline:
+        return const OutlineInputBorder();
+      case InputStyle.underLined:
+        return const UnderlineInputBorder();
+      default:
+        return InputBorder.none;
+    }
   }
 
   @override

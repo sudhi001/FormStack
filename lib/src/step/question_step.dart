@@ -11,6 +11,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final List<Options>? options;
   final int? numberOfLines;
   final bool? autoTrigger;
+  final InputStyle inputStyle;
 
   QuestionStep(
       {super.id,
@@ -20,6 +21,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.display,
       super.hint,
       super.label,
+      this.inputStyle = InputStyle.basic,
       super.resultFormat,
       this.onValidationError,
       super.isOptional = false,

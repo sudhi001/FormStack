@@ -72,14 +72,16 @@
             "crossAxisAlignmentContent":"start",
             "label":"Email",
             "display":"small",
-            "inputType":"email"
+            "inputType":"email",
+            "inputStyle":"outline"
           },
           {
             "type": "QuestionStep",
             "display":"small",
             "label":"Password",
             "crossAxisAlignmentContent":"start",
-            "inputType":"password"
+            "inputType":"password",
+            "inputStyle":"outline"
           }
         ]
       },

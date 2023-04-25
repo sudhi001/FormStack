@@ -49,3 +49,5 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
 }
 
 enum Display { small, normal, medium, large, extraLarge }
+
+enum InputStyle { basic, underLined, outline }

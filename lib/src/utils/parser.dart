@@ -175,6 +175,10 @@ class ParserUtils {
         cancellable: element?["cancellable"],
         hint: element?["hint"],
         label: element?["label"],
+        inputStyle: element?["inputStyle"] != null
+            ? InputStyle.values
+                .firstWhere((e) => e.name == element?["inputStyle"])
+            : InputStyle.basic,
         autoTrigger: element?["autoTrigger"] ?? false,
         backButtonText: element?["backButtonText"],
         cancelButtonText: element?["cancelButtonText"],
