@@ -29,6 +29,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _focusNode.requestFocus();
     });
+
     return Container(
         color: formStep.inputStyle != InputStyle.basic
             ? const Color.fromRGBO(242, 242, 247, 1)

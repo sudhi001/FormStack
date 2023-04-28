@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/core/ui_style.dart';
 import 'package:formstack/src/relevant/expression_relevant_condition.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/step/display_step.dart';
@@ -42,132 +40,22 @@ class ParserUtils {
   /// Build QuestionStep  from JSON
   static QuestionStep _createQuestion(Map<String, dynamic>? element,
       List<RelevantCondition> relevantConditions) {
-    List<Options> options = [];
-    cast<List>(element?["options"])?.forEach((el) {
-      options.add(Options(el?["key"], el?["title"], subTitle: el?["subTitle"]));
-    });
-    InputType inputType =
-        InputType.values.firstWhere((e) => e.name == element?["inputType"]);
-    QuestionStep step = QuestionStep(
-        inputType: inputType,
-        options: options,
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        crossAxisAlignmentContent: textAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        display: element?["display"] != null
-            ? Display.values.firstWhere((e) => e.name == element?["display"])
-            : Display.normal,
-        relevantConditions: relevantConditions,
-        cancellable: element?["cancellable"],
-        hint: element?["hint"],
-        label: element?["label"],
-        componentsStyle: element?["componentsStyle"] != null
-            ? ComponentsStyle.values
-                .firstWhere((e) => e.name == element?["componentsStyle"])
-            : ComponentsStyle.minimal,
-        inputStyle: element?["inputStyle"] != null
-            ? InputStyle.values
-                .firstWhere((e) => e.name == element?["inputStyle"])
-            : InputStyle.basic,
-        autoTrigger: element?["autoTrigger"] ?? false,
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        nextButtonText: element?["nextButtonText"],
-        numberOfLines: element?["numberOfLines"],
-        text: element?["text"],
-        title: element?["title"],
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        id: GenericIdentifier(id: element?["id"]));
-    return step;
+    return QuestionStep.from(element, relevantConditions);
   }
 
   static FormStep _createCompletion(
       element, List<RelevantCondition> relevantConditions) {
-    return CompletionStep(
-        display: element?["display"] != null
-            ? Display.values.firstWhere((e) => e.name == element?["display"])
-            : Display.normal,
-        crossAxisAlignmentContent: textAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        cancellable: element?["cancellable"],
-        autoTrigger: element?["autoTrigger"] ?? false,
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        relevantConditions: relevantConditions,
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        nextButtonText: element?["nextButtonText"],
-        text: element?["text"],
-        title: element?["title"],
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        id: GenericIdentifier(id: element?["id"]));
+    return CompletionStep.from(element, relevantConditions);
   }
 
   static FormStep _createInstruction(
       element, List<RelevantCondition> relevantConditions) {
-    return InstructionStep(
-        display: element?["display"] != null
-            ? Display.values.firstWhere((e) => e.name == element?["display"])
-            : Display.normal,
-        crossAxisAlignmentContent: textAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        cancellable: element?["cancellable"],
-        relevantConditions: relevantConditions,
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        instructions: DynamicData.parseDynamicData(
-            cast<List>(element?["instructions"]) ?? []),
-        nextButtonText: element?["nextButtonText"],
-        text: element?["text"],
-        title: element?["title"],
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        id: GenericIdentifier(id: element?["id"]));
+    return InstructionStep.from(element, relevantConditions);
   }
 
   static FormStep _createDisplay(
       element, List<RelevantCondition> relevantConditions) {
-    // List<DynamicData> data = [];
-    // cast<List>(element?["data"])?.forEach((el) {
-    //   data.add(DynamicData(el?["title"],
-    //       subTitle: el?["subTitle"],
-    //       trailing: el?["trailing"],
-    //       leading: el?["leading"]));
-    // });
-    return DisplayStep(
-        data: DynamicData.parseDynamicData(cast<List>(element?["data"]) ?? []),
-        componentsStyle: element?["componentsStyle"] != null
-            ? ComponentsStyle.values
-                .firstWhere((e) => e.name == element?["componentsStyle"])
-            : ComponentsStyle.minimal,
-        displayStepType: element?["displayStepType"] != null
-            ? DisplayStepType.values
-                .firstWhere((e) => e.name == element?["displayStepType"])
-            : DisplayStepType.web,
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        cancellable: element?["cancellable"],
-        crossAxisAlignmentContent: textAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        relevantConditions: relevantConditions,
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        text: element?["text"],
-        title: element?["title"],
-        nextButtonText: element?["nextButtonText"],
-        url: element?["url"] ?? "",
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        id: GenericIdentifier(id: element?["id"]));
+    return DisplayStep.from(element, relevantConditions);
   }
 
   static List<RelevantCondition> _parseRelevant(element) {
@@ -187,26 +75,7 @@ class ParserUtils {
     cast<List>(element?["steps"])?.forEach((el) {
       _addFormStep(steps, el);
     });
-    return NestedStep(
-        display: element?["display"] != null
-            ? Display.values.firstWhere((e) => e.name == element?["display"])
-            : Display.normal,
-        crossAxisAlignmentContent: textAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        cancellable: element?["cancellable"],
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        relevantConditions: _parseRelevant(element),
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        steps: steps,
-        nextButtonText: element?["nextButtonText"],
-        text: element?["text"],
-        title: element?["title"],
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        id: GenericIdentifier(id: element?["id"]));
+    return NestedStep.from(element, relaventCondition, steps);
   }
 
   static void _addFormStep(List<FormStep> step, element) {

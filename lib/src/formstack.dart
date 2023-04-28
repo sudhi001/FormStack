@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/step/nested_step.dart';
 import 'package:formstack/src/ui/views/formstack_view.dart';
 import 'package:formstack/src/core/parser.dart';
 
@@ -161,7 +162,13 @@ class FormStack {
     FormStackForm? formStack = _forms["formName"];
     if (formStack != null) {
       for (var entry in formStack.steps) {
-        if (entry.id?.id == identifier.id) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (element.id?.id == identifier.id) {
+              element.resultFormat = resultFormat;
+            }
+          });
+        } else if (entry.id?.id == identifier.id) {
           entry.resultFormat = resultFormat;
         }
       }
@@ -176,7 +183,15 @@ class FormStack {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
-        if (entry is QuestionStep) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (element is QuestionStep) {
+              if (element.id?.id == identifier.id) {
+                element.onValidationError = onValidationError;
+              }
+            }
+          });
+        } else if (entry is QuestionStep) {
           if (entry.id?.id == identifier.id) {
             entry.onValidationError = onValidationError;
           }
@@ -208,11 +223,40 @@ class FormStack {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
-        if (entry is CompletionStep) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (element is CompletionStep) {
+              if (element.id?.id == identifier.id) {
+                element.onFinish = onFinish;
+                element.onBeforeFinishCallback = onBeforeFinishCallback;
+              }
+            }
+          });
+        } else if (entry is CompletionStep) {
           if (entry.id?.id == identifier.id) {
             entry.onFinish = onFinish;
             entry.onBeforeFinishCallback = onBeforeFinishCallback;
           }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// Add the Error
+  FormStack setError(Identifier identifier, String message,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (element.id?.id == identifier.id) {
+              element.error = message;
+            }
+          });
+        } else if (entry.id?.id == identifier.id) {
+          entry.error = message;
         }
       }
     }

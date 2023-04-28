@@ -22,6 +22,9 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Build the Widget / Component to render on the basis o  FormStep object.
   @override
   Widget buildWithFrom(BuildContext context, T formStep) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _checkAndShowDefaultValidationError();
+    });
     Widget? inputWidget = buildWInputWidget(context, formStep);
     return (formStep.componentOnly)
         ? _createComponent(context, inputWidget)
@@ -110,6 +113,17 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
       formKitForm.nextStep(formStep);
     } else {
       showValidationError();
+    }
+  }
+
+  void _checkAndShowDefaultValidationError() {
+    if (formStep.error != null) {
+      // ignore: invalid_use_of_protected_member
+      errorKey.currentState!.setState(() {
+        showError = true;
+      });
+      formKitForm.validationError(formStep.error!);
+      formStep.error = null;
     }
   }
 

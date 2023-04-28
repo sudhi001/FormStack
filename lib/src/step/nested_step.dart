@@ -1,6 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/core/ui_style.dart';
+import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/nested_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
+import 'package:formstack/src/utils/alignment.dart';
 
 class NestedStep extends FormStep {
   static const String tag = "NestedStep";
@@ -28,5 +32,29 @@ class NestedStep extends FormStep {
   @override
   FormStepView buildView(FormStackForm formKitForm) {
     return NestedStepView(formKitForm, this, text, title: title);
+  }
+
+  factory NestedStep.from(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions, List<FormStep> steps) {
+    return NestedStep(
+        display: element?["display"] != null
+            ? Display.values.firstWhere((e) => e.name == element?["display"])
+            : Display.normal,
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        cancellable: element?["cancellable"],
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        relevantConditions: relevantConditions,
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        steps: steps,
+        nextButtonText: element?["nextButtonText"],
+        text: element?["text"],
+        title: element?["title"],
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
   }
 }

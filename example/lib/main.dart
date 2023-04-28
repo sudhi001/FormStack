@@ -68,7 +68,10 @@ class HomeScreen extends StatelessWidget {
                         debugPrint("$p0");
                       },
                       onBeforeFinishCallback: (result) async {
-                        return Future.value(true);
+                        FormStack.api().setError(
+                            GenericIdentifier(id: "email"), "Invalid email,",
+                            formName: "login_form");
+                        return Future.value(false);
                       },
                     );
                     // ignore: use_build_context_synchronously

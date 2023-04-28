@@ -28,12 +28,14 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   ComponentsStyle componentsStyle;
   CrossAxisAlignment crossAxisAlignmentContent;
   UIStyle? buttonStyle;
+  String? error;
   FormStep(
       {this.id,
       this.title,
       this.text,
       this.hint,
       this.buttonStyle,
+      this.error,
       this.crossAxisAlignmentContent = CrossAxisAlignment.center,
       this.display = Display.normal,
       this.componentOnly = false,

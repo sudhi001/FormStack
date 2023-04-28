@@ -1,9 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/core/ui_style.dart';
+import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
+import 'package:formstack/src/utils/alignment.dart';
 
 class QuestionStep extends FormStep<QuestionStep> {
   static const String tag = "QuestionStep";
@@ -104,5 +108,48 @@ class QuestionStep extends FormStep<QuestionStep> {
       default:
     }
     throw UnimplementedError();
+  }
+
+  factory QuestionStep.from(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions) {
+    List<Options> options = [];
+    cast<List>(element?["options"])?.forEach((el) {
+      options.add(Options(el?["key"], el?["title"], subTitle: el?["subTitle"]));
+    });
+    InputType inputType =
+        InputType.values.firstWhere((e) => e.name == element?["inputType"]);
+    return QuestionStep(
+        inputType: inputType,
+        options: options,
+        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        crossAxisAlignmentContent: textAlignmentFromString(
+                element?["crossAxisAlignmentContent"] ?? "center") ??
+            CrossAxisAlignment.center,
+        display: element?["display"] != null
+            ? Display.values.firstWhere((e) => e.name == element?["display"])
+            : Display.normal,
+        relevantConditions: relevantConditions,
+        cancellable: element?["cancellable"],
+        hint: element?["hint"],
+        label: element?["label"],
+        componentsStyle: element?["componentsStyle"] != null
+            ? ComponentsStyle.values
+                .firstWhere((e) => e.name == element?["componentsStyle"])
+            : ComponentsStyle.minimal,
+        inputStyle: element?["inputStyle"] != null
+            ? InputStyle.values
+                .firstWhere((e) => e.name == element?["inputStyle"])
+            : InputStyle.basic,
+        autoTrigger: element?["autoTrigger"] ?? false,
+        backButtonText: element?["backButtonText"],
+        cancelButtonText: element?["cancelButtonText"],
+        isOptional: element?["isOptional"],
+        nextButtonText: element?["nextButtonText"],
+        numberOfLines: element?["numberOfLines"],
+        text: element?["text"],
+        title: element?["title"],
+        titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconMaxWidth: element?["titleIconMaxWidth"],
+        id: GenericIdentifier(id: element?["id"]));
   }
 }
