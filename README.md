@@ -172,6 +172,13 @@ Example: if you want to trigger a network call or something like that.
                         formName: "login_form");
 ```
 
+### Disable UI dynamically
+
+```dart
+          FormStack setDisabledUI(["email"], formName: "login_form") 
+```
+FormStack setDisabledUI(List<String> disabledUIIds,
+      {String? formName = "default"}) 
 # Demo Application Video
 
 [![FormStack Demo Application Video](https://i.ibb.co/M1zxp7k/image.jpg)](https://youtu.be/afFNWkhQbJk "FormStack Demo")

@@ -283,6 +283,26 @@ class FormStack {
     return this;
   }
 
+  /// Disbale UI
+  FormStack setDisabledUI(List<String> disabledUIIds,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (disabledUIIds.contains(element.id?.id)) {
+              element.disabled = true;
+            }
+          });
+        } else if (disabledUIIds.contains(entry.id?.id)) {
+          entry.disabled = true;
+        }
+      }
+    }
+    return this;
+  }
+
   /// Render the form to the UI
   /// Primary method to implement in you Widget tree.
   Widget render({String name = "default"}) {

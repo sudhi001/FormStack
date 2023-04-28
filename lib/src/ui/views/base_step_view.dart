@@ -222,7 +222,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                     }),
                 _divisionPadding(),
                 if (inputWidget != null) ...[
-                  inputWidget,
+                  IgnorePointer(
+                      ignoring: formStep.disabled, child: inputWidget),
                   _divisionPadding(),
                 ],
                 Text(description ?? "",

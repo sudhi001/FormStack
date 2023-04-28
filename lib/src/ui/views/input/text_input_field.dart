@@ -47,6 +47,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
             const BoxConstraints(minWidth: 300, maxWidth: 400, minHeight: 50),
         child: TextFormField(
           autofocus: true,
+          enabled: !formStep.disabled,
           autocorrect: false,
           minLines: numberOfLines,
           maxLines: numberOfLines,

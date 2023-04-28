@@ -27,6 +27,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.display,
       super.hint,
       super.label,
+      super.disabled,
       super.componentsStyle = ComponentsStyle.minimal,
       this.inputStyle = InputStyle.basic,
       super.resultFormat,
@@ -121,6 +122,7 @@ class QuestionStep extends FormStep<QuestionStep> {
     return QuestionStep(
         inputType: inputType,
         options: options,
+        disabled: element?["disabled"] ?? false,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
         crossAxisAlignmentContent: textAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??

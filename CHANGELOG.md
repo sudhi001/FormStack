@@ -1,3 +1,5 @@
+## 0.6.1
+* Disable Ui dynamically
 ## 0.6.0
 *  Able to set erro dynamically
 *  Able to set data dynamically.

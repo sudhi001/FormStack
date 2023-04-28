@@ -75,7 +75,8 @@
             "display":"small",
             "inputType":"email",
             "inputStyle":"outline",
-            "id":"email"
+            "id":"email",
+            "disabled":true
           },
           {
             "type": "QuestionStep",
