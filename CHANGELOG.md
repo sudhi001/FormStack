@@ -1,4 +1,7 @@
-## 0.4.0
+## 0.6.0
+*  Able to set erro dynamically
+*  Able to set data dynamically.
+## 0.5.1
 *  NestedQuestionStep -> Renamed to -> NestedStep
 *  To Shoe nested step in single view
 ## 0.4.0

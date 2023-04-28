@@ -263,6 +263,26 @@ class FormStack {
     return this;
   }
 
+  /// Add the Result
+  FormStack setResult(Map<String, dynamic> input,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (input.containsKey(element.id?.id)) {
+              element.result = input[element.id?.id];
+            }
+          });
+        } else if (input.containsKey(entry.id?.id)) {
+          entry.result = input[entry.id?.id];
+        }
+      }
+    }
+    return this;
+  }
+
   /// Render the form to the UI
   /// Primary method to implement in you Widget tree.
   Widget render({String name = "default"}) {

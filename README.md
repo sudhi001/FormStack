@@ -158,6 +158,20 @@ Example: if you want to trigger a network call or something like that.
 
 ```
 
+### Set Error dynamicaly
+
+```dart
+         FormStack.api().setError(
+                            GenericIdentifier(id: "email"), "Invalid email,",
+                            formName: "login_form");
+```
+### Set Data dynamicaly
+
+```dart
+          FormStack.api().setResult({"email": "sudhi.s@live.com"},
+                        formName: "login_form");
+```
+
 # Demo Application Video
 
 [![FormStack Demo Application Video](https://i.ibb.co/M1zxp7k/image.jpg)](https://youtu.be/afFNWkhQbJk "FormStack Demo")
