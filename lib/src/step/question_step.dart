@@ -20,6 +20,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final InputStyle inputStyle;
   final int count;
   final List<dynamic>? filter;
+  final SelectionType? selectionType;
 
   QuestionStep(
       {super.id,
@@ -29,6 +30,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.buttonStyle,
       super.display,
       super.hint,
+      this.selectionType,
       super.label,
       super.disabled,
       this.count = 0,
@@ -109,13 +111,20 @@ class QuestionStep extends FormStep<QuestionStep> {
       case InputType.singleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        return ChoiceInputWidget.single(this, formKitForm, text, resultFormat!,
-            title, options, autoTrigger ?? false);
+        return ChoiceInputWidget.single(
+            this,
+            formKitForm,
+            text,
+            resultFormat!,
+            title,
+            options,
+            selectionType ?? SelectionType.arrow,
+            autoTrigger ?? false);
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
-        return ChoiceInputWidget.multiple(
-            this, formKitForm, text, resultFormat!, title, options);
+        return ChoiceInputWidget.multiple(this, formKitForm, text,
+            resultFormat!, title, selectionType ?? SelectionType.tick, options);
       case InputType.otp:
         resultFormat = resultFormat ??
             ResultFormat.length("Please enter all fields", count);
@@ -137,6 +146,10 @@ class QuestionStep extends FormStep<QuestionStep> {
     return QuestionStep(
         inputType: inputType,
         options: options,
+        selectionType: element?["selectionType"] != null
+            ? SelectionType.values
+                .firstWhere((e) => e.name == element?["selectionType"])
+            : null,
         filter: element?["filter"] ?? [],
         count: element?["count"] ?? 4,
         disabled: element?["disabled"] ?? false,

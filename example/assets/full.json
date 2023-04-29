@@ -40,6 +40,7 @@
         "nextButtonText":"",
         "autoTrigger":true,
         "inputType":"multipleChoice",
+        "selectionType":"toggle",
         "options":[
            {"key":"EXIT","title":"Exit"},
            {"key":"RETURN_TO_MENU","title":"Return toMenu"}
@@ -110,6 +111,7 @@
           "type": "QuestionStep",
           "title":"Full Questions - Mutiple Choice",
           "inputType":"multipleChoice",
+          "selectionType":"toggle",
           "options":[
              {"key":"AUDI","title":"Audi"},
              {"key":"BENZ","title":"Benz"},

@@ -10,7 +10,11 @@ import 'package:formstack/src/ui/views/input/choice_input_field.dart';
 class ChoiceInputWidget extends ChoiceInputWidgetView {
   ChoiceInputWidget(super.formKitForm, super.formStep, super.text,
       super.resultFormat, super.options,
-      {super.key, super.title, super.singleSelection, super.autoTrigger});
+      {super.key,
+      super.title,
+      super.singleSelection,
+      super.autoTrigger,
+      required super.selectionType});
 
   ///
   ///Create Single choice components.
@@ -22,10 +26,14 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
       ResultFormat resultFormat,
       String? title,
       List<Options>? options,
+      SelectionType selectionType,
       bool autoTrigger) {
     return ChoiceInputWidget(
         formKitForm, questionStep, text, resultFormat, options ?? [],
-        title: title, singleSelection: true, autoTrigger: autoTrigger);
+        title: title,
+        singleSelection: true,
+        autoTrigger: autoTrigger,
+        selectionType: selectionType);
   }
 
   ///
@@ -37,9 +45,10 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
       String? text,
       ResultFormat resultFormat,
       String? title,
+      SelectionType selectionType,
       List<Options>? options) {
     return ChoiceInputWidget(
         formKitForm, questionStep, text, resultFormat, options ?? [],
-        title: title, singleSelection: false);
+        title: title, singleSelection: false, selectionType: selectionType);
   }
 }

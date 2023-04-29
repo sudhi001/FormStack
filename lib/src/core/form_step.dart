@@ -62,3 +62,5 @@ enum Display { small, normal, medium, large, extraLarge }
 enum InputStyle { basic, underLined, outline }
 
 enum ComponentsStyle { minimal, basic }
+
+enum SelectionType { arrow, tick, toggle }

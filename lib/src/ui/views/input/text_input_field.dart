@@ -27,7 +27,11 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (formStep.result != null) {
-      _controller.text = formStep.result;
+      if (formStep.inputType == InputType.file) {
+        _controller.text = cast<PlatformFile>(formStep.result)!.name;
+      } else {
+        _controller.text = formStep.result;
+      }
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _focusNode.requestFocus();
@@ -136,7 +140,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   dynamic resultValue() {
     if (formStep.inputType == InputType.file) {
-      return fileResult?.files.single.path ?? "";
+      return fileResult?.files.single;
     }
     return _controller.text;
   }

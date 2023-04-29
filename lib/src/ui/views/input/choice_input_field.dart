@@ -10,10 +10,12 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   final List<Options> options;
   final bool singleSelection;
   final bool autoTrigger;
+  final SelectionType selectionType;
   ChoiceInputWidgetView(super.formKitForm, super.formStep, super.text,
       this.resultFormat, this.options,
       {super.key,
       super.title,
+      required this.selectionType,
       this.singleSelection = false,
       this.autoTrigger = false});
 
@@ -61,27 +63,9 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                       : null,
                   padding: const EdgeInsets.all(7),
                   child: ListTile(
-                    onTap: () {
-                      setState(
-                        () {
-                          if (singleSelection) {
-                            selectedKey.clear();
-                            selectedKey.add(options[index].key);
-                          } else {
-                            if (!selectedKey.contains(options[index].key)) {
-                              selectedKey.add(options[index].key);
-                            } else {
-                              selectedKey.remove(options[index].key);
-                            }
-                          }
-                          if (autoTrigger) {
-                            onNextButtonClick();
-                          }
-                        },
-                      );
-                      HapticFeedback.selectionClick();
-                      showValidationError();
-                    },
+                    onTap: selectionType == SelectionType.toggle
+                        ? null
+                        : () => onItemTap(setState, index),
                     title: Text(options[index].title,
                         style: Theme.of(context).textTheme.bodyMedium),
                     subtitle: options[index].subTitle != null
@@ -92,19 +76,62 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                           )
                         : null,
                     trailing: autoTrigger
-                        ? const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: Colors.grey,
-                            size: 24,
-                          )
-                        : (selectedKey.contains(options[index].key)
-                            ? Icon(Icons.check, color: formKitForm.primaryColor)
-                            : null),
+                        ? _selectionIcon(setState, index)
+                        : selectionType != SelectionType.tick
+                            ? _selectionIcon(setState, index)
+                            : (selectedKey.contains(options[index].key)
+                                ? _selectionIcon(setState, index)
+                                : null),
                   ),
                 )),
             itemCount: options.length,
           );
         }));
+  }
+
+  void onItemTap(setState, int index) {
+    setState(
+      () {
+        if (singleSelection) {
+          selectedKey.clear();
+          selectedKey.add(options[index].key);
+        } else {
+          if (!selectedKey.contains(options[index].key)) {
+            selectedKey.add(options[index].key);
+          } else {
+            selectedKey.remove(options[index].key);
+          }
+        }
+        if (autoTrigger) {
+          onNextButtonClick();
+        }
+      },
+    );
+    HapticFeedback.selectionClick();
+    showValidationError();
+  }
+
+  Widget _selectionIcon(setState, int index) {
+    switch (selectionType) {
+      case SelectionType.arrow:
+        return const Icon(Icons.arrow_forward_ios_rounded,
+            color: Colors.grey, size: 24);
+      case SelectionType.tick:
+        return Icon(Icons.check, color: formKitForm.primaryColor);
+      case SelectionType.toggle:
+        return Switch(
+          inactiveThumbColor: Colors.black,
+          activeColor: Colors.black,
+          activeTrackColor: const Color.fromRGBO(242, 242, 247, 1),
+          inactiveTrackColor: const Color.fromRGBO(242, 242, 247, 1),
+          value: selectedKey.contains(options[index].key),
+          onChanged: (bool value) {
+            onItemTap(setState, index);
+          },
+        );
+      default:
+        return Icon(Icons.check, color: formKitForm.primaryColor);
+    }
   }
 
   @override

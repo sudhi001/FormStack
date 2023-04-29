@@ -1,3 +1,5 @@
+## 0.6.4
+* Added hoice fild with switch.
 ## 0.6.3
 * Added OTP View support.
 * Added  File input type  (single file selection).
