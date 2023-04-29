@@ -59,6 +59,9 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     formKitForm.backStep(formStep);
   }
 
+  @override
+  void dispose() {}
+
   ///
   ///Function triggern on When the user cancelled the step.
   @override

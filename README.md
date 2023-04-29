@@ -23,6 +23,22 @@ While the library was initially created to help developers create survey UIs, th
 
 Overall, FormStack is a powerful tool for creating dynamic user interfaces in Flutter. It offers a flexible and customizable approach to UI design, allowing developers to create UIs that are easy to use and maintain.
 
+## Supported Components
+
+- ✅ TextFiled - Text
+- ✅ TextFiled - Number
+- ✅ TextFiled - Password
+- ✅ TextFiled - Name
+- ✅ TextFiled - Email
+- ✅ TextFiled - File Picker
+- ✅ TextFiled - OTP View
+- ✅ Cupertino Picker View - Date Only
+- ✅ Cupertino Picker View - Date Time 
+- ✅ Cupertino Picker View - Time Only
+- ✅ Single Selection List
+- ✅ Mutiple Selection List
+- ✅ Smile Rating
+
 ## Online Demo
 
 - [Demo Web Application](https://formstackexample-89ed3.web.app)
@@ -36,7 +52,6 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 - [Simple Example](https://github.com/sudhi001/FormStack/tree/main/example) - an example of how to create a UI using FormStack.
 
 - [DEMO APPLICATION Example](https://github.com/sudhi001/formstack_example_one) - Load from from json file..
-
 
 
 ## Implementation 

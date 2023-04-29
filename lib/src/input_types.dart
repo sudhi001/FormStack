@@ -6,8 +6,10 @@ enum InputType {
   dateTime,
   text,
   time,
+  file,
   number,
   smile,
   singleChoice,
-  multipleChoice
+  multipleChoice,
+  otp
 }

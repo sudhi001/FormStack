@@ -15,7 +15,8 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       super.title,
       super.keyboardType,
       super.textCapitalization,
-      super.numberOfLines = 1});
+      super.numberOfLines = 1,
+      super.filter = const []});
 
   ///
   /// Creat Email input field
@@ -63,6 +64,24 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       keyboardType: TextInputType.name,
       textCapitalization: TextCapitalization.words,
     );
+  }
+
+  ///
+  /// Creat File input field
+  ///
+  factory TextFeildWidgetView.file(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title,
+      List<dynamic>? filter) {
+    return TextFeildWidgetView(
+        formKitForm, questionStep, text, resultFormat, const [],
+        title: title,
+        keyboardType: TextInputType.none,
+        textCapitalization: TextCapitalization.none,
+        filter: filter ?? const []);
   }
 
   ///

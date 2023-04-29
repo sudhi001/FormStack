@@ -3,6 +3,7 @@ T? cast<T>(x) => x is T ? x : null;
 abstract class ResultFormat {
   ResultFormat._();
   factory ResultFormat.none() = _NoneResultType;
+  factory ResultFormat.length(String errorMsg, int count) = _LengthResultType;
   factory ResultFormat.notNull(String errorMsg) = _NotNullResultType;
   factory ResultFormat.email(String errorMsg) = _EmailResultType;
   factory ResultFormat.smile(String errorMsg) = _SmileResultType;
@@ -27,6 +28,22 @@ class DateResultType extends ResultFormat {
   @override
   bool isValid(dynamic input) {
     return cast<DateTime>(input) != null;
+  }
+
+  @override
+  String error() {
+    return errorMsg;
+  }
+}
+
+class _LengthResultType extends ResultFormat {
+  final String errorMsg;
+  final int count;
+  _LengthResultType(this.errorMsg, this.count) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    return input != null && cast<int>(input)!.toString().length == count;
   }
 
   @override

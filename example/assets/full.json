@@ -2,30 +2,22 @@
   "new_form":
   {
     "steps":[
-      
       {
-        "type": "NestedStep",
-        "title":"Nested question step demo",
-        "steps":[
-          {
-            "type": "QuestionStep",
-            "text":"Full Questions - Single choice",
-            "crossAxisAlignmentContent":"start",
-            "inputType":"singleChoice",
-              "options":[
-              {"key":"EXIT","title":"Exit"},
-              {"key":"RETURN_TO_MENU","title":"Return toMenu"}
-           ]
-
-          },
-          {
-            "type": "QuestionStep",
-            "crossAxisAlignmentContent":"start",
-            "text":"Full Questions -Email",
-            "inputType":"email"
-          }
-        ]
+        "type": "QuestionStep",
+        "label":"File Picker",
+        "inputType":"file",
+        "inputStyle":"outline",
+        "id":"file",
+        "filter":["pdf"]
       },
+      {
+        "type": "QuestionStep",
+        "cancellable":true,
+        "title":"InstructionStep Title",
+        "inputType":"otp",
+        "inputStyle":"outline",
+        "count":4
+      }, 
       {
         "type": "InstructionStep",
         "cancellable":true,

@@ -1,5 +1,8 @@
+## 0.6.3
+* Added OTP View support.
+* Added  File input type  (single file selection).
 ## 0.6.1
-* Disable Ui dynamically
+* Disable Ui dynamically.
 ## 0.6.0
 *  Able to set erro dynamically
 *  Able to set data dynamically.

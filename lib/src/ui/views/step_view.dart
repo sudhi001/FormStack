@@ -14,6 +14,7 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
 
   void onNext();
   void onBack();
+  void dispose();
   void onCancel();
   void onNextButtonClick();
   void onLoding(bool isLoading);

@@ -3,6 +3,7 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/core/ui_style.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/common_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
@@ -17,6 +18,8 @@ class QuestionStep extends FormStep<QuestionStep> {
   final int? numberOfLines;
   final bool? autoTrigger;
   final InputStyle inputStyle;
+  final int count;
+  final List<dynamic>? filter;
 
   QuestionStep(
       {super.id,
@@ -28,6 +31,8 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.hint,
       super.label,
       super.disabled,
+      this.count = 0,
+      this.filter,
       super.componentsStyle = ComponentsStyle.minimal,
       this.inputStyle = InputStyle.basic,
       super.resultFormat,
@@ -61,6 +66,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.name("Please enter a valid name.");
         return TextFeildWidgetView.name(
             this, formKitForm, text, resultFormat!, title);
+      case InputType.file:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please select a file.");
+        return TextFeildWidgetView.file(
+            this, formKitForm, text, resultFormat!, title, filter);
       case InputType.password:
         resultFormat = resultFormat ??
             ResultFormat.password("Please enter a valid password.");
@@ -106,6 +116,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
         return ChoiceInputWidget.multiple(
             this, formKitForm, text, resultFormat!, title, options);
+      case InputType.otp:
+        resultFormat = resultFormat ??
+            ResultFormat.length("Please enter all fields", count);
+        return CommonInputWidget.otp(
+            this, formKitForm, text, resultFormat!, title, count);
       default:
     }
     throw UnimplementedError();
@@ -122,6 +137,8 @@ class QuestionStep extends FormStep<QuestionStep> {
     return QuestionStep(
         inputType: inputType,
         options: options,
+        filter: element?["filter"] ?? [],
+        count: element?["count"] ?? 4,
         disabled: element?["disabled"] ?? false,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
         crossAxisAlignmentContent: textAlignmentFromString(
