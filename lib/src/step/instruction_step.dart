@@ -33,7 +33,7 @@ class InstructionStep extends FormStep {
   @override
   FormStepView buildView(FormStackForm formKitForm) {
     resultFormat =
-        resultFormat ??= ResultFormat.date("", "dd-MM-yyyy HH:mm:ss.SSSSSSS a");
+        resultFormat ??= ResultFormat.date("", "dd-MM-yyyy hh:mm:ss.SSSSSSS a");
     return InstructionStepView(formKitForm, this, text, title: title);
   }
 
