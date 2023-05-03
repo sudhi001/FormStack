@@ -126,7 +126,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.6.7"
+    version: "0.6.9"
   http:
     dependency: transitive
     description:
