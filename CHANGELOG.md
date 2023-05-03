@@ -1,3 +1,5 @@
+## 0.7.0
+* Date format result will be utc format
 ## 0.6.4
 * Added hoice fild with switch.
 ## 0.6.3

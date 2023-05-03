@@ -45,7 +45,7 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
 
   @override
   resultValue() {
-    return DateTime.now();
+    return DateTime.now().toUtc();
   }
 
   @override
