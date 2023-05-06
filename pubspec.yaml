@@ -4,7 +4,7 @@ version: 0.7.3
 homepage: https://github.com/sudhi001/FormStack
 issue_tracker: https://github.com/sudhi001/FormStack/issues
 screenshots:
-  - description: 'logo'
+  - description: 'Logo of formstack framework'
     path: screenshots/logo.png
 
 environment:
