@@ -37,6 +37,7 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 - ✅ Cupertino Picker View - Time Only
 - ✅ Single Selection List
 - ✅ Mutiple Selection List
+- ✅ Dropdown List
 - ✅ Smile Rating
 
 ## Online Demo

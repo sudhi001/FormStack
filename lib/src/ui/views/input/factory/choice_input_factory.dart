@@ -37,6 +37,25 @@ class ChoiceInputWidget extends ChoiceInputWidgetView {
   }
 
   ///
+  ///Create dropsown choice components.
+  ///
+  factory ChoiceInputWidget.dropdown(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title,
+      List<Options>? options,
+      bool autoTrigger) {
+    return ChoiceInputWidget(
+        formKitForm, questionStep, text, resultFormat, options ?? [],
+        title: title,
+        singleSelection: true,
+        autoTrigger: autoTrigger,
+        selectionType: SelectionType.dropdown);
+  }
+
+  ///
   /// Create mutiple choice components.
   ///
   factory ChoiceInputWidget.multiple(

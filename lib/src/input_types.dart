@@ -11,5 +11,6 @@ enum InputType {
   smile,
   singleChoice,
   multipleChoice,
-  otp
+  otp,
+  dropdown,
 }
