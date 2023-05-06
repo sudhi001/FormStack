@@ -28,48 +28,6 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     } else {
       selectedKey = [];
     }
-    if (selectionType == SelectionType.dropdown) {
-      return StatefulBuilder(builder: (context, setState) {
-        return DropdownButton(
-          hint: selectedKey.isEmpty
-              ? const Text('Select Any')
-              : Text(selectedKey.first),
-          isExpanded: true,
-          iconSize: 30.0,
-          items: options.map(
-            (val) {
-              return DropdownMenuItem<String>(
-                value: val.key,
-                child: Text(val.title),
-              );
-            },
-          ).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(
-                () {
-                  if (singleSelection) {
-                    selectedKey.clear();
-                    selectedKey.add(val);
-                  } else {
-                    if (!selectedKey.contains(val)) {
-                      selectedKey.add(val);
-                    } else {
-                      selectedKey.remove(val);
-                    }
-                  }
-                  if (autoTrigger) {
-                    onNextButtonClick();
-                  }
-                },
-              );
-              HapticFeedback.selectionClick();
-              showValidationError();
-            }
-          },
-        );
-      });
-    }
 
     return Container(
         decoration: formStep.componentsStyle == ComponentsStyle.minimal
@@ -83,6 +41,46 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
         constraints:
             const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 600),
         child: StatefulBuilder(builder: (context, setState) {
+          if (selectionType == SelectionType.dropdown) {
+            return DropdownButton(
+              hint: selectedKey.isEmpty
+                  ? const Text('Select Any')
+                  : Text(selectedKey.first),
+              isExpanded: true,
+              iconSize: 30.0,
+              items: options.map(
+                (val) {
+                  return DropdownMenuItem<String>(
+                    value: val.key,
+                    child: Text(val.title),
+                  );
+                },
+              ).toList(),
+              onChanged: (val) {
+                if (val != null) {
+                  setState(
+                    () {
+                      if (singleSelection) {
+                        selectedKey.clear();
+                        selectedKey.add(val);
+                      } else {
+                        if (!selectedKey.contains(val)) {
+                          selectedKey.add(val);
+                        } else {
+                          selectedKey.remove(val);
+                        }
+                      }
+                      if (autoTrigger) {
+                        onNextButtonClick();
+                      }
+                    },
+                  );
+                  HapticFeedback.selectionClick();
+                  showValidationError();
+                }
+              },
+            );
+          }
           return ListView.separated(
             padding: EdgeInsets.zero,
             shrinkWrap: true,

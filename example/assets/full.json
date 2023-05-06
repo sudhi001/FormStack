@@ -4,6 +4,24 @@
     "steps":[
       {
         "type": "QuestionStep",
+        "text":"Position",
+        "inputType":"dropdown",
+        "id":"approvedPosition",
+        "options":[
+           {"key":"BRANCH MANAGERS","title":"BRANCH MANAGERS"},
+           {"key":"ASST. BRANCH MANAGERS","title":"ASST. BRANCH MANAGERS"},
+           {"key":"SR. SALES EXECUTIVES","title":"SR. SALES EXECUTIVES"},
+           {"key":"MARKETING EXECUTIVES","title":"MARKETING EXECUTIVES"},
+           {"key":"SR. ACCOUNTS EXECUTIVES","title":"SR. ACCOUNTS EXECUTIVES"},
+           {"key":"JUNIOR ACCOUNTANTS","title":"JUNIOR ACCOUNTANTS"},
+           {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"},
+           {"key":"SHOP ASSISTANTS","title":"SHOP ASSISTANTS"},
+           {"key":"FLOOR CO-ORDINATORS","title":"FLOOR CO-ORDINATORS"},
+           {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"}
+        ]
+      },
+      {
+        "type": "QuestionStep",
         "label":"File Picker",
         "inputType":"file",
         "inputStyle":"outline",
@@ -79,6 +97,24 @@
             "inputType":"password",
             "inputStyle":"outline",
             "id":"password"
+          },
+          {
+            "type": "QuestionStep",
+            "text":"Position",
+            "inputType":"dropdown",
+            "id":"approvedPosition",
+            "options":[
+               {"key":"BRANCH MANAGERS","title":"BRANCH MANAGERS"},
+               {"key":"ASST. BRANCH MANAGERS","title":"ASST. BRANCH MANAGERS"},
+               {"key":"SR. SALES EXECUTIVES","title":"SR. SALES EXECUTIVES"},
+               {"key":"MARKETING EXECUTIVES","title":"MARKETING EXECUTIVES"},
+               {"key":"SR. ACCOUNTS EXECUTIVES","title":"SR. ACCOUNTS EXECUTIVES"},
+               {"key":"JUNIOR ACCOUNTANTS","title":"JUNIOR ACCOUNTANTS"},
+               {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"},
+               {"key":"SHOP ASSISTANTS","title":"SHOP ASSISTANTS"},
+               {"key":"FLOOR CO-ORDINATORS","title":"FLOOR CO-ORDINATORS"},
+               {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"}
+            ]
           }
         ]
       },
@@ -92,6 +128,73 @@
     ]
 
   },
+  "create_minimal_application":
+  {
+    "steps":[
+      {
+        "type": "NestedStep",
+      "steps":[
+        {
+        "type": "QuestionStep",
+        "display":"small",
+        "label":"Name",
+        "crossAxisAlignmentContent":"start",
+        "inputType":"name",
+        "inputStyle":"outline",
+        "id":"name"
+      },
+      {
+        "type": "QuestionStep",
+        "crossAxisAlignmentContent":"start",
+        "label":"Email",
+        "display":"small",
+        "inputType":"email",
+        "inputStyle":"outline",
+        "id":"email"
+      },
+      {
+        "type": "QuestionStep",
+        "crossAxisAlignmentContent":"start",
+        "label":"Phone Number",
+        "display":"small",
+        "inputType":"number",
+        "inputStyle":"outline",
+        "id":"phoneNumber",
+        "lengthLimit":10
+      },
+      {
+        "type": "QuestionStep",
+        "text":"Position",
+        "crossAxisAlignmentContent":"start",
+        "inputType":"dropdown",
+        "id":"approvedPosition",
+        "options":[
+           {"key":"BRANCH MANAGERS","title":"BRANCH MANAGERS"},
+           {"key":"ASST. BRANCH MANAGERS","title":"ASST. BRANCH MANAGERS"},
+           {"key":"SR. SALES EXECUTIVES","title":"SR. SALES EXECUTIVES"},
+           {"key":"MARKETING EXECUTIVES","title":"MARKETING EXECUTIVES"},
+           {"key":"SR. ACCOUNTS EXECUTIVES","title":"SR. ACCOUNTS EXECUTIVES"},
+           {"key":"JUNIOR ACCOUNTANTS","title":"JUNIOR ACCOUNTANTS"},
+           {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"},
+           {"key":"SHOP ASSISTANTS","title":"SHOP ASSISTANTS"},
+           {"key":"FLOOR CO-ORDINATORS","title":"FLOOR CO-ORDINATORS"},
+           {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"}
+        ]
+      }
+    
+    ]
+  },
+      {
+        "type": "CompletionStep",
+        "autoTrigger":true,
+        "nextButtonText":"",
+        "title":"Please wait..",
+        "id":"actionOn"
+      }
+      
+    ]
+  
+ },
     "full":
     {
       "steps":[

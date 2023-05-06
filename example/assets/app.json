@@ -16,7 +16,8 @@
              {"key":"CALL_DRIVER","title":"Call Driver Now"},
              {"key":"FULL_QUESTIONS","title":"Full Components"},
              {"key":"NEW_COMPONENTS","title":"New Components"},
-             {"key":"LOGIN","title":"Login Form"}
+             {"key":"LOGIN","title":"Login Form"},
+             {"key":"NESTED","title":"Neested"}
           ],
           "id":"CHOICE",
         
@@ -24,7 +25,8 @@
           {"id":"AUTISM_QUESTIONS","expression":"IN AUTISM_M_CHAT_R" ,"formName":"formOne"},
           {"id":"FULL_QUESTIONS_START","expression":"IN FULL_QUESTIONS" ,"formName":"full"},
           {"id":"","expression":"IN NEW_COMPONENTS" ,"formName":"new_form"},
-          {"id":"","expression":"IN LOGIN" ,"formName":"login_form"}
+          {"id":"","expression":"IN LOGIN" ,"formName":"login_form"},
+          {"id":"","expression":"IN NESTED" ,"formName":"create_minimal_application"}
         ]
         },{
           "type": "QuestionStep",
