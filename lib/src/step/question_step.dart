@@ -21,6 +21,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final int count;
   final List<dynamic>? filter;
   final SelectionType? selectionType;
+  final int? lengthLimit;
 
   QuestionStep(
       {super.id,
@@ -31,6 +32,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.display,
       super.hint,
       this.selectionType,
+      this.lengthLimit,
       super.label,
       super.disabled,
       this.count = 0,
@@ -151,6 +153,7 @@ class QuestionStep extends FormStep<QuestionStep> {
                 .firstWhere((e) => e.name == element?["selectionType"])
             : null,
         filter: element?["filter"] ?? [],
+        lengthLimit: element?["lengthLimit"] ?? -1,
         count: element?["count"] ?? 4,
         disabled: element?["disabled"] ?? false,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),

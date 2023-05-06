@@ -34,7 +34,8 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       resultFormat,
       [
         FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z@.]")),
-        LengthLimitingTextInputFormatter(30)
+        LengthLimitingTextInputFormatter(
+            questionStep.lengthLimit == -1 ? 30 : questionStep.lengthLimit)
       ],
       title: title,
       keyboardType: TextInputType.emailAddress,
@@ -58,7 +59,8 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       resultFormat,
       [
         FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
-        LengthLimitingTextInputFormatter(30)
+        LengthLimitingTextInputFormatter(
+            questionStep.lengthLimit == -1 ? 30 : questionStep.lengthLimit)
       ],
       title: title,
       keyboardType: TextInputType.name,
@@ -81,7 +83,12 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
         title: title,
         keyboardType: TextInputType.none,
         textCapitalization: TextCapitalization.none,
-        filter: filter ?? const []);
+        filter: filter ??
+            [
+              LengthLimitingTextInputFormatter(questionStep.lengthLimit == -1
+                  ? 255
+                  : questionStep.lengthLimit)
+            ]);
   }
 
   ///
@@ -93,9 +100,17 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return TextFeildWidgetView(formKitForm, questionStep, text, resultFormat,
-        [LengthLimitingTextInputFormatter(30)],
-        title: title, keyboardType: TextInputType.visiblePassword);
+    return TextFeildWidgetView(
+        formKitForm,
+        questionStep,
+        text,
+        resultFormat,
+        [
+          LengthLimitingTextInputFormatter(
+              questionStep.lengthLimit == -1 ? 30 : questionStep.lengthLimit)
+        ],
+        title: title,
+        keyboardType: TextInputType.visiblePassword);
   }
 
   ///
@@ -109,7 +124,14 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       String? title,
       int? numberOfLines) {
     return TextFeildWidgetView(
-        formKitForm, questionStep, text, resultFormat, const [],
+        formKitForm,
+        questionStep,
+        text,
+        resultFormat,
+        [
+          LengthLimitingTextInputFormatter(
+              questionStep.lengthLimit == -1 ? 255 : questionStep.lengthLimit)
+        ],
         title: title,
         keyboardType: TextInputType.multiline,
         textCapitalization: TextCapitalization.sentences,
@@ -132,7 +154,8 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       resultFormat,
       [
         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-        LengthLimitingTextInputFormatter(1000)
+        LengthLimitingTextInputFormatter(
+            questionStep.lengthLimit == -1 ? 30 : questionStep.lengthLimit)
       ],
       title: title,
       keyboardType: TextInputType.number,

@@ -63,6 +63,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       autocorrect: false,
       minLines: numberOfLines,
       maxLines: numberOfLines,
+      
       obscureText: keyboardType == TextInputType.visiblePassword,
       focusNode: formStep.inputType == InputType.file ? null : _focusNode,
       controller: _controller,
