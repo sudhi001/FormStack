@@ -125,15 +125,8 @@ class QuestionStep extends FormStep<QuestionStep> {
       case InputType.dropdown:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        return ChoiceInputWidget.dropdown(
-            this,
-            formKitForm,
-            text,
-            resultFormat!,
-            title,
-            options,
-          
-            autoTrigger ?? false);
+        return ChoiceInputWidget.dropdown(this, formKitForm, text,
+            resultFormat!, title, options, autoTrigger ?? false);
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");

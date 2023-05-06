@@ -63,4 +63,4 @@ enum InputStyle { basic, underLined, outline }
 
 enum ComponentsStyle { minimal, basic }
 
-enum SelectionType { arrow, tick, toggle,dropdown }
+enum SelectionType { arrow, tick, toggle, dropdown }
