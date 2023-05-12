@@ -1,4 +1,5 @@
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/dynamic_key_value_field.dart';
 import 'package:formstack/src/ui/views/input/otp_input_field.dart';
 
 /// Common or geric componets will add here (Later)
@@ -13,5 +14,17 @@ class CommonInputWidget {
       int count) {
     return OTPInputWidgetView(formKitForm, questionStep, text, resultFormat,
         title: title, count: count);
+  }
+
+  static DynamicKeyValueWidgetView dynamicKeyValueField(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title,
+      int maxCount) {
+    return DynamicKeyValueWidgetView(
+        formKitForm, questionStep, text, resultFormat,
+        title: title, maxCount: maxCount);
   }
 }

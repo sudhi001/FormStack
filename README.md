@@ -39,6 +39,7 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 - ✅ Mutiple Selection List
 - ✅ Dropdown List
 - ✅ Smile Rating
+- ✅ Dynamic Key Value Widget
 
 ## Online Demo
 
@@ -198,6 +199,23 @@ FormStack setDisabledUI(List<String> disabledUIIds,
 # Demo Application Video
 
 [![FormStack Demo Application Video](https://i.ibb.co/M1zxp7k/image.jpg)](https://youtu.be/afFNWkhQbJk "FormStack Demo")
+
+# New Components
+<table>
+   <tbody>
+      <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_11.54.57_AM.png?updatedAt=1683872968009" alt="File Uploader" border="0" width="450"/>
+         </td>
+         <td align="center" style="background-color: white">
+            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_11.56.22_AM.png?updatedAt=1683872968044" alt="Dynamic Component" border="0" width="450"/>
+         </td>
+          <td align="center" style="background-color: white">
+            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_12.00.22_PM.png?updatedAt=1683873057648" alt="OTP" border="0" width="450"/>
+         </td>
+      </tr>
+   </tbody>
+</table>
 
 # Screenshots
 

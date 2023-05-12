@@ -13,4 +13,5 @@ enum InputType {
   multipleChoice,
   otp,
   dropdown,
+  dynamicKeyValue
 }

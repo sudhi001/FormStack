@@ -4,6 +4,33 @@
     "steps":[
       {
         "type": "QuestionStep",
+        "label":"Dynamic Key Value Input",
+        "inputType":"dynamicKeyValue",
+        "id":"dynamicKeyValue",
+        "inputStyle":"outline",
+        "componentsStyle":"minimal"
+      },
+      {
+        "type": "QuestionStep",
+        "text":"Position",
+        "inputType":"dropdown",
+        "id":"approvedPosition",
+        "componentsStyle":"basic",
+        "options":[
+           {"key":"BRANCH MANAGERS","title":"BRANCH MANAGERS"},
+           {"key":"ASST. BRANCH MANAGERS","title":"ASST. BRANCH MANAGERS"},
+           {"key":"SR. SALES EXECUTIVES","title":"SR. SALES EXECUTIVES"},
+           {"key":"MARKETING EXECUTIVES","title":"MARKETING EXECUTIVES"},
+           {"key":"SR. ACCOUNTS EXECUTIVES","title":"SR. ACCOUNTS EXECUTIVES"},
+           {"key":"JUNIOR ACCOUNTANTS","title":"JUNIOR ACCOUNTANTS"},
+           {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"},
+           {"key":"SHOP ASSISTANTS","title":"SHOP ASSISTANTS"},
+           {"key":"FLOOR CO-ORDINATORS","title":"FLOOR CO-ORDINATORS"},
+           {"key":"SALES ASSISTANTS","title":"SALES ASSISTANTS"}
+        ]
+      },
+      {
+        "type": "QuestionStep",
         "text":"Position",
         "inputType":"dropdown",
         "id":"approvedPosition",
@@ -50,13 +77,10 @@
         "title":"Web url display is only supported for Android, IOs and Web. Please use iframe supported urls",
         "url":"https://www.youtube.com/embed/gBzgpoq86U8"
       }
-      
       ,{
         "type": "QuestionStep",
         "title":"Full Questions - Single choice",
         "cancellable":true,
-        "nextButtonText":"",
-        "autoTrigger":true,
         "inputType":"multipleChoice",
         "selectionType":"toggle",
         "options":[

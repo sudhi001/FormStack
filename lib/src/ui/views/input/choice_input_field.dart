@@ -42,44 +42,57 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
             const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 600),
         child: StatefulBuilder(builder: (context, setState) {
           if (selectionType == SelectionType.dropdown) {
-            return DropdownButton(
-              hint: selectedKey.isEmpty
-                  ? const Text('Select Any')
-                  : Text(selectedKey.first),
-              isExpanded: true,
-              iconSize: 30.0,
-              items: options.map(
-                (val) {
-                  return DropdownMenuItem<String>(
-                    value: val.key,
-                    child: Text(val.title),
-                  );
-                },
-              ).toList(),
-              onChanged: (val) {
-                if (val != null) {
-                  setState(
-                    () {
-                      if (singleSelection) {
-                        selectedKey.clear();
-                        selectedKey.add(val);
-                      } else {
-                        if (!selectedKey.contains(val)) {
-                          selectedKey.add(val);
-                        } else {
-                          selectedKey.remove(val);
-                        }
-                      }
-                      if (autoTrigger) {
-                        onNextButtonClick();
+            return Container(
+                padding: formStep.componentsStyle == ComponentsStyle.basic
+                    ? const EdgeInsets.all(5)
+                    : null,
+                decoration: formStep.componentsStyle == ComponentsStyle.basic
+                    ? BoxDecoration(
+                        border: Border.all(color: Colors.blueGrey),
+                        borderRadius: BorderRadius.circular(5),
+                      )
+                    : null,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    focusColor: Colors.transparent,
+                    hint: selectedKey.isEmpty
+                        ? const Text('Select...')
+                        : Text(selectedKey.first),
+                    isExpanded: true,
+                    iconSize: 30.0,
+                    items: options.map(
+                      (val) {
+                        return DropdownMenuItem<String>(
+                          value: val.key,
+                          child: Text(val.title),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      if (val != null) {
+                        setState(
+                          () {
+                            if (singleSelection) {
+                              selectedKey.clear();
+                              selectedKey.add(val);
+                            } else {
+                              if (!selectedKey.contains(val)) {
+                                selectedKey.add(val);
+                              } else {
+                                selectedKey.remove(val);
+                              }
+                            }
+                            if (autoTrigger) {
+                              onNextButtonClick();
+                            }
+                          },
+                        );
+                        HapticFeedback.selectionClick();
+                        showValidationError();
                       }
                     },
-                  );
-                  HapticFeedback.selectionClick();
-                  showValidationError();
-                }
-              },
-            );
+                  ),
+                ));
           }
           return ListView.separated(
             padding: EdgeInsets.zero,

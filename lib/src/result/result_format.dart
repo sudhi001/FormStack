@@ -5,6 +5,7 @@ abstract class ResultFormat {
   factory ResultFormat.none() = _NoneResultType;
   factory ResultFormat.length(String errorMsg, int count) = _LengthResultType;
   factory ResultFormat.notNull(String errorMsg) = _NotNullResultType;
+  factory ResultFormat.notEmpty(String errorMsg) = _NotEmptyResultType;
   factory ResultFormat.email(String errorMsg) = _EmailResultType;
   factory ResultFormat.smile(String errorMsg) = _SmileResultType;
   factory ResultFormat.name(String errorMsg) = _NameResultType;
@@ -44,6 +45,21 @@ class _LengthResultType extends ResultFormat {
   @override
   bool isValid(dynamic input) {
     return input != null && cast<int>(input)!.toString().length == count;
+  }
+
+  @override
+  String error() {
+    return errorMsg;
+  }
+}
+
+class _NotEmptyResultType extends ResultFormat {
+  final String errorMsg;
+  _NotEmptyResultType(this.errorMsg) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    return input != null && cast<List>(input)!.isNotEmpty;
   }
 
   @override

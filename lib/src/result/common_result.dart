@@ -5,6 +5,12 @@ class Options {
   Options(this.key, this.title, {this.subTitle = ""});
 }
 
+class KeyValue {
+  final String key;
+  final String value;
+  KeyValue(this.key, this.value);
+}
+
 class GeoLocationResult {
   final double latitude;
   final double longitude;

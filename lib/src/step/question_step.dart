@@ -19,6 +19,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final bool? autoTrigger;
   final InputStyle inputStyle;
   final int count;
+  final int maxCount;
   final List<dynamic>? filter;
   final SelectionType? selectionType;
   final int? lengthLimit;
@@ -36,6 +37,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.label,
       super.disabled,
       this.count = 0,
+      this.maxCount = 100,
       this.filter,
       super.componentsStyle = ComponentsStyle.minimal,
       this.inputStyle = InputStyle.basic,
@@ -137,6 +139,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             ResultFormat.length("Please enter all fields", count);
         return CommonInputWidget.otp(
             this, formKitForm, text, resultFormat!, title, count);
+      case InputType.dynamicKeyValue:
+        resultFormat =
+            resultFormat ?? ResultFormat.notEmpty("Please add any one");
+        return CommonInputWidget.dynamicKeyValueField(
+            this, formKitForm, text, resultFormat!, title, maxCount);
       default:
     }
     throw UnimplementedError();
