@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart' as ft;
+import 'package:formstack/src/result/common_result.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_maps/google_maps.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';

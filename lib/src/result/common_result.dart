@@ -3,12 +3,15 @@ class Options {
   final String title;
   final String? subTitle;
   Options(this.key, this.title, {this.subTitle = ""});
+  Map<String, dynamic> toJson() =>
+      {"key": key, "title": title, "subTitle": subTitle};
 }
 
 class KeyValue {
   final String key;
   final String value;
   KeyValue(this.key, this.value);
+  Map<String, dynamic> toJson() => {"key": key, "value": value};
 }
 
 class DynamicData {
@@ -32,4 +35,28 @@ class DynamicData {
     }
     return data;
   }
+
+  Map<String, dynamic> toJson() => {
+        "title": title,
+        "subTitle": subTitle,
+        "trailing": trailing,
+        "leading": leading
+      };
+}
+
+class LocationWrapper {
+  final double lat;
+  final double lng;
+
+  LocationWrapper(this.lat, this.lng);
+  Map<String, dynamic> toJson() => {"lat": lat, "lng": lng};
+}
+
+class MapKey {
+  final String android;
+  final String ios;
+  final String web;
+
+  MapKey(this.android, this.ios, this.web);
+  Map<String, dynamic> toJson() => {"android": android, "ios": ios, "web": web};
 }
