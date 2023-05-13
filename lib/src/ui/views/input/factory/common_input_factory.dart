@@ -30,10 +30,15 @@ class CommonInputWidget {
         title: title, maxCount: maxCount);
   }
 
-  static MapWidgetView map(QuestionStep questionStep, FormStackForm formKitForm,
-      String? text, ResultFormat resultFormat, String? title) {
+  static MapWidgetView map(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title,
+      double maxHeight) {
     return MapWidgetView(formKitForm, questionStep, text, resultFormat,
-        title: title);
+        title: title, maxHeight: maxHeight);
   }
 
   static HTMLWidgetView htmlWidget(

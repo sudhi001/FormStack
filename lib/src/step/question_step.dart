@@ -20,6 +20,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final InputStyle inputStyle;
   final int count;
   final int maxCount;
+  final double? maxHeight;
   final List<dynamic>? filter;
   final SelectionType? selectionType;
   final int? lengthLimit;
@@ -38,6 +39,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.disabled,
       this.count = 0,
       this.maxCount = 100,
+      this.maxHeight = 600,
       this.filter,
       super.componentsStyle = ComponentsStyle.minimal,
       this.inputStyle = InputStyle.basic,
@@ -153,7 +155,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.map(
-            this, formKitForm, text, resultFormat!, title);
+            this, formKitForm, text, resultFormat!, title, maxHeight ?? 600);
       default:
     }
     throw UnimplementedError();
@@ -178,6 +180,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         lengthLimit: element?["lengthLimit"] ?? -1,
         count: element?["count"] ?? 4,
         disabled: element?["disabled"] ?? false,
+        maxHeight: element?["maxHeight"] ?? 600,
         maxCount: element?["maxCount"] ?? 100,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
         crossAxisAlignmentContent: textAlignmentFromString(
