@@ -362,6 +362,41 @@
           ]
         },
         {
+          "type": "NestedStep",
+          "steps": [
+              {
+              "type": "QuestionStep",
+              "label":"Prduct Image",
+              "inputType":"file",
+              "inputStyle":"outline",
+              "id":"file",
+              "filter":["jpg","png"]
+            },
+            {
+              "type": "QuestionStep",
+              "crossAxisAlignmentContent":"start",
+              "label":"Price",
+              "display":"small",
+              "inputType":"number",
+              "inputStyle":"outline",
+              "id":"price",
+              "lengthLimit":40
+            },
+            {
+              "type": "QuestionStep",
+              "crossAxisAlignmentContent":"start",
+              "text":"Offer Price is not mandatory.",
+              "label":"Offer Price",
+              "display":"small",
+              "inputType":"number",
+              "isOptional":true,
+              "inputStyle":"outline",
+              "id":"compareAtPrice",
+              "lengthLimit":10
+            }
+      ]
+    },
+        {
           "type": "QuestionStep",
           "title":"Product Specifications",
           "crossAxisAlignmentContent": "start",
@@ -381,16 +416,9 @@
         },
         {
           "type": "QuestionStep",
-          "label":"Prduct Image",
-          "inputType":"file",
-          "inputStyle":"outline",
-          "id":"file",
-          "filter":["jpg","png"]
-        },
-        {
-          "type": "QuestionStep",
-          "text":"Description",
+          "title":"Product Detailed Description",
           "inputType":"htmlEditor",
+          "crossAxisAlignmentContent":"start",
           "inputStyle":"outline",
           "id":"description"
         },

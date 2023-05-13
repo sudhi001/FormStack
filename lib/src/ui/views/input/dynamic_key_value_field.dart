@@ -143,7 +143,9 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
             _valuecontrollers[i]!.text.trim()));
       }
     }
-
+    if (formStep.isOptional ?? false) {
+      return true;
+    }
     return resultFormat.isValid(_result);
   }
 

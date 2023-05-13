@@ -39,6 +39,9 @@ class SmileInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   bool isValid() {
+    if (formStep.isOptional ?? false) {
+      return true;
+    }
     return resultFormat.isValid(value);
   }
 

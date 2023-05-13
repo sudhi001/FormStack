@@ -120,6 +120,9 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   bool isValid() {
+    if (formStep.isOptional ?? false) {
+      return true;
+    }
     if (formStep.inputType == InputType.file) {
       return resultFormat.isValid(fileResult?.files.single);
     }
