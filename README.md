@@ -214,22 +214,14 @@ FormStack setDisabledUI(List<String> disabledUIIds,
             <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_12.00.22_PM.png?updatedAt=1683873057648" alt="OTP" border="0" width="450"/>
          </td>
       </tr>
+       <tr>
+         <td align="center" style="background-color: white">
+            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-13_at_8.33.04_AM.png?updatedAt=1683947004011" alt="HTML Editor" border="0" width="450"/>
+         </td>
+      </tr>
    </tbody>
 </table>
 
-# Map Confirguration
-
-Modify web/index.html #
-Get an API Key for Google Maps JavaScript API. Get started [here](https://developers.google.com/maps/documentation/javascript/get-api-key).
-
-Modify the <head> tag of your web/index.html to load the Google Maps JavaScript API, like so:
-
-```
-<head>
-
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-</head>
-```
 
 # Screenshots
 

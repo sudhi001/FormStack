@@ -21,8 +21,6 @@ dependencies:
   collection: ^1.17.0
   webviewx: ^0.2.2
   file_picker: ^5.2.11
-  google_maps_flutter_web: ^0.4.0+8
-  google_maps_flutter: ^2.2.6
   html_editor_enhanced: ^2.5.0
 
 dev_dependencies:
