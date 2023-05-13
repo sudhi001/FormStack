@@ -300,7 +300,111 @@
         }
 
       ]
-    
-   }
+   },
+   "create_product_form": {
+    "steps": [
+      {
+        "type": "NestedStep",
+        "steps": [
+                {
+                  "type": "QuestionStep",
+                  "label":"Title",
+                  "display":"small",
+                  "inputType":"text",
+                  "inputStyle": "outline",
+                  "id":"title"
+                },
+                {
+                  "type": "QuestionStep",
+                  "label":"Subtitle",
+                  "display":"small",
+                  "inputType":"text",
+                  "inputStyle": "outline",
+                  "id":"subtitle"
+                },
+                {
+                  "type": "QuestionStep",
+                  "label":"Short Description",
+                  "inputType":"text",
+                  "display":"small",
+                  "inputStyle": "outline",
+                  "id":"shortDescription"
+                },
+                {
+                  "type": "QuestionStep",
+                  "display":"small",
+                  "inputType": "dropdown",
+                  "componentsStyle": "basic",
+                  "options": [
+                    {
+                      "key": "ENGINEERING",
+                      "title": "ENGINEERING"
+                    },
+                    {
+                      "key": "MEDICAL",
+                      "title": "MEDICAL"
+                    },
+                    {
+                      "key": "GROCERRIES AND PRODUCTS",
+                      "title": "GROCERRIES AND PRODUCTS"
+                    },
+                    {
+                      "key": "RESTAURANT",
+                      "title": "RESTAURANT"
+                    },
+                    {
+                      "key": "OTHERS",
+                      "title": "OTHERS"
+                    }
+                  ],
+                  "id": "category"
+                }
+          ]
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Product Specifications",
+          "crossAxisAlignmentContent": "start",
+          "inputType":"dynamicKeyValue",
+          "id":"specification",
+          "inputStyle":"outline",
+          "componentsStyle":"minimal"
+        },
+        {
+          "type": "QuestionStep",
+          "title":"Product Features",
+          "crossAxisAlignmentContent": "start",
+          "inputType":"dynamicKeyValue",
+          "id":"features",
+          "inputStyle":"outline",
+          "componentsStyle":"minimal"
+        },
+        {
+          "type": "QuestionStep",
+          "label":"Prduct Image",
+          "inputType":"file",
+          "inputStyle":"outline",
+          "id":"file",
+          "filter":["jpg","png"]
+        },
+        {
+          "type": "QuestionStep",
+          "text":"Description",
+          "inputType":"htmlEditor",
+          "inputStyle":"outline",
+          "id":"description"
+        },
+          {
+            "type": "CompletionStep",
+            "autoTrigger":true,
+            "nextButtonText":"",
+            "title":"Please wait..",
+            "id":"IS_COMPLETED"
+          }
+       
+        
+      ]
+  }
 }
+
 

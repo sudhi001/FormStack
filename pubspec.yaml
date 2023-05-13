@@ -1,6 +1,6 @@
 name: formstack
 description: A  flutter library to create a UI based on the model from either json or dart object.
-version: 0.7.4
+version: 0.7.5
 homepage: https://github.com/sudhi001/FormStack
 issue_tracker: https://github.com/sudhi001/FormStack/issues
 screenshots:
@@ -21,6 +21,9 @@ dependencies:
   collection: ^1.17.0
   webviewx: ^0.2.2
   file_picker: ^5.2.11
+  google_maps_flutter_web: ^0.4.0+8
+  google_maps_flutter: ^2.2.6
+  html_editor_enhanced: ^2.5.0
 
 dev_dependencies:
   flutter_test:

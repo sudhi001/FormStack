@@ -13,7 +13,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
 
   final List<KeyValue?> _result = [];
   final List<TextEditingController?> _keycontrollers = [];
-  final List<TextEditingController?> _Valuecontrollers = [];
+  final List<TextEditingController?> _valuecontrollers = [];
   List<Widget> textFields = [];
   int index = 1;
   @override
@@ -37,7 +37,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
         child: StatefulBuilder(builder: (context, setState) {
           textFields = List.generate(index, (int i) {
             _keycontrollers.add(TextEditingController());
-            _Valuecontrollers.add(TextEditingController());
+            _valuecontrollers.add(TextEditingController());
             return Padding(
               padding: const EdgeInsets.only(bottom: 7),
               child: generateTextFields(context, i == 0, i, setState),
@@ -84,7 +84,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     for (var controller in _keycontrollers) {
       controller?.dispose();
     }
-    for (var controller in _Valuecontrollers) {
+    for (var controller in _valuecontrollers) {
       controller?.dispose();
     }
   }
@@ -102,7 +102,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
           enabled: !formStep.disabled,
           autocorrect: false,
           minLines: 1,
-          controller: isKey ? _keycontrollers[index] : _Valuecontrollers[index],
+          controller: isKey ? _keycontrollers[index] : _valuecontrollers[index],
           maxLines: 1,
           keyboardType: TextInputType.text,
           validator: (input) => !isKey
@@ -140,7 +140,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     for (int i = 0; i < index; i++) {
       if (_keycontrollers[i] != null) {
         _result.add(KeyValue(_keycontrollers[i]!.text.trim(),
-            _Valuecontrollers[i]!.text.trim()));
+            _valuecontrollers[i]!.text.trim()));
       }
     }
 

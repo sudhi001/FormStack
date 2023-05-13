@@ -1,7 +1,8 @@
+## 0.7.5
+* HTML Editor added
 ## 0.7.4
 * Dropdown buttom componenty style with minimum and basic.
 * Dynamic key value componet widget added.
-
 ## 0.7.0
 * Date format result will be utc format
 ## 0.6.4

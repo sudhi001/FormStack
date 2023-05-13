@@ -144,6 +144,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.notEmpty("Please add any one");
         return CommonInputWidget.dynamicKeyValueField(
             this, formKitForm, text, resultFormat!, title, maxCount);
+      case InputType.htmlEditor:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please enter any.");
+        return CommonInputWidget.htmlWidget(
+            this, formKitForm, text, resultFormat!, title);
       default:
     }
     throw UnimplementedError();
@@ -168,6 +173,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         lengthLimit: element?["lengthLimit"] ?? -1,
         count: element?["count"] ?? 4,
         disabled: element?["disabled"] ?? false,
+        maxCount: element?["maxCount"] ?? 100,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
         crossAxisAlignmentContent: textAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??

@@ -24,6 +24,7 @@ class NestedStepView extends BaseStepView<NestedStep> {
       requestFocus();
     });
     return ListView.builder(
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
       itemBuilder: (context, index) {
         return componets[index];

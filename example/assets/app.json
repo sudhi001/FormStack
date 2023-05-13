@@ -17,7 +17,9 @@
              {"key":"FULL_QUESTIONS","title":"Full Components"},
              {"key":"NEW_COMPONENTS","title":"New Components"},
              {"key":"LOGIN","title":"Login Form"},
-             {"key":"NESTED","title":"Neested"}
+             {"key":"NESTED","title":"Nested"},
+             {"key":"CREATE_PRODUCT","title":"Create Product"}
+             
           ],
           "id":"CHOICE",
         
@@ -26,7 +28,9 @@
           {"id":"FULL_QUESTIONS_START","expression":"IN FULL_QUESTIONS" ,"formName":"full"},
           {"id":"","expression":"IN NEW_COMPONENTS" ,"formName":"new_form"},
           {"id":"","expression":"IN LOGIN" ,"formName":"login_form"},
-          {"id":"","expression":"IN NESTED" ,"formName":"create_minimal_application"}
+          {"id":"","expression":"IN NESTED" ,"formName":"create_minimal_application"},
+          {"id":"","expression":"IN CREATE_PRODUCT" ,"formName":"create_product_form"}
+          
         ]
         },{
           "type": "QuestionStep",
@@ -118,7 +122,7 @@
          {"key":"NOT_SURE","title":"Not Sure"}
       ],
       "id":"AUTISM_QUESTION_ONE"
- },
+    },
        {
          "type": "CompletionStep",
          "autoTrigger":true,
