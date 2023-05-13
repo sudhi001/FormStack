@@ -27,8 +27,8 @@ class MapWidgetView extends BaseStepView<QuestionStep> {
             : null,
         constraints:
             const BoxConstraints(minWidth: 300, maxWidth: 1200, maxHeight: 600),
-        child: MapWidget(
-            formKitForm.mapKey, formKitForm.initialLocation, (p0) => null));
+        child: MapWidget(formKitForm.mapKey, formKitForm.initialLocation,
+            (p0) => {formStep.result = p0}));
   }
 
   InputBorder inputBoder() {
