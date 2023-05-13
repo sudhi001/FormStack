@@ -11,12 +11,6 @@ class KeyValue {
   KeyValue(this.key, this.value);
 }
 
-class GeoLocationResult {
-  final double latitude;
-  final double longitude;
-  GeoLocationResult({required this.latitude, required this.longitude});
-}
-
 class DynamicData {
   final String title;
   final String? subTitle;

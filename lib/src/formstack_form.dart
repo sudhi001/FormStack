@@ -10,9 +10,9 @@ abstract class FormStackForm {
   String fromInstanceName;
   String? backgroundAnimationFile;
   LinkedList<FormStep> steps;
-  String? googleMapAPIKey;
+  MapKey mapKey;
   Alignment? backgroundAlignment;
-  GeoLocationResult? initialPosition;
+  LocationWrapper initialLocation;
   Color primaryColor;
   bool preventSystemBackNavigation;
   Function(FormStep)? onUpdate;
@@ -33,10 +33,10 @@ abstract class FormStackForm {
       this.onValidtionError,
       this.onSystemNagiationBackClick,
       this.primaryColor = Colors.black,
-      this.googleMapAPIKey,
+      required this.mapKey,
       this.preventSystemBackNavigation = false,
       this.backgroundAlignment,
-      this.initialPosition}) {
+      required this.initialLocation}) {
     id ??= FormIdentifier();
   }
 
@@ -144,9 +144,9 @@ abstract class FormStackForm {
 
 class FormWizard extends FormStackForm {
   FormWizard(super.steps,
-      {super.googleMapAPIKey,
+      {required super.mapKey,
       required super.fromInstanceName,
-      super.initialPosition,
+      required super.initialLocation,
       super.backgroundAlignment,
       super.id,
       super.backgroundAnimationFile});

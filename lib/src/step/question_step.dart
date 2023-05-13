@@ -149,6 +149,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.htmlWidget(
             this, formKitForm, text, resultFormat!, title);
+      case InputType.mapLocation:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please enter any.");
+        return CommonInputWidget.map(
+            this, formKitForm, text, resultFormat!, title);
       default:
     }
     throw UnimplementedError();

@@ -115,45 +115,57 @@ class FormStack {
   ///
   FormStack form(
       {String name = "default",
-      String? googleMapAPIKey,
-      GeoLocationResult? initialPosition,
+      required MapKey mapKey,
+      required LocationWrapper initialLocation,
       String? backgroundAnimationFile,
       Alignment? backgroundAlignment,
       required List<FormStep> steps}) {
     var list = LinkedList<FormStep>();
     list.addAll(steps);
     FormWizard form = FormWizard(list,
-        googleMapAPIKey: googleMapAPIKey,
+        mapKey: mapKey,
         fromInstanceName: instanceName,
         backgroundAlignment: backgroundAlignment,
-        backgroundAnimationFile: backgroundAnimationFile);
+        backgroundAnimationFile: backgroundAnimationFile,
+        initialLocation: initialLocation);
     _forms.putIfAbsent(name, () => form);
     return this;
   }
 
   ///Load single json file from assets folder
-  Future<FormStack> loadFromAsset(String path) async {
-    return loadFromAssets([path]);
+  Future<FormStack> loadFromAsset(String path,
+      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
+    return loadFromAssets([path],
+        mapKey: mapKey, initialLocation: initialLocation);
   }
 
   ///Import and parse multiple JSON files located in the assets folder.
-  Future<FormStack> loadFromAssets(List<String> files) async {
+  Future<FormStack> loadFromAssets(List<String> files,
+      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
     for (var element in files) {
       String data = await rootBundle.loadString(element);
-      ParserUtils.buildFormFromJson(this, json.decode(data));
+      ParserUtils.buildFormFromJson(
+          this,
+          json.decode(data),
+          mapKey ?? MapKey("", "", ""),
+          initialLocation ?? LocationWrapper(0, 0));
     }
     return this;
   }
 
   /// Build the form from the JSON content
-  Future<FormStack> buildFormFromJsonString(String data) async {
+  Future<FormStack> buildFormFromJsonString(String data,
+      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
     Map<String, dynamic>? body = await json.decode(data);
-    return buildFormFromJson(body);
+    return buildFormFromJson(body,
+        mapKey: mapKey, initialLocation: initialLocation);
   }
 
   /// Build the from from Map (JSON)
-  Future<FormStack> buildFormFromJson(Map<String, dynamic>? body) async {
-    ParserUtils.buildFormFromJson(this, body);
+  Future<FormStack> buildFormFromJson(Map<String, dynamic>? body,
+      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
+    ParserUtils.buildFormFromJson(this, body, mapKey ?? MapKey("", "", ""),
+        initialLocation ?? LocationWrapper(0, 0));
     return this;
   }
 

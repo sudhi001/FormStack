@@ -40,6 +40,9 @@ Overall, FormStack is a powerful tool for creating dynamic user interfaces in Fl
 - ✅ Dropdown List
 - ✅ Smile Rating
 - ✅ Dynamic Key Value Widget
+- ✅ HTML Editor
+- ✅ Location Picker (Using Google Map and Google Place Auto completer API)
+
 
 ## Online Demo
 
@@ -218,10 +221,24 @@ FormStack setDisabledUI(List<String> disabledUIIds,
          <td align="center" style="background-color: white">
             <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-13_at_8.33.04_AM.png?updatedAt=1683947004011" alt="HTML Editor" border="0" width="450"/>
          </td>
+          <td align="center" style="background-color: white">
+            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-13_at_11.16.06_AM.png?updatedAt=1683956785408" alt="Location Pickerr" border="0" width="450"/>
+         </td>
       </tr>
    </tbody>
 </table>
 
+
+## Modify the <head> tag of your web/index.html to load the Google Maps JavaScript API, like so:
+
+```
+<head>
+
+  <!-- // Other stuff -->
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+</head> 
+``` 
 
 # Screenshots
 

@@ -1,3 +1,5 @@
+## 0.7.8
+* Location Picker with Google Map
 ## 0.7.5
 * HTML Editor added
 ## 0.7.4

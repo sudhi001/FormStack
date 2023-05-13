@@ -14,5 +14,6 @@ enum InputType {
   otp,
   dropdown,
   dynamicKeyValue,
-  htmlEditor
+  htmlEditor,
+  mapLocation
 }

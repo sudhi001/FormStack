@@ -12,8 +12,8 @@ import 'package:formstack/src/utils/alignment.dart';
 ///
 class ParserUtils {
   /// Build FormStep List from JSON
-  static void buildFormFromJson(
-      FormStack formStack, Map<String, dynamic>? body) async {
+  static void buildFormFromJson(FormStack formStack, Map<String, dynamic>? body,
+      MapKey mapKey, LocationWrapper locationWrapper) async {
     if (body != null) {
       body.forEach((key, value) {
         List<FormStep> formStep = [];
@@ -24,15 +24,11 @@ class ParserUtils {
         formStack.form(
             steps: formStep,
             name: key,
-            googleMapAPIKey: value?["googleMapAPIKey"],
+            mapKey: mapKey,
             backgroundAnimationFile: value?["backgroundAnimationFile"],
             backgroundAlignment:
                 alignmentFromString(value?["backgroundAlignment"]),
-            initialPosition: value?["initialPosition"] != null
-                ? GeoLocationResult(
-                    latitude: value?["initialPosition"]["latitude"],
-                    longitude: value?["initialPosition"]["longitude"])
-                : null);
+            initialLocation: locationWrapper);
       });
     }
   }
