@@ -305,15 +305,6 @@
     
     "steps": [
       {
-        "type": "QuestionStep",
-        "title":"Yor / Shop Location",
-        "inputType":"mapLocation",
-        "crossAxisAlignmentContent":"start",
-        "inputStyle":"outline",
-        "id":"location",
-        "maxHeight":400
-      },
-      {
         "type": "NestedStep",
         "steps": [
                 {

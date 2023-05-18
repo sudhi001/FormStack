@@ -94,18 +94,24 @@ abstract class FormStackForm {
   void generateResult() {
     result.clear();
     for (var entry in steps) {
-      if (entry.result != null && entry.result is DateTime) {
-        if (entry.resultFormat != null) {
-          DateResultType dateResultType = cast(entry.resultFormat);
-          String formattedDate =
-              DateFormat(dateResultType.format).format(entry.result);
-          result.putIfAbsent((entry.id?.id ?? ""), () => formattedDate);
-        }
-      } else if (entry.result != null && entry.result is Map) {
-        result.addAll(entry.result);
-      } else {
-        result.putIfAbsent((entry.id?.id ?? ""), () => entry.result);
+      addItem(entry);
+    }
+  }
+
+  void addItem(FormStep entry) {
+    if (entry.result != null && entry.result is DateTime) {
+      if (entry.resultFormat != null) {
+        DateResultType dateResultType = cast(entry.resultFormat);
+        String formattedDate =
+            DateFormat(dateResultType.format).format(entry.result);
+        result.putIfAbsent((entry.id?.id ?? ""), () => formattedDate);
       }
+    } else if (entry.result != null && entry.result is Map) {
+      for (var child in entry.result) {
+        addItem(child);
+      }
+    } else {
+      result.putIfAbsent((entry.id?.id ?? ""), () => entry.result);
     }
   }
 
