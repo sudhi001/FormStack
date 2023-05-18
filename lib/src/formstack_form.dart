@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
+import 'package:formstack/src/step/nested_step.dart';
 import 'package:intl/intl.dart';
 
 abstract class FormStackForm {
@@ -106,10 +107,12 @@ abstract class FormStackForm {
             DateFormat(dateResultType.format).format(entry.result);
         result.putIfAbsent((entry.id?.id ?? ""), () => formattedDate);
       }
-    } else if (entry.result != null && entry.result is Map) {
-      for (var child in entry.result) {
+    } else if (entry is NestedStep) {
+      for (var child in entry.steps ?? []) {
         addItem(child);
       }
+    } else if (entry.result != null && entry.result is Map) {
+      result.addAll(entry.result);
     } else {
       result.putIfAbsent((entry.id?.id ?? ""), () => entry.result);
     }

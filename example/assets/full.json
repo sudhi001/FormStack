@@ -105,6 +105,13 @@
         "steps":[
           {
             "type": "QuestionStep",
+            "title":"Joining Date",
+            "inputType":"dateTime",
+            "id":"joiningDateOn"
+            
+          },
+          {
+            "type": "QuestionStep",
             "crossAxisAlignmentContent":"start",
             "label":"Email",
             "display":"small",

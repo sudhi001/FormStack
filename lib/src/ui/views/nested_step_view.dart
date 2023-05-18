@@ -57,6 +57,7 @@ class NestedStepView extends BaseStepView<NestedStep> {
   resultValue() {
     Map<String, dynamic> result = {};
     for (var element in componets) {
+      element.formStep.result = element.resultValue();
       result.putIfAbsent(
           element.formStep.id?.id ?? "", () => element.resultValue());
     }
