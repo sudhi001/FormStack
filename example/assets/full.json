@@ -311,21 +311,9 @@
    "create_product_form": {
     
     "steps": [
-      {
-        "type": "NestedStep",
-        "steps": [
-          {
-            "type": "QuestionStep",
-            "title":"Product Detailed Description",
-            "inputType":"htmlEditor",
-            "crossAxisAlignmentContent":"start",
-            "inputStyle":"outline",
-            "id":"description"
-          }
-          ]
-        },
         {
           "type": "NestedStep",
+          "backButtonText":"Back",
           "steps": [
               {
               "type": "QuestionStep",

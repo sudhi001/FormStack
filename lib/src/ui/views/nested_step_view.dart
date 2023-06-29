@@ -38,10 +38,11 @@ class NestedStepView extends BaseStepView<NestedStep> {
     if (formStep.isOptional ?? false) {
       return true;
     }
-    bool isAllValid = false;
+    bool isAllValid = true;
     for (var element in componets) {
-      isAllValid = element.isValid();
-      if (!isAllValid) {
+      var isAllValidM = element.isValid();
+      if (!isAllValidM) {
+        isAllValid = isAllValidM;
         element.showValidationError();
       }
     }
