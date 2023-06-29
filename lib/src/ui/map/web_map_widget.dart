@@ -4,11 +4,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart' as ft;
+import 'package:formstack/src/other/google_places_flutter.dart';
+import 'package:formstack/src/other/model/prediction.dart';
 import 'package:formstack/src/result/common_result.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_maps/google_maps.dart';
-import 'package:google_places_flutter/google_places_flutter.dart';
-import 'package:google_places_flutter/model/prediction.dart';
 import 'package:location/location.dart';
 
 import 'map_widget.dart';

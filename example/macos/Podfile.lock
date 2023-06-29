@@ -4,10 +4,13 @@ PODS:
     - FlutterMacOS
     - SwiftLocation/Core (= 5.1.0)
   - SwiftLocation/Core (5.1.0)
+  - webview_universal (0.0.1):
+    - FlutterMacOS
 
 DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - location_macos (from `Flutter/ephemeral/.symlinks/plugins/location_macos/macos`)
+  - webview_universal (from `Flutter/ephemeral/.symlinks/plugins/webview_universal/macos`)
 
 SPEC REPOS:
   trunk:
@@ -18,11 +21,14 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   location_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/location_macos/macos
+  webview_universal:
+    :path: Flutter/ephemeral/.symlinks/plugins/webview_universal/macos
 
 SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   location_macos: 999b2e333cb8e571cce59d2bc467c28d38499132
   SwiftLocation: 83e0ea75a1969cee3a1197e2b7095603fc23fde5
+  webview_universal: 3a173051d546df80bdb9d2f12861423cda2a16a1
 
 PODFILE CHECKSUM: 8d40c19d3cbdb380d870685c3a564c989f1efa52
 

@@ -16,7 +16,7 @@ class DisplayStepView extends BaseStepView<DisplayStep> {
         return ListTitlesView.buildView(context, formStep);
       case DisplayStepType.web:
       default:
-        return WebView.buildView(context, formStep);
+        return WebViewBuild.buildView(context, formStep);
     }
   }
 

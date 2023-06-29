@@ -314,59 +314,14 @@
       {
         "type": "NestedStep",
         "steps": [
-                {
-                  "type": "QuestionStep",
-                  "label":"Title",
-                  "display":"small",
-                  "inputType":"text",
-                  "inputStyle": "outline",
-                  "id":"title"
-                },
-                {
-                  "type": "QuestionStep",
-                  "label":"Subtitle",
-                  "display":"small",
-                  "inputType":"text",
-                  "inputStyle": "outline",
-                  "id":"subtitle"
-                },
-                {
-                  "type": "QuestionStep",
-                  "label":"Short Description",
-                  "inputType":"text",
-                  "display":"small",
-                  "inputStyle": "outline",
-                  "id":"shortDescription"
-                },
-                {
-                  "type": "QuestionStep",
-                  "display":"small",
-                  "inputType": "dropdown",
-                  "componentsStyle": "basic",
-                  "options": [
-                    {
-                      "key": "ENGINEERING",
-                      "title": "ENGINEERING"
-                    },
-                    {
-                      "key": "MEDICAL",
-                      "title": "MEDICAL"
-                    },
-                    {
-                      "key": "GROCERRIES AND PRODUCTS",
-                      "title": "GROCERRIES AND PRODUCTS"
-                    },
-                    {
-                      "key": "RESTAURANT",
-                      "title": "RESTAURANT"
-                    },
-                    {
-                      "key": "OTHERS",
-                      "title": "OTHERS"
-                    }
-                  ],
-                  "id": "category"
-                }
+          {
+            "type": "QuestionStep",
+            "title":"Product Detailed Description",
+            "inputType":"htmlEditor",
+            "crossAxisAlignmentContent":"start",
+            "inputStyle":"outline",
+            "id":"description"
+          }
           ]
         },
         {
@@ -422,6 +377,15 @@
           "inputStyle":"outline",
           "componentsStyle":"minimal"
         },
+
+        {
+          "type": "QuestionStep",
+          "title":"Product Detailed Description",
+          "inputType":"htmlEditor",
+          "crossAxisAlignmentContent":"start",
+          "inputStyle":"outline",
+          "id":"description"
+        },
         {
           "type": "QuestionStep",
           "title":"Yor / Shop Location",
@@ -430,14 +394,6 @@
           "inputStyle":"outline",
           "id":"location"
           
-        },
-        {
-          "type": "QuestionStep",
-          "title":"Product Detailed Description",
-          "inputType":"htmlEditor",
-          "crossAxisAlignmentContent":"start",
-          "inputStyle":"outline",
-          "id":"description"
         },
           {
             "type": "CompletionStep",

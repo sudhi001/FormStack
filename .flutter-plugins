@@ -1,6 +1,5 @@
 # This is a generated file; do not edit or check into version control.
 file_picker=/Users/sudhi/.pub-cache/hosted/pub.dev/file_picker-5.2.11/
-flutter_inappwebview=/Users/sudhi/.pub-cache/hosted/pub.dev/flutter_inappwebview-5.7.2+3/
 flutter_keyboard_visibility=/Users/sudhi/.pub-cache/hosted/pub.dev/flutter_keyboard_visibility-5.4.1/
 flutter_keyboard_visibility_linux=/Users/sudhi/.pub-cache/hosted/pub.dev/flutter_keyboard_visibility_linux-1.0.0/
 flutter_keyboard_visibility_macos=/Users/sudhi/.pub-cache/hosted/pub.dev/flutter_keyboard_visibility_macos-1.0.0/
@@ -16,6 +15,9 @@ location_android=/Users/sudhi/.pub-cache/hosted/pub.dev/location_android-5.0.0-d
 location_ios=/Users/sudhi/.pub-cache/hosted/pub.dev/location_ios-5.0.0-dev.4/
 location_macos=/Users/sudhi/.pub-cache/hosted/pub.dev/location_macos-5.0.0-dev.3/
 location_web=/Users/sudhi/.pub-cache/hosted/pub.dev/location_web-5.0.0-dev.3/
-webview_flutter=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter-2.8.0/
-webview_flutter_android=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_android-2.10.4/
-webview_flutter_wkwebview=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-2.9.5/
+quill_html_editor=/Users/sudhi/.pub-cache/hosted/pub.dev/quill_html_editor-2.1.9/
+webview_flutter=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter-4.2.2/
+webview_flutter_android=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_android-3.8.0/
+webview_flutter_web=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_web-0.2.2+1/
+webview_flutter_wkwebview=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.6.0/
+webview_universal=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_universal-0.0.4/
