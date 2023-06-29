@@ -314,6 +314,8 @@
         {
           "type": "NestedStep",
           "backButtonText":"Back",
+          "cancellable":true,
+          "footerBackButton":true,
           "steps": [
               {
               "type": "QuestionStep",

@@ -20,6 +20,7 @@ class NestedStep extends FormStep {
       super.nextButtonText = "Start",
       super.backButtonText,
       super.buttonStyle,
+      super.footerBackButton = false,
       this.steps = const [],
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,
@@ -44,6 +45,7 @@ class NestedStep extends FormStep {
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
         cancellable: element?["cancellable"],
+        footerBackButton: element?["footerBackButton"] ?? false,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
         relevantConditions: relevantConditions,
         backButtonText: element?["backButtonText"],

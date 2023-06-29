@@ -247,58 +247,75 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Create To Appbar ui
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     return (formStep.cancellable ?? false)
-        ? AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: onBack,
-            ),
-            actions: [
-              IconButton(
-                constraints: const BoxConstraints.expand(width: 80),
-                icon: Text(formStep.cancelButtonText ?? "Cancel"),
-                onPressed: () {
-                  HapticFeedback.selectionClick();
-                  onBack();
-                },
-              ),
-            ],
-          )
+        ? (formStep.footerBackButton)
+            ? null
+            : AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: onBack,
+                ),
+                actions: [
+                  IconButton(
+                    constraints: const BoxConstraints.expand(width: 80),
+                    icon: Text(formStep.cancelButtonText ?? "Cancel"),
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      onBack();
+                    },
+                  ),
+                ],
+              )
         : null;
   }
 
   /// Create bottom navigation UI.
   Widget? _createFooterView(BuildContext context) {
-    return (formStep.nextButtonText?.isNotEmpty ?? true)
-        ? SafeArea(
-            child: SizedBox(
-              height: kToolbarHeight * 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          HapticFeedback.selectionClick();
-                          onNextButtonClick();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                formStep.buttonStyle?.backgroundColor,
-                            foregroundColor:
-                                formStep.buttonStyle?.foregroundColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(
-                                    formStep.buttonStyle?.borderRadius ?? 0))),
-                            minimumSize: const Size(300, 60),
-                            maximumSize: const Size(500, 80)),
-                        child: Text(formStep.nextButtonText ?? "Next")),
-                  ],
-                ),
-              ),
-            ),
-          )
-        : null;
+    return SafeArea(
+      child: SizedBox(
+        height: kToolbarHeight * 2,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (formStep.footerBackButton &&
+                  (formStep.cancellable ?? false)) ...[
+                ElevatedButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      onBack();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: formStep.buttonStyle?.backgroundColor,
+                        foregroundColor: formStep.buttonStyle?.foregroundColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(
+                                formStep.buttonStyle?.borderRadius ?? 0))),
+                        minimumSize: const Size(300, 60),
+                        maximumSize: const Size(500, 80)),
+                    child: Text(formStep.backButtonText ?? "Back")),
+                const SizedBox(width: 7)
+              ],
+              if (formStep.nextButtonText?.isNotEmpty ?? true)
+                ElevatedButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      onNextButtonClick();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: formStep.buttonStyle?.backgroundColor,
+                        foregroundColor: formStep.buttonStyle?.foregroundColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(
+                                formStep.buttonStyle?.borderRadius ?? 0))),
+                        minimumSize: const Size(300, 60),
+                        maximumSize: const Size(500, 80)),
+                    child: Text(formStep.nextButtonText ?? "Next")),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _divisionPadding() {

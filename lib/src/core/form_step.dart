@@ -24,6 +24,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   String? cancelButtonText;
   List<RelevantCondition>? relevantConditions;
   bool componentOnly;
+  bool footerBackButton;
   Display display;
   ComponentsStyle componentsStyle;
   CrossAxisAlignment crossAxisAlignmentContent;
@@ -37,6 +38,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.hint,
       this.buttonStyle,
       this.error,
+      this.footerBackButton = false,
       this.disabled = false,
       this.crossAxisAlignmentContent = CrossAxisAlignment.center,
       this.display = Display.normal,
