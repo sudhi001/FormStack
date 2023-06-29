@@ -28,7 +28,7 @@ class HTMLWidgetView extends BaseStepView<QuestionStep> {
           const BoxConstraints(minWidth: 300, maxWidth: 1200, maxHeight: 400),
       child: Column(
         children: [
-          ToolBar(
+          ToolBar.scroll(
             padding: const EdgeInsets.all(8),
             iconSize: 25,
             controller: controller,
