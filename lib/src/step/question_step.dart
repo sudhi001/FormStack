@@ -33,6 +33,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.buttonStyle,
       super.display,
       super.hint,
+      super.footerBackButton,
       this.selectionType,
       this.lengthLimit,
       super.label,
@@ -172,6 +173,7 @@ class QuestionStep extends FormStep<QuestionStep> {
     return QuestionStep(
         inputType: inputType,
         options: options,
+        footerBackButton: element?["footerBackButton"] ?? false,
         selectionType: element?["selectionType"] != null
             ? SelectionType.values
                 .firstWhere((e) => e.name == element?["selectionType"])
