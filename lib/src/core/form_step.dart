@@ -31,6 +31,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   UIStyle? buttonStyle;
   String? error;
   bool disabled;
+  FormStep? previousStep;
   FormStep(
       {this.id,
       this.title,
@@ -53,6 +54,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.titleIconAnimationFile,
       this.relevantConditions,
       this.cancelButtonText = "Cancel",
+      this.previousStep,
       this.resultFormat}) {
     id ??= StepIdentifier();
   }

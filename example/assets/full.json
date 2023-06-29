@@ -313,6 +313,7 @@
     "steps": [
         {
           "type": "NestedStep",
+          "cancellable":true,
           "steps": [
               {
               "type": "QuestionStep",
@@ -353,6 +354,8 @@
           "inputType":"dynamicKeyValue",
           "id":"specification",
           "inputStyle":"outline",
+          "backButtonText":"Back",
+          "cancellable":true,
           "componentsStyle":"minimal"
         },
         {

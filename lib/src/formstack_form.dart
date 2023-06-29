@@ -20,6 +20,7 @@ abstract class FormStackForm {
   VoidCallback? onSystemNagiationBackClick;
   Function(FormStackForm)? onRenderFormSatackForm;
   Function(Map<String, dynamic> result)? onFinish;
+  Function()? onCancel;
   Function(String)? onValidtionError;
   Map<String, dynamic> relevantStack = {};
   Map<String, dynamic> result = {};
@@ -52,6 +53,24 @@ abstract class FormStackForm {
     }
   }
 
+  void backStep(FormStep? currentStep) {
+    FormStep? nextStep;
+    if (relevantStack.containsKey(currentStep?.id?.id)) {
+      nextStep = relevantStack[currentStep?.id?.id];
+    } else {
+      nextStep = currentStep?.previousStep ?? currentStep?.previous;
+      if (nextStep != null) {
+        onUpdate?.call(nextStep);
+      } else if (previousFormStackForm != null) {
+        onRenderFormSatackForm?.call(previousFormStackForm!);
+        return;
+      }
+    }
+    if (nextStep != null) {
+      onUpdate?.call(nextStep);
+    }
+  }
+
   void nextStep(FormStep? currentStep) {
     FormStep? nextStep;
     if (currentStep?.relevantConditions == null) {
@@ -77,9 +96,11 @@ abstract class FormStackForm {
           return;
         } else {
           nextStep = currentStep.next;
+          nextStep?.previousStep = currentStep;
         }
       } else {
         nextStep = currentStep.next;
+        nextStep?.previousStep = currentStep;
       }
     }
 
@@ -118,25 +139,13 @@ abstract class FormStackForm {
     }
   }
 
-  void backStep(FormStep? currentStep) {
-    FormStep? nextStep;
-    if (relevantStack.containsKey(currentStep?.id?.id)) {
-      nextStep = relevantStack[currentStep?.id?.id];
-    } else {
-      nextStep = currentStep?.previous;
-      if (previousFormStackForm != null) {
-        onRenderFormSatackForm?.call(previousFormStackForm!);
-        return;
-      }
-    }
-    if (nextStep != null) {
-      onUpdate?.call(nextStep);
-    }
-  }
-
   void cancelStep(FormStep? currentStep) {
     clearResult();
-    onUpdate?.call(steps.first);
+    if (steps.first == currentStep) {
+      onCancel?.call();
+    } else {
+      onUpdate?.call(steps.first);
+    }
   }
 
   Widget render(Function(FormStep) onUpdate,

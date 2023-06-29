@@ -260,7 +260,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                     icon: Text(formStep.cancelButtonText ?? "Cancel"),
                     onPressed: () {
                       HapticFeedback.selectionClick();
-                      onBack();
+                      onCancel();
                     },
                   ),
                 ],
@@ -273,6 +273,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     return SafeArea(
       child: SizedBox(
         height: kToolbarHeight * 2,
+        width: 350,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 3),
           child: Row(
