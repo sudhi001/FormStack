@@ -19,7 +19,8 @@
              {"key":"NEW_COMPONENTS","title":"New Components"},
              {"key":"LOGIN","title":"Login Form"},
              {"key":"NESTED","title":"Nested"},
-             {"key":"CREATE_PRODUCT","title":"Create Product"}
+             {"key":"CREATE_PRODUCT","title":"Create Product"},
+             {"key":"PURCHASE","title":"Purchase"}
              
           ],
           "id":"CHOICE",
@@ -30,7 +31,8 @@
           {"id":"","expression":"IN NEW_COMPONENTS" ,"formName":"new_form"},
           {"id":"","expression":"IN LOGIN" ,"formName":"login_form"},
           {"id":"","expression":"IN NESTED" ,"formName":"create_minimal_application"},
-          {"id":"","expression":"IN CREATE_PRODUCT" ,"formName":"create_product_form"}
+          {"id":"","expression":"IN CREATE_PRODUCT" ,"formName":"create_product_form"},
+          {"id":"","expression":"IN PURCHASE" ,"formName":"purchase_product"}
           
         ]
         },{

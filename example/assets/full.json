@@ -395,6 +395,86 @@
        
         
       ]
+  },
+  "purchase_product": {
+    "steps": [
+      {
+        "type": "QuestionStep",
+        "nextButtonText": "",
+        "autoTrigger": true,
+        "backButtonText":"Cancel",
+        "cancellable":true,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Select your payment method",
+        "options": [
+          {
+            "key": "UPI",
+            "title": "UPI Payment"
+          },
+          {
+            "key": "NETBANKING",
+            "title": "Net Banking"
+          },
+          {
+            "key": "CREDIT_CARD",
+            "title": "Credit Card"
+          },
+          {
+            "key": "DEBIT_CARD",
+            "title": "Debit Card"
+          }
+        ],
+        "id": "paymentMethod",
+        "relevantConditions": [
+          {"id":"UPI","expression":"IN UPI"}
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "UPI",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "UPI Payment",
+        "validationExpression":"{\"or\":[{\"id\":\"vpa\",\"expression\":\"IS_NOT_EMPTY\"},{\"id\":\"upiNumber\",\"expression\":\"IS_NOT_EMPTY\"}],\"orValidationMessage\":\"Please ente UPI ID or Number.\"}",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"VPA ( UPI ID )",
+            "display":"small",
+            "inputType":"text",
+            "maxCount":50,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"vpa"
+          },
+          {
+            "type": "QuestionStep",
+            "label":"UPI Number",
+            "crossAxisAlignmentContent":"start",
+            "title":"OR user your UPI Number",
+            "display":"small",
+            "maxCount":12,
+            "inputType":"number",
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"upiNumber"
+          }
+        ]
+      },
+      {
+        "type": "CompletionStep",
+        "autoTrigger":true,
+        "nextButtonText":"",
+        "title":"Please wait..",
+        "id":"IS_COMPLETED"
+      }
+    ]
   }
 }
 

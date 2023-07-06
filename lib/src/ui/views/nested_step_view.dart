@@ -9,6 +9,7 @@ class NestedStepView extends BaseStepView<NestedStep> {
       {super.key, super.title, cancellable});
 
   List<BaseStepView> componets = [];
+  ResultFormat? resultFormat;
 
   @override
   Widget? buildWInputWidget(BuildContext context, NestedStep formStep) {
@@ -46,12 +47,16 @@ class NestedStepView extends BaseStepView<NestedStep> {
         element.showValidationError();
       }
     }
+    if (formStep.validationExpression.isNotEmpty) {
+      resultFormat = ResultFormat.expression(formStep.validationExpression);
+      isAllValid = resultFormat!.isValid(resultValue());
+    }
     return isAllValid;
   }
 
   @override
   String validationError() {
-    return "";
+    return resultFormat?.error() ?? "";
   }
 
   @override
@@ -62,6 +67,7 @@ class NestedStepView extends BaseStepView<NestedStep> {
       result.putIfAbsent(
           element.formStep.id?.id ?? "", () => element.resultValue());
     }
+
     return result;
   }
 

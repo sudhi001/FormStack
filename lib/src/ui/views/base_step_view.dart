@@ -161,7 +161,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: formStep.display == Display.small ? 7 : 14,
-              vertical: formStep.display == Display.small ? 4 : 14),
+              vertical: formStep.display == Display.small ? 1 : 14),
           child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: formStep.crossAxisAlignmentContent,
@@ -181,15 +181,21 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       constraints:
                           const BoxConstraints(minWidth: 75, maxWidth: 500),
                       child: Text(title ?? "",
-                          style: formStep.display == Display.medium
-                              ? Theme.of(context).textTheme.headlineMedium
-                              : (formStep.display == Display.large
-                                  ? Theme.of(context).textTheme.headlineLarge
-                                  : (formStep.display == Display.extraLarge
-                                      ? Theme.of(context).textTheme.displaySmall
-                                      : Theme.of(context)
+                          style: formStep.display == Display.small
+                              ? Theme.of(context).textTheme.bodyLarge
+                              : formStep.display == Display.medium
+                                  ? Theme.of(context).textTheme.headlineMedium
+                                  : (formStep.display == Display.large
+                                      ? Theme.of(context)
                                           .textTheme
-                                          .headlineSmall)))),
+                                          .headlineLarge
+                                      : (formStep.display == Display.extraLarge
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .displaySmall
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall)))),
                   _divisionPadding()
                 ],
                 if (text != null && text!.isNotEmpty) ...[

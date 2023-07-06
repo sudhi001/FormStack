@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 T? cast<T>(x) => x is T ? x : null;
 
 abstract class ResultFormat {
@@ -12,6 +14,7 @@ abstract class ResultFormat {
   factory ResultFormat.password(String errorMsg) = _PasswordResultType;
   factory ResultFormat.text(String errorMsg) = _TextesultType;
   factory ResultFormat.number(String errorMsg) = _NumberResultType;
+  factory ResultFormat.expression(String expression) = _ExpressionResultType;
   factory ResultFormat.date(String errorMsg, String format) = DateResultType;
   factory ResultFormat.singleChoice(String errorMsg) = _SingleChoiceResultType;
   factory ResultFormat.multipleChoice(String errorMsg) =
@@ -248,5 +251,92 @@ extension EmailValidator on String {
 
   bool isValidNumber() {
     return RegExp("[0-9]").hasMatch(this);
+  }
+}
+
+class _ExpressionResultType extends ResultFormat {
+  final String expression;
+  final ExpressionValidator expressionValidator = ExpressionValidator();
+  _ExpressionResultType(this.expression) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    return expressionValidator.validate(
+        cast<Map<String, dynamic>>(input)!, expression);
+  }
+
+  @override
+  String error() {
+    return expressionValidator.error;
+  }
+}
+
+class ExpressionValidator {
+  String error = "";
+
+  bool validate(Map<String, dynamic> input, String expression) {
+    ExpressionLanguage expressionLanguage =
+        ExpressionLanguage.fromJson(json.decode(expression));
+    bool isOrValid = false;
+    if (expressionLanguage.or.isNotEmpty) {
+      for (var element in expressionLanguage.or) {
+        if (input.containsKey(element.id)) {
+          if (element.expression == "IS_NOT_EMPTY") {
+            if (input[element.id] != null &&
+                cast<String>(input[element.id])!.isNotEmpty) {
+              isOrValid = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (!isOrValid) {
+      error = expressionLanguage.orValidationMessage ?? "";
+    }
+    return isOrValid;
+  }
+}
+
+class ExpressionObject {
+  String? id;
+  String? expression;
+
+  ExpressionObject({this.id, this.expression});
+
+  ExpressionObject.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    expression = json["expression"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['expression'] = expression;
+    return data;
+  }
+}
+
+class ExpressionLanguage {
+  List<ExpressionObject> or = [];
+  String? orValidationMessage;
+
+  ExpressionLanguage({required this.or});
+
+  ExpressionLanguage.fromJson(Map<String, dynamic> json) {
+    if (json['or'] != null) {
+      or = [];
+      json['or'].forEach((v) {
+        or.add(ExpressionObject.fromJson(v));
+      });
+    }
+    orValidationMessage = json["orValidationMessage"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['or'] = or.map((v) => v.toJson()).toList();
+    data['orValidationMessage'] = orValidationMessage;
+    return data;
   }
 }

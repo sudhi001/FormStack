@@ -9,6 +9,7 @@ import 'package:formstack/src/utils/alignment.dart';
 class NestedStep extends FormStep {
   static const String tag = "NestedStep";
   final List<FormStep>? steps;
+  final String validationExpression;
   Function(Map<String, dynamic>)? onFinish;
 
   NestedStep(
@@ -25,6 +26,7 @@ class NestedStep extends FormStep {
       super.footerBackButton = false,
       this.steps = const [],
       super.titleIconMaxWidth,
+      required this.validationExpression,
       super.titleIconAnimationFile,
       super.cancelButtonText,
       super.crossAxisAlignmentContent,
@@ -57,6 +59,7 @@ class NestedStep extends FormStep {
         steps: steps,
         nextButtonText: element?["nextButtonText"],
         text: element?["text"],
+        validationExpression: element?["validationExpression"] ?? "",
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
         titleIconMaxWidth: element?["titleIconMaxWidth"],
