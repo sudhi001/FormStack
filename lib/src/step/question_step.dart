@@ -20,6 +20,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   final InputStyle inputStyle;
   final int count;
   final int maxCount;
+  Function(Map<String, dynamic>)? onFinish;
   final double? maxHeight;
   final List<dynamic>? filter;
   final SelectionType? selectionType;
@@ -35,6 +36,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.hint,
       super.footerBackButton,
       this.selectionType,
+      this.onFinish,
       this.lengthLimit,
       super.label,
       super.disabled,
@@ -64,6 +66,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   @override
   FormStepView buildView(FormStackForm formKitForm) {
     formKitForm.onValidtionError = onValidationError;
+    formKitForm.onFinish = onFinish;
     switch (inputType) {
       case InputType.email:
         resultFormat =

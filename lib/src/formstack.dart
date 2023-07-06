@@ -249,6 +249,10 @@ class FormStack {
                   element.onFinish = onFinish;
                   element.onBeforeFinishCallback = onBeforeFinishCallback;
                 }
+              } else if (element is QuestionStep) {
+                if (element.id?.id == identifier.id) {
+                  element.onFinish = onFinish;
+                }
               }
             });
           }
@@ -256,6 +260,10 @@ class FormStack {
           if (entry.id?.id == identifier.id) {
             entry.onFinish = onFinish;
             entry.onBeforeFinishCallback = onBeforeFinishCallback;
+          }
+        } else if (entry is QuestionStep) {
+          if (entry.id?.id == identifier.id) {
+            entry.onFinish = onFinish;
           }
         }
       }
