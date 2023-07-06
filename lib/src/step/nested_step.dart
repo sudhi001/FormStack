@@ -9,6 +9,7 @@ import 'package:formstack/src/utils/alignment.dart';
 class NestedStep extends FormStep {
   static const String tag = "NestedStep";
   final List<FormStep>? steps;
+  Function(Map<String, dynamic>)? onFinish;
 
   NestedStep(
       {super.id,
@@ -20,6 +21,7 @@ class NestedStep extends FormStep {
       super.nextButtonText = "Start",
       super.backButtonText,
       super.buttonStyle,
+      this.onFinish,
       super.footerBackButton = false,
       this.steps = const [],
       super.titleIconMaxWidth,
@@ -32,6 +34,7 @@ class NestedStep extends FormStep {
 
   @override
   FormStepView buildView(FormStackForm formKitForm) {
+    formKitForm.onFinish = onFinish;
     return NestedStepView(formKitForm, this, text, title: title);
   }
 

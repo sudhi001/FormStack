@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
@@ -236,14 +237,21 @@ class FormStack {
     if (formStack != null) {
       for (var entry in formStack.steps) {
         if (entry is NestedStep) {
-          entry.steps?.forEach((element) {
-            if (element is CompletionStep) {
-              if (element.id?.id == identifier.id) {
-                element.onFinish = onFinish;
-                element.onBeforeFinishCallback = onBeforeFinishCallback;
-              }
+          if (entry.id?.id == identifier.id) {
+            entry.onFinish = onFinish;
+            if (onBeforeFinishCallback != null) {
+              log("onBeforeFinishCallback is not supported for NestedStep");
             }
-          });
+          } else {
+            entry.steps?.forEach((element) {
+              if (element is CompletionStep) {
+                if (element.id?.id == identifier.id) {
+                  element.onFinish = onFinish;
+                  element.onBeforeFinishCallback = onBeforeFinishCallback;
+                }
+              }
+            });
+          }
         } else if (entry is CompletionStep) {
           if (entry.id?.id == identifier.id) {
             entry.onFinish = onFinish;
