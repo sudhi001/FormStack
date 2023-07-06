@@ -68,6 +68,8 @@ abstract class FormStackForm {
     }
     if (nextStep != null) {
       onUpdate?.call(nextStep);
+    } else {
+      onFinish?.call(result);
     }
   }
 
