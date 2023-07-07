@@ -26,7 +26,7 @@ class NestedStepView extends BaseStepView<NestedStep> {
     });
     return Wrap(
       spacing: 14,
-      runSpacing: 0,
+      runSpacing: formStep.verticalPadding.toDouble(),
       children: componets,
     );
   }

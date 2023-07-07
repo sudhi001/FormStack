@@ -396,6 +396,231 @@
         
       ]
   },
+   "contact_information": {
+    "steps": [
+      {
+        "type": "NestedStep",
+        "id": "BASIC_INFORMATION",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "footerBackButton":true,
+        "verticalPadding":14,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Basic Profile Infomation",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"First Name",
+            "display":"small",
+            "inputType":"name",
+            "lengthLimit":20,
+            "inputStyle":"outline",
+            "id":"firstName"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Middle Name",
+            "display":"small",
+            "inputType":"name",
+            "lengthLimit":20,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"middleName"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Last Name",
+            "display":"small",
+            "inputType":"name",
+            "lengthLimit":20,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"lastName"
+          }
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "CONTACT_INFORMATION",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "verticalPadding":14,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Contact Information",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Phone Number",
+            "display":"small",
+            "inputType":"number",
+            "lengthLimit":12,
+            "inputStyle":"outline",
+            "id":"primaryPhoneNumber"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Email",
+            "display":"small",
+            "inputType":"email",
+            "lengthLimit":50,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"primaryEmail"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Secondary Phone Number",
+            "display":"small",
+            "inputType":"number",
+            "lengthLimit":12,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"secondaryPhoneNumber"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Secondary Email",
+            "display":"small",
+            "inputType":"email",
+            "lengthLimit":50,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"secondaryEmail"
+          }
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "BASIC_INFORMATION",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "verticalPadding":14,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Describe yourself",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"About Me",
+            "display":"small",
+            "inputType":"text",
+            "lengthLimit":3000,
+            "numberOfLines":5,
+            "inputStyle":"outline",
+            "id":"aboutMe"
+          }
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "SOCIAL_PROFILE",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "verticalPadding":14,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Social Profile",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"FaceBook Profile URL",
+            "display":"small",
+            "inputType":"text",
+            "lengthLimit":500,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"facebookProfileURL"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Twitter Profile URL",
+            "display":"small",
+            "inputType":"text",
+            "lengthLimit":500,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"twitterProfileURL"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Instagram Profile URL",
+            "display":"small",
+            "inputType":"text",
+            "lengthLimit":500,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"instagramProfileURL"
+          },     {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"SKype ID",
+            "display":"small",
+            "inputType":"text",
+            "lengthLimit":500,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"skypeId"
+          }
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "OTHER_INFORMATIONS",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "verticalPadding":14,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Other Infomation",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"WhatsApp Phone Number",
+            "display":"small",
+            "inputType":"number",
+            "lengthLimit":12,
+            "inputStyle":"outline",
+            "id":"whatsappPhoneNumber"
+          },
+            {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Date Of Birth",
+            "display":"small",
+            "inputType":"date",
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"dateOfBirth"
+          }
+        ]
+      },
+      {
+        "type": "CompletionStep",
+        "autoTrigger":true,
+        "nextButtonText":"",
+        "title":"Please wait..",
+        "id":"IS_COMPLETED"
+      }
+    ]
+  },
   "purchase_product": {
     "steps": [
       {
@@ -438,6 +663,7 @@
         "id": "UPI",
         "backButtonText":"Back",
         "cancellable":true,
+        "relevantConditions":[{"id":"IS_COMPLETED","expression":"FOR_ALL"}],
         "footerBackButton":true,
         "inputType": "singleChoice",
         "componentsStyle": "basic",
@@ -474,6 +700,7 @@
         "id": "CARD",
         "backButtonText":"Back",
         "cancellable":true,
+        "relevantConditions":[{"id":"IS_COMPLETED","expression":"FOR_ALL"}],
         "footerBackButton":true,
         "inputType": "singleChoice",
         "componentsStyle": "basic",

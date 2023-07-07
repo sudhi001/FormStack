@@ -10,6 +10,7 @@ class NestedStep extends FormStep {
   static const String tag = "NestedStep";
   final List<FormStep>? steps;
   final String validationExpression;
+  final int verticalPadding;
   Function(Map<String, dynamic>)? onFinish;
 
   NestedStep(
@@ -23,6 +24,7 @@ class NestedStep extends FormStep {
       super.backButtonText,
       super.buttonStyle,
       this.onFinish,
+      required this.verticalPadding,
       super.footerBackButton = false,
       this.steps = const [],
       super.titleIconMaxWidth,
@@ -59,6 +61,7 @@ class NestedStep extends FormStep {
         steps: steps,
         nextButtonText: element?["nextButtonText"],
         text: element?["text"],
+        verticalPadding: element?["verticalPadding"] ?? 0,
         validationExpression: element?["validationExpression"] ?? "",
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
