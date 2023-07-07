@@ -208,6 +208,10 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                                   : Theme.of(context).textTheme.bodyLarge)))),
               _divisionPadding(),
             ],
+            if (inputWidget != null) ...[
+              IgnorePointer(ignoring: formStep.disabled, child: inputWidget),
+            ],
+            _divisionPadding(),
             StatefulBuilder(
                 key: errorKey,
                 builder: (context, setState) {
@@ -225,10 +229,6 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                         );
                 }),
             _divisionPadding(),
-            if (inputWidget != null) ...[
-              IgnorePointer(ignoring: formStep.disabled, child: inputWidget),
-              _divisionPadding(),
-            ],
             if (description?.isNotEmpty ?? false)
               Text(description ?? "",
                   style: formStep.display == Display.medium

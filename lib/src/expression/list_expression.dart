@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+import 'package:formstack/formstack.dart';
 import 'package:formstack/src/expression/base_expression.dart';
 
 ///This grammar allows us to define list conditions with a comparison
@@ -15,7 +17,12 @@ class ListExpressionEvaluator extends ExpressionEvaluator<List> {
 
     switch (operator) {
       case 'IN':
-        return right.every((element) => input.contains(element));
+        if (input is List<Options>) {
+          return right.every((element) =>
+              (input.firstWhereOrNull((e) => e.key == element) != null));
+        } else {
+          return right.every((element) => input.contains(element));
+        }
       case 'FOR_ALL':
         return true;
       case 'NOT_IN':

@@ -20,11 +20,11 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
       this.autoTrigger = false});
 
   final FocusNode _focusNode = FocusNode();
-  List<String> selectedKey = [];
+  List<Options> selectedKey = [];
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    if (formStep.result != null && formStep.result is List<String>) {
-      selectedKey = formStep.result as List<String>;
+    if (formStep.result != null && formStep.result is List<Options>) {
+      selectedKey = formStep.result as List<Options>;
     } else {
       selectedKey = [];
     }
@@ -56,14 +56,14 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                   child: DropdownButton(
                     focusColor: Colors.transparent,
                     hint: selectedKey.isEmpty
-                        ? const Text('Select...')
-                        : Text(selectedKey.first),
+                        ? const Text('Select ')
+                        : Text(selectedKey.first.title),
                     isExpanded: true,
                     iconSize: 30.0,
                     items: options.map(
                       (val) {
-                        return DropdownMenuItem<String>(
-                          value: val.key,
+                        return DropdownMenuItem<Options>(
+                          value: val,
                           child: Text(val.title),
                         );
                       },
@@ -132,7 +132,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                         ? _selectionIcon(setState, index)
                         : selectionType != SelectionType.tick
                             ? _selectionIcon(setState, index)
-                            : (selectedKey.contains(options[index].key)
+                            : (selectedKey.contains(options[index])
                                 ? _selectionIcon(setState, index)
                                 : null),
                   ),
@@ -147,12 +147,12 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
       () {
         if (singleSelection) {
           selectedKey.clear();
-          selectedKey.add(options[index].key);
+          selectedKey.add(options[index]);
         } else {
-          if (!selectedKey.contains(options[index].key)) {
-            selectedKey.add(options[index].key);
+          if (!selectedKey.contains(options[index])) {
+            selectedKey.add(options[index]);
           } else {
-            selectedKey.remove(options[index].key);
+            selectedKey.remove(options[index]);
           }
         }
         if (autoTrigger) {
@@ -177,7 +177,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
           activeColor: Colors.black,
           activeTrackColor: const Color.fromRGBO(242, 242, 247, 1),
           inactiveTrackColor: const Color.fromRGBO(242, 242, 247, 1),
-          value: selectedKey.contains(options[index].key),
+          value: selectedKey.contains(options[index]),
           onChanged: (bool value) {
             onItemTap(setState, index);
           },

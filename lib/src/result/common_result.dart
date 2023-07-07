@@ -3,8 +3,18 @@ class Options {
   final String title;
   final String? subTitle;
   Options(this.key, this.title, {this.subTitle = ""});
+  factory Options.from(Map<String, dynamic> data) {
+    return Options(data["key"], data["title"], subTitle: data["subTitle"]);
+  }
   Map<String, dynamic> toJson() =>
       {"key": key, "title": title, "subTitle": subTitle};
+  @override
+  bool operator ==(Object other) {
+    return (other is Options) && other.key == key;
+  }
+
+  @override
+  int get hashCode => Object.hash(key, title);
 }
 
 class KeyValue {

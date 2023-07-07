@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:formstack/formstack.dart';
+
 T? cast<T>(x) => x is T ? x : null;
 
 abstract class ResultFormat {
@@ -209,7 +211,7 @@ class _SingleChoiceResultType extends ResultFormat {
   _SingleChoiceResultType(this.errorMsg) : super._();
   @override
   bool isValid(dynamic input) {
-    return cast<List<String>>(input)!.isNotEmpty;
+    return cast<List<Options>>(input)!.isNotEmpty;
   }
 
   @override
@@ -223,7 +225,7 @@ class _MultipleChoiceesultType extends ResultFormat {
   _MultipleChoiceesultType(this.errorMsg) : super._();
   @override
   bool isValid(dynamic input) {
-    return cast<List<String>>(input)!.isNotEmpty;
+    return cast<List<Options>>(input)!.isNotEmpty;
   }
 
   @override
