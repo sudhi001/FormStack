@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/input/text_input_field.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 ///
 /// TextFeildWidgetView Create and disply all textfield like ui.
@@ -153,7 +154,12 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       text,
       resultFormat,
       [
-        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+        (questionStep.mask != null)
+            ? MaskTextInputFormatter(
+                mask: questionStep.mask,
+                filter: {"#": RegExp(r'[0-9]')},
+                type: MaskAutoCompletionType.lazy)
+            : FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         LengthLimitingTextInputFormatter(
             questionStep.lengthLimit == -1 ? 30 : questionStep.lengthLimit)
       ],

@@ -27,7 +27,12 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     });
     Widget? inputWidget = buildWInputWidget(context, formStep);
     return (formStep.componentOnly)
-        ? _createComponent(context, inputWidget)
+        ? (formStep.width != null
+            ? SizedBox(
+                width: formStep.width,
+                child: _createComponent(context, inputWidget),
+              )
+            : _createComponent(context, inputWidget))
         : Scaffold(
             backgroundColor: Colors.transparent,
             appBar: _createAppBar(context),
@@ -157,96 +162,84 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Create Coponents Of step
   Widget _createComponent(BuildContext context, Widget? inputWidget) {
     return Center(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: formStep.display == Display.small ? 7 : 14,
-              vertical: formStep.display == Display.small ? 1 : 14),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: formStep.crossAxisAlignmentContent,
-              children: [
-                if (formStep.titleIconAnimationFile != null) ...[
-                  Container(
-                      constraints: BoxConstraints(
-                          minWidth: 75,
-                          maxWidth: formStep.titleIconMaxWidth ?? 300,
-                          minHeight: 50,
-                          maxHeight: formStep.titleIconMaxWidth ?? 300),
-                      child: Lottie.asset(formStep.titleIconAnimationFile!)),
-                  _divisionPadding()
-                ],
-                if (title != null && title!.isNotEmpty) ...[
-                  Container(
-                      constraints:
-                          const BoxConstraints(minWidth: 75, maxWidth: 500),
-                      child: Text(title ?? "",
-                          style: formStep.display == Display.small
-                              ? Theme.of(context).textTheme.bodyLarge
-                              : formStep.display == Display.medium
-                                  ? Theme.of(context).textTheme.headlineMedium
-                                  : (formStep.display == Display.large
-                                      ? Theme.of(context)
-                                          .textTheme
-                                          .headlineLarge
-                                      : (formStep.display == Display.extraLarge
-                                          ? Theme.of(context)
-                                              .textTheme
-                                              .displaySmall
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall)))),
-                  _divisionPadding()
-                ],
-                if (text != null && text!.isNotEmpty) ...[
-                  Container(
-                      constraints:
-                          const BoxConstraints(minWidth: 75, maxWidth: 500),
-                      child: Text(text ?? "",
-                          style: formStep.display == Display.medium
-                              ? Theme.of(context).textTheme.titleLarge
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: formStep.crossAxisAlignmentContent,
+          children: [
+            if (formStep.titleIconAnimationFile != null) ...[
+              Container(
+                  constraints: BoxConstraints(
+                      minWidth: 75,
+                      maxWidth: formStep.titleIconMaxWidth ?? 300,
+                      minHeight: 50,
+                      maxHeight: formStep.titleIconMaxWidth ?? 300),
+                  child: Lottie.asset(formStep.titleIconAnimationFile!)),
+              _divisionPadding()
+            ],
+            if (title != null && title!.isNotEmpty) ...[
+              Container(
+                  constraints:
+                      const BoxConstraints(minWidth: 75, maxWidth: 500),
+                  child: Text(title ?? "",
+                      style: formStep.display == Display.small
+                          ? Theme.of(context).textTheme.bodyLarge
+                          : formStep.display == Display.medium
+                              ? Theme.of(context).textTheme.headlineMedium
                               : (formStep.display == Display.large
-                                  ? Theme.of(context).textTheme.headlineSmall
+                                  ? Theme.of(context).textTheme.headlineLarge
                                   : (formStep.display == Display.extraLarge
-                                      ? Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall
+                                      ? Theme.of(context).textTheme.displaySmall
                                       : Theme.of(context)
                                           .textTheme
-                                          .bodyLarge)))),
-                  _divisionPadding(),
-                ],
-                StatefulBuilder(
-                    key: errorKey,
-                    builder: (context, setState) {
-                      return showError
-                          ? Text(
-                              showError ? validationError() : "",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .apply(color: Colors.red.shade900),
-                            )
-                          : Container(width: 10);
-                    }),
-                _divisionPadding(),
-                if (inputWidget != null) ...[
-                  IgnorePointer(
-                      ignoring: formStep.disabled, child: inputWidget),
-                  _divisionPadding(),
-                ],
-                Text(description ?? "",
-                    style: formStep.display == Display.medium
-                        ? Theme.of(context).textTheme.bodyMedium
-                        : (formStep.display == Display.large
-                            ? Theme.of(context).textTheme.bodyLarge
-                            : (formStep.display == Display.extraLarge
-                                ? Theme.of(context).textTheme.bodyLarge
-                                : Theme.of(context).textTheme.bodySmall)),
-                    textAlign: TextAlign.center),
-              ]),
-        ),
-      ),
+                                          .headlineSmall)))),
+              _divisionPadding()
+            ],
+            if (text != null && text!.isNotEmpty) ...[
+              Container(
+                  constraints:
+                      const BoxConstraints(minWidth: 75, maxWidth: 500),
+                  child: Text(text ?? "",
+                      style: formStep.display == Display.medium
+                          ? Theme.of(context).textTheme.titleLarge
+                          : (formStep.display == Display.large
+                              ? Theme.of(context).textTheme.headlineSmall
+                              : (formStep.display == Display.extraLarge
+                                  ? Theme.of(context).textTheme.headlineSmall
+                                  : Theme.of(context).textTheme.bodyLarge)))),
+              _divisionPadding(),
+            ],
+            StatefulBuilder(
+                key: errorKey,
+                builder: (context, setState) {
+                  return showError
+                      ? Text(
+                          showError ? validationError() : "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .apply(color: Colors.red.shade900),
+                        )
+                      : const SizedBox(
+                          width: 10,
+                          height: 0,
+                        );
+                }),
+            _divisionPadding(),
+            if (inputWidget != null) ...[
+              IgnorePointer(ignoring: formStep.disabled, child: inputWidget),
+              _divisionPadding(),
+            ],
+            if (description?.isNotEmpty ?? false)
+              Text(description ?? "",
+                  style: formStep.display == Display.medium
+                      ? Theme.of(context).textTheme.bodyMedium
+                      : (formStep.display == Display.large
+                          ? Theme.of(context).textTheme.bodyLarge
+                          : (formStep.display == Display.extraLarge
+                              ? Theme.of(context).textTheme.bodyLarge
+                              : Theme.of(context).textTheme.bodySmall)),
+                  textAlign: TextAlign.center),
+          ]),
     );
   }
 

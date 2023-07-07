@@ -428,7 +428,9 @@
         ],
         "id": "paymentMethod",
         "relevantConditions": [
-          {"id":"UPI","expression":"IN UPI"}
+          {"id":"UPI","expression":"IN UPI"},
+          {"id":"CARD","expression":"IN CREDIT_CARD"},
+          {"id":"CARD","expression":"IN DEBIT_CARD"}
         ]
       },
       {
@@ -448,7 +450,7 @@
             "label":"VPA ( UPI ID )",
             "display":"small",
             "inputType":"text",
-            "maxCount":50,
+            "lengthLimit":50,
             "isOptional":true,
             "inputStyle":"outline",
             "id":"vpa"
@@ -459,11 +461,73 @@
             "crossAxisAlignmentContent":"start",
             "title":"OR user your UPI Number",
             "display":"small",
-            "maxCount":12,
+            "lengthLimit":12,
             "inputType":"number",
             "isOptional":true,
             "inputStyle":"outline",
             "id":"upiNumber"
+          }
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "CARD",
+        "backButtonText":"Back",
+        "cancellable":true,
+        "footerBackButton":true,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "title": "Card Payment",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Card Number",
+            "display":"small",
+            "mask":"#### #### #### ####",
+            "inputType":"number",
+            "lengthLimit":19,
+            "inputStyle":"outline",
+            "id":"cardNumber"
+          },
+          {
+            "type": "NestedStep",
+            "steps":[
+                    {
+                      "type": "QuestionStep",
+                      "label":"Expiry Date",
+                      "crossAxisAlignmentContent":"start",
+                      "display":"small",
+                      "lengthLimit":5,
+                      "width":150.0,
+                      "mask":"##/##",
+                      "hint":"MM/YY",
+                      "inputType":"number",
+                      "textAlign":"center",
+                      "inputStyle":"outline",
+                      "id":"expiryDate"
+                    },
+                    {
+                      "type": "QuestionStep",
+                      "label":"CVV",
+                      "crossAxisAlignmentContent":"start",
+                      "display":"small",
+                      "lengthLimit":3,
+                      "width":150.0,
+                      "inputType":"number",
+                      "inputStyle":"outline",
+                      "id":"cvv"
+                    }
+          ]},
+          {
+            "type": "QuestionStep",
+            "label":"Name On Card",
+            "crossAxisAlignmentContent":"start",
+            "display":"small",
+            "lengthLimit":30,
+            "inputType":"text",
+            "inputStyle":"outline",
+            "id":"nameOnCard"
           }
         ]
       },

@@ -31,6 +31,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   UIStyle? buttonStyle;
   String? error;
   bool disabled;
+  final double? width;
   FormStep? previousStep;
   FormStep(
       {this.id,
@@ -41,6 +42,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.error,
       this.footerBackButton = false,
       this.disabled = false,
+      this.width,
       this.crossAxisAlignmentContent = CrossAxisAlignment.center,
       this.display = Display.normal,
       this.componentOnly = false,

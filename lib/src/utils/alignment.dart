@@ -46,7 +46,7 @@ Alignment? alignmentFromString(String? aliment) {
 /// "start" => CrossAxisAlignment.start
 /// "stretch" => CrossAxisAlignment.stretch
 ///
-CrossAxisAlignment? textAlignmentFromString(String? aliment) {
+CrossAxisAlignment? crossAlignmentFromString(String? aliment) {
   if (aliment != null) {
     switch (aliment) {
       case "center":
@@ -62,4 +62,24 @@ CrossAxisAlignment? textAlignmentFromString(String? aliment) {
     }
   }
   return null;
+}
+
+TextAlign textAlignmentFromString(String? aliment) {
+  if (aliment != null) {
+    switch (aliment) {
+      case "center":
+        return TextAlign.center;
+      case "end":
+        return TextAlign.end;
+      case "justify":
+        return TextAlign.justify;
+      case "start":
+        return TextAlign.start;
+      case "left":
+        return TextAlign.left;
+      case "right":
+        return TextAlign.right;
+    }
+  }
+  return TextAlign.start;
 }

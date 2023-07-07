@@ -56,6 +56,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   Widget _buildComponent(BuildContext context) {
     return TextFormField(
       autofocus: true,
+      textAlign: formStep.textAlign,
       enabled: !formStep.disabled,
       readOnly: formStep.inputType == InputType.file,
       enableInteractiveSelection:

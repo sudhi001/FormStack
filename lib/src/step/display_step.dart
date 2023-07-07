@@ -50,7 +50,7 @@ class DisplayStep extends FormStep {
             : DisplayStepType.web,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
         cancellable: element?["cancellable"],
-        crossAxisAlignmentContent: textAlignmentFromString(
+        crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
         relevantConditions: relevantConditions,

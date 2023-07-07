@@ -24,13 +24,10 @@ class NestedStepView extends BaseStepView<NestedStep> {
       await Future.delayed(const Duration(milliseconds: 2));
       requestFocus();
     });
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return componets[index];
-      },
-      itemCount: componets.length,
+    return Wrap(
+      spacing: 14,
+      runSpacing: 0,
+      children: componets,
     );
   }
 

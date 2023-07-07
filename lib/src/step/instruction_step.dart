@@ -43,7 +43,7 @@ class InstructionStep extends FormStep {
         display: element?["display"] != null
             ? Display.values.firstWhere((e) => e.name == element?["display"])
             : Display.normal,
-        crossAxisAlignmentContent: textAlignmentFromString(
+        crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
         buttonStyle: UIStyle.from(element?["buttonStyle"]),

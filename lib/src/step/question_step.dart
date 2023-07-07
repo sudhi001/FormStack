@@ -20,11 +20,15 @@ class QuestionStep extends FormStep<QuestionStep> {
   final InputStyle inputStyle;
   final int count;
   final int maxCount;
+  final String? mask;
+
   Function(Map<String, dynamic>)? onFinish;
   final double? maxHeight;
   final List<dynamic>? filter;
   final SelectionType? selectionType;
   final int? lengthLimit;
+
+  final TextAlign textAlign;
 
   QuestionStep(
       {super.id,
@@ -41,9 +45,12 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.label,
       super.disabled,
       this.count = 0,
+      this.mask,
       this.maxCount = 100,
       this.maxHeight = 600,
       this.filter,
+      this.textAlign = TextAlign.start,
+      super.width,
       super.componentsStyle = ComponentsStyle.minimal,
       this.inputStyle = InputStyle.basic,
       super.resultFormat,
@@ -187,8 +194,10 @@ class QuestionStep extends FormStep<QuestionStep> {
         disabled: element?["disabled"] ?? false,
         maxHeight: element?["maxHeight"] ?? 600,
         maxCount: element?["maxCount"] ?? 100,
+        mask: element?["mask"],
+        textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
         buttonStyle: UIStyle.from(element?["buttonStyle"]),
-        crossAxisAlignmentContent: textAlignmentFromString(
+        crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
         display: element?["display"] != null
@@ -213,6 +222,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         nextButtonText: element?["nextButtonText"],
         numberOfLines: element?["numberOfLines"],
         text: element?["text"],
+        width: element?["width"],
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
         titleIconMaxWidth: element?["titleIconMaxWidth"],
