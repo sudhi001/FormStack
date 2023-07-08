@@ -21,7 +21,7 @@ class DisplayStep extends FormStep {
       super.nextButtonText = "Start",
       super.backButtonText,
       super.componentsStyle,
-      super.buttonStyle,
+      super.style,
       this.data = const [],
       this.displayStepType = DisplayStepType.web,
       super.crossAxisAlignmentContent,
@@ -48,7 +48,7 @@ class DisplayStep extends FormStep {
             ? DisplayStepType.values
                 .firstWhere((e) => e.name == element?["displayStepType"])
             : DisplayStepType.web,
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        style: UIStyle.from(element?["style"]),
         cancellable: element?["cancellable"],
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??

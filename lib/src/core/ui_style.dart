@@ -10,13 +10,17 @@ class UIStyle {
   ///[foregroundColor]
   ///[borderRadius]
   ///
-  UIStyle(this.backgroundColor, this.foregroundColor, this.borderRadius);
+  UIStyle(this.backgroundColor, this.foregroundColor, this.borderColor,
+      this.borderRadius);
 
   /// The [backgroundColor] is used for th background color..
   final Color backgroundColor;
 
   /// The [foregroundColor] is used for th foreground color..
   final Color foregroundColor;
+
+  /// The [borderColor] is used for th border color of textfield..
+  final Color borderColor;
 
   /// The [borderRadius] is used border radius or corner curve..
   final double borderRadius;
@@ -25,6 +29,7 @@ class UIStyle {
     return UIStyle(
         HexColor(style?["backgroundColor"] ?? "#000000"),
         HexColor(style?["foregroundColor"] ?? "#FFFFFF"),
+        HexColor(style?["borderColor"] ?? "#000000"),
         style?["borderRadius"] ?? 10.0);
   }
 }

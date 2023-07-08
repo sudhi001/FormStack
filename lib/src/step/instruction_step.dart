@@ -17,7 +17,7 @@ class InstructionStep extends FormStep {
       super.text,
       super.display = Display.normal,
       super.isOptional = false,
-      super.buttonStyle,
+      super.style,
       super.relevantConditions,
       super.nextButtonText = "Start",
       super.backButtonText,
@@ -46,7 +46,7 @@ class InstructionStep extends FormStep {
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        style: UIStyle.from(element?["style"]),
         cancellable: element?["cancellable"],
         relevantConditions: relevantConditions,
         backButtonText: element?["backButtonText"],

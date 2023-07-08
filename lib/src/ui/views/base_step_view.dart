@@ -286,11 +286,11 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       onBack();
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: formStep.buttonStyle?.backgroundColor,
-                        foregroundColor: formStep.buttonStyle?.foregroundColor,
+                        backgroundColor: formStep.style?.backgroundColor,
+                        foregroundColor: formStep.style?.foregroundColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(
-                                formStep.buttonStyle?.borderRadius ?? 0))),
+                                formStep.style?.borderRadius ?? 0))),
                         minimumSize: const Size(300, 60),
                         maximumSize: const Size(500, 80)),
                     child: Text(formStep.backButtonText ?? "Back")),
@@ -303,11 +303,11 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       onNextButtonClick();
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: formStep.buttonStyle?.backgroundColor,
-                        foregroundColor: formStep.buttonStyle?.foregroundColor,
+                        backgroundColor: formStep.style?.backgroundColor,
+                        foregroundColor: formStep.style?.foregroundColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(
-                                formStep.buttonStyle?.borderRadius ?? 0))),
+                                formStep.style?.borderRadius ?? 0))),
                         minimumSize: const Size(300, 60),
                         maximumSize: const Size(500, 80)),
                     child: Text(formStep.nextButtonText ?? "Next")),

@@ -35,7 +35,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.title = "",
       required this.inputType,
       super.text,
-      super.buttonStyle,
+      super.style,
       super.display,
       super.hint,
       super.footerBackButton,
@@ -196,7 +196,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         maxCount: element?["maxCount"] ?? 100,
         mask: element?["mask"],
         textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
-        buttonStyle: UIStyle.from(element?["buttonStyle"]),
+        style: UIStyle.from(element?["style"]),
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,

@@ -108,7 +108,10 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       case InputStyle.basic:
         return InputBorder.none;
       case InputStyle.outline:
-        return const OutlineInputBorder();
+        return OutlineInputBorder(
+          borderSide:
+              BorderSide(color: formStep.style?.borderColor ?? Colors.black),
+        );
       case InputStyle.underLined:
         return const UnderlineInputBorder();
       default:
