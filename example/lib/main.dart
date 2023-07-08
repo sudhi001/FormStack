@@ -223,6 +223,17 @@ class LoadFromJSONScreen extends StatelessWidget {
         {"title": "Aruba", "subTitle": null, "key": "AW"}
       ]
     }, formName: "contact_information");
+    FormStack.api().addCompletionCallback(
+      GenericIdentifier(id: "IS_COMPLETED"),
+      formName: "contact_information",
+      onFinish: (p0) {
+        debugPrint("$p0");
+      },
+      onBeforeFinishCallback: (result) async {
+        await Future.delayed(Duration(seconds: 30));
+        return Future.value(false);
+      },
+    );
     return Scaffold(
       body: FormStack.api().render(),
     );

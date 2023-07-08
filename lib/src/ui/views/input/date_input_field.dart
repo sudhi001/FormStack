@@ -19,8 +19,13 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (formStep.result != null) {
-      DateResultType dateResultType = cast(resultFormat);
-      chosenDateTime = DateFormat(dateResultType.format).parse(formStep.result);
+      if (formStep.result is String) {
+        DateResultType dateResultType = cast(resultFormat);
+        chosenDateTime =
+            DateFormat(dateResultType.format).parse(formStep.result);
+      } else {
+        chosenDateTime = formStep.result;
+      }
     } else {
       chosenDateTime = DateTime.now();
     }

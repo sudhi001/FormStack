@@ -36,12 +36,12 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
               maxWidth: 200.0,
             ),
             child: isLoading
-                ? Lottie.asset(
+                ? Lottie.asset(formStep.loadingLottieAssetsFilePath ??
                     'packages/formstack/assets/lottiefiles/loading.json')
                 : isCompleted
-                    ? Lottie.asset(
+                    ? Lottie.asset(formStep.successLottieAssetsFilePath ??
                         'packages/formstack/assets/lottiefiles/success.json')
-                    : Lottie.asset(
+                    : Lottie.asset(formStep.errorLottieAssetsFilePath ??
                         'packages/formstack/assets/lottiefiles/failed.json'),
           );
         });

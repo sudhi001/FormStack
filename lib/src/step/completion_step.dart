@@ -12,6 +12,9 @@ typedef OnBeforeFinishCallback = Future<bool> Function(
 class CompletionStep extends FormStep {
   static const String tag = "CompletionStep";
   final bool? autoTrigger;
+  String? successLottieAssetsFilePath;
+  String? loadingLottieAssetsFilePath;
+  String? errorLottieAssetsFilePath;
   OnBeforeFinishCallback? onBeforeFinishCallback;
   Function(Map<String, dynamic>)? onFinish;
 
@@ -29,6 +32,9 @@ class CompletionStep extends FormStep {
       super.titleIconAnimationFile,
       this.onBeforeFinishCallback,
       super.titleIconMaxWidth,
+      this.successLottieAssetsFilePath,
+      this.loadingLottieAssetsFilePath,
+      this.errorLottieAssetsFilePath,
       super.nextButtonText = "Finish",
       super.backButtonText,
       this.autoTrigger = false,
@@ -63,6 +69,9 @@ class CompletionStep extends FormStep {
         cancelButtonText: element?["cancelButtonText"],
         isOptional: element?["isOptional"],
         nextButtonText: element?["nextButtonText"],
+        successLottieAssetsFilePath: element?["successLottieAssetsFilePath"],
+        loadingLottieAssetsFilePath: element?["loadingLottieAssetsFilePath"],
+        errorLottieAssetsFilePath: element?["errorLottieAssetsFilePath"],
         text: element?["text"],
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
