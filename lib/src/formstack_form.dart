@@ -103,6 +103,11 @@ abstract class FormStackForm {
       } else {
         nextStep = currentStep.next;
         nextStep?.previousStep = currentStep;
+        if (nextStep == null) {
+          onFinish?.call(result);
+          clearResult();
+          return;
+        }
       }
     }
 

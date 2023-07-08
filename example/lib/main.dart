@@ -230,8 +230,8 @@ class LoadFromJSONScreen extends StatelessWidget {
         debugPrint("$p0");
       },
       onBeforeFinishCallback: (result) async {
-        await Future.delayed(Duration(seconds: 30));
-        return Future.value(false);
+        // await Future.delayed(Duration(seconds: 30));
+        return Future.value(true);
       },
     );
     return Scaffold(
