@@ -25,7 +25,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (formStep.result != null && formStep.result is List<Options>) {
       selectedKey = formStep.result as List<Options>;
-    } else if (formStep.result != null && formStep.result is List<Map>) {
+    } else if (formStep.result != null && formStep.result is List) {
       selectedKey =
           (formStep.result as List).map((e) => Options.from(e)).toList();
     } else {
