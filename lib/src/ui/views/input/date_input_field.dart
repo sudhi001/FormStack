@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/src/result/result_format.dart';
@@ -19,7 +19,8 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (formStep.result != null) {
-      chosenDateTime = formStep.result;
+      DateResultType dateResultType = cast(resultFormat);
+      chosenDateTime = DateFormat(dateResultType.format).parse(formStep.result);
     } else {
       chosenDateTime = DateTime.now();
     }

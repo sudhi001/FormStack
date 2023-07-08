@@ -75,13 +75,16 @@ class HomeScreen extends StatelessWidget {
                         FormStack.api().setError(
                             GenericIdentifier(id: "email"), "Invalid email,",
                             formName: "login_form");
+
                         FormStack.api()
                             .setResult(result, formName: "login_form");
                         return Future.value(false);
                       },
                     );
-                    FormStack.api().setResult({"email": "sudhi.s@live.com"},
-                        formName: "login_form");
+                    FormStack.api().setResult(
+                      {"email": "sudhi.s@live.com"},
+                      formName: "login_form",
+                    );
                     // ignore: use_build_context_synchronously
                     Navigator.push(
                         context,
@@ -214,6 +217,8 @@ class LoadFromJSONScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FormStack.api().setResult({"dateOfBirth": "08-07-2023"},
+        formName: "contact_information");
     return Scaffold(
       body: FormStack.api().render(),
     );

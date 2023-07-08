@@ -561,7 +561,7 @@
             "display":"small",
             "inputType":"text",
             "lengthLimit":3000,
-            "numberOfLines":5,
+            "numberOfLines":4,
             "inputStyle":"outline",
             "id":"aboutMe"
           },
@@ -621,6 +621,7 @@
             "display":"small",
             "crossAxisAlignmentContent":"start",
             "inputType":"dropdown",
+            "isOptional":true,
             "id":"country",
             "componentsStyle":"basic",
             "options":[
