@@ -217,8 +217,12 @@ class LoadFromJSONScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FormStack.api().setResult({"dateOfBirth": "08-07-2023"},
-        formName: "contact_information");
+    FormStack.api().setResult({
+      "dateOfBirth": "08-07-2023",
+      "country": [
+        {"title": "Aruba", "subTitle": null, "key": "AW"}
+      ]
+    }, formName: "contact_information");
     return Scaffold(
       body: FormStack.api().render(),
     );
