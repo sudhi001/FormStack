@@ -190,7 +190,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.9.17"
+    version: "0.9.18"
   geocoder2:
     dependency: transitive
     description:

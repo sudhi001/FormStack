@@ -1,5 +1,5 @@
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/input/avatar_input_field.dart';
+import 'package:formstack/src/ui/views/input/image_input_field.dart';
 import 'package:formstack/src/ui/views/input/dynamic_key_value_field.dart';
 import 'package:formstack/src/ui/views/input/htm_field.dart';
 import 'package:formstack/src/ui/views/input/mapview_field.dart';

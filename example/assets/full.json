@@ -500,27 +500,33 @@
             "filter":["jpg","png"]
           },
           {
-            "type": "QuestionStep",
-            "crossAxisAlignmentContent":"start",
-            "label":"First Name",
-            "display":"small",
-            "inputType":"name",
-            "lengthLimit":20,
-            "inputStyle":"outline",
-            "id":"firstName"
-          },
-
-          {
-            "type": "QuestionStep",
-            "crossAxisAlignmentContent":"start",
-            "label":"Last Name",
-            "display":"small",
-            "inputType":"name",
-            "lengthLimit":20,
-            "isOptional":true,
-            "inputStyle":"outline",
-            "id":"lastName"
-          },
+            "type": "NestedStep",
+            "steps":[
+                    {
+                      "type": "QuestionStep",
+                      "crossAxisAlignmentContent":"start",
+                      "label":"First Name",
+                      "display":"small",
+                      "inputType":"name",
+                      "lengthLimit":20,
+                      "inputStyle":"outline",
+                      "id":"firstName",
+                      "width":190.0
+                 
+                    },
+                    {
+                      "type": "QuestionStep",
+                      "crossAxisAlignmentContent":"start",
+                      "label":"Last Name",
+                      "display":"small",
+                      "inputType":"name",
+                      "lengthLimit":20,
+                      "isOptional":true,
+                      "inputStyle":"outline",
+                      "id":"lastName",
+                      "width":190.0
+                    }
+          ]},
           {
             "type": "QuestionStep",
             "crossAxisAlignmentContent":"start",

@@ -161,12 +161,12 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     return (fileResult?.files.isNotEmpty ?? false)
         ? kIsWeb
             ? Image.memory(fileResult!.files.first.bytes!,
-                width: 150, height: 150, fit: BoxFit.cover)
+                width: 400, height: 150, fit: BoxFit.cover)
             : Image.file(File(fileResult!.files.first.path!),
-                width: 150, height: 150, fit: BoxFit.cover)
+                width: 400, height: 150, fit: BoxFit.cover)
         : value != null
             ? Image.memory(dataFromBase64String(value!),
-                width: 150, height: 150, fit: BoxFit.cover)
+                width: 400, height: 150, fit: BoxFit.cover)
             : Lottie.asset(
                 'packages/formstack/assets/lottiefiles/placeholder.json',
                 height: 150,
