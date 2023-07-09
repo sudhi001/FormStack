@@ -470,7 +470,7 @@
         "type": "NestedStep",
         "id": "BASIC_INFORMATION",
         "cancellable":false,
-        "verticalPadding":14,
+        "verticalPadding":7,
         "inputType": "singleChoice",
         "componentsStyle": "basic",
         "style":{"backgroundColor":"#FFFFFF","foregroundColor":"#000000","borderColor":"#FFFFFF","titleBottomPadding":24.0},
@@ -496,7 +496,7 @@
             "inputType":"banner",
             "inputStyle":"basic",
             "isOptional":true,
-            "id":"profileImage",
+            "id":"bannerImage",
             "filter":["jpg","png"]
           },
           {
@@ -511,7 +511,7 @@
                       "lengthLimit":20,
                       "inputStyle":"outline",
                       "id":"firstName",
-                      "width":190.0
+                      "width":200.0
                  
                     },
                     {
@@ -524,7 +524,7 @@
                       "isOptional":true,
                       "inputStyle":"outline",
                       "id":"lastName",
-                      "width":190.0
+                      "width":200.0
                     }
           ]},
           {
