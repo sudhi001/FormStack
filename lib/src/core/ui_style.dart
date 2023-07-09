@@ -11,7 +11,7 @@ class UIStyle {
   ///[borderRadius]
   ///
   UIStyle(this.backgroundColor, this.foregroundColor, this.borderColor,
-      this.borderRadius);
+      this.titleBottomPadding, this.borderRadius);
 
   /// The [backgroundColor] is used for th background color..
   final Color backgroundColor;
@@ -25,11 +25,14 @@ class UIStyle {
   /// The [borderRadius] is used border radius or corner curve..
   final double borderRadius;
 
+  final double titleBottomPadding;
+
   factory UIStyle.from(Map<String, dynamic>? style) {
     return UIStyle(
         HexColor(style?["backgroundColor"] ?? "#000000"),
         HexColor(style?["foregroundColor"] ?? "#FFFFFF"),
         HexColor(style?["borderColor"] ?? "#000000"),
+        style?["titleBottomPadding"] ?? 7.0,
         style?["borderRadius"] ?? 10.0);
   }
 }

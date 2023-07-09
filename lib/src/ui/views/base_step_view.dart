@@ -180,6 +180,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
               Container(
                   constraints:
                       const BoxConstraints(minWidth: 75, maxWidth: 500),
+                  padding: EdgeInsets.only(
+                      bottom: formStep.style?.titleBottomPadding ?? 0),
                   child: Text(title ?? "",
                       style: formStep.display == Display.small
                           ? Theme.of(context).textTheme.bodyLarge

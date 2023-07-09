@@ -50,6 +50,11 @@ abstract class FormStackForm {
     relevantStack.clear();
     for (var entry in steps) {
       entry.result = null;
+      if (entry is NestedStep) {
+        for (var stepEntry in entry.steps ?? []) {
+          stepEntry.result = null;
+        }
+      }
     }
   }
 
@@ -106,7 +111,6 @@ abstract class FormStackForm {
         if (nextStep == null) {
           onFinish?.call(result);
           clearResult();
-          return;
         }
       }
     }

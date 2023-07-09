@@ -43,5 +43,6 @@ flutter:
   assets:
     - assets/
     - assets/lottiefiles/
+    - assets/images/
     - screenshots/logo.png
 

@@ -1,4 +1,5 @@
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/avatar_input_field.dart';
 import 'package:formstack/src/ui/views/input/dynamic_key_value_field.dart';
 import 'package:formstack/src/ui/views/input/htm_field.dart';
 import 'package:formstack/src/ui/views/input/mapview_field.dart';
@@ -39,6 +40,17 @@ class CommonInputWidget {
       double maxHeight) {
     return MapWidgetView(formKitForm, questionStep, text, resultFormat,
         title: title, maxHeight: maxHeight);
+  }
+
+  static ImageInputWidgetView avatar(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return ImageInputWidgetView(
+        true, formKitForm, questionStep, text, resultFormat,
+        title: title);
   }
 
   static HTMLWidgetView htmlWidget(

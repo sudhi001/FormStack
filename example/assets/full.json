@@ -396,19 +396,97 @@
         
       ]
   },
+  "support_messagig": {
+    "steps": [
+      {
+        "type": "NestedStep",
+        "id": "SUPPORT",
+        "backButtonText":"Cancel",
+        "cancellable":true,
+        "nextButtonText":"Submit",
+        "footerBackButton":true,
+        "verticalPadding":14,
+        "componentsStyle": "basic",
+        "title": "Contact Us",
+        "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"First Name",
+            "display":"small",
+            "inputType":"name",
+            "lengthLimit":20,
+            "inputStyle":"outline",
+            "id":"firstName"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Mobile Phone Number",
+            "display":"small",
+            "inputType":"number",
+            "lengthLimit":12,
+            "inputStyle":"outline",
+            "id":"phoneNumber"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Email",
+            "display":"small",
+            "inputType":"email",
+            "lengthLimit":50,
+            "isOptional":true,
+            "inputStyle":"outline",
+            "id":"email"
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Message",
+            "display":"small",
+            "inputType":"text",
+            "lengthLimit":3000,
+            "numberOfLines":7,
+            "inputStyle":"outline",
+            "id":"message"
+          }
+        ]
+      },
+      {
+        "type": "CompletionStep",
+        "autoTrigger":true,
+        "successLottieAssetsFilePath":"assets/success.json",
+        "loadingLottieAssetsFilePath":"assets/loading.json",
+        "nextButtonText":"",
+        "title":"Please wait..",
+        "id":"IS_COMPLETED"
+      }
+    ]
+  },
   "contact_information": {
     "steps": [
       {
         "type": "NestedStep",
         "id": "BASIC_INFORMATION",
-        "backButtonText":"Back",
-        "cancellable":true,
-        "footerBackButton":true,
+        "cancellable":false,
         "verticalPadding":14,
         "inputType": "singleChoice",
         "componentsStyle": "basic",
+        "style":{"backgroundColor":"#FFFFFF","foregroundColor":"#000000","borderColor":"#FFFFFF","titleBottomPadding":24.0},
         "title": "Basic Profile Infomation",
         "steps":[
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
+            "label":"Profile Image",
+            "display":"small",
+            "inputType":"avatar",
+            "inputStyle":"basic",
+            "isOptional":true,
+            "id":"profileImage",
+            "filter":["jpg","png"]
+          },
           {
             "type": "QuestionStep",
             "crossAxisAlignmentContent":"start",
@@ -469,6 +547,7 @@
         "backButtonText":"Back",
         "cancellable":true,
         "verticalPadding":14,
+        "style":{"backgroundColor":"#FFFFFF","foregroundColor":"#000000","borderColor":"#FFFFFF","titleBottomPadding":24.0},
         "footerBackButton":true,
         "inputType": "singleChoice",
         "componentsStyle": "basic",
@@ -537,6 +616,7 @@
         "backButtonText":"Back",
         "cancellable":true,
         "verticalPadding":14,
+        "style":{"backgroundColor":"#FFFFFF","foregroundColor":"#000000","borderColor":"#FFFFFF","titleBottomPadding":24.0},
         "footerBackButton":true,
         "inputType": "singleChoice",
         "componentsStyle": "basic",
@@ -553,7 +633,6 @@
             "inputStyle":"outline",
             "id":"homePage"
           },
-  
           {
             "type": "QuestionStep",
             "crossAxisAlignmentContent":"start",
@@ -619,9 +698,9 @@
             "type": "QuestionStep",
            "text":"Country",
             "display":"small",
+            "isOptional":true,
             "crossAxisAlignmentContent":"start",
             "inputType":"dropdown",
-            "isOptional":true,
             "id":"country",
             "componentsStyle":"basic",
             "options":[
@@ -877,6 +956,7 @@
         "id": "SOCIAL_PROFILE",
         "backButtonText":"Back",
         "cancellable":true,
+        "style":{"backgroundColor":"#FFFFFF","foregroundColor":"#000000","borderColor":"#FFFFFF","titleBottomPadding":24.0},
         "verticalPadding":14,
         "footerBackButton":true,
         "inputType": "singleChoice",

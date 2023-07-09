@@ -167,6 +167,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.map(
             this, formKitForm, text, resultFormat!, title, maxHeight ?? 600);
+      case InputType.avatar:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please update image.");
+        return CommonInputWidget.avatar(
+            this, formKitForm, text, resultFormat!, title);
       default:
     }
     throw UnimplementedError();
