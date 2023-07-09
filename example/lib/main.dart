@@ -219,6 +219,7 @@ class LoadFromJSONScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     FormStack.api().setResult({
       "dateOfBirth": "08-07-2023",
+      "firstName": "Sudhi",
       "country": [
         {"title": "Aruba", "subTitle": null, "key": "AW"}
       ]
@@ -235,7 +236,6 @@ class LoadFromJSONScreen extends StatelessWidget {
       },
     );
     return Scaffold(
-      backgroundColor: Color(0XFF0A2647),
       body: FormStack.api().render(),
     );
   }

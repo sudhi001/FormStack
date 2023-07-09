@@ -299,8 +299,16 @@ class FormStack {
       for (var entry in formStack.steps) {
         if (entry is NestedStep) {
           entry.steps?.forEach((element) {
-            if (input.containsKey(element.id?.id)) {
-              element.result = input[element.id?.id];
+            if (element is NestedStep) {
+              element.steps?.forEach((ele) {
+                if (input.containsKey(ele.id?.id)) {
+                  ele.result = input[ele.id?.id];
+                }
+              });
+            } else {
+              if (input.containsKey(element.id?.id)) {
+                element.result = input[element.id?.id];
+              }
             }
           });
         } else if (input.containsKey(entry.id?.id)) {

@@ -509,7 +509,7 @@
                       "display":"small",
                       "inputType":"name",
                       "lengthLimit":20,
-                      "style":{"borderColor":"#FFFFFF"},
+                      
                       "inputStyle":"outline",
                       "id":"firstName",
                       "width":200.0
@@ -522,7 +522,7 @@
                       "display":"small",
                       "inputType":"name",
                       "lengthLimit":20,
-                      "style":{"borderColor":"#FFFFFF"},
+                      
                       "isOptional":true,
                       "inputStyle":"outline",
                       "id":"lastName",
@@ -536,7 +536,7 @@
             "display":"small",
             "inputType":"name",
             "lengthLimit":20,
-            "style":{"borderColor":"#FFFFFF"},
+            
             "isOptional":true,
             "inputStyle":"outline",
             "id":"company"
@@ -580,7 +580,7 @@
             "label":"Mobile Phone Number",
             "display":"small",
             "inputType":"number",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":12,
             "inputStyle":"outline",
             "id":"mobileNumber"
@@ -591,7 +591,7 @@
             "label":"Home Phone Number",
             "display":"small",
             "inputType":"number",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":12,
             "isOptional":true,
             "inputStyle":"outline",
@@ -603,7 +603,7 @@
             "label":"Home Email",
             "display":"small",
             "inputType":"email",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":50,
             "isOptional":true,
             "inputStyle":"outline",
@@ -616,7 +616,7 @@
             "label":"Work Email",
             "display":"small",
             "inputType":"email",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":50,
             "isOptional":true,
             "inputStyle":"outline",
@@ -652,7 +652,7 @@
             "crossAxisAlignmentContent":"start",
             "label":"Website URL",
             "display":"small",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "inputType":"text",
             "lengthLimit":500,
             "isOptional":true,
@@ -665,7 +665,7 @@
             "label":"About Me",
             "display":"small",
             "inputType":"text",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":3000,
             "numberOfLines":4,
             "inputStyle":"outline",
@@ -677,7 +677,7 @@
             "label":"Address Line 1",
             "display":"small",
             "inputType":"text",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":100,
             "isOptional":true,
             "inputStyle":"outline",
@@ -689,7 +689,7 @@
             "label":"Address Line 2",
             "display":"small",
             "inputType":"text",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":100,
             "isOptional":true,
             "inputStyle":"outline",
@@ -705,7 +705,7 @@
                       "display":"small",
                       "lengthLimit":30,
                       "width":195.0,
-                      "style":{"borderColor":"#FFFFFF"},
+                      
                       "isOptional":true,
                       "inputType":"text",
                       "inputStyle":"outline",
@@ -718,7 +718,7 @@
                       "display":"small",
                       "lengthLimit":20,
                       "width":195.0,
-                      "style":{"borderColor":"#FFFFFF"},
+                      
                       "isOptional":true,
                       "inputType":"number",
                       "inputStyle":"outline",
@@ -999,7 +999,7 @@
             "crossAxisAlignmentContent":"start",
             "label":"FaceBook Profile URL",
             "display":"small",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "inputType":"text",
             "lengthLimit":500,
             "isOptional":true,
@@ -1012,7 +1012,7 @@
             "label":"Twitter Profile URL",
             "display":"small",
             "inputType":"text",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":500,
             "isOptional":true,
             "inputStyle":"outline",
@@ -1025,7 +1025,7 @@
             "display":"small",
             "inputType":"text",
             "lengthLimit":500,
-            "style":{"borderColor":"#FFFFFF"},
+            
             "isOptional":true,
             "inputStyle":"outline",
             "id":"instagramProfileURL"
@@ -1037,7 +1037,7 @@
             "display":"small",
             "inputType":"number",
             "isOptional":true,
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":12,
             "inputStyle":"outline",
             "id":"whatsappPhoneNumber"
@@ -1049,7 +1049,7 @@
             "label":"Job Title",
             "display":"small",
             "inputType":"text",
-            "style":{"borderColor":"#FFFFFF"},
+            
             "lengthLimit":100,
             "isOptional":true,
             "inputStyle":"outline",
