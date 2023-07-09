@@ -231,8 +231,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                         );
                 }),
             _divisionPadding(),
-            if (description?.isNotEmpty ?? false)
-              Text(description ?? "",
+            if (formStep.description?.isNotEmpty ?? false)
+              Text(formStep.description ?? "",
                   style: formStep.display == Display.medium
                       ? Theme.of(context).textTheme.bodyMedium
                       : (formStep.display == Display.large

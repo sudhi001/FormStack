@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
@@ -28,44 +28,44 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
 
     return StatefulBuilder(builder: (context, setState) {
       return Container(
-          constraints: const BoxConstraints(
-              minWidth: 150, maxWidth: 160, maxHeight: 200),
+          constraints: BoxConstraints(
+              minWidth: circular ? 150 : 250,
+              maxWidth: circular ? 160 : 450,
+              maxHeight: circular ? 200 : 200),
           child: Stack(
             children: [
-              Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 0.5, color: Colors.grey, spreadRadius: 1)
-                    ],
-                  ),
-                  child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.white,
-                      radius: 65,
-                      child: (fileResult?.files.isNotEmpty ?? false)
-                          ? ClipOval(
-                              child: Image.file(
-                                  File(fileResult!.files.first.path!),
-                                  width: 150,
-                                  height: 150,
-                                  fit: BoxFit.cover))
-                          : value != null
-                              ? ClipOval(
-                                  child: Image.memory(
-                                      dataFromBase64String(value!),
-                                      width: 150,
-                                      height: 150,
-                                      fit: BoxFit.cover))
-                              : Lottie.asset(
-                                  'packages/formstack/assets/lottiefiles/avatar.json',
-                                  height: 200,
-                                  fit: BoxFit.fill))),
+              circular
+                  ? Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 0.5,
+                              color: Colors.grey,
+                              spreadRadius: 1)
+                        ],
+                      ),
+                      child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.white,
+                          radius: 65,
+                          child: _buildCircleImage()))
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.rectangle,
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 0.5,
+                              color: Colors.grey,
+                              spreadRadius: 1)
+                        ],
+                      ),
+                      child: _buildSquareImage()),
               Positioned(
-                  right: 0,
-                  bottom: 7,
+                  right: circular ? 0 : 7,
+                  bottom: circular ? 7 : 7,
                   child: Container(
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -105,15 +105,23 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
               formStep.filter?.map((item) => item as String).toList());
     }
     if (fileResult != null && fileResult!.files.isNotEmpty) {
-      value = await fileToBase64String(File(fileResult!.files.first.path!));
+      if (kIsWeb) {
+        value = await bitesToBase64String(fileResult!.files.first.bytes!);
+      } else {
+        value = await fileToBase64String(File(fileResult!.files.first.path!));
+      }
     }
     setState(() {});
   }
 
-  Future<String> fileToBase64String(File file) async {
-    List<int> fileBytes = await file.readAsBytes();
+  Future<String> bitesToBase64String(List<int> fileBytes) async {
     String base64String = base64Encode(fileBytes);
     return base64String;
+  }
+
+  Future<String> fileToBase64String(File file) async {
+    List<int> fileBytes = await file.readAsBytes();
+    return bitesToBase64String(fileBytes);
   }
 
   Uint8List dataFromBase64String(String base64String) {
@@ -147,5 +155,39 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   void clearFocus() {
     _focusNode.unfocus();
+  }
+
+  Widget _buildSquareImage() {
+    return (fileResult?.files.isNotEmpty ?? false)
+        ? kIsWeb
+            ? Image.memory(fileResult!.files.first.bytes!,
+                width: 150, height: 150, fit: BoxFit.cover)
+            : Image.file(File(fileResult!.files.first.path!),
+                width: 150, height: 150, fit: BoxFit.cover)
+        : value != null
+            ? Image.memory(dataFromBase64String(value!),
+                width: 150, height: 150, fit: BoxFit.cover)
+            : Lottie.asset(
+                'packages/formstack/assets/lottiefiles/placeholder.json',
+                height: 150,
+                width: 400,
+                fit: BoxFit.fitHeight);
+  }
+
+  Widget _buildCircleImage() {
+    return (fileResult?.files.isNotEmpty ?? false)
+        ? kIsWeb
+            ? ClipOval(
+                child: Image.memory(fileResult!.files.first.bytes!,
+                    width: 150, height: 150, fit: BoxFit.cover))
+            : ClipOval(
+                child: Image.file(File(fileResult!.files.first.path!),
+                    width: 150, height: 150, fit: BoxFit.cover))
+        : value != null
+            ? ClipOval(
+                child: Image.memory(dataFromBase64String(value!),
+                    width: 150, height: 150, fit: BoxFit.cover))
+            : Lottie.asset('packages/formstack/assets/lottiefiles/avatar.json',
+                height: 200, fit: BoxFit.fill);
   }
 }

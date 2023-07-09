@@ -18,6 +18,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   String? label;
   ResultFormat? resultFormat;
   String? nextButtonText;
+  final String? description;
   double? titleIconMaxWidth;
   String? titleIconAnimationFile;
   String? backButtonText;
@@ -37,6 +38,7 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       {this.id,
       this.title,
       this.text,
+      this.description,
       this.hint,
       this.style,
       this.error,

@@ -490,6 +490,18 @@
           {
             "type": "QuestionStep",
             "crossAxisAlignmentContent":"start",
+            "title":"Banner Image",
+            "display":"small",
+            "description":"Default picture will show if you are not uploaded any.",
+            "inputType":"banner",
+            "inputStyle":"basic",
+            "isOptional":true,
+            "id":"profileImage",
+            "filter":["jpg","png"]
+          },
+          {
+            "type": "QuestionStep",
+            "crossAxisAlignmentContent":"start",
             "label":"First Name",
             "display":"small",
             "inputType":"name",

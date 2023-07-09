@@ -40,6 +40,7 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.hint,
       super.footerBackButton,
       this.selectionType,
+      super.description,
       this.onFinish,
       this.lengthLimit,
       super.label,
@@ -172,6 +173,11 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.notNull("Please update image.");
         return CommonInputWidget.avatar(
             this, formKitForm, text, resultFormat!, title);
+      case InputType.banner:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please update image.");
+        return CommonInputWidget.banner(
+            this, formKitForm, text, resultFormat!, title);
       default:
     }
     throw UnimplementedError();
@@ -200,6 +206,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         maxHeight: element?["maxHeight"] ?? 600,
         maxCount: element?["maxCount"] ?? 100,
         mask: element?["mask"],
+        description: element?["description"],
         textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
         style: UIStyle.from(element?["style"]),
         crossAxisAlignmentContent: crossAlignmentFromString(

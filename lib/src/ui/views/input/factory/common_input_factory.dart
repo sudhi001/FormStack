@@ -42,6 +42,17 @@ class CommonInputWidget {
         title: title, maxHeight: maxHeight);
   }
 
+  static ImageInputWidgetView banner(
+      QuestionStep questionStep,
+      FormStackForm formKitForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return ImageInputWidgetView(
+        false, formKitForm, questionStep, text, resultFormat,
+        title: title);
+  }
+
   static ImageInputWidgetView avatar(
       QuestionStep questionStep,
       FormStackForm formKitForm,

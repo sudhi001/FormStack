@@ -16,5 +16,6 @@ enum InputType {
   dynamicKeyValue,
   htmlEditor,
   mapLocation,
-  avatar
+  avatar,
+  banner
 }
