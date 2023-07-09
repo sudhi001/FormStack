@@ -71,8 +71,8 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
           resultFormat.isValid(_controller.text) ? null : validationError(),
       inputFormatters: formatter,
       decoration: InputDecoration(
-          enabledBorder: inputBoder(),
           border: inputBoder(),
+          enabledBorder: inputBoder(),
           suffixIcon: formStep.inputType == InputType.file
               ? IconButton(
                   focusNode: _focusNode,
@@ -110,7 +110,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       case InputStyle.outline:
         return OutlineInputBorder(
           borderSide:
-              BorderSide(color: formStep.style?.borderColor ?? Colors.black),
+              BorderSide(color: formStep.style?.borderColor ?? Colors.white),
         );
       case InputStyle.underLined:
         return const UnderlineInputBorder();

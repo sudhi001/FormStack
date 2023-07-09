@@ -235,6 +235,7 @@ class LoadFromJSONScreen extends StatelessWidget {
       },
     );
     return Scaffold(
+      backgroundColor: Color(0XFF0A2647),
       body: FormStack.api().render(),
     );
   }
