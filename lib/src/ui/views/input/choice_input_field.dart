@@ -47,7 +47,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
           if (selectionType == SelectionType.dropdown) {
             return Container(
                 padding: formStep.componentsStyle == ComponentsStyle.basic
-                    ? const EdgeInsets.all(5)
+                    ? const EdgeInsets.symmetric(horizontal: 7)
                     : null,
                 decoration: formStep.componentsStyle == ComponentsStyle.basic
                     ? BoxDecoration(
