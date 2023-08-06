@@ -116,7 +116,22 @@ class WebMapState extends State<WebMap> {
   }
 
   void _goToTheLake() async {
-    LocationData? locationData = await getLocation();
+    var location = Location();
+    var serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return null;
+      }
+    }
+    var permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+    var locationData = await location.getLocation();
     if (locationData.latitude != 0) {
       setState(() {
         currentLat = LatLng(locationData.latitude, locationData.longitude);
