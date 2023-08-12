@@ -5,7 +5,7 @@
 import FlutterMacOS
 import Foundation
 
-import location_macos
+import location
 import webview_universal
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {

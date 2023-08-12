@@ -113,7 +113,7 @@ class QuestionStep extends FormStep<QuestionStep> {
             this, formKitForm, text, resultFormat!, title);
       case InputType.time:
         resultFormat = resultFormat ??
-            ResultFormat.date("Please enter a valid time.", "hh:mm:ss a");
+            ResultFormat.date("Please enter a valid time.", "HH:mm:ss");
         return DateInputWidget.time(
             this, formKitForm, text, resultFormat!, title);
       case InputType.dateTime:
