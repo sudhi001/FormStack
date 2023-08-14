@@ -224,6 +224,8 @@ class LoadFromJSONScreen extends StatelessWidget {
         {"title": "Aruba", "subTitle": null, "key": "AW"}
       ]
     }, formName: "contact_information");
+    FormStack.api().setResult({"approvedPosition": "BRANCH MANAGERS"},
+        formName: "login_form");
     FormStack.api().addCompletionCallback(
       GenericIdentifier(id: "IS_COMPLETED"),
       formName: "contact_information",

@@ -28,6 +28,12 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     } else if (formStep.result != null && formStep.result is List) {
       selectedKey =
           (formStep.result as List).map((e) => Options.from(e)).toList();
+    } else if (formStep.result != null && formStep.result is String) {
+      formStep.options
+          ?.where((element) => element.key == formStep.result)
+          .forEach((element) {
+        selectedKey.add(element);
+      });
     } else {
       selectedKey = [];
     }
