@@ -75,7 +75,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   dynamic resultValue() {
-    return chosenDateTime?.toUtc();
+    return chosenDateTime;
   }
 
   @override
