@@ -44,6 +44,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
         child: ScrollConfiguration(
           behavior: MyCustomScrollBehavior(),
           child: CupertinoDatePicker(
+            minuteInterval: 1,
             key: UniqueKey(),
             mode: format == DateInputFormats.dateTime
                 ? CupertinoDatePickerMode.dateAndTime
