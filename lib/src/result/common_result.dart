@@ -2,12 +2,14 @@ class Options {
   final String key;
   final String title;
   final String? subTitle;
-  Options(this.key, this.title, {this.subTitle = ""});
+  final dynamic value;
+  Options(this.key, this.title, {this.subTitle, this.value});
   factory Options.from(Map<String, dynamic> data) {
-    return Options(data["key"], data["title"], subTitle: data["subTitle"]);
+    return Options(data["key"], data["title"],
+        subTitle: data["subTitle"], value: data["value"]);
   }
   Map<String, dynamic> toJson() =>
-      {"key": key, "title": title, "subTitle": subTitle};
+      {"key": key, "title": title, "subTitle": subTitle, "value": value};
   @override
   bool operator ==(Object other) {
     return (other is Options) && other.key == key;
