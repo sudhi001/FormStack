@@ -292,6 +292,40 @@ class FormStack {
   }
 
   /// Add the Result
+  FormStack setOptions(List<Options> options, GenericIdentifier identifier,
+      {String? formName = "default"}) {
+    FormStackForm? formStack = _forms[formName];
+    if (formStack != null) {
+      for (var entry in formStack.steps) {
+        if (entry is NestedStep) {
+          entry.steps?.forEach((element) {
+            if (element is NestedStep) {
+              element.steps?.forEach((ele) {
+                if (ele.id?.id == identifier.id) {
+                  if (ele is QuestionStep) {
+                    ele.options = options;
+                  }
+                }
+              });
+            } else {
+              if (element.id?.id == identifier.id) {
+                if (element is QuestionStep) {
+                  element.options = options;
+                }
+              }
+            }
+          });
+        } else if (entry.id?.id == identifier.id) {
+          if (entry is QuestionStep) {
+            entry.options = options;
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// Add the Result
   FormStack setResult(Map<String, dynamic> input,
       {String? formName = "default"}) {
     FormStackForm? formStack = _forms[formName];

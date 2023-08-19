@@ -14,7 +14,7 @@ class QuestionStep extends FormStep<QuestionStep> {
   static const String tag = "QuestionStep";
   final InputType inputType;
   Function(String)? onValidationError;
-  final List<Options>? options;
+  List<Options>? options;
   final int? numberOfLines;
   final bool? autoTrigger;
   final InputStyle inputStyle;
