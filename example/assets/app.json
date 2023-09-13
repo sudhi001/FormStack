@@ -13,6 +13,8 @@
           "inputType":"singleChoice",
           "componentsStyle":"basic",
           "options":[
+            
+            {"key":"JOB","title":"Create JOB"},
             {"key":"CREATE_CONTACT","title":"Create Contact"},
              {"key":"AUTISM_M_CHAT_R","title":"Screenig Tool For Autism In Child M-CHAT-R", "subTitle":"Demo information"},
              {"key":"CALL_DRIVER","title":"Call Driver Now"},
@@ -27,10 +29,12 @@
           "id":"CHOICE",
         
           "relevantConditions":[{"id":"CALL_DRIVER","expression":"IN CALL_DRIVER"},
+          
           {"id":"AUTISM_QUESTIONS","expression":"IN AUTISM_M_CHAT_R" ,"formName":"formOne"},
           {"id":"FULL_QUESTIONS_START","expression":"IN FULL_QUESTIONS" ,"formName":"full"},
           {"id":"","expression":"IN NEW_COMPONENTS" ,"formName":"new_form"},
-          {"id":"","expression":"IN LOGIN" ,"formName":"login_form"},
+          {"id":"","expression":"IN JOB" ,"formName":"login_form"},
+          {"id":"","expression":"IN LOGIN" ,"formName":"job_application_actions"},
           {"id":"","expression":"IN NESTED" ,"formName":"create_minimal_application"},
           {"id":"","expression":"IN CREATE_PRODUCT" ,"formName":"create_product_form"},
           {"id":"","expression":"IN PURCHASE" ,"formName":"purchase_product"},

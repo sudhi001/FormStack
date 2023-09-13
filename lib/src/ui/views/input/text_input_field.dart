@@ -66,7 +66,11 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       controller: _controller,
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
-      onTap: formStep.inputType == InputType.file ? suffixButtonClick : null,
+      onTap: formStep.inputType == InputType.file
+          ? () {
+              suffixButtonClick();
+            }
+          : () {},
       validator: (input) =>
           resultFormat.isValid(_controller.text) ? null : validationError(),
       inputFormatters: formatter,

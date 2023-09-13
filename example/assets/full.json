@@ -1,4 +1,178 @@
 {
+  "job_application_actions": {
+    "steps": [
+      {
+        "type": "QuestionStep",
+        "cancellable": false,
+        "nextButtonText": "",
+        "autoTrigger": true,
+        "verticalPadding": 10,
+        "inputType": "singleChoice",
+        "componentsStyle": "basic",
+        "options": [
+          {
+            "key": "CREATE_APPOINTMENT",
+            "title": "Create Appointment",
+            "subTitle": "Schedule an appointment"
+          },
+          {
+            "key": "CONFIRM_JOINING",
+            "title": "Confirm Joining",
+            "subTitle": "Confim joining date"
+          },
+          {
+            "key": "CREATE_LOG",
+            "title": "Create Log"
+          },
+          {
+            "key": "REJECTED",
+            "title": "Rejected",
+            "subTitle": "User rejected in interview"
+          },
+          {
+            "key": "ON_HOLD",
+            "title": "On Hold",
+            "subTitle": "User on hold in interview"
+          },
+          {
+            "key": "SELECTED",
+            "title": "Selected",
+            "subTitle": "User selected in interview"
+          }
+        ],
+        "id": "choice",
+        "relevantConditions": [
+          {
+            "id": "appointmentOn",
+            "expression": "IN CREATE_APPOINTMENT"
+          },
+          {
+            "id": "comment",
+            "expression": "IN CREATE_LOG"
+          },
+          {
+            "id": "comment",
+            "expression": "IN REJECTED"
+          },
+          {
+            "id": "comment",
+            "expression": "IN ON_HOLD"
+          },
+          {
+            "id": "comment",
+            "expression": "IN SELECTED"
+          },
+          {
+            "id": "confirmJoining",
+            "expression": "IN CONFIRM_JOINING"
+          }
+        ]
+      },
+      {
+        "type": "QuestionStep",
+        "title": "Appointment Date & Time",
+        "inputType": "dateTime",
+        "id": "appointmentOn",
+        "relevantConditions": [
+          {
+            "id": "comment",
+            "expression": "FOR_ALL"
+          }
+        ]
+      },
+      {
+        "type": "NestedStep",
+        "id": "confirmJoining",
+        "steps": [
+          {
+            "type": "QuestionStep",
+            "title": "Joining Date",
+            "inputType": "dateTime",
+            "id": "joiningDate"
+          },
+          {
+            "type": "QuestionStep",
+            "title": "Salary",
+            "inputType": "number",
+            "id": "confirmedSalary"
+          }
+        ],
+        "relevantConditions": [
+          {
+            "id": "actionOn",
+            "expression": "FOR_ALL"
+          }
+        ]
+      },
+      {
+        "type": "QuestionStep",
+        "text": "Position Approved By Interviewer",
+        "inputType": "singleChoice",
+        "id": "approvedPosition",
+        "nextButtonText": "",
+        "autoTrigger": true,
+        "componentsStyle": "basic",
+        "options": [
+          {
+            "key": "BRANCH MANAGERS",
+            "title": "BRANCH MANAGERS"
+          },
+          {
+            "key": "ASST. BRANCH MANAGERS",
+            "title": "ASST. BRANCH MANAGERS"
+          },
+          {
+            "key": "SR. SALES EXECUTIVES",
+            "title": "SR. SALES EXECUTIVES"
+          },
+          {
+            "key": "MARKETING EXECUTIVES",
+            "title": "MARKETING EXECUTIVES"
+          },
+          {
+            "key": "SR. ACCOUNTS EXECUTIVES",
+            "title": "SR. ACCOUNTS EXECUTIVES"
+          },
+          {
+            "key": "JUNIOR ACCOUNTANTS",
+            "title": "JUNIOR ACCOUNTANTS"
+          },
+          {
+            "key": "SALES ASSISTANTS",
+            "title": "SALES ASSISTANTS"
+          },
+          {
+            "key": "SHOP ASSISTANTS",
+            "title": "SHOP ASSISTANTS"
+          },
+          {
+            "key": "FLOOR CO-ORDINATORS",
+            "title": "FLOOR CO-ORDINATORS"
+          },
+          {
+            "key": "SALES ASSISTANTS",
+            "title": "SALES ASSISTANTS"
+          }
+        ]
+      },
+      {
+        "type": "QuestionStep",
+        "label": "Comment",
+        "text": "Reason for the action",
+        "display": "small",
+        "inputType": "text",
+        "inputStyle": "outline",
+        "id": "comment"
+      },
+      {
+        "type": "CompletionStep",
+        "autoTrigger": true,
+        "nextButtonText": "",
+        "title": "Please wait..",
+        "id": "actionOn"
+      }
+    ]
+  },
   "new_form":
   {
     "steps":[
