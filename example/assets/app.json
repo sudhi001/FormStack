@@ -23,7 +23,8 @@
              {"key":"LOGIN","title":"Login Form"},
              {"key":"NESTED","title":"Nested"},
              {"key":"CREATE_PRODUCT","title":"Create Product"},
-             {"key":"PURCHASE","title":"Purchase"}
+             {"key":"PURCHASE","title":"Purchase"},
+             {"key":"SECURITY_DEVICE","title":"SECURITY DEVICE"}
              
           ],
           "id":"CHOICE",
@@ -34,6 +35,7 @@
           {"id":"FULL_QUESTIONS_START","expression":"IN FULL_QUESTIONS" ,"formName":"full"},
           {"id":"","expression":"IN NEW_COMPONENTS" ,"formName":"new_form"},
           {"id":"","expression":"IN JOB" ,"formName":"login_form"},
+          {"id":"","expression":"IN SECURITY_DEVICE" ,"formName":"create_security_device_minimal"},
           {"id":"","expression":"IN LOGIN" ,"formName":"job_application_actions"},
           {"id":"","expression":"IN NESTED" ,"formName":"create_minimal_application"},
           {"id":"","expression":"IN CREATE_PRODUCT" ,"formName":"create_product_form"},

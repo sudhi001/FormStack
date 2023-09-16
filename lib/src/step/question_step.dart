@@ -98,7 +98,7 @@ class QuestionStep extends FormStep<QuestionStep> {
             this, formKitForm, text, resultFormat!, title);
       case InputType.text:
         resultFormat =
-            resultFormat ?? ResultFormat.notEmpty("Please enter a valid data.");
+            resultFormat ?? ResultFormat.notBlank("Please enter a valid data.");
         return TextFeildWidgetView.text(
             this, formKitForm, text, resultFormat!, title, numberOfLines);
       case InputType.number:

@@ -1,4 +1,53 @@
 {
+  "create_security_device_minimal": {
+    
+    "steps": [
+      {
+        "type": "NestedStep",
+        "verticalPadding": 10,
+        "nextButtonText": "Submit",
+        "steps": [
+          {
+            "type": "QuestionStep",
+            "display": "small",
+            "label": "Name",
+            "crossAxisAlignmentContent": "start",
+            "inputType": "text",
+            "inputStyle": "outline",
+            "id": "name"
+          },
+          {
+            "type": "QuestionStep",
+            "display": "small",
+            "label": "Description",
+            "crossAxisAlignmentContent": "start",
+            "inputType": "text",
+            "inputStyle": "outline",
+            "numberOfLines":1,
+            "id": "description"
+          },
+          {
+            "type": "QuestionStep",
+            "display": "small",
+            "label": "Code",
+            "crossAxisAlignmentContent": "start",
+            "inputType": "text",
+            "inputStyle": "outline",
+            "numberOfLines":1,
+            "id": "code"
+          }
+        ]
+      },
+     
+      {
+        "type": "CompletionStep",
+        "autoTrigger": true,
+        "nextButtonText": "",
+        "title": "Please wait..",
+        "id": "actionOn"
+      }
+    ]
+  },
   "job_application_actions": {
     "steps": [
       {
