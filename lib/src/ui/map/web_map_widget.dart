@@ -1,5 +1,4 @@
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -9,8 +8,8 @@ import 'package:formstack/src/other/model/prediction.dart';
 import 'package:formstack/src/result/common_result.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_maps/google_maps.dart';
-import 'package:location/location.dart';
-
+import 'package:location/location.dart' as lo;
+import 'package:web/web.dart' as web;
 import 'map_widget.dart';
 
 MapWidget getMapWidget(MapKey mapKey, LocationWrapper? latLng,
@@ -49,10 +48,8 @@ class WebMapState extends State<WebMap> {
       final mapOptions = MapOptions()
         ..zoom = 15.0
         ..center = currentLat;
-
-      final elem = DivElement()..id = htmlId;
-      final map = GMap(elem, mapOptions);
-
+      final elem = web.document.getElementById(htmlId);
+      final map = GMap(elem as web.HTMLElement, mapOptions);
       map.onDragstart.listen((event) {});
       map.onDragend.listen((event) {});
       map.onCenterChanged.listen((event) {
@@ -116,7 +113,7 @@ class WebMapState extends State<WebMap> {
   }
 
   void _goToTheLake() async {
-    var location = Location();
+    var location = lo.Location();
     var serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
@@ -125,9 +122,9 @@ class WebMapState extends State<WebMap> {
       }
     }
     var permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
+    if (permissionGranted == lo.PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
+      if (permissionGranted != lo.PermissionStatus.granted) {
         return null;
       }
     }
