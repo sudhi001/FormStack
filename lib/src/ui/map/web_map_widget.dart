@@ -9,6 +9,7 @@ import 'package:formstack/src/result/common_result.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_maps/google_maps.dart';
 import 'package:location/location.dart' as lo;
+// ignore: depend_on_referenced_packages
 import 'package:web/web.dart' as web;
 import 'map_widget.dart';
 
@@ -20,8 +21,7 @@ class WebMap extends StatefulWidget implements MapWidget {
   final LocationWrapper? latLng;
   final MapKey mapKey;
   final Function(LocationWrapper) onChange;
-  const WebMap(this.mapKey, this.latLng, this.onChange, {Key? key})
-      : super(key: key);
+  const WebMap(this.mapKey, this.latLng, this.onChange, {super.key});
 
   @override
   State<WebMap> createState() => WebMapState();

@@ -59,38 +59,42 @@ class HomeScreen extends StatelessWidget {
                   trailing: const Icon(Icons.arrow_forward_ios_outlined),
                   onTap: () async {
                     FormStack.clearForms();
-                    await FormStack.api().loadFromAssets(
+                    FormStack.api().loadFromAssets(
                       ['assets/app.json', 'assets/full.json'],
                       mapKey: MapKey("GOOGLE_MAP_ANDROID_KEY _KEY",
                           "GOOGLE_MAP_IOS_KEY", "GOOGLE_MAP_WEB_KEY"),
                       initialLocation: LocationWrapper(0, 0),
-                    );
-                    FormStack.api().addCompletionCallback(
-                      GenericIdentifier(id: "IS_COMPLETED"),
-                      formName: "login_form",
-                      onFinish: (p0) {
-                        debugPrint("$p0");
-                      },
-                      onBeforeFinishCallback: (result) async {
-                        FormStack.api().setError(
-                            GenericIdentifier(id: "email"), "Invalid email,",
-                            formName: "login_form");
+                    ).then(
+                      (value) {
+                        FormStack.api().addCompletionCallback(
+                          GenericIdentifier(id: "IS_COMPLETED"),
+                          formName: "login_form",
+                          onFinish: (p0) {
+                            debugPrint("$p0");
+                          },
+                          onBeforeFinishCallback: (result) async {
+                            FormStack.api().setError(
+                                GenericIdentifier(id: "email"),
+                                "Invalid email,",
+                                formName: "login_form");
 
-                        FormStack.api()
-                            .setResult(result, formName: "login_form");
-                        return Future.value(false);
+                            FormStack.api()
+                                .setResult(result, formName: "login_form");
+                            return Future.value(false);
+                          },
+                        );
+                        FormStack.api().setResult(
+                          {"email": "sudhi.s@live.com"},
+                          formName: "login_form",
+                        );
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoadFromJSONScreen(),
+                            ));
                       },
                     );
-                    FormStack.api().setResult(
-                      {"email": "sudhi.s@live.com"},
-                      formName: "login_form",
-                    );
-                    // ignore: use_build_context_synchronously
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoadFromJSONScreen(),
-                        ));
                   },
                   title: const Text("Load Form Json File"),
                   subtitle: const Text("Render UI by loading from json file"),

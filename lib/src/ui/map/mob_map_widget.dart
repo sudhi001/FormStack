@@ -14,8 +14,7 @@ class MobileMap extends StatefulWidget implements MapWidget {
   final LocationWrapper latLng;
   final MapKey mapKey;
   final Function(LocationWrapper) onChange;
-  const MobileMap(this.mapKey, this.latLng, this.onChange, {Key? key})
-      : super(key: key);
+  const MobileMap(this.mapKey, this.latLng, this.onChange, {super.key});
 
   @override
   State<MobileMap> createState() => MobileMapState();
