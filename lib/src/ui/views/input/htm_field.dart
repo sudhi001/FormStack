@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
-import 'package:quill_html_editor/quill_html_editor.dart';
+import 'package:quill_html_editor_v2/quill_html_editor_v2.dart';
 
 // ignore: must_be_immutable
 class HTMLWidgetView extends BaseStepView<QuestionStep> {

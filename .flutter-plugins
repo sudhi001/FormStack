@@ -1,18 +1,18 @@
 # This is a generated file; do not edit or check into version control.
 file_picker=/Users/sudhi/.pub-cache/hosted/pub.dev/file_picker-8.0.3/
-flutter_plugin_android_lifecycle=/Users/sudhi/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.19/
+flutter_plugin_android_lifecycle=/Users/sudhi/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.20/
 google_maps_flutter=/Users/sudhi/.pub-cache/hosted/pub.dev/google_maps_flutter-2.6.1/
-google_maps_flutter_android=/Users/sudhi/.pub-cache/hosted/pub.dev/google_maps_flutter_android-2.8.0/
-google_maps_flutter_ios=/Users/sudhi/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.6.0/
+google_maps_flutter_android=/Users/sudhi/.pub-cache/hosted/pub.dev/google_maps_flutter_android-2.8.1/
+google_maps_flutter_ios=/Users/sudhi/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.6.1/
 google_maps_flutter_web=/Users/sudhi/.pub-cache/hosted/pub.dev/google_maps_flutter_web-0.5.7/
 location=/Users/sudhi/.pub-cache/hosted/pub.dev/location-6.0.2/
 location_web=/Users/sudhi/.pub-cache/hosted/pub.dev/location_web-5.0.1/
 pointer_interceptor=/Users/sudhi/.pub-cache/hosted/pub.dev/pointer_interceptor-0.10.1+1/
-pointer_interceptor_ios=/Users/sudhi/.pub-cache/hosted/pub.dev/pointer_interceptor_ios-0.10.0+2/
+pointer_interceptor_ios=/Users/sudhi/.pub-cache/hosted/pub.dev/pointer_interceptor_ios-0.10.1/
 pointer_interceptor_web=/Users/sudhi/.pub-cache/hosted/pub.dev/pointer_interceptor_web-0.10.2/
-quill_html_editor=/Users/sudhi/.pub-cache/git/quill_html_editor-a2beeb5bfd436e86f2635c8db1154b4190eeedb5/
-webview_flutter=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter-4.7.0/
-webview_flutter_android=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_android-3.16.1/
+quill_html_editor_v2=/Users/sudhi/.pub-cache/hosted/pub.dev/quill_html_editor_v2-2.2.9/
+webview_flutter=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter-4.8.0/
+webview_flutter_android=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_android-3.16.4/
 webview_flutter_web=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_web-0.2.2+4/
 webview_flutter_wkwebview=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.13.1/
 webview_universal=/Users/sudhi/.pub-cache/hosted/pub.dev/webview_universal-0.0.5/
