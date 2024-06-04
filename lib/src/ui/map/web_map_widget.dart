@@ -6,10 +6,8 @@ import 'package:flutter/widgets.dart' as ft;
 import 'package:formstack/src/other/google_places_flutter.dart';
 import 'package:formstack/src/other/model/prediction.dart';
 import 'package:formstack/src/result/common_result.dart';
-// ignore: depend_on_referenced_packages
 import 'package:google_maps/google_maps.dart';
 import 'package:location/location.dart' as lo;
-// ignore: depend_on_referenced_packages
 import 'package:web/web.dart' as web;
 import 'map_widget.dart';
 
