@@ -1,6 +1,3 @@
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart' as ft;
 import 'package:formstack/src/other/google_places_flutter.dart';
@@ -8,7 +5,6 @@ import 'package:formstack/src/other/model/prediction.dart';
 import 'package:formstack/src/result/common_result.dart';
 import 'package:google_maps/google_maps.dart';
 import 'package:location/location.dart' as lo;
-import 'package:web/web.dart' as web;
 import 'map_widget.dart';
 
 MapWidget getMapWidget(MapKey mapKey, LocationWrapper? latLng,
@@ -36,8 +32,8 @@ class WebMapState extends State<WebMap> {
 
   TextEditingController controller = TextEditingController();
 
-  LocationWrapper getUserLocation() => LocationWrapper(
-      (currentLat.lat ?? 0.0).toDouble(), (currentLat.lng ?? 0.0).toDouble());
+  LocationWrapper getUserLocation() =>
+      LocationWrapper(currentLat.lat.toDouble(), currentLat.lng.toDouble());
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +101,8 @@ class WebMapState extends State<WebMap> {
     var locationData = await location.getLocation();
     if (locationData.latitude != 0) {
       setState(() {
-        currentLat = LatLng(locationData.latitude, locationData.longitude);
+        currentLat =
+            LatLng(locationData.latitude ?? 0.0, locationData.longitude ?? 0.0);
         widget.onChange.call(getUserLocation());
       });
     }

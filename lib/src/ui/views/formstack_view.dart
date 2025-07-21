@@ -13,28 +13,51 @@ class FormStackView extends StatefulWidget {
 class _FormStackViewState extends State<FormStackView> {
   late Widget child;
   late FormStackForm _formKitForm;
+  Widget? _backgroundWidget;
+  bool _hasBackgroundAnimation = false;
+  bool _isDisposed = false;
+
   @override
   void initState() {
     super.initState();
     _formKitForm = widget.formKitForm;
+    _hasBackgroundAnimation = _formKitForm.backgroundAnimationFile != null;
+
+    // Pre-build background widget if it exists
+    if (_hasBackgroundAnimation) {
+      _backgroundWidget = Lottie.asset(
+        _formKitForm.backgroundAnimationFile!,
+        fit: BoxFit.cover,
+      );
+    }
+
     child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
   }
 
   @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isDisposed) {
+      return const SizedBox.shrink();
+    }
+
     return PopScope(
       canPop: !_formKitForm.preventSystemBackNavigation,
       onPopInvoked: (didPop) {
-        if (didPop) {
+        if (didPop && !_isDisposed) {
           _formKitForm.onSystemNagiationBackClick?.call();
         }
       },
-      child: _formKitForm.backgroundAnimationFile != null
+      child: _hasBackgroundAnimation
           ? Stack(
               alignment: _formKitForm.backgroundAlignment ?? Alignment.center,
               children: [
-                Lottie.asset(_formKitForm.backgroundAnimationFile!,
-                    fit: BoxFit.cover),
+                _backgroundWidget!,
                 child,
               ],
             )
@@ -42,17 +65,21 @@ class _FormStackViewState extends State<FormStackView> {
     );
   }
 
-  onUpdate(FormStep formStep) {
-    setState(() {
-      child = _formKitForm.render(onUpdate, onUpdateFormStackForm,
-          formStep: formStep);
-    });
+  void onUpdate(FormStep formStep) {
+    if (mounted && !_isDisposed) {
+      setState(() {
+        child = _formKitForm.render(onUpdate, onUpdateFormStackForm,
+            formStep: formStep);
+      });
+    }
   }
 
-  onUpdateFormStackForm(FormStackForm formStackForm) {
-    _formKitForm = formStackForm;
-    setState(() {
-      child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
-    });
+  void onUpdateFormStackForm(FormStackForm formStackForm) {
+    if (mounted && !_isDisposed) {
+      _formKitForm = formStackForm;
+      setState(() {
+        child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
+      });
+    }
   }
 }

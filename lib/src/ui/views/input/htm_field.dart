@@ -25,7 +25,7 @@ class HTMLWidgetView extends BaseStepView<QuestionStep> {
             )
           : null,
       constraints:
-          const BoxConstraints(minWidth: 300, maxWidth: 1200, maxHeight: 400),
+          const BoxConstraints(minWidth: 300, maxWidth: 1200, maxHeight: 300),
       child: Column(
         children: [
           ToolBar.scroll(
@@ -35,23 +35,25 @@ class HTMLWidgetView extends BaseStepView<QuestionStep> {
             crossAxisAlignment: CrossAxisAlignment.center,
             direction: Axis.horizontal,
           ),
-          QuillHtmlEditor(
-            text: formStep.result,
-            hintText: 'Type here',
-            controller: controller,
-            isEnabled: true,
-            minHeight: 500,
-            hintTextAlign: TextAlign.start,
-            padding: const EdgeInsets.only(left: 10, top: 10),
-            hintTextPadding: const EdgeInsets.only(left: 20),
-            onFocusChanged: (hasFocus) => debugPrint('has focus $hasFocus'),
-            onTextChanged: (text) => debugPrint('widget text change $text'),
-            onEditorCreated: () {
-              debugPrint('Editor has been loaded');
-            },
-            onEditorResized: (height) => debugPrint('Editor resized $height'),
-            onSelectionChanged: (sel) =>
-                debugPrint('index ${sel.index}, range ${sel.length}'),
+          Expanded(
+            child: QuillHtmlEditor(
+              text: formStep.result,
+              hintText: 'Type here',
+              controller: controller,
+              isEnabled: true,
+              minHeight: 200,
+              hintTextAlign: TextAlign.start,
+              padding: const EdgeInsets.only(left: 10, top: 10),
+              hintTextPadding: const EdgeInsets.only(left: 20),
+              onFocusChanged: (hasFocus) => debugPrint('has focus $hasFocus'),
+              onTextChanged: (text) => debugPrint('widget text change $text'),
+              onEditorCreated: () {
+                debugPrint('Editor has been loaded');
+              },
+              onEditorResized: (height) => debugPrint('Editor resized $height'),
+              onSelectionChanged: (sel) =>
+                  debugPrint('index ${sel.index}, range ${sel.length}'),
+            ),
           ),
         ],
       ),

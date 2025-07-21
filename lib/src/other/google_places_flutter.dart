@@ -1,53 +1,65 @@
 library google_places_flutter;
 
-import 'package:flutter/material.dart';
-import './model/place_details.dart';
-import './model/prediction.dart';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:formstack/src/other/model/prediction.dart';
+import 'package:formstack/src/other/model/place_details.dart';
 
-// ignore: must_be_immutable
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
-  InputDecoration inputDecoration;
-  ItemClick? itmClick;
-  GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
-  bool isLatLngRequired = true;
+  final TextEditingController textEditingController;
+  final String googleAPIKey;
+  final InputDecoration? inputDecoration;
+  final TextStyle? textStyle;
+  final int debounceTime;
+  final bool isLatLngRequired;
+  final List<String>? countries;
+  final Function(Prediction)? itmClick;
+  final GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
 
-  TextStyle textStyle;
-  String googleAPIKey;
-  int debounceTime = 600;
-  List<String>? countries = [];
-  TextEditingController textEditingController = TextEditingController();
-
-  GooglePlaceAutoCompleteTextField({
+  const GooglePlaceAutoCompleteTextField({
     super.key,
     required this.textEditingController,
     required this.googleAPIKey,
-    this.debounceTime = 600,
-    this.inputDecoration = const InputDecoration(),
-    this.itmClick,
+    this.inputDecoration,
+    this.textStyle,
+    this.debounceTime = 800,
     this.isLatLngRequired = true,
-    this.textStyle = const TextStyle(),
     this.countries,
+    this.itmClick,
     this.getPlaceDetailWithLatLng,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _GooglePlaceAutoCompleteTextFieldState createState() =>
+  State<GooglePlaceAutoCompleteTextField> createState() =>
       _GooglePlaceAutoCompleteTextFieldState();
 }
 
 class _GooglePlaceAutoCompleteTextFieldState
     extends State<GooglePlaceAutoCompleteTextField> {
-  final subject = PublishSubject<String>();
+  final PublishSubject<String> _subject = PublishSubject<String>();
   OverlayEntry? _overlayEntry;
-  List<Prediction> alPredictions = [];
-
-  TextEditingController controller = TextEditingController();
+  final List<Prediction> _predictions = [];
   final LayerLink _layerLink = LayerLink();
-  bool isSearched = false;
+  final Dio _dio = Dio();
+  final Map<String, List<Prediction>> _cache = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _subject.stream
+        .distinct()
+        .debounceTime(Duration(milliseconds: widget.debounceTime))
+        .listen(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    _subject.close();
+    _dio.close();
+    _removeOverlay();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,152 +69,151 @@ class _GooglePlaceAutoCompleteTextFieldState
         decoration: widget.inputDecoration,
         style: widget.textStyle,
         controller: widget.textEditingController,
-        onChanged: (string) => (subject.add(string)),
+        onChanged: (string) => _subject.add(string),
       ),
     );
   }
 
-  getLocation(String text) async {
-    Dio dio = Dio();
-    String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
-
-    if (widget.countries != null) {
-      // in
-
-      for (int i = 0; i < widget.countries!.length; i++) {
-        String country = widget.countries![i];
-
-        if (i == 0) {
-          url = "$url&components=country:$country";
-        } else {
-          url = "$url|country:$country";
-        }
-      }
-    }
-
-    Response response = await dio.get(url);
-    PlacesAutocompleteResponse subscriptionResponse =
-        PlacesAutocompleteResponse.fromJson(response.data);
-
+  Future<void> _onTextChanged(String text) async {
     if (text.isEmpty) {
-      alPredictions.clear();
-      _overlayEntry!.remove();
+      _predictions.clear();
+      _removeOverlay();
       return;
     }
 
-    isSearched = false;
-    if (subscriptionResponse.predictions!.isNotEmpty) {
-      alPredictions.clear();
-      alPredictions.addAll(subscriptionResponse.predictions!);
+    // Check cache first
+    if (_cache.containsKey(text)) {
+      _predictions.clear();
+      _predictions.addAll(_cache[text]!);
+      _showOverlay();
+      return;
     }
 
-    //if (this._overlayEntry == null)
+    try {
+      final predictions = await _getLocation(text);
+      _cache[text] = predictions;
 
-    _overlayEntry = null;
+      if (mounted) {
+        setState(() {
+          _predictions.clear();
+          _predictions.addAll(predictions);
+        });
+        _showOverlay();
+      }
+    } catch (e) {
+      // Handle error silently or show user-friendly message
+      debugPrint('Error fetching predictions: $e');
+    }
+  }
+
+  Future<List<Prediction>> _getLocation(String text) async {
+    String url =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+
+    if (widget.countries != null && widget.countries!.isNotEmpty) {
+      final countries = widget.countries!.map((c) => "country:$c").join('|');
+      url = "$url&components=$countries";
+    }
+
+    final response = await _dio.get(url);
+    final subscriptionResponse =
+        PlacesAutocompleteResponse.fromJson(response.data);
+
+    return subscriptionResponse.predictions ?? [];
+  }
+
+  void _showOverlay() {
+    _removeOverlay();
     _overlayEntry = _createOverlayEntry();
-    // ignore: use_build_context_synchronously
-    Overlay.of(context).insert(_overlayEntry!);
-    //   this._overlayEntry.markNeedsBuild();
+    if (_overlayEntry != null) {
+      Overlay.of(context).insert(_overlayEntry!);
+    }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    subject.stream
-        .distinct()
-        .debounceTime(Duration(milliseconds: widget.debounceTime))
-        .listen(textChanged);
-  }
-
-  textChanged(String text) async {
-    getLocation(text);
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 
   OverlayEntry? _createOverlayEntry() {
-    if (context.findRenderObject() != null) {
-      RenderBox renderBox = context.findRenderObject() as RenderBox;
-      var size = renderBox.size;
-      var offset = renderBox.localToGlobal(Offset.zero);
-      return OverlayEntry(
-          builder: (context) => Positioned(
-                left: offset.dx,
-                top: size.height + offset.dy,
-                width: size.width,
-                child: CompositedTransformFollower(
-                  showWhenUnlinked: false,
-                  link: _layerLink,
-                  offset: Offset(0.0, size.height + 5.0),
-                  child: Material(
-                      elevation: 1.0,
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemCount: alPredictions.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () {
-                              if (index < alPredictions.length) {
-                                widget.itmClick!(alPredictions[index]);
-                                if (!widget.isLatLngRequired) return;
+    if (context.findRenderObject() == null) return null;
 
-                                getPlaceDetailsFromPlaceId(
-                                    alPredictions[index]);
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
 
-                                removeOverlay();
-                              }
-                            },
-                            child: Container(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(alPredictions[index].description!)),
-                          );
-                        },
-                      )),
-                ),
-              ));
-    }
-    return null;
-  }
-
-  removeOverlay() {
-    alPredictions.clear();
-    _overlayEntry = _createOverlayEntry();
-    Overlay.of(context).insert(_overlayEntry!);
-    _overlayEntry!.markNeedsBuild();
-  }
-
-  Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
-    //String key = GlobalConfiguration().getString('google_maps_key');
-
-    var url =
-        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
-    Response response = await Dio().get(
-      url,
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx,
+        top: size.height + offset.dy,
+        width: size.width,
+        child: CompositedTransformFollower(
+          showWhenUnlinked: false,
+          link: _layerLink,
+          offset: Offset(0.0, size.height + 5.0),
+          child: Material(
+            elevation: 4.0,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 200),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: _predictions.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final prediction = _predictions[index];
+                  return InkWell(
+                    onTap: () => _onPredictionSelected(prediction),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        prediction.description ?? '',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
     );
+  }
 
-    PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
+  void _onPredictionSelected(Prediction prediction) {
+    widget.itmClick?.call(prediction);
 
-    prediction.lat = placeDetails.result!.geometry!.location!.lat.toString();
-    prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
+    if (widget.isLatLngRequired) {
+      _getPlaceDetailsFromPlaceId(prediction);
+    }
 
-    widget.getPlaceDetailWithLatLng!(prediction);
-    return null;
+    _removeOverlay();
+  }
 
-//    prediction.latLng = new LatLng(
-//        placeDetails.result.geometry.location.lat,
-//        placeDetails.result.geometry.location.lng);
+  Future<void> _getPlaceDetailsFromPlaceId(Prediction prediction) async {
+    try {
+      final url =
+          "https://maps.googleapis.com/maps/api/place/details/json?place_id=${prediction.placeId}&key=${widget.googleAPIKey}";
+
+      final response = await _dio.get(url);
+      final placeDetails = PlaceDetails.fromJson(response.data);
+
+      if (placeDetails.result != null) {
+        final lat =
+            placeDetails.result!.geometry?.location?.lat?.toString() ?? '0';
+        final lng =
+            placeDetails.result!.geometry?.location?.lng?.toString() ?? '0';
+
+        prediction.lat = lat;
+        prediction.lng = lng;
+
+        widget.getPlaceDetailWithLatLng?.call(prediction);
+      }
+    } catch (e) {
+      debugPrint('Error fetching place details: $e');
+    }
   }
 }
 
-PlacesAutocompleteResponse parseResponse(Map responseBody) {
-  return PlacesAutocompleteResponse.fromJson(
-      responseBody as Map<String, dynamic>);
-}
-
-PlaceDetails parsePlaceDetailMap(Map responseBody) {
-  return PlaceDetails.fromJson(responseBody as Map<String, dynamic>);
-}
-
-typedef ItemClick = void Function(Prediction postalCodeResponse);
-typedef GetPlaceDetailswWithLatLng = void Function(
-    Prediction postalCodeResponse);
+typedef GetPlaceDetailswWithLatLng = void Function(Prediction prediction);

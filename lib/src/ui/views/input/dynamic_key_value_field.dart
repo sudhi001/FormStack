@@ -33,7 +33,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
               )
             : null,
         constraints:
-            const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 400),
+            const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 300),
         child: StatefulBuilder(builder: (context, setState) {
           textFields = List.generate(index, (int i) {
             _keycontrollers.add(TextEditingController());

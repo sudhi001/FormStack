@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:formstack/src/core/form_step.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:lottie/lottie.dart';
@@ -25,7 +24,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _checkAndShowDefaultValidationError();
     });
-    Widget? inputWidget = buildWInputWidget(context, formStep);
+    final Widget? inputWidget = buildWInputWidget(context, formStep);
     return (formStep.componentOnly)
         ? (formStep.width != null
             ? SizedBox(
@@ -54,6 +53,12 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Build the widget view.
   Widget? buildWInputWidget(BuildContext context, T formStep);
 
+  /// Clear the component focus.
+  void clearFocus();
+
+  /// Request focus on the component.
+  void requestFocus();
+
   ///
   ///Trigger when the user click on the back button
   ///
@@ -65,10 +70,13 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    // Clean up any resources if needed
+  }
 
   ///
   ///Function triggern on When the user cancelled the step.
+  ///
   @override
   void onCancel() {
     formKitForm.cancelStep(formStep);
@@ -127,7 +135,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   void _checkAndShowDefaultValidationError() {
     if (formStep.error != null) {
       // ignore: invalid_use_of_protected_member
-      errorKey.currentState!.setState(() {
+      errorKey.currentState?.setState(() {
         showError = true;
       });
       formKitForm.validationError(formStep.error!);
@@ -138,108 +146,125 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   ///
   /// Show validation Error and hide the validation mesage if it's valid
   ///
-// ignore: invalid_use_of_protected_member
   void showValidationError() {
-    if (isValid()) {
-      clearFocus();
-      // ignore: invalid_use_of_protected_member
-      errorKey.currentState!.setState(() {
-        showError = false;
-      });
-    } else {
-      // ignore: invalid_use_of_protected_member
-      errorKey.currentState!.setState(() {
-        showError = true;
-      });
-      formKitForm.validationError(validationError());
-    }
+    // ignore: invalid_use_of_protected_member
+    errorKey.currentState?.setState(() {
+      showError = true;
+    });
+    formKitForm.validationError(validationError());
   }
 
-  /// Clear the component focus.
-  void clearFocus();
-  void requestFocus();
+  ///
+  /// Hide validation Error
+  ///
+  void hideValidationError() {
+    // ignore: invalid_use_of_protected_member
+    errorKey.currentState?.setState(() {
+      showError = false;
+    });
+  }
 
-  /// Create Coponents Of step
+  ///
+  /// Create the component widget
+  ///
   Widget _createComponent(BuildContext context, Widget? inputWidget) {
-    return Center(
-      child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: formStep.crossAxisAlignmentContent,
-          children: [
-            if (formStep.titleIconAnimationFile != null) ...[
-              Container(
-                  constraints: BoxConstraints(
-                      minWidth: 75,
-                      maxWidth: formStep.titleIconMaxWidth ?? 300,
-                      minHeight: 50,
-                      maxHeight: formStep.titleIconMaxWidth ?? 300),
-                  child: Lottie.asset(formStep.titleIconAnimationFile!)),
-              _divisionPadding()
-            ],
-            if (title != null && title!.isNotEmpty) ...[
-              Container(
-                  constraints:
-                      const BoxConstraints(minWidth: 75, maxWidth: 500),
-                  padding: EdgeInsets.only(
-                      bottom: formStep.style?.titleBottomPadding ?? 0),
-                  child: Text(title ?? "",
-                      style: formStep.display == Display.small
-                          ? Theme.of(context).textTheme.bodyLarge
-                          : formStep.display == Display.medium
-                              ? Theme.of(context).textTheme.headlineMedium
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: formStep.crossAxisAlignmentContent,
+              children: [
+                if (formStep.titleIconAnimationFile != null) ...[
+                  Container(
+                    constraints: BoxConstraints(
+                        minWidth: 75,
+                        maxWidth: formStep.titleIconMaxWidth ?? 300,
+                        minHeight: 50,
+                        maxHeight: formStep.titleIconMaxWidth ?? 300),
+                    child: Lottie.asset(formStep.titleIconAnimationFile!),
+                  ),
+                  _divisionPadding()
+                ],
+                if (title != null && title!.isNotEmpty) ...[
+                  Container(
+                      constraints:
+                          const BoxConstraints(minWidth: 75, maxWidth: 500),
+                      padding: EdgeInsets.only(
+                          bottom: formStep.style?.titleBottomPadding ?? 0),
+                      child: Text(title ?? "",
+                          style: formStep.display == Display.small
+                              ? Theme.of(context).textTheme.bodyLarge
+                              : formStep.display == Display.medium
+                                  ? Theme.of(context).textTheme.headlineMedium
+                                  : (formStep.display == Display.large
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge
+                                      : (formStep.display == Display.extraLarge
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .displaySmall
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall)))),
+                  _divisionPadding()
+                ],
+                if (text != null && text!.isNotEmpty) ...[
+                  Container(
+                      constraints:
+                          const BoxConstraints(minWidth: 75, maxWidth: 500),
+                      child: Text(text ?? "",
+                          style: formStep.display == Display.medium
+                              ? Theme.of(context).textTheme.titleLarge
                               : (formStep.display == Display.large
-                                  ? Theme.of(context).textTheme.headlineLarge
+                                  ? Theme.of(context).textTheme.headlineSmall
                                   : (formStep.display == Display.extraLarge
-                                      ? Theme.of(context).textTheme.displaySmall
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
                                       : Theme.of(context)
                                           .textTheme
-                                          .headlineSmall)))),
-              _divisionPadding()
-            ],
-            if (text != null && text!.isNotEmpty) ...[
-              Container(
-                  constraints:
-                      const BoxConstraints(minWidth: 75, maxWidth: 500),
-                  child: Text(text ?? "",
+                                          .bodyLarge)))),
+                  _divisionPadding(),
+                ],
+                if (inputWidget != null) ...[
+                  IgnorePointer(
+                      ignoring: formStep.disabled, child: inputWidget),
+                ],
+                StatefulBuilder(
+                    key: errorKey,
+                    builder: (context, setState) {
+                      return showError
+                          ? Text(
+                              validationError(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .apply(color: Colors.red.shade900),
+                            )
+                          : const SizedBox(
+                              width: 10,
+                              height: 0,
+                            );
+                    }),
+                if (formStep.description?.isNotEmpty ?? false)
+                  Text(formStep.description ?? "",
                       style: formStep.display == Display.medium
-                          ? Theme.of(context).textTheme.titleLarge
+                          ? Theme.of(context).textTheme.bodyMedium
                           : (formStep.display == Display.large
-                              ? Theme.of(context).textTheme.headlineSmall
-                              : (formStep.display == Display.extraLarge
-                                  ? Theme.of(context).textTheme.headlineSmall
-                                  : Theme.of(context).textTheme.bodyLarge)))),
-              _divisionPadding(),
-            ],
-            if (inputWidget != null) ...[
-              IgnorePointer(ignoring: formStep.disabled, child: inputWidget),
-            ],
-            StatefulBuilder(
-                key: errorKey,
-                builder: (context, setState) {
-                  return showError
-                      ? Text(
-                          showError ? validationError() : "",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .apply(color: Colors.red.shade900),
-                        )
-                      : const SizedBox(
-                          width: 10,
-                          height: 0,
-                        );
-                }),
-            if (formStep.description?.isNotEmpty ?? false)
-              Text(formStep.description ?? "",
-                  style: formStep.display == Display.medium
-                      ? Theme.of(context).textTheme.bodyMedium
-                      : (formStep.display == Display.large
-                          ? Theme.of(context).textTheme.bodyLarge
-                          : (formStep.display == Display.extraLarge
                               ? Theme.of(context).textTheme.bodyLarge
-                              : Theme.of(context).textTheme.bodySmall)),
-                  textAlign: TextAlign.center),
-          ]),
+                              : (formStep.display == Display.extraLarge
+                                  ? Theme.of(context).textTheme.bodyLarge
+                                  : Theme.of(context).textTheme.bodySmall)),
+                      textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -257,62 +282,54 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                   IconButton(
                     constraints: const BoxConstraints.expand(width: 80),
                     icon: Text(formStep.cancelButtonText ?? "Cancel"),
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      onCancel();
-                    },
+                    onPressed: onCancel,
                   ),
                 ],
               )
         : null;
   }
 
-  /// Create bottom navigation UI.
+  /// Create Footer View
   Widget? _createFooterView(BuildContext context) {
     return SafeArea(
-      child: SizedBox(
-        height: kToolbarHeight * 2,
-        width: 350,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (formStep.footerBackButton &&
-                  (formStep.cancellable ?? false)) ...[
-                ElevatedButton(
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      onBack();
-                    },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (formStep.footerBackButton &&
+                (formStep.cancellable ?? false)) ...[
+              Expanded(
+                child: ElevatedButton(
+                    onPressed: onBack,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: formStep.style?.backgroundColor,
                         foregroundColor: formStep.style?.foregroundColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(
                                 formStep.style?.borderRadius ?? 0))),
-                        minimumSize: const Size(300, 60),
-                        maximumSize: const Size(500, 80)),
+                        minimumSize: const Size(0, 50),
+                        maximumSize: const Size(double.infinity, 60)),
                     child: Text(formStep.backButtonText ?? "Back")),
-                const SizedBox(width: 7)
-              ],
-              if (formStep.nextButtonText?.isNotEmpty ?? true)
-                ElevatedButton(
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      onNextButtonClick();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: formStep.style?.backgroundColor,
-                        foregroundColor: formStep.style?.foregroundColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(
-                                formStep.style?.borderRadius ?? 0))),
-                        minimumSize: const Size(300, 60),
-                        maximumSize: const Size(500, 80)),
-                    child: Text(formStep.nextButtonText ?? "Next")),
+              ),
+              const SizedBox(width: 10)
             ],
-          ),
+            Expanded(
+              child: ElevatedButton(
+                  onPressed: isProcessing ? null : onNextButtonClick,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: formStep.style?.backgroundColor,
+                      foregroundColor: formStep.style?.foregroundColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(
+                              formStep.style?.borderRadius ?? 0))),
+                      minimumSize: const Size(0, 50),
+                      maximumSize: const Size(double.infinity, 60)),
+                  child: isProcessing
+                      ? const CircularProgressIndicator()
+                      : Text(formStep.nextButtonText ?? "Next")),
+            ),
+          ],
         ),
       ),
     );

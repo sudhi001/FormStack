@@ -46,6 +46,8 @@
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
             appRunner.runApp();
+          }).catch(function(error) {
+            console.error('Flutter engine initialization error:', error);
           });
         }
       });

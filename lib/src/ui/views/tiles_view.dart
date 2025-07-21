@@ -25,40 +25,45 @@ class ListTitlesView {
                   : CupertinoColors.white,
               height: 5),
           itemBuilder: (context, index) {
-            DynamicData dynamicData = formStep.data[index];
-            return ClipRRect(
-                borderRadius: formStep.componentsStyle == ComponentsStyle.basic
-                    ? const BorderRadius.vertical(
-                        top: Radius.circular(12),
-                        bottom: Radius.circular(12),
-                      )
-                    : const BorderRadius.vertical(),
-                child: Container(
-                  color: formStep.componentsStyle == ComponentsStyle.basic
-                      ? const Color.fromRGBO(242, 242, 247, 1)
-                      : null,
-                  padding: const EdgeInsets.all(7),
-                  child: ListTile(
-                      title: Text(dynamicData.title,
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      subtitle: dynamicData.subTitle != null
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Text(dynamicData.subTitle ?? "",
-                                  style: Theme.of(context).textTheme.bodySmall),
-                            )
-                          : null,
-                      leading: dynamicData.leading == null
-                          ? null
-                          : Text(dynamicData.leading ?? "",
-                              style: Theme.of(context).textTheme.headlineLarge),
-                      trailing: dynamicData.trailing == null
-                          ? null
-                          : Text(dynamicData.trailing ?? "",
-                              style: Theme.of(context).textTheme.bodySmall)),
-                ));
+            final DynamicData dynamicData = formStep.data[index];
+            return _buildListTile(context, dynamicData, formStep);
           },
           itemCount: formStep.data.length,
+        ));
+  }
+
+  static Widget _buildListTile(
+      BuildContext context, DynamicData dynamicData, DisplayStep formStep) {
+    final bool isBasicStyle = formStep.componentsStyle == ComponentsStyle.basic;
+
+    return ClipRRect(
+        borderRadius: isBasicStyle
+            ? const BorderRadius.vertical(
+                top: Radius.circular(12),
+                bottom: Radius.circular(12),
+              )
+            : const BorderRadius.vertical(),
+        child: Container(
+          color: isBasicStyle ? const Color.fromRGBO(242, 242, 247, 1) : null,
+          padding: const EdgeInsets.all(7),
+          child: ListTile(
+              title: Text(dynamicData.title,
+                  style: Theme.of(context).textTheme.bodyMedium),
+              subtitle: dynamicData.subTitle != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(dynamicData.subTitle!,
+                          style: Theme.of(context).textTheme.bodySmall),
+                    )
+                  : null,
+              leading: dynamicData.leading != null
+                  ? Text(dynamicData.leading!,
+                      style: Theme.of(context).textTheme.headlineLarge)
+                  : null,
+              trailing: dynamicData.trailing != null
+                  ? Text(dynamicData.trailing!,
+                      style: Theme.of(context).textTheme.bodySmall)
+                  : null),
         ));
   }
 }

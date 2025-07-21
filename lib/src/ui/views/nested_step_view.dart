@@ -8,26 +8,32 @@ class NestedStepView extends BaseStepView<NestedStep> {
   NestedStepView(super.formKitForm, super.formStep, super.text,
       {super.key, super.title, cancellable});
 
-  List<BaseStepView> componets = [];
+  final List<BaseStepView> _components = [];
   ResultFormat? resultFormat;
+  bool _isInitialized = false;
 
   @override
   Widget? buildWInputWidget(BuildContext context, NestedStep formStep) {
-    if (componets.isEmpty) {
-      formStep.steps?.forEach((element) {
+    // Initialize components only once
+    if (!_isInitialized && formStep.steps != null) {
+      _components.clear();
+      for (var element in formStep.steps!) {
         FormStep questions = element;
         questions.componentOnly = true;
-        componets.add(questions.buildView(formKitForm) as BaseStepView);
-      });
+        _components.add(questions.buildView(formKitForm) as BaseStepView);
+      }
+      _isInitialized = true;
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await Future.delayed(const Duration(milliseconds: 2));
+
+    // Use post frame callback for focus management
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       requestFocus();
     });
+
     return Wrap(
       spacing: 7,
       runSpacing: formStep.verticalPadding.toDouble(),
-      children: componets,
+      children: _components,
     );
   }
 
@@ -36,18 +42,22 @@ class NestedStepView extends BaseStepView<NestedStep> {
     if (formStep.isOptional ?? false) {
       return true;
     }
+
     bool isAllValid = true;
-    for (var element in componets) {
-      var isAllValidM = element.isValid();
-      if (!isAllValidM) {
-        isAllValid = isAllValidM;
+    for (var element in _components) {
+      if (!element.isValid()) {
+        isAllValid = false;
         element.showValidationError();
+        // Break early on first validation failure for better performance
+        break;
       }
     }
-    if (formStep.validationExpression.isNotEmpty) {
+
+    if (isAllValid && formStep.validationExpression.isNotEmpty) {
       resultFormat = ResultFormat.expression(formStep.validationExpression);
       isAllValid = resultFormat!.isValid(resultValue());
     }
+
     return isAllValid;
   }
 
@@ -57,28 +67,35 @@ class NestedStepView extends BaseStepView<NestedStep> {
   }
 
   @override
-  resultValue() {
-    Map<String, dynamic> result = {};
-    for (var element in componets) {
+  Map<String, dynamic> resultValue() {
+    final Map<String, dynamic> result = {};
+    for (var element in _components) {
       element.formStep.result = element.resultValue();
-      result.putIfAbsent(
-          element.formStep.id?.id ?? "", () => element.resultValue());
+      result[element.formStep.id?.id ?? ""] = element.resultValue();
     }
-
     return result;
   }
 
   @override
   void requestFocus() {
-    if (componets.isNotEmpty) {
-      componets.first.requestFocus();
+    // Request focus on the first component
+    if (_components.isNotEmpty) {
+      _components.first.requestFocus();
     }
   }
 
   @override
-  void clearFocus() {}
-}
+  void clearFocus() {
+    // Clear focus from all components
+    for (var element in _components) {
+      element.clearFocus();
+    }
+  }
 
-//  height: min(
-//           MediaQuery.of(context).size.height - kToolbarHeight * 0.8, 1024),
-//       width: min(MediaQuery.of(context).size.width * 0.8, 1024),
+  @override
+  void dispose() {
+    // Clean up components
+    _components.clear();
+    super.dispose();
+  }
+}
