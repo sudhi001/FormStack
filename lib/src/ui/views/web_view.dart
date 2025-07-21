@@ -1,25 +1,14 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:formstack/src/step/display_step.dart';
-import 'package:webview_universal/webview_universal.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewBuild {
-  static WebViewController webViewController = WebViewController();
-
   static Widget buildView(BuildContext context, DisplayStep formStep) {
-    Future.microtask(
-      () => _task(formStep.url, context),
-    );
-    return WebView(
-      controller: webViewController,
-    );
-  }
+    final WebViewController controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(formStep.url));
 
-  static Future<void> _task(String url, BuildContext context) async {
-    await webViewController.init(
-      context: context,
-      uri: Uri.parse(url),
-      setState: (void Function() fn) {},
-    );
+    return WebViewWidget(controller: controller);
   }
 
   // if (kIsWeb || Platform.isAndroid || Platform.isIOS) {

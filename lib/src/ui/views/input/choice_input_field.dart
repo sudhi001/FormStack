@@ -183,7 +183,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
       case SelectionType.toggle:
         return Switch(
           inactiveThumbColor: Colors.black,
-          activeColor: Colors.black,
+          activeThumbColor: Colors.black,
           activeTrackColor: const Color.fromRGBO(242, 242, 247, 1),
           inactiveTrackColor: const Color.fromRGBO(242, 242, 247, 1),
           value: selectedKey.contains(options[index]),

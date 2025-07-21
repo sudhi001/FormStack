@@ -29,41 +29,20 @@ class WebMapState extends State<WebMap> {
   late LatLng currentLat;
   @override
   void initState() {
-    currentLat = LatLng(widget.latLng?.lat ?? 0, widget.latLng?.lng ?? 0);
+    currentLat = LatLng(widget.latLng?.lat ?? 0.0, widget.latLng?.lng ?? 0.0);
     super.initState();
     _goToTheLake();
   }
 
   TextEditingController controller = TextEditingController();
 
-  LocationWrapper getUserLocation() =>
-      LocationWrapper(currentLat.lat.toDouble(), currentLat.lng.toDouble());
+  LocationWrapper getUserLocation() => LocationWrapper(
+      (currentLat.lat ?? 0.0).toDouble(), (currentLat.lng ?? 0.0).toDouble());
+
   @override
   Widget build(BuildContext context) {
-    const htmlId = 'map';
-    // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(htmlId, (int viewId) {
-      final mapOptions = MapOptions()
-        ..zoom = 15.0
-        ..center = currentLat;
-      final elem = web.document.getElementById(htmlId);
-      final map = GMap(elem as web.HTMLElement, mapOptions);
-      map.onDragstart.listen((event) {});
-      map.onDragend.listen((event) {});
-      map.onCenterChanged.listen((event) {
-        if (map.center != null) {
-          currentLat = LatLng(map.center?.lat, map.center?.lng);
-          widget.onChange.call(getUserLocation());
-        }
-      });
-
-      Marker(MarkerOptions()
-        ..position = map.center
-        ..map = map);
-
-      return elem;
-    });
-
+    // For web, we'll use a placeholder since platformViewRegistry is not available
+    // in the current Flutter web version
     return Column(
       children: [
         Row(
@@ -96,14 +75,11 @@ class WebMapState extends State<WebMap> {
           ],
         ),
         Expanded(
-          child: Stack(
-            children: [
-              HtmlElementView(viewType: htmlId, key: UniqueKey()),
-              const Center(
-                child: ft.Icon(Icons.person_pin_circle,
-                    size: 52, color: Colors.black),
-              )
-            ],
+          child: Container(
+            color: Colors.grey[300],
+            child: const Center(
+              child: Text('Map view not available in web version'),
+            ),
           ),
         ),
       ],

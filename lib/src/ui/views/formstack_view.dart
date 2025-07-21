@@ -22,10 +22,12 @@ class _FormStackViewState extends State<FormStackView> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _formKitForm.onSystemNagiationBackClick?.call();
-        return _formKitForm.preventSystemBackNavigation;
+    return PopScope(
+      canPop: !_formKitForm.preventSystemBackNavigation,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          _formKitForm.onSystemNagiationBackClick?.call();
+        }
       },
       child: _formKitForm.backgroundAnimationFile != null
           ? Stack(
