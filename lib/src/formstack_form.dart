@@ -17,11 +17,11 @@ abstract class FormStackForm {
   Color primaryColor;
   bool preventSystemBackNavigation;
   Function(FormStep)? onUpdate;
-  VoidCallback? onSystemNagiationBackClick;
-  Function(FormStackForm)? onRenderFormSatackForm;
+  VoidCallback? onSystemNavigationBackClick;
+  Function(FormStackForm)? onRenderFormStackForm;
   Function(Map<String, dynamic> result)? onFinish;
   Function()? onCancel;
-  Function(String)? onValidtionError;
+  Function(String)? onValidationError;
   Map<String, dynamic> relevantStack = {};
   Map<String, dynamic> result = {};
   FormStackForm? previousFormStackForm;
@@ -30,10 +30,10 @@ abstract class FormStackForm {
       {this.id,
       required this.fromInstanceName,
       this.onUpdate,
-      this.onRenderFormSatackForm,
+      this.onRenderFormStackForm,
       this.backgroundAnimationFile,
-      this.onValidtionError,
-      this.onSystemNagiationBackClick,
+      this.onValidationError,
+      this.onSystemNavigationBackClick,
       this.primaryColor = Colors.black,
       required this.mapKey,
       this.preventSystemBackNavigation = false,
@@ -43,7 +43,7 @@ abstract class FormStackForm {
   }
 
   void validationError(String error) {
-    onValidtionError?.call(error);
+    onValidationError?.call(error);
   }
 
   void clearResult() {
@@ -67,7 +67,7 @@ abstract class FormStackForm {
       if (nextStep != null) {
         onUpdate?.call(nextStep);
       } else if (previousFormStackForm != null) {
-        onRenderFormSatackForm?.call(previousFormStackForm!);
+        onRenderFormStackForm?.call(previousFormStackForm!);
         return;
       }
     }
@@ -99,7 +99,7 @@ abstract class FormStackForm {
             name: fromInstanceName, formName: formName!);
         if (nextFormSatck != null) {
           nextFormSatck.previousFormStackForm = this;
-          onRenderFormSatackForm?.call(nextFormSatck);
+          onRenderFormStackForm?.call(nextFormSatck);
           return;
         } else {
           nextStep = currentStep.next;
@@ -160,10 +160,10 @@ abstract class FormStackForm {
   }
 
   Widget render(Function(FormStep) onUpdate,
-      Function(FormStackForm)? onRenderFormSatackForm,
+      Function(FormStackForm)? onRenderFormStackForm,
       {FormStep? formStep}) {
     this.onUpdate = onUpdate;
-    this.onRenderFormSatackForm = onRenderFormSatackForm;
+    this.onRenderFormStackForm = onRenderFormStackForm;
     if (formStep != null) {
       return formStep.buildView(this);
     }

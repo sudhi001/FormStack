@@ -65,4 +65,10 @@ class SmileInputWidgetView extends BaseStepView<QuestionStep> {
   void clearFocus() {
     _focusNode.unfocus();
   }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 }

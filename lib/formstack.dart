@@ -1,5 +1,3 @@
-library formstack;
-
 export 'package:formstack/src/result/result_format.dart';
 export 'package:formstack/src/result/identifiers.dart';
 export 'package:formstack/src/core/form_step.dart';

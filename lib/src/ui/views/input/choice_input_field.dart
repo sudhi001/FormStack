@@ -20,23 +20,24 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
       this.autoTrigger = false});
 
   final FocusNode _focusNode = FocusNode();
-  List<Options> selectedKey = [];
+  List<Options> _selectedOptions = [];
+  List<Options> get selectedOptions {
+    if (formStep.result != null && formStep.result is List<Options>) {
+      return formStep.result as List<Options>;
+    } else if (formStep.result != null && formStep.result is List) {
+      return (formStep.result as List).map((e) => Options.from(e)).toList();
+    } else if (formStep.result != null && formStep.result is String) {
+      return formStep.options
+              ?.where((element) => element.key == formStep.result)
+              .toList() ??
+          [];
+    }
+    return [];
+  }
+
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    if (formStep.result != null && formStep.result is List<Options>) {
-      selectedKey = formStep.result as List<Options>;
-    } else if (formStep.result != null && formStep.result is List) {
-      selectedKey =
-          (formStep.result as List).map((e) => Options.from(e)).toList();
-    } else if (formStep.result != null && formStep.result is String) {
-      formStep.options
-          ?.where((element) => element.key == formStep.result)
-          .forEach((element) {
-        selectedKey.add(element);
-      });
-    } else {
-      selectedKey = [];
-    }
+    _selectedOptions = selectedOptions;
 
     return Container(
         decoration: formStep.componentsStyle == ComponentsStyle.minimal
@@ -64,9 +65,9 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton(
                     focusColor: Colors.transparent,
-                    hint: selectedKey.isEmpty
+                    hint: _selectedOptions.isEmpty
                         ? const Text('Select ')
-                        : Text(selectedKey.first.title),
+                        : Text(_selectedOptions.first.title),
                     isExpanded: true,
                     iconSize: 30.0,
                     items: options.map(
@@ -82,15 +83,16 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                         setState(
                           () {
                             if (singleSelection) {
-                              selectedKey.clear();
-                              selectedKey.add(val);
+                              _selectedOptions.clear();
+                              _selectedOptions.add(val);
                             } else {
-                              if (!selectedKey.contains(val)) {
-                                selectedKey.add(val);
+                              if (!_selectedOptions.contains(val)) {
+                                _selectedOptions.add(val);
                               } else {
-                                selectedKey.remove(val);
+                                _selectedOptions.remove(val);
                               }
                             }
+                            formStep.result = _selectedOptions;
                             if (autoTrigger) {
                               onNextButtonClick();
                             }
@@ -141,7 +143,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                         ? _selectionIcon(setState, index)
                         : selectionType != SelectionType.tick
                             ? _selectionIcon(setState, index)
-                            : (selectedKey.contains(options[index])
+                            : (_selectedOptions.contains(options[index])
                                 ? _selectionIcon(setState, index)
                                 : null),
                   ),
@@ -151,19 +153,20 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
         }));
   }
 
-  void onItemTap(setState, int index) {
+  void onItemTap(StateSetter setState, int index) {
     setState(
       () {
         if (singleSelection) {
-          selectedKey.clear();
-          selectedKey.add(options[index]);
+          _selectedOptions.clear();
+          _selectedOptions.add(options[index]);
         } else {
-          if (!selectedKey.contains(options[index])) {
-            selectedKey.add(options[index]);
+          if (!_selectedOptions.contains(options[index])) {
+            _selectedOptions.add(options[index]);
           } else {
-            selectedKey.remove(options[index]);
+            _selectedOptions.remove(options[index]);
           }
         }
+        formStep.result = _selectedOptions;
         if (autoTrigger) {
           onNextButtonClick();
         }
@@ -173,7 +176,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     showValidationError();
   }
 
-  Widget _selectionIcon(setState, int index) {
+  Widget _selectionIcon(StateSetter setState, int index) {
     switch (selectionType) {
       case SelectionType.arrow:
         return const Icon(Icons.arrow_forward_ios_rounded,
@@ -183,10 +186,10 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
       case SelectionType.toggle:
         return Switch(
           inactiveThumbColor: Colors.black,
-          activeColor: Colors.black,
+          activeThumbColor: Colors.black,
           activeTrackColor: const Color.fromRGBO(242, 242, 247, 1),
           inactiveTrackColor: const Color.fromRGBO(242, 242, 247, 1),
-          value: selectedKey.contains(options[index]),
+          value: _selectedOptions.contains(options[index]),
           onChanged: (bool value) {
             onItemTap(setState, index);
           },
@@ -201,7 +204,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.isOptional ?? false) {
       return true;
     }
-    return resultFormat.isValid(selectedKey);
+    return resultFormat.isValid(_selectedOptions);
   }
 
   @override
@@ -217,11 +220,17 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   dynamic resultValue() {
-    return selectedKey;
+    return _selectedOptions;
   }
 
   @override
   void clearFocus() {
     _focusNode.unfocus();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 }

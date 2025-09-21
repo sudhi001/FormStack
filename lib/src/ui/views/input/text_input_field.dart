@@ -26,16 +26,23 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   FilePickerResult? fileResult;
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
+    // Sync controller with formStep result
     if (formStep.result != null) {
       if (formStep.inputType == InputType.file) {
         _controller.text = cast<PlatformFile>(formStep.result)!.name;
       } else {
         _controller.text = formStep.result;
       }
+    } else {
+      _controller.clear();
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _focusNode.requestFocus();
-    });
+
+    // Only request focus if not a file input
+    if (formStep.inputType != InputType.file) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _focusNode.requestFocus();
+      });
+    }
     return Container(
         decoration: formStep.inputStyle == InputStyle.basic
             ? const BoxDecoration(
@@ -71,8 +78,11 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
               suffixButtonClick();
             }
           : () {},
+      onChanged: (value) {
+        formStep.result = value;
+      },
       validator: (input) =>
-          resultFormat.isValid(_controller.text) ? null : validationError(),
+          resultFormat.isValid(input ?? '') ? null : validationError(),
       inputFormatters: formatter,
       decoration: InputDecoration(
           border: inputBoder(),
@@ -98,13 +108,20 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
           allowedExtensions: filter.map((item) => item as String).toList());
     }
 
-    _controller.text = fileResult?.files.single.name ?? "";
+    if (fileResult != null && fileResult!.files.isNotEmpty) {
+      _controller.text = fileResult!.files.single.name;
+      formStep.result = fileResult!.files.single;
+    } else {
+      _controller.clear();
+      formStep.result = null;
+    }
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   InputBorder inputBoder() {
@@ -131,7 +148,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.inputType == InputType.file) {
       return resultFormat.isValid(fileResult?.files.single);
     }
-    return resultFormat.isValid(_controller.text);
+    return resultFormat.isValid(_controller.text.trim());
   }
 
   @override
@@ -141,7 +158,6 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   String validationError() {
-    _focusNode.requestFocus();
     return resultFormat.error();
   }
 

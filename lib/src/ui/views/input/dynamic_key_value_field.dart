@@ -11,17 +11,14 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
       super.formKitForm, super.formStep, super.text, this.resultFormat,
       {super.key, super.title, required this.maxCount});
 
-  final List<KeyValue?> _result = [];
-  final List<TextEditingController?> _keycontrollers = [];
-  final List<TextEditingController?> _valuecontrollers = [];
-  List<Widget> textFields = [];
-  int index = 1;
+  final List<KeyValue> _result = [];
+  final List<TextEditingController> _keyControllers = [];
+  final List<TextEditingController> _valueControllers = [];
+  int _fieldCount = 1;
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    if (formStep.result != null) {
-      _result.clear();
-      _result.addAll(formStep.result);
-    }
+    _initializeFromFormStep(formStep);
+    _ensureControllersExist();
 
     return Container(
         decoration: formStep.componentsStyle == ComponentsStyle.basic
@@ -35,22 +32,23 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
         constraints:
             const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 300),
         child: StatefulBuilder(builder: (context, setState) {
-          textFields = List.generate(index, (int i) {
-            _keycontrollers.add(TextEditingController());
-            _valuecontrollers.add(TextEditingController());
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: generateTextFields(context, i == 0, i, setState),
-            );
-          });
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
-            child: SingleChildScrollView(child: Column(children: textFields)),
+            child: SingleChildScrollView(
+              child: Column(
+                children: List.generate(_fieldCount, (int i) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 7),
+                    child: _generateTextFields(context, i == 0, i, setState),
+                  );
+                }),
+              ),
+            ),
           );
         }));
   }
 
-  Widget generateTextFields(
+  Widget _generateTextFields(
       BuildContext context, bool primary, int ind, setState) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
       Expanded(
@@ -66,10 +64,10 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
           child: IconButton(
             onPressed: () {
               setState(() {
-                if (primary) {
-                  index++;
-                } else {
-                  index--;
+                if (primary && _fieldCount < maxCount) {
+                  _addField();
+                } else if (!primary && _fieldCount > 1) {
+                  _removeField(ind);
                 }
               });
             },
@@ -78,15 +76,73 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     ]);
   }
 
+  void _initializeFromFormStep(QuestionStep formStep) {
+    // Ensure _result is initialized
+    _result.clear();
+
+    if (formStep.result != null && formStep.result is List) {
+      List<dynamic> resultList = formStep.result as List;
+      _fieldCount = resultList.isNotEmpty ? resultList.length : 1;
+
+      for (var item in resultList) {
+        if (item is Map) {
+          _result.add(KeyValue(item["key"] ?? "", item["value"] ?? ""));
+        } else if (item is KeyValue) {
+          _result.add(item);
+        }
+      }
+    } else {
+      // Initialize with default values if no result
+      _fieldCount = 1;
+    }
+  }
+
+  void _ensureControllersExist() {
+    // Ensure _fieldCount is valid
+    if (_fieldCount < 1) {
+      _fieldCount = 1;
+    }
+
+    // Ensure we have enough controllers
+    while (_keyControllers.length < _fieldCount) {
+      _keyControllers.add(TextEditingController());
+      _valueControllers.add(TextEditingController());
+    }
+
+    // Populate controllers with existing data
+    if (_result.isNotEmpty) {
+      for (int i = 0; i < _result.length && i < _keyControllers.length; i++) {
+        _keyControllers[i].text = _result[i].key;
+        _valueControllers[i].text = _result[i].value;
+      }
+    }
+  }
+
+  void _addField() {
+    _keyControllers.add(TextEditingController());
+    _valueControllers.add(TextEditingController());
+    _fieldCount++;
+  }
+
+  void _removeField(int index) {
+    if (index >= 0 && index < _keyControllers.length && _fieldCount > 1) {
+      _keyControllers[index].dispose();
+      _valueControllers[index].dispose();
+      _keyControllers.removeAt(index);
+      _valueControllers.removeAt(index);
+      _fieldCount--;
+    }
+  }
+
   @override
   void dispose() {
+    for (var controller in _keyControllers) {
+      controller.dispose();
+    }
+    for (var controller in _valueControllers) {
+      controller.dispose();
+    }
     super.dispose();
-    for (var controller in _keycontrollers) {
-      controller?.dispose();
-    }
-    for (var controller in _valuecontrollers) {
-      controller?.dispose();
-    }
   }
 
   Widget _buildTextField(
@@ -102,13 +158,13 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
           enabled: !formStep.disabled,
           autocorrect: false,
           minLines: 1,
-          controller: isKey ? _keycontrollers[index] : _valuecontrollers[index],
+          controller: isKey ? _keyControllers[index] : _valueControllers[index],
           maxLines: 1,
           keyboardType: TextInputType.text,
           validator: (input) => !isKey
               ? null
-              : _keycontrollers[index]!.text.isEmpty
-                  ? "Cannot Be emepty"
+              : _keyControllers[index].text.isEmpty
+                  ? "Cannot Be empty"
                   : null,
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z@.]"))
@@ -136,17 +192,31 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   bool isValid() {
-    _result.clear();
-    for (int i = 0; i < index; i++) {
-      if (_keycontrollers[i] != null) {
-        _result.add(KeyValue(_keycontrollers[i]!.text.trim(),
-            _valuecontrollers[i]!.text.trim()));
-      }
-    }
+    _updateResultFromControllers();
     if (formStep.isOptional ?? false) {
       return true;
     }
     return resultFormat.isValid(_result);
+  }
+
+  void _updateResultFromControllers() {
+    _result.clear();
+    if (_fieldCount > 0 &&
+        _keyControllers.isNotEmpty &&
+        _valueControllers.isNotEmpty) {
+      for (int i = 0;
+          i < _fieldCount &&
+              i < _keyControllers.length &&
+              i < _valueControllers.length;
+          i++) {
+        String key = _keyControllers[i].text.trim();
+        String value = _valueControllers[i].text.trim();
+        if (key.isNotEmpty) {
+          _result.add(KeyValue(key, value));
+        }
+      }
+    }
+    formStep.result = _result;
   }
 
   @override
@@ -155,13 +225,23 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
   }
 
   @override
-  void requestFocus() {}
+  void requestFocus() {
+    // Focus management is handled by the TextFormField widgets
+  }
 
   @override
   dynamic resultValue() {
+    _updateResultFromControllers();
     return _result;
   }
 
   @override
-  void clearFocus() {}
+  void clearFocus() {
+    for (var controller in _keyControllers) {
+      controller.clear();
+    }
+    for (var controller in _valueControllers) {
+      controller.clear();
+    }
+  }
 }

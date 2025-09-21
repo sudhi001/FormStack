@@ -54,7 +54,7 @@ class FormStack {
   String instanceName = "";
 
   ///
-  ///Create the instnce for the app
+  ///Create the instance for the app
   /// name - instance name.
   ///
   static FormStack api({String name = "default"}) {
@@ -66,13 +66,13 @@ class FormStack {
     return formStack;
   }
 
-  /// Get the purticular from from different instance.
+  /// Get the particular form from different instance.
   static FormStackForm? formByInstaceAndName(
       {String name = "default", String formName = "default"}) {
     return api(name: name)._forms[formName];
   }
 
-  ///Clear your instant.
+  ///Clear your instance.
   ///Are you sure to use this.
   static void clearConfiguration() {
     _delegate.clear();
@@ -144,12 +144,17 @@ class FormStack {
   Future<FormStack> loadFromAssets(List<String> files,
       {MapKey? mapKey, LocationWrapper? initialLocation}) async {
     for (var element in files) {
-      String data = await rootBundle.loadString(element);
-      ParserUtils.buildFormFromJson(
-          this,
-          json.decode(data),
-          mapKey ?? MapKey("", "", ""),
-          initialLocation ?? LocationWrapper(0, 0));
+      try {
+        String data = await rootBundle.loadString(element);
+        Map<String, dynamic> jsonData = json.decode(data);
+        ParserUtils.buildFormFromJson(
+            this,
+            jsonData,
+            mapKey ?? MapKey("", "", ""),
+            initialLocation ?? LocationWrapper(0, 0));
+      } catch (e) {
+        throw FormatException('Error loading asset $element: $e');
+      }
     }
     return this;
   }
@@ -157,14 +162,21 @@ class FormStack {
   /// Build the form from the JSON content
   Future<FormStack> buildFormFromJsonString(String data,
       {MapKey? mapKey, LocationWrapper? initialLocation}) async {
-    Map<String, dynamic>? body = await json.decode(data);
-    return buildFormFromJson(body,
-        mapKey: mapKey, initialLocation: initialLocation);
+    try {
+      Map<String, dynamic>? body = json.decode(data);
+      return buildFormFromJson(body,
+          mapKey: mapKey, initialLocation: initialLocation);
+    } catch (e) {
+      throw FormatException('Invalid JSON format: $e');
+    }
   }
 
-  /// Build the from from Map (JSON)
+  /// Build the form from Map (JSON)
   Future<FormStack> buildFormFromJson(Map<String, dynamic>? body,
       {MapKey? mapKey, LocationWrapper? initialLocation}) async {
+    if (body == null) {
+      throw ArgumentError('JSON body cannot be null');
+    }
     ParserUtils.buildFormFromJson(this, body, mapKey ?? MapKey("", "", ""),
         initialLocation ?? LocationWrapper(0, 0));
     return this;
@@ -172,7 +184,7 @@ class FormStack {
 
   FormStack addResultForm(Identifier identifier, ResultFormat? resultFormat,
       {String? formName = "default"}) {
-    FormStackForm? formStack = _forms["formName"];
+    FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
         if (entry is NestedStep) {
@@ -221,7 +233,7 @@ class FormStack {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       formStack.preventSystemBackNavigation = disabled;
-      formStack.onSystemNagiationBackClick = onBackNavigationClick;
+      formStack.onSystemNavigationBackClick = onBackNavigationClick;
     }
     return this;
   }
@@ -353,7 +365,7 @@ class FormStack {
     return this;
   }
 
-  /// Disbale UI
+  /// Disable UI
   FormStack setDisabledUI(List<String> disabledUIIds,
       {String? formName = "default"}) {
     FormStackForm? formStack = _forms[formName];
@@ -374,8 +386,107 @@ class FormStack {
   }
 
   /// Render the form to the UI
-  /// Primary method to implement in you Widget tree.
+  /// Primary method to implement in your Widget tree.
   Widget render({String name = "default"}) {
     return FormStackView(_forms[name]!);
+  }
+
+  /// Get form progress (0.0 to 1.0)
+  double getFormProgress({String name = "default"}) {
+    FormStackForm? form = _forms[name];
+    if (form == null) return 0.0;
+
+    int totalSteps = form.steps.length;
+    int completedSteps = 0;
+
+    for (var step in form.steps) {
+      if (step.result != null) {
+        completedSteps++;
+      }
+    }
+
+    return totalSteps > 0 ? completedSteps / totalSteps : 0.0;
+  }
+
+  /// Get current step index
+  int getCurrentStepIndex({String name = "default"}) {
+    FormStackForm? form = _forms[name];
+    if (form == null) return 0;
+
+    int currentIndex = 0;
+    for (var step in form.steps) {
+      if (step.result == null) break;
+      currentIndex++;
+    }
+
+    return currentIndex;
+  }
+
+  /// Check if form is completed
+  bool isFormCompleted({String name = "default"}) {
+    FormStackForm? form = _forms[name];
+    if (form == null) return false;
+
+    for (var step in form.steps) {
+      if (step.result == null && !(step.isOptional ?? false)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /// Get form statistics
+  Map<String, dynamic> getFormStats({String name = "default"}) {
+    FormStackForm? form = _forms[name];
+    if (form == null) return {};
+
+    int totalSteps = form.steps.length;
+    int completedSteps = 0;
+    int optionalSteps = 0;
+    int requiredSteps = 0;
+
+    for (var step in form.steps) {
+      if (step.isOptional ?? false) {
+        optionalSteps++;
+      } else {
+        requiredSteps++;
+      }
+
+      if (step.result != null) {
+        completedSteps++;
+      }
+    }
+
+    return {
+      'totalSteps': totalSteps,
+      'completedSteps': completedSteps,
+      'requiredSteps': requiredSteps,
+      'optionalSteps': optionalSteps,
+      'progress': totalSteps > 0 ? completedSteps / totalSteps : 0.0,
+      'isCompleted': isFormCompleted(name: name),
+    };
+  }
+
+  /// Auto-save form data
+  FormStack enableAutoSave(
+      {String name = "default",
+      Duration interval = const Duration(seconds: 30)}) {
+    FormStackForm? form = _forms[name];
+    if (form != null) {
+      // Implementation would go here for auto-save functionality
+      // This is a placeholder for future implementation
+    }
+    return this;
+  }
+
+  /// Add form analytics
+  FormStack enableAnalytics({String name = "default"}) {
+    FormStackForm? form = _forms[name];
+    if (form != null) {
+      // Implementation would go here for analytics functionality
+      // This is a placeholder for future implementation
+    }
+    return this;
   }
 }

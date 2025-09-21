@@ -18,13 +18,19 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
       {super.key, super.title});
 
   final FocusNode _focusNode = FocusNode();
-  FilePickerResult? fileResult;
-  String? value;
+  FilePickerResult? _fileResult;
+  String? _value;
+
+  String? get value {
+    if (formStep.result != null && formStep.result is String) {
+      return formStep.result as String;
+    }
+    return _value;
+  }
+
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    if (formStep.result != null) {
-      value = formStep.result;
-    }
+    _value = value;
 
     return StatefulBuilder(builder: (context, setState) {
       return Container(
@@ -95,37 +101,67 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     });
   }
 
-  void suffixButtonClick(setState) async {
-    if (formStep.filter?.isEmpty ?? true) {
-      fileResult = await FilePicker.platform.pickFiles();
-    } else {
-      fileResult = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions:
-              formStep.filter?.map((item) => item as String).toList());
-    }
-    if (fileResult != null && fileResult!.files.isNotEmpty) {
-      if (kIsWeb) {
-        value = await bitesToBase64String(fileResult!.files.first.bytes!);
+  void suffixButtonClick(StateSetter setState) async {
+    try {
+      if (formStep.filter?.isEmpty ?? true) {
+        _fileResult = await FilePicker.platform.pickFiles();
       } else {
-        value = await fileToBase64String(File(fileResult!.files.first.path!));
+        _fileResult = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowedExtensions:
+                formStep.filter?.map((item) => item as String).toList());
+      }
+      if (_fileResult != null && _fileResult!.files.isNotEmpty) {
+        if (kIsWeb) {
+          _value = await _bytesToBase64String(_fileResult!.files.first.bytes!);
+        } else {
+          _value =
+              await _fileToBase64String(File(_fileResult!.files.first.path!));
+        }
+        formStep.result = _value;
+      }
+      setState(() {});
+    } catch (e) {
+      // Handle file picker errors gracefully
+      if (kDebugMode) {
+        print('Error picking file: $e');
       }
     }
-    setState(() {});
   }
 
-  Future<String> bitesToBase64String(List<int> fileBytes) async {
-    String base64String = base64Encode(fileBytes);
-    return base64String;
+  Future<String> _bytesToBase64String(List<int> fileBytes) async {
+    try {
+      String base64String = base64Encode(fileBytes);
+      return base64String;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error encoding bytes to base64: $e');
+      }
+      rethrow;
+    }
   }
 
-  Future<String> fileToBase64String(File file) async {
-    List<int> fileBytes = await file.readAsBytes();
-    return bitesToBase64String(fileBytes);
+  Future<String> _fileToBase64String(File file) async {
+    try {
+      List<int> fileBytes = await file.readAsBytes();
+      return _bytesToBase64String(fileBytes);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error reading file: $e');
+      }
+      rethrow;
+    }
   }
 
-  Uint8List dataFromBase64String(String base64String) {
-    return base64Decode(base64String);
+  Uint8List _dataFromBase64String(String base64String) {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error decoding base64 string: $e');
+      }
+      return Uint8List(0);
+    }
   }
 
   @override
@@ -133,7 +169,7 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.isOptional ?? false) {
       return true;
     }
-    return resultFormat.isValid(value);
+    return resultFormat.isValid(_value);
   }
 
   @override
@@ -149,7 +185,7 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   dynamic resultValue() {
-    return value;
+    return _value;
   }
 
   @override
@@ -157,15 +193,21 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     _focusNode.unfocus();
   }
 
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   Widget _buildSquareImage() {
-    return (fileResult?.files.isNotEmpty ?? false)
+    return (_fileResult?.files.isNotEmpty ?? false)
         ? kIsWeb
-            ? Image.memory(fileResult!.files.first.bytes!,
+            ? Image.memory(_fileResult!.files.first.bytes!,
                 width: 400, height: 150, fit: BoxFit.cover)
-            : Image.file(File(fileResult!.files.first.path!),
+            : Image.file(File(_fileResult!.files.first.path!),
                 width: 400, height: 150, fit: BoxFit.cover)
-        : value != null
-            ? Image.memory(dataFromBase64String(value!),
+        : _value != null
+            ? Image.memory(_dataFromBase64String(_value!),
                 width: 400, height: 150, fit: BoxFit.cover)
             : Lottie.asset(
                 'packages/formstack/assets/lottiefiles/placeholder.json',
@@ -175,17 +217,17 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   Widget _buildCircleImage() {
-    return (fileResult?.files.isNotEmpty ?? false)
+    return (_fileResult?.files.isNotEmpty ?? false)
         ? kIsWeb
             ? ClipOval(
-                child: Image.memory(fileResult!.files.first.bytes!,
+                child: Image.memory(_fileResult!.files.first.bytes!,
                     width: 150, height: 150, fit: BoxFit.cover))
             : ClipOval(
-                child: Image.file(File(fileResult!.files.first.path!),
+                child: Image.file(File(_fileResult!.files.first.path!),
                     width: 150, height: 150, fit: BoxFit.cover))
-        : value != null
+        : _value != null
             ? ClipOval(
-                child: Image.memory(dataFromBase64String(value!),
+                child: Image.memory(_dataFromBase64String(_value!),
                     width: 150, height: 150, fit: BoxFit.cover))
             : Lottie.asset('packages/formstack/assets/lottiefiles/avatar.json',
                 height: 200, fit: BoxFit.fill);

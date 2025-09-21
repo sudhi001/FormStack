@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
+import 'comprehensive_demo.dart';
 
 void main() {
   runApp(const MainApp());
@@ -48,6 +49,19 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
+                          builder: (context) => const ComprehensiveDemo(),
+                        ));
+                  },
+                  title: const Text("Comprehensive Demo"),
+                  subtitle: const Text(
+                      "Demonstrates all FormStack components and features"),
+                ),
+                ListTile(
+                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
                           builder: (context) => const LoadFromObjectScreen(),
                         ));
                   },
@@ -87,12 +101,14 @@ class HomeScreen extends StatelessWidget {
                           {"email": "sudhi.s@live.com"},
                           formName: "login_form",
                         );
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoadFromJSONScreen(),
-                            ));
+                        if (context.mounted) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const LoadFromJSONScreen(),
+                              ));
+                        }
                       },
                     );
                   },

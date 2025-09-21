@@ -1,0 +1,504 @@
+{
+  "comprehensive_demo": {
+    "steps": [
+      {
+        "type": "InstructionStep",
+        "title": "FormStack Comprehensive Demo",
+        "text": "This form demonstrates all available input types, styles, and features in FormStack library",
+        "cancellable": false,
+        "display": "large",
+        "id": "intro"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Email Input",
+        "text": "Enter your email address with validation",
+        "inputType": "email",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "lengthLimit": 50,
+        "id": "email_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Name Input",
+        "text": "Enter your full name",
+        "inputType": "name",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "name_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Password Input",
+        "text": "Enter a secure password",
+        "inputType": "password",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "password_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Number Input",
+        "text": "Enter a numeric value",
+        "inputType": "number",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "number_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Multi-line Text",
+        "text": "Enter a detailed description (3 lines)",
+        "inputType": "text",
+        "numberOfLines": 3,
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "multiline_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Date Picker",
+        "text": "Select a date",
+        "inputType": "date",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "date_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Time Picker",
+        "text": "Select a time",
+        "inputType": "time",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "time_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Date & Time Picker",
+        "text": "Select both date and time",
+        "inputType": "dateTime",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "datetime_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Single Choice (Radio)",
+        "text": "Choose one option from the list",
+        "inputType": "singleChoice",
+        "selectionType": "tick",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "option1", "title": "Option 1", "subTitle": "First choice"},
+          {"key": "option2", "title": "Option 2", "subTitle": "Second choice"},
+          {"key": "option3", "title": "Option 3", "subTitle": "Third choice"}
+        ],
+        "isOptional": false,
+        "id": "single_choice_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Multiple Choice (Checkbox)",
+        "text": "Choose multiple options",
+        "inputType": "multipleChoice",
+        "selectionType": "tick",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "check1", "title": "Checkbox 1"},
+          {"key": "check2", "title": "Checkbox 2"},
+          {"key": "check3", "title": "Checkbox 3"}
+        ],
+        "isOptional": false,
+        "id": "multiple_choice_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Dropdown Selection",
+        "text": "Select from dropdown menu",
+        "inputType": "dropdown",
+        "selectionType": "dropdown",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "dropdown1", "title": "Dropdown Option 1"},
+          {"key": "dropdown2", "title": "Dropdown Option 2"},
+          {"key": "dropdown3", "title": "Dropdown Option 3"}
+        ],
+        "isOptional": false,
+        "id": "dropdown_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Toggle Selection",
+        "text": "Toggle options on/off",
+        "inputType": "multipleChoice",
+        "selectionType": "toggle",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "toggle1", "title": "Toggle Option 1"},
+          {"key": "toggle2", "title": "Toggle Option 2"},
+          {"key": "toggle3", "title": "Toggle Option 3"}
+        ],
+        "isOptional": false,
+        "id": "toggle_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Arrow Selection",
+        "text": "Navigate with arrow buttons",
+        "inputType": "singleChoice",
+        "selectionType": "arrow",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "arrow1", "title": "Arrow Option 1"},
+          {"key": "arrow2", "title": "Arrow Option 2"},
+          {"key": "arrow3", "title": "Arrow Option 3"}
+        ],
+        "isOptional": false,
+        "id": "arrow_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "OTP Input",
+        "text": "Enter 6-digit verification code",
+        "inputType": "otp",
+        "count": 6,
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "otp_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Smile Rating",
+        "text": "Rate your experience (1-5)",
+        "inputType": "smile",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "smile_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "File Upload",
+        "text": "Upload a file (PDF, DOC, JPG, PNG)",
+        "inputType": "file",
+        "filter": ["pdf", "doc", "docx", "jpg", "png"],
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "file_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Dynamic Key-Value Pairs",
+        "text": "Add custom key-value pairs (max 5)",
+        "inputType": "dynamicKeyValue",
+        "maxCount": 5,
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "keyvalue_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Rich Text Editor",
+        "text": "Write formatted text with rich editor",
+        "inputType": "htmlEditor",
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "html_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Map Location",
+        "text": "Select location on map",
+        "inputType": "mapLocation",
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "map_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Avatar Upload",
+        "text": "Upload circular profile picture",
+        "inputType": "avatar",
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "avatar_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Banner Upload",
+        "text": "Upload rectangular banner image",
+        "inputType": "banner",
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "banner_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Component Styles Demo",
+        "text": "See different input styles",
+        "inputType": "singleChoice",
+        "selectionType": "tick",
+        "componentsStyle": "minimal",
+        "options": [
+          {"key": "basic", "title": "Basic Style", "subTitle": "Minimal design"},
+          {"key": "outline", "title": "Outline Style", "subTitle": "Bordered input"},
+          {"key": "underlined", "title": "Underlined Style", "subTitle": "Bottom border"}
+        ],
+        "isOptional": false,
+        "id": "styles_demo"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Display Sizes Demo",
+        "text": "Choose display size preference",
+        "inputType": "singleChoice",
+        "selectionType": "tick",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "small", "title": "Small Display", "subTitle": "Compact design"},
+          {"key": "normal", "title": "Normal Display", "subTitle": "Standard size"},
+          {"key": "medium", "title": "Medium Display", "subTitle": "Larger text"},
+          {"key": "large", "title": "Large Display", "subTitle": "Big text"},
+          {"key": "extraLarge", "title": "Extra Large Display", "subTitle": "Very large text"}
+        ],
+        "isOptional": false,
+        "id": "display_demo"
+      },
+      
+      {
+        "type": "CompletionStep",
+        "title": "Demo Completed!",
+        "text": "You've successfully seen all FormStack components and features in action. This demonstrates the comprehensive capabilities of the FormStack library.",
+        "autoTrigger": true,
+        "id": "completion"
+      }
+    ]
+  },
+  
+  "nested_form_demo": {
+    "steps": [
+      {
+        "type": "InstructionStep",
+        "title": "Nested Form Demo",
+        "text": "This demonstrates nested forms with multiple steps",
+        "cancellable": false,
+        "id": "nested_intro"
+      },
+      
+      {
+        "type": "NestedStep",
+        "title": "Personal Information",
+        "text": "Complete your personal details",
+        "steps": [
+          {
+            "type": "QuestionStep",
+            "title": "First Name",
+            "inputType": "name",
+            "inputStyle": "outline",
+            "componentsStyle": "basic",
+            "isOptional": false,
+            "id": "first_name"
+          },
+          {
+            "type": "QuestionStep",
+            "title": "Last Name",
+            "inputType": "name",
+            "inputStyle": "outline",
+            "componentsStyle": "basic",
+            "isOptional": false,
+            "id": "last_name"
+          },
+          {
+            "type": "QuestionStep",
+            "title": "Email Address",
+            "inputType": "email",
+            "inputStyle": "outline",
+            "componentsStyle": "basic",
+            "isOptional": false,
+            "id": "email"
+          },
+          {
+            "type": "QuestionStep",
+            "title": "Phone Number",
+            "inputType": "number",
+            "inputStyle": "outline",
+            "componentsStyle": "basic",
+            "isOptional": false,
+            "id": "phone"
+          }
+        ],
+        "id": "personal_info"
+      },
+      
+      {
+        "type": "NestedStep",
+        "title": "Preferences",
+        "text": "Set your preferences",
+        "steps": [
+          {
+            "type": "QuestionStep",
+            "title": "Favorite Color",
+            "inputType": "singleChoice",
+            "selectionType": "tick",
+            "componentsStyle": "basic",
+            "options": [
+              {"key": "red", "title": "Red"},
+              {"key": "blue", "title": "Blue"},
+              {"key": "green", "title": "Green"},
+              {"key": "yellow", "title": "Yellow"}
+            ],
+            "isOptional": false,
+            "id": "favorite_color"
+          },
+          {
+            "type": "QuestionStep",
+            "title": "Interests",
+            "text": "Select your interests",
+            "inputType": "multipleChoice",
+            "selectionType": "tick",
+            "componentsStyle": "basic",
+            "options": [
+              {"key": "sports", "title": "Sports"},
+              {"key": "music", "title": "Music"},
+              {"key": "reading", "title": "Reading"},
+              {"key": "travel", "title": "Travel"}
+            ],
+            "isOptional": false,
+            "id": "interests"
+          },
+          {
+            "type": "QuestionStep",
+            "title": "Bio",
+            "text": "Tell us about yourself",
+            "inputType": "text",
+            "numberOfLines": 3,
+            "inputStyle": "outline",
+            "componentsStyle": "basic",
+            "isOptional": true,
+            "id": "bio"
+          }
+        ],
+        "id": "preferences"
+      },
+      
+      {
+        "type": "CompletionStep",
+        "title": "Nested Form Completed!",
+        "text": "You've successfully completed the nested form demo",
+        "autoTrigger": true,
+        "id": "nested_completion"
+      }
+    ]
+  },
+  
+  "validation_demo": {
+    "steps": [
+      {
+        "type": "InstructionStep",
+        "title": "Validation Demo",
+        "text": "This form demonstrates various validation scenarios",
+        "cancellable": false,
+        "id": "validation_intro"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Required Email",
+        "text": "This field is required and must be a valid email",
+        "inputType": "email",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": false,
+        "id": "required_email"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Optional Field",
+        "text": "This field is optional - you can skip it",
+        "inputType": "text",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "isOptional": true,
+        "id": "optional_field"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Length Limited Text",
+        "text": "Enter text (maximum 20 characters)",
+        "inputType": "text",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "lengthLimit": 20,
+        "isOptional": false,
+        "id": "length_limited"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Required Choice",
+        "text": "You must select at least one option",
+        "inputType": "multipleChoice",
+        "selectionType": "tick",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "choice1", "title": "Choice 1"},
+          {"key": "choice2", "title": "Choice 2"},
+          {"key": "choice3", "title": "Choice 3"}
+        ],
+        "isOptional": false,
+        "id": "required_choice"
+      },
+      
+      {
+        "type": "QuestionStep",
+        "title": "Password with Requirements",
+        "text": "Enter a password (minimum 8 characters)",
+        "inputType": "password",
+        "inputStyle": "outline",
+        "componentsStyle": "basic",
+        "lengthLimit": 50,
+        "isOptional": false,
+        "id": "password_required"
+      },
+      
+      {
+        "type": "CompletionStep",
+        "title": "Validation Demo Completed!",
+        "text": "You've seen various validation scenarios in action",
+        "autoTrigger": true,
+        "id": "validation_completion"
+      }
+    ]
+  }
+}

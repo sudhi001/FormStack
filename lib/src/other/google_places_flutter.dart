@@ -1,5 +1,3 @@
-library google_places_flutter;
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';

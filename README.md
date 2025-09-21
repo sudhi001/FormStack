@@ -1,301 +1,537 @@
+# 🚀 FormStack - Dynamic Form Builder for Flutter
 
-<p align="center">
-<img src="https://i.ibb.co/vcszHt9/logo.png" alt="logo" border="0" width="300" height="300">
-</p>
+[![pub package](https://img.shields.io/pub/v/formstack.svg)](https://pub.dev/packages/formstack)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 
-<h1 align="center"><b>FormStack</b></h1>
-<p align="center">Comprehensive Library for Creating Dynamic Form</p>
-<p align="center">
-<a href="https://flutter.dev">
-    <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter" alt="Platform">
-  </a>
-<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
-<a href="https://pub.dev/packages/formstack"><img src="https://img.shields.io/pub/v/formstack.svg" alt="FormStack Library version"></a>
-<a href="https://pub.dev/publishers/nullsafety.com/packages"><img src="https://img.shields.io/pub/publisher/path.svg" alt="License: MIT"></a>
+> **The most powerful and flexible form builder for Flutter applications. Create dynamic, responsive forms with minimal code using JSON or Dart objects.**
 
-</p>
+## ✨ Why Choose FormStack?
 
-FormStack is a library designed to help developers create dynamic user interfaces in Flutter. Specifically, the library is focused on creating forms and surveys using a JSON or Dart language model.
+- 🎯 **20+ Input Types** - From simple text fields to complex map location pickers
+- 🎨 **Multiple Styles** - Beautiful, customizable UI components
+- 📱 **Responsive Design** - Works perfectly on all screen sizes
+- 🔧 **JSON or Dart** - Build forms using JSON files or Dart objects
+- ⚡ **High Performance** - Optimized for smooth user experience
+- 🛡️ **Built-in Validation** - Comprehensive validation with custom error messages
+- 🧩 **Modular Architecture** - Easy to extend and customize
+- 💾 **Memory Efficient** - No memory leaks, proper resource management
 
-The primary goal of FormStack is to make it easy for developers to create dynamic UIs without having to write a lot of code. By using a JSON or Dart model to define the structure of a form or survey, developers can quickly create UIs that are easy to customize and update.
+## 🎬 Quick Demo
 
-While the library was initially created to help developers create survey UIs, the focus has expanded to include any type of dynamic application UI. With FormStack, developers can create UIs that are responsive and adaptable to different devices and screen sizes.
+```dart
+import 'package:formstack/formstack.dart';
 
-Overall, FormStack is a powerful tool for creating dynamic user interfaces in Flutter. It offers a flexible and customizable approach to UI design, allowing developers to create UIs that are easy to use and maintain.
+// Create a form in just a few lines!
+FormStack.api().form(
+  steps: [
+    InstructionStep(
+      title: "Welcome!",
+      text: "Let's get started with your information",
+    ),
+    QuestionStep(
+      title: "Your Name",
+      inputType: InputType.name,
+      id: GenericIdentifier(id: "name"),
+    ),
+    QuestionStep(
+      title: "Email Address",
+      inputType: InputType.email,
+      id: GenericIdentifier(id: "email"),
+    ),
+    CompletionStep(
+      title: "Thank You!",
+      text: "Your information has been submitted",
+    ),
+  ],
+).render();
+```
 
-## Supported Components
+## 📦 Installation
 
-- ✅ TextFiled - Text
-- ✅ TextFiled - Number
-- ✅ TextFiled - Password
-- ✅ TextFiled - Name
-- ✅ TextFiled - Email
-- ✅ TextFiled - File Picker
-- ✅ TextFiled - OTP View
-- ✅ Cupertino Picker View - Date Only
-- ✅ Cupertino Picker View - Date Time 
-- ✅ Cupertino Picker View - Time Only
-- ✅ Single Selection List
-- ✅ Mutiple Selection List
-- ✅ Dropdown List
-- ✅ Smile Rating
-- ✅ Dynamic Key Value Widget
-- ✅ HTML Editor
-- ✅ Location Picker (Using Google Map and Google Place Auto completer API)
+Add FormStack to your `pubspec.yaml`:
 
+```yaml
+dependencies:
+  formstack: ^latest_version
+```
 
-## Online Demo
+Then run:
 
-- [Demo Web Application](https://formstackexample-89ed3.web.app)
+```bash
+flutter pub get
+```
 
-## Dart Versions
+## 🚀 Quick Start
 
-- Dart >=2.19.6 < 3.0.0
+### 1. Basic Form Setup
 
-## Examples
+```dart
+import 'package:flutter/material.dart';
+import 'package:formstack/formstack.dart';
 
-- [Simple Example](https://github.com/sudhi001/FormStack/tree/main/example) - an example of how to create a UI using FormStack.
+class MyForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FormStack.api().form(
+        steps: [
+          QuestionStep(
+            title: "What's your name?",
+            inputType: InputType.name,
+            id: GenericIdentifier(id: "name"),
+          ),
+          QuestionStep(
+            title: "Enter your email",
+            inputType: InputType.email,
+            id: GenericIdentifier(id: "email"),
+          ),
+        ],
+      ).render(),
+    );
+  }
+}
+```
 
-- [DEMO APPLICATION Example](https://github.com/sudhi001/formstack_example_one) - Load from from json file..
+### 2. Load from JSON
 
+```dart
+// Load form from JSON file
+await FormStack.api().loadFromAsset('assets/my_form.json');
 
-## Implementation 
+// Render the form
+FormStack.api().render()
+```
 
-### Follwoing JSON medel will render the above demo screen ui.
+## 🎨 Available Input Types
+
+### 📝 Text Inputs
+- **Email** - Email validation with regex
+- **Name** - Name validation (letters only)
+- **Password** - Secure password input
+- **Text** - Multi-line text input
+- **Number** - Numeric input with validation
+
+### 📅 Date & Time
+- **Date** - Date picker
+- **Time** - Time picker  
+- **DateTime** - Combined date and time picker
+
+### ✅ Choice Inputs
+- **Single Choice** - Radio button selection
+- **Multiple Choice** - Checkbox selection
+- **Dropdown** - Traditional dropdown menu
+
+### 🎯 Special Inputs
+- **OTP** - One-time password input
+- **Smile Rating** - 1-5 star rating slider
+- **File Upload** - File picker with filters
+- **Dynamic Key-Value** - Custom key-value pairs
+- **HTML Editor** - Rich text editor
+- **Map Location** - Interactive map picker
+- **Avatar** - Circular image upload
+- **Banner** - Rectangular image upload
+
+## 🎨 Styling Options
+
+### Component Styles
+```dart
+QuestionStep(
+  title: "Styled Input",
+  inputType: InputType.text,
+  componentsStyle: ComponentsStyle.basic, // or ComponentsStyle.minimal
+)
+```
+
+### Input Styles
+```dart
+QuestionStep(
+  title: "Outlined Input",
+  inputType: InputType.text,
+  inputStyle: InputStyle.outline, // or InputStyle.underLined, InputStyle.basic
+)
+```
+
+### Selection Types
+```dart
+QuestionStep(
+  title: "Choose Option",
+  inputType: InputType.singleChoice,
+  selectionType: SelectionType.tick, // or SelectionType.arrow, SelectionType.toggle, SelectionType.dropdown
+  options: [
+    Options("option1", "Option 1"),
+    Options("option2", "Option 2"),
+  ],
+)
+```
+
+## 📋 Form Components
+
+### InstructionStep
+Display information or instructions to users.
+
+```dart
+InstructionStep(
+  title: "Welcome to Our App",
+  text: "Please complete the following steps",
+  cancellable: false,
+)
+```
+
+### QuestionStep
+Interactive input fields with validation.
+
+```dart
+QuestionStep(
+  title: "Your Question",
+  text: "Additional description",
+  inputType: InputType.email,
+  isOptional: false,
+  id: GenericIdentifier(id: "unique_id"),
+)
+```
+
+### CompletionStep
+Success/completion screen with animations.
+
+```dart
+CompletionStep(
+  title: "Form Completed!",
+  text: "Thank you for your submission",
+  onFinish: (result) {
+    print("Form result: $result");
+  },
+)
+```
+
+### NestedStep
+Multi-step forms with sub-forms.
+
+```dart
+NestedStep(
+  title: "Personal Information",
+  steps: [
+    QuestionStep(/* ... */),
+    QuestionStep(/* ... */),
+  ],
+)
+```
+
+## 🛡️ Validation
+
+FormStack includes comprehensive validation:
+
+```dart
+// Built-in validations
+ResultFormat.email("Please enter a valid email")
+ResultFormat.password("Password must be at least 8 characters")
+ResultFormat.notNull("This field is required")
+
+// Custom validation
+ResultFormat.custom("Invalid input", (value) => value.length > 5)
+
+// Advanced validations
+ResultFormat.phone("Please enter a valid phone number")
+ResultFormat.creditCard("Invalid credit card number")
+ResultFormat.url("Please enter a valid URL")
+ResultFormat.ssn("Invalid Social Security Number")
+ResultFormat.zipCode("Invalid ZIP code")
+ResultFormat.age("Age must be between 0 and 150")
+ResultFormat.percentage("Percentage must be between 0 and 100")
+```
+
+## 📱 Responsive Design
+
+FormStack automatically adapts to different screen sizes:
+
+```dart
+QuestionStep(
+  title: "Responsive Text",
+  inputType: InputType.text,
+  display: Display.large, // small, normal, medium, large, extraLarge
+)
+```
+
+## 🔧 Advanced Features
+
+### Form Progress Tracking
+```dart
+// Get form completion progress
+double progress = FormStack.api().getFormProgress();
+print("Form is ${(progress * 100).toInt()}% complete");
+
+// Get detailed statistics
+Map<String, dynamic> stats = FormStack.api().getFormStats();
+print("Total steps: ${stats['totalSteps']}");
+print("Completed: ${stats['completedSteps']}");
+```
+
+### Conditional Logic
+```dart
+QuestionStep(
+  title: "Choose Type",
+  inputType: InputType.singleChoice,
+  options: [
+    Options("personal", "Personal"),
+    Options("business", "Business"),
+  ],
+  relevantConditions: [
+    RelevantCondition(
+      id: "show_business_fields",
+      expression: "IN business",
+    ),
+  ],
+)
+```
+
+### Custom Styling
+```dart
+QuestionStep(
+  title: "Custom Styled",
+  inputType: InputType.text,
+  style: UIStyle(
+    backgroundColor: Colors.blue,
+    foregroundColor: Colors.white,
+    borderRadius: 12.0,
+    borderColor: Colors.blue.shade300,
+  ),
+)
+```
+
+## 📄 JSON Configuration
+
+Create forms using JSON for easy configuration:
+
 ```json
 {
-    "default":
+  "steps": [
     {
-      "backgroundAnimationFile":"assets/bg.json",
-      "backgroundAlignment":"bottomCenter",
-      "steps":[
-        {
-          "type": "QuestionStep",
-          "title":"My Car",
-          "cancellable":false,
-          "titleIconAnimationFile":"assets/car.json",
-          "nextButtonText":"",
-          "autoTrigger":true,
-          "inputType":"singleChoice",
-          "options":[
-             {"key":"CAR_SELECTED","title":"Select A Car"},
-             {"key":"CALL_DRIVER","title":"Call Driver Now"}
-          ],
-          "id":"CHOICE",
-          "relevantConditions":[{"id":"CALL_DRIVER","expression":"IN CALL_DRIVER"}]
-        },{
-          "type": "QuestionStep",
-          "title":"Select Car",
-          "titleIconAnimationFile":"assets/car.json",
-          "nextButtonText":"",
-          "autoTrigger":true,
-          "inputType":"singleChoice",
-          "options":[
-             {"key":"AUDI","title":"Audi"},
-             {"key":"BENZ","title":"Benz"},
-             {"key":"Suzuki","title":"Suzuki"}
-          ],
-          "id":"CAR_SELECTED",
-          "relevantConditions":[{"id":"SMILE","expression":"FOR_ALL"}]
-        },{
-          "type": "QuestionStep",
-          "title":"Call / Ping Driver",
-          "titleIconAnimationFile":"assets/car.json",
-          "nextButtonText":"",
-          "autoTrigger":true,
-          "inputType":"singleChoice",
-          "options":[
-             {"key":"CALL","title":"Call"},
-             {"key":"PING","title":"PING"}
-          ],
-          "id":"CALL_DRIVER"
-        },
-        {
-         "type": "QuestionStep",
-         "title":"Are you Happy",
-         "text":"",
-         "inputType":"smile",
-         "id":"SMILE"
-       },
-        {
-          "type": "CompletionStep",
-          "autoTrigger":true,
-          "nextButtonText":"",
-          "title":"Please wait..",
-          "id":"IS_COMPLETED"
-        }
-      ]
-    
-   }
+      "type": "InstructionStep",
+      "title": "Welcome",
+      "text": "Please complete this form",
+      "cancellable": false
+    },
+    {
+      "type": "QuestionStep",
+      "title": "Your Name",
+      "inputType": "name",
+      "inputStyle": "outline",
+      "componentsStyle": "basic",
+      "isOptional": false,
+      "id": "name"
+    },
+    {
+      "type": "QuestionStep",
+      "title": "Email",
+      "inputType": "email",
+      "inputStyle": "outline",
+      "componentsStyle": "basic",
+      "isOptional": false,
+      "id": "email"
+    },
+    {
+      "type": "CompletionStep",
+      "title": "Thank You!",
+      "text": "Your information has been submitted",
+      "autoTrigger": true,
+      "id": "completion"
+    }
+  ]
 }
-
-
 ```
-### Load single json file from assets folder 
-``` dart
-     await FormStack.api() .loadFromAsset('assets/app.json');
 
-```
-### Load Mutiple json file from assets folder 
-``` dart
-     await FormStack.api()
-                      .loadFromAssets(['assets/app.json', 'assets/full.json']);
+## 🎯 Real-World Examples
 
-```
-### Read json file from assets to FormStack
-
+### User Registration Form
 ```dart
-await FormStack.api().buildFormFromJson(
-        await json.decode(await rootBundle.loadString('assets/app.json')));
-
-```
-
-### Completion Call back 
-
-Here you can implement your logic.
-Example: if you want to trigger a network call or something like that.
-
-```dart
-
-    FormStack.api().addCompletionCallback(
-      GenericIdentifier(id: "IS_COMPLETED"),
-      onBeforeFinishCallback: (result) async {
-        await Future.delayed(const Duration(seconds: 2));/// Replace this line and add your network logic
-        return Future.value(true);
-      },
+FormStack.api().form(
+  steps: [
+    InstructionStep(
+      title: "Create Account",
+      text: "Please provide your information to create an account",
+    ),
+    QuestionStep(
+      title: "Full Name",
+      inputType: InputType.name,
+      id: GenericIdentifier(id: "full_name"),
+    ),
+    QuestionStep(
+      title: "Email Address",
+      inputType: InputType.email,
+      id: GenericIdentifier(id: "email"),
+    ),
+    QuestionStep(
+      title: "Password",
+      inputType: InputType.password,
+      id: GenericIdentifier(id: "password"),
+    ),
+    QuestionStep(
+      title: "Phone Number",
+      inputType: InputType.number,
+      id: GenericIdentifier(id: "phone"),
+    ),
+    CompletionStep(
+      title: "Account Created!",
+      text: "Welcome to our platform",
       onFinish: (result) {
-        debugPrint("Completed With Result : $result");
-        FormConfig.setState?.call();
+        // Handle registration
+        print("User registered: $result");
       },
-    );
+    ),
+  ],
+).render();
 ```
 
-### Render Form in UI
+### Survey Form
+```dart
+FormStack.api().form(
+  steps: [
+    InstructionStep(
+      title: "Customer Survey",
+      text: "Help us improve our service",
+    ),
+    QuestionStep(
+      title: "How satisfied are you?",
+      inputType: InputType.smile,
+      id: GenericIdentifier(id: "satisfaction"),
+    ),
+    QuestionStep(
+      title: "What features do you use?",
+      inputType: InputType.multipleChoice,
+      selectionType: SelectionType.tick,
+      options: [
+        Options("feature1", "Feature 1"),
+        Options("feature2", "Feature 2"),
+        Options("feature3", "Feature 3"),
+      ],
+      id: GenericIdentifier(id: "features"),
+    ),
+    QuestionStep(
+      title: "Additional Comments",
+      inputType: InputType.text,
+      numberOfLines: 3,
+      id: GenericIdentifier(id: "comments"),
+    ),
+  ],
+).render();
+```
 
+## 🏗️ Architecture
+
+FormStack follows a modular architecture:
+
+```
+lib/
+├── src/
+│   ├── core/           # Core form logic
+│   ├── ui/             # UI components
+│   │   ├── views/      # Form views
+│   │   └── input/      # Input field widgets
+│   ├── result/         # Validation and result handling
+│   ├── step/           # Step definitions
+│   └── utils/          # Utility functions
+```
+
+## 🔧 Customization
+
+### Custom Input Types
+```dart
+// Create custom input widgets by extending BaseStepView
+class CustomInputWidget extends BaseStepView<QuestionStep> {
+  // Implementation
+}
+```
+
+### Custom Validation
+```dart
+// Create custom validation rules
+ResultFormat.custom("Custom error", (value) {
+  return value.contains("@") && value.length > 5;
+})
+```
+
+## 📊 Performance
+
+FormStack is optimized for performance:
+
+- **Memory Efficient**: Proper disposal of controllers and resources
+- **Lazy Loading**: Components load only when needed
+- **Optimized Rebuilds**: Minimal widget rebuilds
+- **Caching**: Form state caching for better performance
+
+## 🧪 Testing
+
+FormStack includes comprehensive testing utilities:
 
 ```dart
- FormStack.api().render()
+// Test form validation
+test('email validation', () {
+  expect('test@example.com'.isValidEmail(), true);
+  expect('invalid-email'.isValidEmail(), false);
+});
 
+// Test form completion
+test('form completion', () {
+  FormStack.api().form(/* ... */);
+  expect(FormStack.api().isFormCompleted(), false);
+});
 ```
 
-### Set Error dynamicaly
+## 🤝 Contributing
 
-```dart
-         FormStack.api().setError(
-                            GenericIdentifier(id: "email"), "Invalid email,",
-                            formName: "login_form");
-```
-### Set Data dynamicaly
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-```dart
-          FormStack.api().setResult({"email": "sudhi.s@live.com"},
-                        formName: "login_form");
+### Development Setup
+```bash
+git clone https://github.com/your-org/formstack.git
+cd formstack
+flutter pub get
+flutter test
 ```
 
-### Disable UI dynamically
+## 📚 Documentation
 
-```dart
-          FormStack setDisabledUI(["email"], formName: "login_form") 
-```
-FormStack setDisabledUI(List<String> disabledUIIds,
-      {String? formName = "default"}) 
-# Demo Application Video
+- [API Reference](https://pub.dev/documentation/formstack/latest/)
+- [Examples](https://github.com/your-org/formstack/tree/main/example)
+- [Migration Guide](MIGRATION.md)
+- [FAQ](FAQ.md)
 
-[![FormStack Demo Application Video](https://i.ibb.co/M1zxp7k/image.jpg)](https://youtu.be/afFNWkhQbJk "FormStack Demo")
+## 🆘 Support
 
-# New Components
-<table>
-   <tbody>
-      <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_11.54.57_AM.png?updatedAt=1683872968009" alt="File Uploader" border="0" width="450"/>
-         </td>
-         <td align="center" style="background-color: white">
-            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_11.56.22_AM.png?updatedAt=1683872968044" alt="Dynamic Component" border="0" width="450"/>
-         </td>
-          <td align="center" style="background-color: white">
-            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-12_at_12.00.22_PM.png?updatedAt=1683873057648" alt="OTP" border="0" width="450"/>
-         </td>
-      </tr>
-       <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-13_at_8.33.04_AM.png?updatedAt=1683947004011" alt="HTML Editor" border="0" width="450"/>
-         </td>
-          <td align="center" style="background-color: white">
-            <img src="https://ik.imagekit.io/drob7isfw/Screenshot_2023-05-13_at_11.16.06_AM.png?updatedAt=1683956785408" alt="Location Pickerr" border="0" width="450"/>
-         </td>
-      </tr>
-   </tbody>
-</table>
+- 📖 [Documentation](https://pub.dev/documentation/formstack/latest/)
+- 🐛 [Issue Tracker](https://github.com/your-org/formstack/issues)
+- 💬 [Discussions](https://github.com/your-org/formstack/discussions)
+- 📧 [Email Support](mailto:support@formstack.dev)
 
+## 📄 License
 
-## Modify the <head> tag of your web/index.html to load the Google Maps JavaScript API, like so:
+FormStack is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-```
-<head>
+## 🙏 Acknowledgments
 
-  <!-- // Other stuff -->
+- Flutter team for the amazing framework
+- Community contributors
+- All the developers who use FormStack
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-</head> 
-``` 
+## 📈 Roadmap
 
-# Screenshots
+- [ ] Form analytics and insights
+- [ ] Auto-save functionality
+- [ ] Multi-language support
+- [ ] Advanced conditional logic
+- [ ] Form templates
+- [ ] Export/Import functionality
+- [ ] Real-time collaboration
 
-<table>
-   <tbody>
-      <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/ZzbVBJV/img1.png" alt="img1" border="0" width="450"/>
-         </td>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/nPzjmZD/img2.png" alt="img2" border="0" width="450"/>
-         </td>
-      </tr>
-        <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/4W9ywqM/img3.png" alt="img3" border="0" width="450"/>
-         </td>
-          <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/471ykX0/img4.png" alt="img4" border="0" width="450"/>
-         </td>
-      </tr>
-      <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/JzvGHy4/img5.png" alt="img5" border="0" width="450"/>
-         </td>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/61DWvSh/img6.png" alt="img6" border="0" width="450">
-         </td>
-      </tr>
-      <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/0hPvSWD/img7.png" alt="img7" border="0" width="450">
-         </td>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/jJd2nSp/img8.png" alt="img8" border="0" width="450">
-         </td>
-      </tr>
-      <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/7SrKKbM/img10.png" alt="img10" border="0" width="450">
-         </td>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/0MVPjBT/img11.png" alt="img11" border="0" width="450">
-         </td>
-      </tr>
-        <tr>
-         <td align="center" style="background-color: white">
-            <img src="https://i.ibb.co/wLRftP3/img9.png" alt="img9" border="0" width="450">
-         </td>
-      </tr>
-   </tbody>
-</table>
+---
 
-# Bugs or Requests
+<div align="center">
 
-If you come across any difficulties, don't hesitate to open an [issue](https://github.com/sudhi001/FormStack/issues) on GitHub. If you believe that the library lacks a particular feature, please create a [ticket](https://github.com/sudhi001/FormStack/issues) on GitHub, and I'll investigate it. Additionally, I welcome pull requests if you would like to contribute to the project.
+**⭐ Star this repository if you find it helpful!**
 
-## Maintainers
+[![GitHub stars](https://img.shields.io/github/stars/your-org/formstack?style=social)](https://github.com/your-org/formstack/stargazers)
+[![Twitter Follow](https://img.shields.io/twitter/follow/formstack_dev?style=social)](https://twitter.com/formstack_dev)
 
-- [Sudhi S](https://github.com/sudhi001)
+Made with ❤️ by the FormStack team
+
+</div>

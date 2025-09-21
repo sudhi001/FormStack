@@ -39,22 +39,22 @@ class ParserUtils {
     return QuestionStep.from(element, relevantConditions);
   }
 
-  static FormStep _createCompletion(
-      element, List<RelevantCondition> relevantConditions) {
+  static FormStep _createCompletion(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions) {
     return CompletionStep.from(element, relevantConditions);
   }
 
-  static FormStep _createInstruction(
-      element, List<RelevantCondition> relevantConditions) {
+  static FormStep _createInstruction(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions) {
     return InstructionStep.from(element, relevantConditions);
   }
 
-  static FormStep _createDisplay(
-      element, List<RelevantCondition> relevantConditions) {
+  static FormStep _createDisplay(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions) {
     return DisplayStep.from(element, relevantConditions);
   }
 
-  static List<RelevantCondition> _parseRelevant(element) {
+  static List<RelevantCondition> _parseRelevant(Map<String, dynamic>? element) {
     List<RelevantCondition> relevantConditions = [];
     cast<List>(element?["relevantConditions"])?.forEach((el) {
       relevantConditions.add(ExpressionRelevant(
@@ -65,8 +65,8 @@ class ParserUtils {
     return relevantConditions;
   }
 
-  static FormStep createNestedStep(
-      element, List<RelevantCondition> relaventCondition) {
+  static FormStep createNestedStep(Map<String, dynamic>? element,
+      List<RelevantCondition> relaventCondition) {
     List<FormStep> steps = [];
     cast<List>(element?["steps"])?.forEach((el) {
       _addFormStep(steps, el);

@@ -26,11 +26,12 @@ class WebMapState extends State<WebMap> {
   @override
   void initState() {
     currentLat = LatLng(widget.latLng?.lat ?? 0.0, widget.latLng?.lng ?? 0.0);
+    controller = TextEditingController();
     super.initState();
     _goToTheLake();
   }
 
-  TextEditingController controller = TextEditingController();
+  late TextEditingController controller;
 
   LocationWrapper getUserLocation() =>
       LocationWrapper(currentLat.lat.toDouble(), currentLat.lng.toDouble());
@@ -106,5 +107,11 @@ class WebMapState extends State<WebMap> {
         widget.onChange.call(getUserLocation());
       });
     }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

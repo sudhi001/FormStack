@@ -39,4 +39,11 @@ class MobileMapState extends State<MobileMap> {
       onMapCreated: _controller.complete,
     );
   }
+
+  @override
+  void dispose() {
+    // Note: GoogleMapController disposal is handled by the Google Maps plugin
+    // The Completer will be automatically disposed when the widget is disposed
+    super.dispose();
+  }
 }

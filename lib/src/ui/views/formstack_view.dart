@@ -48,9 +48,9 @@ class _FormStackViewState extends State<FormStackView> {
 
     return PopScope(
       canPop: !_formKitForm.preventSystemBackNavigation,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop && !_isDisposed) {
-          _formKitForm.onSystemNagiationBackClick?.call();
+          _formKitForm.onSystemNavigationBackClick?.call();
         }
       },
       child: _hasBackgroundAnimation

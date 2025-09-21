@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # flutter_quill: ^8.4.0
   formstack:
     path: ../
 dev_dependencies:

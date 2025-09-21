@@ -15,23 +15,30 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
       {super.key, super.title, this.format = DateInputFormats.dateOnly});
 
   final FocusNode _focusNode = FocusNode();
-  DateTime? chosenDateTime;
-  @override
-  Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
+  DateTime? _chosenDateTime;
+
+  DateTime? get chosenDateTime {
     if (formStep.result != null) {
       if (formStep.result is String) {
-        DateResultType dateResultType = cast(resultFormat);
-        chosenDateTime =
-            DateFormat(dateResultType.format).parse(formStep.result);
-      } else {
-        chosenDateTime = formStep.result;
+        try {
+          DateResultType? dateResultType = cast<DateResultType>(resultFormat);
+          if (dateResultType != null) {
+            return DateFormat(dateResultType.format).parse(formStep.result);
+          }
+        } catch (e) {
+          // If parsing fails, return current date
+          return DateTime.now();
+        }
+      } else if (formStep.result is DateTime) {
+        return formStep.result as DateTime;
       }
-    } else {
-      chosenDateTime = DateTime.now();
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _focusNode.requestFocus();
-    });
+    return _chosenDateTime ?? DateTime.now();
+  }
+
+  @override
+  Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
+    _chosenDateTime = chosenDateTime;
     return Container(
         decoration: const BoxDecoration(
           border: Border(
@@ -53,7 +60,8 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
                     : CupertinoDatePickerMode.time,
             initialDateTime: chosenDateTime,
             onDateTimeChanged: (DateTime newDateTime) {
-              chosenDateTime = newDateTime;
+              _chosenDateTime = newDateTime;
+              formStep.result = newDateTime;
             },
           ),
         ));
@@ -64,7 +72,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.isOptional ?? false) {
       return true;
     }
-    return resultFormat.isValid(chosenDateTime);
+    return resultFormat.isValid(_chosenDateTime);
   }
 
   @override
@@ -75,7 +83,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   dynamic resultValue() {
-    return chosenDateTime;
+    return _chosenDateTime;
   }
 
   @override
@@ -86,6 +94,12 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   void clearFocus() {
     _focusNode.unfocus();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 }
 

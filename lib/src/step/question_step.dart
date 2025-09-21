@@ -73,7 +73,7 @@ class QuestionStep extends FormStep<QuestionStep> {
 
   @override
   FormStepView buildView(FormStackForm formKitForm) {
-    formKitForm.onValidtionError = onValidationError;
+    formKitForm.onValidationError = onValidationError;
     formKitForm.onFinish = onFinish;
     switch (inputType) {
       case InputType.email:

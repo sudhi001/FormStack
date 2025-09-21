@@ -57,10 +57,13 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
 
   @override
   void dispose() {
-    super.dispose();
     for (var controller in _textControllers) {
       controller?.dispose();
     }
+    for (var focusNode in _focusNodes) {
+      focusNode?.dispose();
+    }
+    super.dispose();
   }
 
   Widget _buildTextField({required BuildContext context, required int index}) {
