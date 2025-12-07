@@ -1,13 +1,4 @@
-## 1.1.0
-- **Dependencies Updated**: Updated all dependencies to latest stable versions
-  - `webview_flutter`: ^4.9.0 → ^4.13.0
-  - `dio`: ^5.8.0+1 → ^5.9.0
-  - `uuid`: ^4.5.1 → ^4.5.2
-  - `lottie`: ^3.3.1 → ^3.3.2
-  - `file_picker`: ^8.3.7 → ^10.3.7
-  - `google_maps_flutter_web`: ^0.5.12+2 → ^0.5.14+3
-  - `google_maps_flutter`: ^2.12.3 → ^2.14.0
-  - `http`: ^1.4.0 → ^1.6.0
+## 1.1.1
 - **Performance & Memory Optimizations**:
   - Fixed memory leak in Google Places autocomplete stream subscription
   - Added cache size limit (50 items) to prevent unbounded memory growth
@@ -23,6 +14,18 @@
   - Fixed undefined `mounted` property issue in completion step view
   - Fixed auto-trigger callback firing multiple times
   - Improved resource cleanup across all views
+- **Dependencies Updated**: Updated all dependencies to latest stable versions
+  - `webview_flutter`: ^4.9.0 → ^4.13.0
+  - `dio`: ^5.8.0+1 → ^5.9.0
+  - `uuid`: ^4.5.1 → ^4.5.2
+  - `lottie`: ^3.3.1 → ^3.3.2
+  - `file_picker`: ^8.3.7 → ^10.3.7
+  - `google_maps_flutter_web`: ^0.5.12+2 → ^0.5.14+3
+  - `google_maps_flutter`: ^2.12.3 → ^2.14.0
+  - `http`: ^1.4.0 → ^1.6.0
+
+## 1.1.0
+- Initial release with dependency updates and optimizations
 
 ## 0.9.33
 - Library updates
