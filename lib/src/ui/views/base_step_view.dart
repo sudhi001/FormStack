@@ -17,13 +17,17 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   /// state of error
   bool showError = false;
+  bool _hasCheckedError = false;
 
   /// Build the Widget / Component to render on the basis o  FormStep object.
   @override
   Widget buildWithFrom(BuildContext context, T formStep) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _checkAndShowDefaultValidationError();
-    });
+    if (!_hasCheckedError) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _checkAndShowDefaultValidationError();
+        _hasCheckedError = true;
+      });
+    }
     final Widget? inputWidget = buildWInputWidget(context, formStep);
     return (formStep.componentOnly)
         ? (formStep.width != null
@@ -98,13 +102,13 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   /// Trigger on Loading state
   @override
-  void onLoding(bool isLoading) {}
+  void onLoading(bool isLoading) {}
 
   ///
   /// set Loading state
   void setLoading(bool isLoading) {
     isProcessing = isLoading;
-    onLoding(isProcessing);
+    onLoading(isProcessing);
   }
 
   ///

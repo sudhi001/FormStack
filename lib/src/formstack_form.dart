@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
+import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/step/nested_step.dart';
 import 'package:intl/intl.dart';
 
@@ -60,8 +61,9 @@ abstract class FormStackForm {
 
   void backStep(FormStep? currentStep) {
     FormStep? nextStep;
-    if (relevantStack.containsKey(currentStep?.id?.id)) {
-      nextStep = relevantStack[currentStep?.id?.id];
+    final currentStepId = currentStep?.id?.id;
+    if (currentStepId != null && relevantStack.containsKey(currentStepId)) {
+      nextStep = relevantStack[currentStepId] as FormStep?;
     } else {
       nextStep = currentStep?.previousStep ?? currentStep?.previous;
       if (nextStep != null) {
@@ -93,7 +95,10 @@ abstract class FormStackForm {
         }
       }
       if (nextStep != null) {
-        relevantStack.putIfAbsent((nextStep.id?.id ?? ""), () => currentStep);
+        final nextStepId = nextStep.id?.id;
+        if (nextStepId != null) {
+          relevantStack.putIfAbsent(nextStepId, () => currentStep);
+        }
       } else if (formName?.isNotEmpty ?? false) {
         FormStackForm? nextFormSatck = FormStack.formByInstaceAndName(
             name: fromInstanceName, formName: formName!);
@@ -132,21 +137,30 @@ abstract class FormStackForm {
   }
 
   void addItem(FormStep entry) {
-    if (entry.result != null && entry.result is DateTime) {
+    final resultValue = entry.result;
+    if (resultValue != null && resultValue is DateTime) {
       if (entry.resultFormat != null) {
-        DateResultType dateResultType = cast(entry.resultFormat);
-        String formattedDate =
-            DateFormat(dateResultType.format).format(entry.result);
-        result.putIfAbsent((entry.id?.id ?? ""), () => formattedDate);
+        final dateResultType = cast<DateResultType>(entry.resultFormat);
+        if (dateResultType != null) {
+          final formattedDate =
+              DateFormat(dateResultType.format).format(resultValue);
+          final entryId = entry.id?.id;
+          if (entryId != null) {
+            result.putIfAbsent(entryId, () => formattedDate);
+          }
+        }
       }
     } else if (entry is NestedStep) {
       for (var child in entry.steps ?? []) {
         addItem(child);
       }
-    } else if (entry.result != null && entry.result is Map) {
-      result.addAll(entry.result);
+    } else if (resultValue != null && resultValue is Map) {
+      result.addAll(resultValue as Map<String, dynamic>);
     } else {
-      result.putIfAbsent((entry.id?.id ?? ""), () => entry.result);
+      final entryId = entry.id?.id;
+      if (entryId != null) {
+        result.putIfAbsent(entryId, () => resultValue);
+      }
     }
   }
 

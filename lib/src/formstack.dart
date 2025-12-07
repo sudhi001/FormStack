@@ -85,6 +85,44 @@ class FormStack {
     }
   }
 
+  /// Helper method to apply an action to a step matching the identifier
+  void _applyToStep(
+    FormStackForm formStack,
+    Identifier identifier,
+    void Function(FormStep) action,
+  ) {
+    for (var entry in formStack.steps) {
+      if (entry is NestedStep) {
+        entry.steps?.forEach((element) {
+          if (element.id?.id == identifier.id) {
+            action(element);
+          }
+        });
+      } else if (entry.id?.id == identifier.id) {
+        action(entry);
+      }
+    }
+  }
+
+  /// Helper method to apply an action to a step matching the identifier with type check
+  void _applyToStepWithType<T extends FormStep>(
+    FormStackForm formStack,
+    Identifier identifier,
+    void Function(T) action,
+  ) {
+    for (var entry in formStack.steps) {
+      if (entry is NestedStep) {
+        entry.steps?.forEach((element) {
+          if (element is T && element.id?.id == identifier.id) {
+            action(element);
+          }
+        });
+      } else if (entry is T && entry.id?.id == identifier.id) {
+        action(entry);
+      }
+    }
+  }
+
   /// Load the form from dart language model
   ///
   ///```dart
@@ -186,17 +224,9 @@ class FormStack {
       {String? formName = "default"}) {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
-      for (var entry in formStack.steps) {
-        if (entry is NestedStep) {
-          entry.steps?.forEach((element) {
-            if (element.id?.id == identifier.id) {
-              element.resultFormat = resultFormat;
-            }
-          });
-        } else if (entry.id?.id == identifier.id) {
-          entry.resultFormat = resultFormat;
-        }
-      }
+      _applyToStep(formStack, identifier, (step) {
+        step.resultFormat = resultFormat;
+      });
     }
     return this;
   }
@@ -207,21 +237,9 @@ class FormStack {
       {String? formName = "default"}) {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
-      for (var entry in formStack.steps) {
-        if (entry is NestedStep) {
-          entry.steps?.forEach((element) {
-            if (element is QuestionStep) {
-              if (element.id?.id == identifier.id) {
-                element.onValidationError = onValidationError;
-              }
-            }
-          });
-        } else if (entry is QuestionStep) {
-          if (entry.id?.id == identifier.id) {
-            entry.onValidationError = onValidationError;
-          }
-        }
-      }
+      _applyToStepWithType<QuestionStep>(formStack, identifier, (step) {
+        step.onValidationError = onValidationError;
+      });
     }
     return this;
   }
@@ -288,17 +306,9 @@ class FormStack {
       {String? formName = "default"}) {
     FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
-      for (var entry in formStack.steps) {
-        if (entry is NestedStep) {
-          entry.steps?.forEach((element) {
-            if (element.id?.id == identifier.id) {
-              element.error = message;
-            }
-          });
-        } else if (entry.id?.id == identifier.id) {
-          entry.error = message;
-        }
-      }
+      _applyToStep(formStack, identifier, (step) {
+        step.error = message;
+      });
     }
     return this;
   }
@@ -388,7 +398,12 @@ class FormStack {
   /// Render the form to the UI
   /// Primary method to implement in your Widget tree.
   Widget render({String name = "default"}) {
-    return FormStackView(_forms[name]!);
+    final form = _forms[name];
+    if (form == null) {
+      throw StateError(
+          'Form "$name" not found. Create it first using FormStack.api().form(...)');
+    }
+    return FormStackView(form);
   }
 
   /// Get form progress (0.0 to 1.0)

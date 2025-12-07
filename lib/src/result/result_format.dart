@@ -59,7 +59,8 @@ class _LengthResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return input != null && cast<int>(input)!.toString().length == count;
+    final intValue = cast<int>(input);
+    return intValue != null && intValue.toString().length == count;
   }
 
   @override
@@ -74,7 +75,8 @@ class _NotBlankResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return input != null && cast<String>(input)!.isNotEmpty;
+    final str = cast<String>(input);
+    return str != null && str.isNotEmpty;
   }
 
   @override
@@ -89,7 +91,8 @@ class _NotEmptyResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return input != null && cast<List>(input)!.isNotEmpty;
+    final list = cast<List>(input);
+    return list != null && list.isNotEmpty;
   }
 
   @override
@@ -148,7 +151,8 @@ class _EmailResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return cast<String>(input)!.isValidEmail();
+    final str = cast<String>(input);
+    return str != null && str.isValidEmail();
   }
 
   @override
@@ -163,7 +167,8 @@ class _TextesultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return cast<String>(input)!.isNotEmpty;
+    final str = cast<String>(input);
+    return str != null && str.isNotEmpty;
   }
 
   @override
@@ -178,7 +183,8 @@ class _PasswordResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return cast<String>(input)!.isValidPassword();
+    final str = cast<String>(input);
+    return str != null && str.isValidPassword();
   }
 
   @override
@@ -193,7 +199,8 @@ class _NameResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return cast<String>(input)!.isValidName();
+    final str = cast<String>(input);
+    return str != null && str.isValidName();
   }
 
   @override
@@ -208,7 +215,8 @@ class _NumberResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return cast<String>(input)!.isValidNumber();
+    final str = cast<String>(input);
+    return str != null && str.isValidNumber();
   }
 
   @override
@@ -222,7 +230,8 @@ class _GeoLocationResultType extends ResultFormat {
   _GeoLocationResultType(this.errorMsg) : super._();
   @override
   bool isValid(dynamic input) {
-    return cast<List<String>>(input)!.isNotEmpty;
+    final list = cast<List<String>>(input);
+    return list != null && list.isNotEmpty;
   }
 
   @override
@@ -236,7 +245,8 @@ class _SingleChoiceResultType extends ResultFormat {
   _SingleChoiceResultType(this.errorMsg) : super._();
   @override
   bool isValid(dynamic input) {
-    return cast<List<Options>>(input)!.isNotEmpty;
+    final list = cast<List<Options>>(input);
+    return list != null && list.isNotEmpty;
   }
 
   @override
@@ -250,7 +260,8 @@ class _MultipleChoiceesultType extends ResultFormat {
   _MultipleChoiceesultType(this.errorMsg) : super._();
   @override
   bool isValid(dynamic input) {
-    return cast<List<Options>>(input)!.isNotEmpty;
+    final list = cast<List<Options>>(input);
+    return list != null && list.isNotEmpty;
   }
 
   @override
@@ -458,8 +469,9 @@ class _ExpressionResultType extends ResultFormat {
 
   @override
   bool isValid(dynamic input) {
-    return expressionValidator.validate(
-        cast<Map<String, dynamic>>(input)!, expression);
+    final map = cast<Map<String, dynamic>>(input);
+    if (map == null) return false;
+    return expressionValidator.validate(map, expression);
   }
 
   @override
@@ -479,8 +491,8 @@ class ExpressionValidator {
       for (var element in expressionLanguage.or) {
         if (input.containsKey(element.id)) {
           if (element.expression == "IS_NOT_EMPTY") {
-            if (input[element.id] != null &&
-                cast<String>(input[element.id])!.isNotEmpty) {
+            final value = cast<String>(input[element.id]);
+            if (value != null && value.isNotEmpty) {
               isOrValid = true;
               break;
             }

@@ -112,13 +112,20 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
                 formStep.filter?.map((item) => item as String).toList());
       }
       if (_fileResult != null && _fileResult!.files.isNotEmpty) {
+        final file = _fileResult!.files.first;
         if (kIsWeb) {
-          _value = await _bytesToBase64String(_fileResult!.files.first.bytes!);
+          final bytes = file.bytes;
+          if (bytes != null) {
+            _value = await _bytesToBase64String(bytes);
+            formStep.result = _value;
+          }
         } else {
-          _value =
-              await _fileToBase64String(File(_fileResult!.files.first.path!));
+          final path = file.path;
+          if (path != null) {
+            _value = await _fileToBase64String(File(path));
+            formStep.result = _value;
+          }
         }
-        formStep.result = _value;
         _fileResult = null;
       }
       setState(() {});
