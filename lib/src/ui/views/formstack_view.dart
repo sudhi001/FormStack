@@ -23,20 +23,25 @@ class _FormStackViewState extends State<FormStackView> {
     _formKitForm = widget.formKitForm;
     _hasBackgroundAnimation = _formKitForm.backgroundAnimationFile != null;
 
-    // Pre-build background widget if it exists
-    if (_hasBackgroundAnimation) {
+    child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
+  }
+
+  Widget? _buildBackgroundWidget() {
+    if (!_hasBackgroundAnimation) return null;
+    if (_backgroundWidget == null &&
+        _formKitForm.backgroundAnimationFile != null) {
       _backgroundWidget = Lottie.asset(
         _formKitForm.backgroundAnimationFile!,
         fit: BoxFit.cover,
       );
     }
-
-    child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
+    return _backgroundWidget;
   }
 
   @override
   void dispose() {
     _isDisposed = true;
+    _backgroundWidget = null;
     super.dispose();
   }
 
@@ -57,7 +62,7 @@ class _FormStackViewState extends State<FormStackView> {
           ? Stack(
               alignment: _formKitForm.backgroundAlignment ?? Alignment.center,
               children: [
-                _backgroundWidget!,
+                _buildBackgroundWidget() ?? const SizedBox.shrink(),
                 child,
               ],
             )

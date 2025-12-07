@@ -119,6 +119,7 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
               await _fileToBase64String(File(_fileResult!.files.first.path!));
         }
         formStep.result = _value;
+        _fileResult = null;
       }
       setState(() {});
     } catch (e) {
@@ -196,6 +197,8 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _fileResult = null;
+    _value = null;
     super.dispose();
   }
 

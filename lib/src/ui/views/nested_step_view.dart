@@ -94,8 +94,11 @@ class NestedStepView extends BaseStepView<NestedStep> {
 
   @override
   void dispose() {
-    // Clean up components
+    for (var component in _components) {
+      component.dispose();
+    }
     _components.clear();
+    _isInitialized = false;
     super.dispose();
   }
 }

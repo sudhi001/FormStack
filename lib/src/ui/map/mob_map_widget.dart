@@ -22,6 +22,7 @@ class MobileMap extends StatefulWidget implements MapWidget {
 
 class MobileMapState extends State<MobileMap> {
   final Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController? _mapController;
 
   static late CameraPosition _kFalentexHouse;
   @override
@@ -36,14 +37,16 @@ class MobileMapState extends State<MobileMap> {
     return GoogleMap(
       mapType: MapType.hybrid,
       initialCameraPosition: _kFalentexHouse,
-      onMapCreated: _controller.complete,
+      onMapCreated: (GoogleMapController controller) {
+        _mapController = controller;
+        _controller.complete(controller);
+      },
     );
   }
 
   @override
   void dispose() {
-    // Note: GoogleMapController disposal is handled by the Google Maps plugin
-    // The Completer will be automatically disposed when the widget is disposed
+    _mapController?.dispose();
     super.dispose();
   }
 }

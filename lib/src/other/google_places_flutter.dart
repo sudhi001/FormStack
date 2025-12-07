@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -36,16 +38,18 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
 class _GooglePlaceAutoCompleteTextFieldState
     extends State<GooglePlaceAutoCompleteTextField> {
   final PublishSubject<String> _subject = PublishSubject<String>();
+  StreamSubscription<String>? _subscription;
   OverlayEntry? _overlayEntry;
   final List<Prediction> _predictions = [];
   final LayerLink _layerLink = LayerLink();
   final Dio _dio = Dio();
   final Map<String, List<Prediction>> _cache = {};
+  static const int _maxCacheSize = 50;
 
   @override
   void initState() {
     super.initState();
-    _subject.stream
+    _subscription = _subject.stream
         .distinct()
         .debounceTime(Duration(milliseconds: widget.debounceTime))
         .listen(_onTextChanged);
@@ -53,9 +57,11 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   @override
   void dispose() {
+    _subscription?.cancel();
     _subject.close();
     _dio.close();
     _removeOverlay();
+    _cache.clear();
     super.dispose();
   }
 
@@ -89,7 +95,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     try {
       final predictions = await _getLocation(text);
-      _cache[text] = predictions;
+      _addToCache(text, predictions);
 
       if (mounted) {
         setState(() {
@@ -102,6 +108,14 @@ class _GooglePlaceAutoCompleteTextFieldState
       // Handle error silently or show user-friendly message
       debugPrint('Error fetching predictions: $e');
     }
+  }
+
+  void _addToCache(String key, List<Prediction> value) {
+    if (_cache.length >= _maxCacheSize) {
+      final firstKey = _cache.keys.first;
+      _cache.remove(firstKey);
+    }
+    _cache[key] = value;
   }
 
   Future<List<Prediction>> _getLocation(String text) async {
@@ -157,6 +171,7 @@ class _GooglePlaceAutoCompleteTextFieldState
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                itemExtent: 48.0,
                 itemCount: _predictions.length,
                 itemBuilder: (BuildContext context, int index) {
                   final prediction = _predictions[index];
@@ -167,6 +182,8 @@ class _GooglePlaceAutoCompleteTextFieldState
                       child: Text(
                         prediction.description ?? '',
                         style: Theme.of(context).textTheme.bodyMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   );

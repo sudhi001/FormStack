@@ -15,10 +15,17 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
   final List<TextEditingController> _keyControllers = [];
   final List<TextEditingController> _valueControllers = [];
   int _fieldCount = 1;
+  dynamic _lastFormStepResult;
+
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    _initializeFromFormStep(formStep);
-    _ensureControllersExist();
+    if (_lastFormStepResult != formStep.result) {
+      _initializeFromFormStep(formStep);
+      _ensureControllersExist();
+      _lastFormStepResult = formStep.result;
+    } else {
+      _ensureControllersExist();
+    }
 
     return Container(
         decoration: formStep.componentsStyle == ComponentsStyle.basic

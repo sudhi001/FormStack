@@ -133,7 +133,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   }
 
   void _checkAndShowDefaultValidationError() {
-    if (formStep.error != null) {
+    if (formStep.error != null && !showError) {
       // ignore: invalid_use_of_protected_member
       errorKey.currentState?.setState(() {
         showError = true;
@@ -147,10 +147,12 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Show validation Error and hide the validation mesage if it's valid
   ///
   void showValidationError() {
-    // ignore: invalid_use_of_protected_member
-    errorKey.currentState?.setState(() {
-      showError = true;
-    });
+    if (!showError) {
+      // ignore: invalid_use_of_protected_member
+      errorKey.currentState?.setState(() {
+        showError = true;
+      });
+    }
     formKitForm.validationError(validationError());
   }
 
@@ -158,10 +160,12 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Hide validation Error
   ///
   void hideValidationError() {
-    // ignore: invalid_use_of_protected_member
-    errorKey.currentState?.setState(() {
-      showError = false;
-    });
+    if (showError) {
+      // ignore: invalid_use_of_protected_member
+      errorKey.currentState?.setState(() {
+        showError = false;
+      });
+    }
   }
 
   ///
