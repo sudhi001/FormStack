@@ -1,8 +1,15 @@
 name: formstack
-description: A  flutter library to create a UI based on the model from either json or dart object.
-version: 2.0.0
+description: A cross-platform ResearchKit alternative for Flutter. Build dynamic forms and surveys with 30 input types, 35+ validators, consent flows, and JSON support.
+version: 2.1.0
 homepage: https://github.com/sudhi001/FormStack
+repository: https://github.com/sudhi001/FormStack
 issue_tracker: https://github.com/sudhi001/FormStack/issues
+topics:
+  - forms
+  - survey
+  - ui
+  - json
+  - widgets
 screenshots:
   - description: 'Logo of formstack framework'
     path: screenshots/logo.png

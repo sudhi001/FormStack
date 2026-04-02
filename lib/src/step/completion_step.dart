@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/completion_step_view.dart';
-import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 typedef OnBeforeFinishCallback = Future<bool> Function(

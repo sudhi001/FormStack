@@ -100,6 +100,10 @@ class ParserUtils {
         step.add(PopStep(id: GenericIdentifier(id: element?["id"])));
       } else if (type == NestedStep.tag) {
         step.add(createNestedStep(element, _parseRelevant(element)));
+      } else if (type == ReviewStep.tag) {
+        step.add(ReviewStep.from(element, _parseRelevant(element)));
+      } else if (type == ConsentStep.tag) {
+        step.add(ConsentStep.from(element, _parseRelevant(element)));
       } else {
         throw FormatException('Unknown step type: $type');
       }

@@ -503,4 +503,61 @@ class FormStack {
     }
     return this;
   }
+
+  /// Retrieves a specific step by its identifier.
+  ///
+  /// ```dart
+  /// final step = FormStack.api().getStep("email", formName: "myForm");
+  /// ```
+  FormStep? getStep(String stepId,
+      {String name = "default", String formName = "default"}) {
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    return form?.getStep(stepId);
+  }
+
+  /// Retrieves the result value of a specific step.
+  ///
+  /// ```dart
+  /// final email = FormStack.api().getStepResult("email");
+  /// ```
+  dynamic getStepResult(String stepId,
+      {String name = "default", String formName = "default"}) {
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    return form?.getStepResult(stepId);
+  }
+
+  /// Returns a structured [TaskResult] with all step results, timestamps,
+  /// and metadata for serialization.
+  ///
+  /// ```dart
+  /// final taskResult = FormStack.api().getTaskResult(formName: "myForm");
+  /// print(taskResult.totalDuration);
+  /// print(taskResult.completedSteps);
+  /// ```
+  TaskResult? getTaskResult(
+      {String name = "default", String formName = "default"}) {
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    return form?.getTaskResult();
+  }
+
+  /// Exports the complete form result as a JSON-serializable map,
+  /// including step results with timestamps, durations, and metadata.
+  ///
+  /// ```dart
+  /// final json = FormStack.api().exportAsJson(formName: "myForm");
+  /// await api.post('/submit', body: json);
+  /// ```
+  Map<String, dynamic>? exportAsJson(
+      {String name = "default", String formName = "default"}) {
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    return form?.exportAsJson();
+  }
 }

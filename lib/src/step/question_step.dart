@@ -6,7 +6,6 @@ import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/survey_input_factory.dart';
-import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 class QuestionStep extends FormStep<QuestionStep> {
@@ -243,6 +242,16 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.notBlank("Please enter an amount.");
         return SurveyInputWidget.currency(
             this, formStackForm, text, resultFormat!, title, currencySymbol);
+      case InputType.boolean:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please select Yes or No.");
+        return SurveyInputWidget.boolean(
+            this, formStackForm, text, resultFormat!, title);
+      case InputType.imageChoice:
+        resultFormat = resultFormat ??
+            ResultFormat.singleChoice("Please select an option.");
+        return SurveyInputWidget.imageChoice(
+            this, formStackForm, text, resultFormat!, title, options, true);
       default:
     }
     throw UnimplementedError();

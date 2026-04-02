@@ -177,6 +177,10 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: formStep.crossAxisAlignmentContent,
               children: [
+                if (formStep.showProgressBar && !formStep.componentOnly) ...[
+                  _buildProgressBar(context),
+                  _divisionPadding(),
+                ],
                 if (formStep.titleIconAnimationFile != null) ...[
                   Container(
                     constraints: BoxConstraints(
@@ -185,6 +189,21 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                         minHeight: 50,
                         maxHeight: formStep.titleIconMaxWidth ?? 300),
                     child: Lottie.asset(formStep.titleIconAnimationFile!),
+                  ),
+                  _divisionPadding()
+                ],
+                if (formStep.titleIconImagePath != null) ...[
+                  Container(
+                    constraints: BoxConstraints(
+                        minWidth: 75,
+                        maxWidth: formStep.titleIconMaxWidth ?? 300,
+                        minHeight: 50,
+                        maxHeight: formStep.titleIconMaxWidth ?? 300),
+                    child: formStep.titleIconImagePath!.startsWith('http')
+                        ? Image.network(formStep.titleIconImagePath!,
+                            fit: BoxFit.contain)
+                        : Image.asset(formStep.titleIconImagePath!,
+                            fit: BoxFit.contain),
                   ),
                   _divisionPadding()
                 ],
@@ -337,5 +356,40 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   Widget _divisionPadding() {
     return SizedBox(height: formStep.display == Display.small ? 2 : 7);
+  }
+
+  Widget _buildProgressBar(BuildContext context) {
+    final progress = formStackForm.getProgress();
+    final currentIndex = formStackForm.getCurrentIndex();
+    final totalSteps = formStackForm.getTotalSteps();
+    if (totalSteps <= 1) return const SizedBox.shrink();
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Step ${currentIndex + 1} of $totalSteps',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant)),
+              Text('${(progress * 100).toInt()}%',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant)),
+            ],
+          ),
+          const SizedBox(height: 4),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 4,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

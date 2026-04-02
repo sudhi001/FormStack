@@ -3,8 +3,26 @@
 [![pub package](https://img.shields.io/pub/v/formstack.svg)](https://pub.dev/packages/formstack)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D1.17-02569B?logo=flutter)](https://flutter.dev)
+[![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web%20%7C%20macOS%20%7C%20Windows%20%7C%20Linux-blue)](https://flutter.dev/multi-platform)
 
-A powerful Flutter library for building dynamic forms and surveys from Dart objects or JSON. Supports 28 input types, 30+ validators, conditional navigation, nested steps, and full JSON schema configuration.
+A cross-platform alternative to Apple ResearchKit for Flutter. Build dynamic forms, surveys, and research questionnaires from Dart objects or JSON -- on iOS, Android, Web, macOS, Windows, and Linux.
+
+30 input types, 8 step types, 35+ validators, conditional navigation, structured consent flows, answer review, progress tracking, and full extensibility. Every ResearchKit UI pattern can be reproduced with FormStack.
+
+### Why FormStack over ResearchKit?
+
+| | ResearchKit | FormStack |
+|---|---|---|
+| **Platforms** | iOS only | iOS, Android, Web, macOS, Windows, Linux |
+| **Language** | Swift/Objective-C | Dart (Flutter) |
+| **Form source** | Code only | Dart objects or JSON |
+| **Input types** | ~15 answer formats | 30 input types |
+| **Validators** | Basic (length, regex) | 35+ built-in + custom subclassing |
+| **Extensibility** | Subclass ORKStep | Subclass FormStep, BaseStepView, ResultFormat, RelevantCondition |
+| **Results** | ORKTaskResult hierarchy | TaskResult/StepResult with timestamps + JSON export |
+| **Consent flow** | ORKConsentDocument | ConsentStep with sections + agreement |
+| **Review step** | ORKReviewStep | ReviewStep with formatted answer display |
+| **Progress bar** | Built-in | Built-in with step counter |
 
 ## Screenshots
 
@@ -26,11 +44,114 @@ A powerful Flutter library for building dynamic forms and surveys from Dart obje
   <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img11.png" width="200" alt="Completion Step" />
 </p>
 
+## ResearchKit to FormStack Migration
+
+If you're migrating from Apple ResearchKit, here's how the concepts map:
+
+### Step Types
+
+| ResearchKit (iOS) | FormStack (Flutter) | Notes |
+|---|---|---|
+| `ORKInstructionStep` | `InstructionStep` | Supports Lottie animations, static images, and video URLs |
+| `ORKQuestionStep` | `QuestionStep` | 30 input types vs ResearchKit's ~15 |
+| `ORKFormStep` | `NestedStep` | Multiple fields on one screen with cross-field validation |
+| `ORKCompletionStep` | `CompletionStep` | Loading/success/error Lottie animations, async callbacks |
+| `ORKConsentDocument` + `ORKVisualConsentStep` | `ConsentStep` | Expandable sections with 8 predefined types |
+| `ORKConsentReviewStep` | `ConsentStep` (agreement checkbox) | Built into ConsentStep |
+| `ORKReviewStep` | `ReviewStep` | Displays all answers before submission |
+| `ORKSignatureStep` | `QuestionStep(inputType: InputType.signature)` | Canvas drawing, returns base64 PNG |
+| `ORKWebViewStep` | `DisplayStep(displayStepType: DisplayStepType.web)` | WebView content |
+| `ORKNavigableOrderedTask` | `FormStack.api().form(steps: [...])` | Conditional navigation via `relevantConditions` |
+
+### Answer Formats
+
+| ResearchKit (iOS) | FormStack (Flutter) | Code |
+|---|---|---|
+| `ORKTextAnswerFormat` | `InputType.text` | `QuestionStep(inputType: InputType.text, numberOfLines: 3)` |
+| `ORKNumericAnswerFormat` | `InputType.number` | `QuestionStep(inputType: InputType.number)` |
+| `ORKScaleAnswerFormat` | `InputType.slider` | `QuestionStep(inputType: InputType.slider, minValue: 0, maxValue: 10)` |
+| `ORKBooleanAnswerFormat` | `InputType.boolean` | `QuestionStep(inputType: InputType.boolean)` |
+| `ORKTextChoiceAnswerFormat` (single) | `InputType.singleChoice` | `QuestionStep(inputType: InputType.singleChoice, options: [...])` |
+| `ORKTextChoiceAnswerFormat` (multi) | `InputType.multipleChoice` | `QuestionStep(inputType: InputType.multipleChoice, options: [...])` |
+| `ORKImageChoiceAnswerFormat` | `InputType.imageChoice` | `QuestionStep(inputType: InputType.imageChoice, options: [...])` |
+| `ORKValuePickerAnswerFormat` | `InputType.dropdown` | `QuestionStep(inputType: InputType.dropdown, options: [...])` |
+| `ORKDateAnswerFormat` | `InputType.date` | `QuestionStep(inputType: InputType.date)` |
+| `ORKTimeOfDayAnswerFormat` | `InputType.time` | `QuestionStep(inputType: InputType.time)` |
+| `ORKLocationAnswerFormat` | `InputType.mapLocation` | `QuestionStep(inputType: InputType.mapLocation)` |
+
+### Navigation Rules
+
+| ResearchKit (iOS) | FormStack (Flutter) | Code |
+|---|---|---|
+| `ORKPredicateStepNavigationRule` | `ExpressionRelevant` | `ExpressionRelevant(identifier: GenericIdentifier(id: "step"), expression: "IN value")` |
+| `ORKDirectStepNavigationRule` | `ExpressionRelevant` with `FOR_ALL` | `ExpressionRelevant(identifier: ..., expression: "FOR_ALL")` |
+| Custom delegate | `DynamicConditionalRelevant` | `DynamicConditionalRelevant(identifier: ..., isValidCallBack: (result) => ...)` |
+
+### Results
+
+| ResearchKit (iOS) | FormStack (Flutter) | Code |
+|---|---|---|
+| `ORKTaskResult` | `TaskResult` | `FormStack.api().getTaskResult()` |
+| `ORKStepResult` | `StepResult` | Includes `startTime`, `endTime`, `duration`, `value` |
+| `result.startDate` / `endDate` | `step.startTime` / `endTime` | Automatic timestamp recording |
+| JSON serialization | `exportAsJson()` | `FormStack.api().exportAsJson(formName: "myForm")` |
+
+### Quick Migration Example
+
+**ResearchKit (Swift):**
+```swift
+let step1 = ORKInstructionStep(identifier: "intro")
+step1.title = "Welcome"
+step1.text = "This survey takes 5 minutes"
+
+let step2 = ORKQuestionStep(identifier: "name")
+step2.title = "Your Name"
+step2.answerFormat = ORKTextAnswerFormat(maximumLength: 50)
+
+let step3 = ORKQuestionStep(identifier: "satisfaction")
+step3.title = "How satisfied are you?"
+step3.answerFormat = ORKScaleAnswerFormat(maximumValue: 10, minimumValue: 0, defaultValue: 5, step: 1)
+
+let task = ORKOrderedTask(identifier: "survey", steps: [step1, step2, step3])
+let taskVC = ORKTaskViewController(task: task, taskRun: nil)
+```
+
+**FormStack (Dart) - same UI, all platforms:**
+```dart
+FormStack.api().form(steps: [
+  InstructionStep(
+    id: GenericIdentifier(id: "intro"),
+    title: "Welcome",
+    text: "This survey takes 5 minutes",
+  ),
+  QuestionStep(
+    id: GenericIdentifier(id: "name"),
+    title: "Your Name",
+    inputType: InputType.name,
+    lengthLimit: 50,
+  ),
+  QuestionStep(
+    id: GenericIdentifier(id: "satisfaction"),
+    title: "How satisfied are you?",
+    inputType: InputType.slider,
+    minValue: 0,
+    maxValue: 10,
+    stepValue: 1,
+    defaultValue: 5,
+  ),
+]);
+
+// Render in any Flutter widget
+Scaffold(body: FormStack.api().render());
+```
+
+---
+
 ## Installation
 
 ```yaml
 dependencies:
-  formstack: ^2.0.0
+  formstack: ^2.1.0
 ```
 
 ```bash
@@ -104,6 +225,8 @@ Scaffold(body: FormStack.api().render());
 | `multipleChoice` | Select multiple | `tick`, `toggle` |
 | `dropdown` | Dropdown menu | Standard dropdown |
 | `ranking` | Drag-to-reorder list | Reorderable with rank numbers |
+| `boolean` | Yes/No toggle buttons | Two-button selection |
+| `imageChoice` | Select from a grid of images | Image cards with labels |
 
 ### Survey & Rating
 
@@ -205,6 +328,52 @@ NestedStep(
 )
 ```
 
+### ReviewStep
+
+Displays all collected answers for review before submission. Place before CompletionStep.
+
+```dart
+ReviewStep(
+  id: GenericIdentifier(id: "review"),
+  title: "Review Your Answers",
+  text: "Verify before submitting",
+  nextButtonText: "Submit",
+)
+```
+
+### ConsentStep
+
+Structured consent document with expandable sections, agreement checkbox, and optional signature. Modeled after Apple ResearchKit's consent flow.
+
+```dart
+ConsentStep(
+  id: GenericIdentifier(id: "consent"),
+  title: "Informed Consent",
+  requiresSignature: true,
+  agreementText: "I agree to participate",
+  sections: [
+    ConsentSection(
+      type: ConsentSectionType.overview,
+      title: "About This Study",
+      summary: "Brief overview...",
+      content: "Full details shown on expand...",
+    ),
+    ConsentSection(
+      type: ConsentSectionType.privacy,
+      title: "Your Privacy",
+      summary: "Data is encrypted and anonymized.",
+    ),
+    ConsentSection(
+      type: ConsentSectionType.withdrawing,
+      title: "Withdrawing",
+      summary: "You can stop at any time.",
+    ),
+  ],
+)
+```
+
+**ConsentSectionType values:** `overview`, `dataGathering`, `privacy`, `dataUse`, `timeCommitment`, `studyTasks`, `withdrawing`, `custom`
+
 ### DisplayStep
 
 Show web content or data lists.
@@ -258,6 +427,8 @@ ResultFormat.ssn("Invalid SSN")                    // ###-##-####
 ResultFormat.zipCode("Invalid zip")                // #####(-####)
 ResultFormat.iban("Invalid IBAN")                  // ISO 13616
 ResultFormat.consent("You must agree")             // Must be true
+ResultFormat.dateRange("Invalid date", "dd-MM-yyyy",
+    minDate: DateTime(2000), maxDate: DateTime(2030)) // Date bounds
 ResultFormat.fileSize("File too large", 5242880)   // Max bytes
 ResultFormat.notNull("Required")
 ResultFormat.notBlank("Cannot be empty")
@@ -565,18 +736,19 @@ All step types and properties are supported in JSON. Wrap forms in a named objec
 
 ## Examples
 
-The [example app](example/) demonstrates all features across 9 demo screens:
+The [example app](example/) demonstrates all features across 10 demo screens:
 
 | Demo | Features |
 |------|----------|
-| All Input Types | All 28 input types with descriptions |
+| All Input Types | All 30 input types with descriptions |
 | Styles & Display | InputStyle, ComponentsStyle, Display sizes, UIStyle |
 | Selection Types | Arrow, tick, toggle, dropdown |
-| Validation | Email, password, phone, URL, age, zip, custom, compose |
+| Validation | Email, password, phone, URL, age, zip, dateRange, custom, compose |
 | Conditional Nav | ExpressionRelevant branching and path convergence |
 | Nested Steps | Multi-field screens with cross-field validation |
 | API Features | setResult, setError, callbacks, progress tracking |
 | Survey Components | Slider, rating, NPS, consent, signature, ranking, phone, currency |
+| ResearchKit Features | Boolean, image choice, consent flow, review step, progress bar, timestamps |
 | Load from JSON | Multi-file JSON loading with form linking |
 
 Run the example:
@@ -584,6 +756,131 @@ Run the example:
 ```bash
 cd example
 flutter run
+```
+
+---
+
+## Extensibility
+
+FormStack is designed for extension at every layer, following Apple ResearchKit's architecture.
+
+### Custom Validators
+
+Subclass `ResultFormat` directly:
+
+```dart
+class PalindromeValidator extends ResultFormat {
+  final String errorMsg;
+  PalindromeValidator(this.errorMsg);
+
+  @override
+  bool isValid(dynamic input) {
+    final str = (input as String?)?.toLowerCase() ?? '';
+    return str == str.split('').reversed.join();
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+// Use it
+QuestionStep(
+  inputType: InputType.text,
+  resultFormat: PalindromeValidator("Must be a palindrome"),
+)
+```
+
+### Custom Input Widgets
+
+Extend `BaseStepView` to create custom inputs:
+
+```dart
+class ColorPickerWidget extends BaseStepView<QuestionStep> {
+  ColorPickerWidget(super.formStackForm, super.formStep, super.text);
+
+  Color _selected = Colors.red;
+
+  @override
+  Widget? buildWInputWidget(BuildContext context, QuestionStep formStep) {
+    return StatefulBuilder(builder: (context, setState) {
+      // Your custom color picker UI here
+    });
+  }
+
+  @override
+  bool isValid() => true;
+  @override
+  String validationError() => "";
+  @override
+  dynamic resultValue() => _selected.value;
+  @override
+  void requestFocus() {}
+  @override
+  void clearFocus() {}
+}
+```
+
+### Custom Step Types
+
+Subclass `FormStep` for entirely new step types:
+
+```dart
+class VideoStep extends FormStep {
+  final String videoUrl;
+  VideoStep({required this.videoUrl, super.id, super.title});
+
+  @override
+  FormStepView buildView(FormStackForm formStackForm) {
+    return MyVideoStepView(formStackForm, this, text);
+  }
+}
+```
+
+### Custom Navigation Rules
+
+Subclass `RelevantCondition`:
+
+```dart
+class ScoreThresholdCondition extends RelevantCondition {
+  final int threshold;
+  ScoreThresholdCondition({required super.identifier, required this.threshold});
+
+  @override
+  bool isValid(dynamic result) => (result as int?) != null && result >= threshold;
+}
+```
+
+### Step Lifecycle Callbacks
+
+Hook into step events for analytics or custom behavior:
+
+```dart
+QuestionStep(
+  title: "Email",
+  inputType: InputType.email,
+  onStepWillPresent: (step) => analytics.trackStepView(step.id?.id),
+  onStepDidComplete: (step, result) => analytics.trackStepComplete(step.id?.id, result),
+)
+```
+
+### Structured Result Export
+
+Get typed results with timestamps (modeled after ResearchKit's ORKTaskResult):
+
+```dart
+final taskResult = FormStack.api().getTaskResult(formName: "myForm");
+print(taskResult.totalDuration);
+print(taskResult.completedSteps);
+
+// Full JSON export with step-level timestamps and metadata
+final json = FormStack.api().exportAsJson(formName: "myForm");
+await http.post('/api/submit', body: jsonEncode(json));
+
+// Access individual step results
+final email = FormStack.api().getStepResult("email");
+final step = FormStack.api().getStep("email");
+print(step?.startTime); // When user saw this step
+print(step?.endTime);   // When user completed it
 ```
 
 ---
@@ -596,7 +893,7 @@ lib/
   src/
     formstack.dart             # FormStack singleton API
     formstack_form.dart        # Form navigation and state
-    input_types.dart           # InputType enum (28 values)
+    input_types.dart           # InputType enum (30 values)
     core/
       form_step.dart           # Base FormStep class, enums
       parser.dart              # JSON parser
@@ -604,12 +901,15 @@ lib/
     step/
       question_step.dart       # QuestionStep (all input types)
       completion_step.dart     # CompletionStep (finish with animation)
-      instruction_step.dart    # InstructionStep (info screens)
+      instruction_step.dart    # InstructionStep (info/video screens)
       nested_step.dart         # NestedStep (multi-field)
       display_step.dart        # DisplayStep (web/list content)
+      review_step.dart         # ReviewStep (answer review before submit)
+      consent_step.dart        # ConsentStep (consent document flow)
       pop_step.dart            # PopStep (navigation)
     result/
-      result_format.dart       # 30+ validators
+      result_format.dart       # 35+ validators (subclassable)
+      step_result.dart         # StepResult, TaskResult hierarchy
       common_result.dart       # Options, KeyValue, DynamicData
       identifiers.dart         # GenericIdentifier, StepIdentifier
     relevant/
@@ -628,6 +928,8 @@ lib/
       ranking_input_field.dart # Drag-to-reorder
       phone_input_field.dart   # Phone with country code
       currency_input_field.dart # Currency input
+      boolean_input_field.dart  # Yes/No toggle
+      image_choice_input_field.dart # Image grid selection
       otp_input_field.dart     # OTP digits
       smile_input_field.dart   # Emoji rating
       image_input_field.dart   # Avatar/banner upload

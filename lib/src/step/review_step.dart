@@ -1,67 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/nested_step_view.dart';
+import 'package:formstack/src/ui/views/review_step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
-class NestedStep extends FormStep {
-  static const String tag = "NestedStep";
-  final List<FormStep>? steps;
-  final String validationExpression;
-  final int verticalPadding;
-  Function(Map<String, dynamic>)? onFinish;
+/// A step that displays all collected form results for review before submission.
+///
+/// Place this before [CompletionStep] to let users verify their answers.
+///
+/// ```dart
+/// ReviewStep(
+///   id: GenericIdentifier(id: "review"),
+///   title: "Review Your Answers",
+///   text: "Please verify your information before submitting",
+/// )
+/// ```
+class ReviewStep extends FormStep {
+  static const String tag = "ReviewStep";
 
-  NestedStep(
+  /// Creates a [ReviewStep].
+  ReviewStep(
       {super.id,
-      super.title = "",
+      super.title = "Review",
       super.text,
       super.display = Display.normal,
       super.isOptional = false,
-      super.relevantConditions,
-      super.nextButtonText = "Start",
-      super.backButtonText,
       super.style,
-      this.onFinish,
-      required this.verticalPadding,
-      super.footerBackButton = false,
-      this.steps = const [],
+      super.relevantConditions,
+      super.nextButtonText = "Submit",
+      super.backButtonText,
       super.titleIconMaxWidth,
-      required this.validationExpression,
       super.titleIconAnimationFile,
+      super.titleIconImagePath,
       super.cancelButtonText,
       super.crossAxisAlignmentContent,
-      super.resultFormat,
       super.cancellable})
       : super();
 
   @override
   FormStepView buildView(FormStackForm formStackForm) {
-    formStackForm.onFinish = onFinish;
-    return NestedStepView(formStackForm, this, text, title: title);
+    return ReviewStepView(formStackForm, this, text, title: title);
   }
 
-  factory NestedStep.from(Map<String, dynamic>? element,
-      List<RelevantCondition> relevantConditions, List<FormStep> steps) {
-    return NestedStep(
+  /// Creates a [ReviewStep] from a JSON map.
+  factory ReviewStep.from(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantConditions) {
+    return ReviewStep(
         display: element?["display"] != null
             ? Display.values.firstWhere((e) => e.name == element?["display"])
             : Display.normal,
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
-        cancellable: element?["cancellable"],
-        footerBackButton: element?["footerBackButton"] ?? false,
         style: UIStyle.from(element?["style"]),
+        cancellable: element?["cancellable"],
         relevantConditions: relevantConditions,
         backButtonText: element?["backButtonText"],
         cancelButtonText: element?["cancelButtonText"],
         isOptional: element?["isOptional"],
-        steps: steps,
         nextButtonText: element?["nextButtonText"],
         text: element?["text"],
-        verticalPadding: element?["verticalPadding"] ?? 0,
-        validationExpression: element?["validationExpression"] ?? "",
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconImagePath: element?["titleIconImagePath"],
         titleIconMaxWidth: element?["titleIconMaxWidth"],
         id: GenericIdentifier(id: element?["id"]));
   }

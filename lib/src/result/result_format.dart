@@ -2,10 +2,45 @@ import 'dart:convert';
 
 import 'package:formstack/formstack.dart';
 
+/// Safely casts [x] to type [T], returning null if the cast fails.
 T? cast<T>(dynamic x) => x is T ? x : null;
 
+/// Validation format for form step results.
+///
+/// Provides 30+ built-in validators via factory constructors, plus
+/// [compose] for chaining multiple validators.
+///
+/// ```dart
+/// // Built-in validators
+/// ResultFormat.email("Invalid email")
+/// ResultFormat.range("Must be 1-10", 1, 10)
+/// ResultFormat.pattern("Letters only", r'^[a-zA-Z]+$')
+///
+/// // Compose multiple validators
+/// ResultFormat.compose([
+///   ResultFormat.minLength("Too short", 3),
+///   ResultFormat.maxLength("Too long", 50),
+/// ])
+/// ```
 abstract class ResultFormat {
+  /// Internal constructor for built-in validators.
   ResultFormat._();
+
+  /// Public constructor for creating custom [ResultFormat] subclasses.
+  ///
+  /// ```dart
+  /// class MyValidator extends ResultFormat {
+  ///   final String errorMsg;
+  ///   MyValidator(this.errorMsg);
+  ///
+  ///   @override
+  ///   bool isValid(dynamic input) => input != null && input.toString().length > 5;
+  ///
+  ///   @override
+  ///   String error() => errorMsg;
+  /// }
+  /// ```
+  const ResultFormat();
   factory ResultFormat.none() = _NoneResultType;
   factory ResultFormat.length(String errorMsg, int count) = _LengthResultType;
   factory ResultFormat.notNull(String errorMsg) = _NotNullResultType;
@@ -19,6 +54,8 @@ abstract class ResultFormat {
   factory ResultFormat.number(String errorMsg) = _NumberResultType;
   factory ResultFormat.expression(String expression) = _ExpressionResultType;
   factory ResultFormat.date(String errorMsg, String format) = DateResultType;
+  factory ResultFormat.dateRange(String errorMsg, String format,
+      {DateTime? minDate, DateTime? maxDate}) = _DateRangeResultType;
   factory ResultFormat.singleChoice(String errorMsg) = _SingleChoiceResultType;
   factory ResultFormat.multipleChoice(String errorMsg) =
       _MultipleChoiceResultType;
@@ -64,6 +101,29 @@ class DateResultType extends ResultFormat {
   @override
   bool isValid(dynamic input) {
     return cast<DateTime>(input) != null;
+  }
+
+  @override
+  String error() {
+    return errorMsg;
+  }
+}
+
+class _DateRangeResultType extends ResultFormat {
+  final String errorMsg;
+  final String format;
+  final DateTime? minDate;
+  final DateTime? maxDate;
+  _DateRangeResultType(this.errorMsg, this.format, {this.minDate, this.maxDate})
+      : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final date = cast<DateTime>(input);
+    if (date == null) return false;
+    if (minDate != null && date.isBefore(minDate!)) return false;
+    if (maxDate != null && date.isAfter(maxDate!)) return false;
+    return true;
   }
 
   @override

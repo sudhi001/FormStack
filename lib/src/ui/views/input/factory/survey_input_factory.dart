@@ -1,4 +1,6 @@
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/boolean_input_field.dart';
+import 'package:formstack/src/ui/views/input/image_choice_input_field.dart';
 import 'package:formstack/src/ui/views/input/slider_input_field.dart';
 import 'package:formstack/src/ui/views/input/rating_input_field.dart';
 import 'package:formstack/src/ui/views/input/nps_input_field.dart';
@@ -114,5 +116,31 @@ class SurveyInputWidget {
     return CurrencyInputWidgetView(
         formStackForm, questionStep, text, resultFormat,
         title: title, currencySymbol: currencySymbol ?? "\$");
+  }
+
+  /// Create boolean Yes/No input
+  static BooleanInputWidgetView boolean(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return BooleanInputWidgetView(
+        formStackForm, questionStep, text, resultFormat,
+        title: title);
+  }
+
+  /// Create image choice grid input
+  static ImageChoiceInputWidgetView imageChoice(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title,
+      List<Options>? options,
+      bool singleSelection) {
+    return ImageChoiceInputWidgetView(
+        formStackForm, questionStep, text, resultFormat,
+        title: title, options: options ?? [], singleSelection: singleSelection);
   }
 }

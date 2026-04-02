@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
 class NPSInputWidgetView extends BaseStepView<QuestionStep> {

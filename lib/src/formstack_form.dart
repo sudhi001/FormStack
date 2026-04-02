@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:intl/intl.dart';
 
+/// Abstract base class managing form state, step navigation, and result collection.
+///
+/// Handles the linked-list based step navigation, conditional routing via
+/// [RelevantCondition], result aggregation, and UI rendering callbacks.
+/// Use [FormStack.api().form()] to create instances rather than subclassing directly.
 abstract class FormStackForm {
   Identifier? id;
   String fromInstanceName;
@@ -55,6 +60,31 @@ abstract class FormStackForm {
       }
     }
   }
+
+  /// Current step being displayed.
+  FormStep? _currentStep;
+
+  /// Returns the progress of the form as a value between 0.0 and 1.0.
+  double getProgress() {
+    final total = getTotalSteps();
+    if (total <= 0) return 0.0;
+    final current = getCurrentIndex();
+    return (current / total).clamp(0.0, 1.0);
+  }
+
+  /// Returns the zero-based index of the current step.
+  int getCurrentIndex() {
+    if (_currentStep == null) return 0;
+    int index = 0;
+    for (var step in steps) {
+      if (step == _currentStep) return index;
+      index++;
+    }
+    return 0;
+  }
+
+  /// Returns the total number of steps in the form.
+  int getTotalSteps() => steps.length;
 
   void backStep(FormStep? currentStep) {
     FormStep? nextStep;
@@ -175,10 +205,56 @@ abstract class FormStackForm {
       {FormStep? formStep}) {
     this.onUpdate = onUpdate;
     this.onRenderFormStackForm = onRenderFormStackForm;
-    if (formStep != null) {
-      return formStep.buildView(this);
+    final step = formStep ?? steps.first;
+    // Record timestamps and fire lifecycle callbacks
+    if (_currentStep != null && _currentStep != step) {
+      _currentStep!.endTime ??= DateTime.now().toUtc();
+      _currentStep!.onStepDidComplete
+          ?.call(_currentStep!, _currentStep!.result);
     }
-    return steps.first.buildView(this);
+    _currentStep = step;
+    if (step.startTime == null) {
+      step.startTime = DateTime.now().toUtc();
+      step.onStepWillPresent?.call(step);
+    }
+    return step.buildView(this);
+  }
+
+  /// Retrieves a step by its identifier string.
+  FormStep? getStep(String stepId) {
+    for (var step in steps) {
+      if (step.id?.id == stepId) return step;
+    }
+    return null;
+  }
+
+  /// Retrieves the result value of a specific step by ID.
+  dynamic getStepResult(String stepId) {
+    return getStep(stepId)?.result;
+  }
+
+  /// Generates a structured [TaskResult] with all step results and metadata.
+  TaskResult getTaskResult() {
+    generateResult();
+    final stepResults = <StepResult>[];
+    for (var step in steps) {
+      if (step.id?.id != null) {
+        stepResults.add(StepResult.fromStep(step));
+      }
+    }
+    return TaskResult(
+      taskRunId: id?.id ?? '',
+      formName: fromInstanceName,
+      startTime: steps.isNotEmpty ? steps.first.startTime : null,
+      endTime: _currentStep?.endTime ?? DateTime.now().toUtc(),
+      stepResults: stepResults,
+      flatResults: Map.from(result),
+    );
+  }
+
+  /// Exports the complete task result as a JSON-serializable map.
+  Map<String, dynamic> exportAsJson() {
+    return getTaskResult().toJson();
   }
 }
 

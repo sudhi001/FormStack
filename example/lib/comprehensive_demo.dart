@@ -1158,7 +1158,140 @@ class _SurveyComponentsDemoState
 }
 
 // ---------------------------------------------------------------------------
-// 9. JSON LOAD DEMO
+// 9. RESEARCHKIT FEATURES DEMO
+// ---------------------------------------------------------------------------
+class ResearchKitFeaturesDemo extends FormDemoScreen {
+  const ResearchKitFeaturesDemo({super.key});
+
+  @override
+  State<ResearchKitFeaturesDemo> createState() =>
+      _ResearchKitFeaturesDemoState();
+}
+
+class _ResearchKitFeaturesDemoState
+    extends FormDemoScreenState<ResearchKitFeaturesDemo> {
+  @override
+  String get formName => "researchkit";
+
+  @override
+  void buildForm(BuildContext context) {
+    FormStack.api().form(
+      name: formName,
+      initialLocation: LocationWrapper(0, 0),
+      mapKey: MapKey("", "", ""),
+      steps: [
+        InstructionStep(
+          id: GenericIdentifier(id: "intro"),
+          title: "ResearchKit Features",
+          text:
+              "Features inspired by Apple ResearchKit: boolean, image choice, review step, consent flow, progress bar, timestamps",
+          cancellable: false,
+          display: Display.medium,
+          videoUrl: "https://example.com/intro-video.mp4",
+        ),
+
+        // Boolean Yes/No
+        QuestionStep(
+          title: "Are you over 18?",
+          text: "InputType.boolean - Yes/No toggle buttons",
+          inputType: InputType.boolean,
+          id: GenericIdentifier(id: "over_18"),
+          cancellable: true,
+        ),
+
+        // Image Choice
+        QuestionStep(
+          title: "Select a mood",
+          text:
+              "InputType.imageChoice - grid of images to select from. Uses Options.key as image path",
+          inputType: InputType.imageChoice,
+          options: [
+            Options("https://via.placeholder.com/100/FF6B6B/FFFFFF?text=Happy",
+                "Happy"),
+            Options("https://via.placeholder.com/100/4ECDC4/FFFFFF?text=Calm",
+                "Calm"),
+            Options("https://via.placeholder.com/100/45B7D1/FFFFFF?text=Tired",
+                "Tired"),
+            Options(
+                "https://via.placeholder.com/100/96CEB4/FFFFFF?text=Anxious",
+                "Anxious"),
+          ],
+          id: GenericIdentifier(id: "mood"),
+          cancellable: true,
+          isOptional: true,
+        ),
+
+        // Consent Document Flow
+        ConsentStep(
+          id: GenericIdentifier(id: "consent"),
+          title: "Research Consent",
+          text: "Please review each section before agreeing",
+          requiresSignature: false,
+          agreementText:
+              "I have reviewed and understand all sections above, and I voluntarily agree to participate.",
+          sections: [
+            ConsentSection(
+              type: ConsentSectionType.overview,
+              title: "About This Study",
+              summary: "A brief overview of what this study involves.",
+              content:
+                  "This study aims to understand user preferences in mobile form interfaces. You will be asked to complete a series of questions about your experience. The study takes approximately 5 minutes.",
+            ),
+            ConsentSection(
+              type: ConsentSectionType.dataGathering,
+              title: "Data Collection",
+              summary: "What information we collect from you.",
+              content:
+                  "We collect your responses to the survey questions, timestamps of when each question was answered, and basic device information. No personally identifiable information is collected unless you provide it voluntarily.",
+            ),
+            ConsentSection(
+              type: ConsentSectionType.privacy,
+              title: "Your Privacy",
+              summary: "How we protect your data.",
+              content:
+                  "All data is encrypted in transit and at rest. Your responses are anonymized and cannot be linked back to you. We comply with GDPR and CCPA regulations.",
+            ),
+            ConsentSection(
+              type: ConsentSectionType.timeCommitment,
+              title: "Time Commitment",
+              summary: "This study takes about 5 minutes to complete.",
+            ),
+            ConsentSection(
+              type: ConsentSectionType.withdrawing,
+              title: "Withdrawing",
+              summary: "You can stop at any time without penalty.",
+              content:
+                  "You may withdraw from this study at any time by closing the app. Any data collected up to that point may still be used in anonymized aggregate analysis.",
+            ),
+          ],
+          cancellable: true,
+        ),
+
+        // Review Step (shows all answers before completion)
+        ReviewStep(
+          id: GenericIdentifier(id: "review"),
+          title: "Review Your Answers",
+          text: "Please verify your responses before submitting",
+          cancellable: true,
+          nextButtonText: "Submit",
+        ),
+
+        CompletionStep(
+          id: GenericIdentifier(id: "done"),
+          title: "Thank You!",
+          text: "Your responses have been recorded",
+          onFinish: (result) {
+            debugPrint("ResearchKit demo result: $result");
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 10. JSON LOAD DEMO
 // ---------------------------------------------------------------------------
 class JSONLoadDemo extends StatefulWidget {
   const JSONLoadDemo({super.key});

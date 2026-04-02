@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
 class SignatureInputWidgetView extends BaseStepView<QuestionStep> {

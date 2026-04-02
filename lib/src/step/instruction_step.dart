@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/instruction_step_view.dart';
-import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 class InstructionStep extends FormStep {
@@ -22,6 +21,8 @@ class InstructionStep extends FormStep {
       this.instructions = const [],
       super.titleIconMaxWidth,
       super.titleIconAnimationFile,
+      super.titleIconImagePath,
+      super.videoUrl,
       super.cancelButtonText,
       super.crossAxisAlignmentContent,
       super.resultFormat,
@@ -56,6 +57,8 @@ class InstructionStep extends FormStep {
         text: element?["text"],
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
+        titleIconImagePath: element?["titleIconImagePath"],
+        videoUrl: element?["videoUrl"],
         titleIconMaxWidth: element?["titleIconMaxWidth"],
         id: GenericIdentifier(id: element?["id"]));
   }

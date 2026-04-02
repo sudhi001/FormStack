@@ -1,10 +1,18 @@
 import 'package:formstack/src/relevant/relevant_condition.dart';
 
-/// Condition Relevant for dynamic check
+/// A [RelevantCondition] that uses a custom callback function.
+///
+/// Use this when you need complex logic that cannot be expressed
+/// as a simple expression string.
+///
+/// ```dart
+/// DynamicConditionalRelevant(
+///   identifier: GenericIdentifier(id: "next_step"),
+///   isValidCallBack: (result) => result == "expected_value",
+/// )
+/// ```
 class DynamicConditionalRelevant extends RelevantCondition {
-  ///
-  /// DynamicConditionalRelevant(identifier: GenericIdentifier(id:"DEMO"),isValidCallBack(resut){})
-  ///
+  /// Creates a callback-based condition.
   DynamicConditionalRelevant(
       {required super.identifier,
       super.formName,
@@ -13,9 +21,6 @@ class DynamicConditionalRelevant extends RelevantCondition {
 
   final Function(dynamic)? _isValidCallBack;
 
-  ///
-  /// Check the result is valid or not
-  ///
   @override
   bool isValid(dynamic result) {
     return _isValidCallBack!.call(result);

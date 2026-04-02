@@ -120,6 +120,15 @@ class HomeScreen extends StatelessWidget {
                       _navigate(context, const SurveyComponentsDemo()),
                 ),
                 _DemoCard(
+                  icon: Icons.science_outlined,
+                  color: const Color(0xFF3F4946),
+                  title: 'ResearchKit Features',
+                  subtitle:
+                      'Boolean, image choice, review step, consent flow, progress bar, timestamps',
+                  onTap: () =>
+                      _navigate(context, const ResearchKitFeaturesDemo()),
+                ),
+                _DemoCard(
                   icon: Icons.data_object,
                   color: const Color(0xFF5C5D72),
                   title: 'Load from JSON',

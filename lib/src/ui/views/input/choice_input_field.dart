@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
 class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
