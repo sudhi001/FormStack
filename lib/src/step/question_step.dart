@@ -39,6 +39,43 @@ class QuestionStep extends FormStep<QuestionStep> {
   final String? phoneCountryCode;
   final int? ratingCount;
 
+  /// Expression string to auto-calculate this field's value from other results.
+  /// Used with [InputType.calculate]. The expression is evaluated via
+  /// [calculateCallback] which receives the current result map.
+  final String? calculateExpression;
+
+  /// Callback that computes this field's value from all collected results.
+  /// Used with [InputType.calculate].
+  ///
+  /// ```dart
+  /// QuestionStep(
+  ///   inputType: InputType.calculate,
+  ///   calculateCallback: (results) => (results["weight"] ?? 0) / pow(results["height"] ?? 1, 2),
+  /// )
+  /// ```
+  final dynamic Function(Map<String, dynamic> results)? calculateCallback;
+
+  /// Callback that filters available options based on other step results.
+  /// Enables cascading selects (Country -> State -> City).
+  ///
+  /// ```dart
+  /// QuestionStep(
+  ///   inputType: InputType.dropdown,
+  ///   options: allStates,
+  ///   choiceFilter: (options, results) =>
+  ///       options.where((o) => o.value == results["country"]).toList(),
+  /// )
+  /// ```
+  final List<Options> Function(
+      List<Options> options, Map<String, dynamic> results)? choiceFilter;
+
+  /// External data provider for loading options dynamically.
+  /// Used with [ExternalDataProvider] for API/CSV-backed choice lists.
+  final ExternalDataProvider? optionsProvider;
+
+  /// Source ID passed to [optionsProvider] to identify which data set to load.
+  final String? optionsSourceId;
+
   QuestionStep(
       {super.id,
       super.title = "",
@@ -89,7 +126,12 @@ class QuestionStep extends FormStep<QuestionStep> {
       this.consentText,
       this.currencySymbol,
       this.phoneCountryCode,
-      this.ratingCount})
+      this.ratingCount,
+      this.calculateExpression,
+      this.calculateCallback,
+      this.choiceFilter,
+      this.optionsProvider,
+      this.optionsSourceId})
       : super();
 
   @override
@@ -150,25 +192,38 @@ class QuestionStep extends FormStep<QuestionStep> {
       case InputType.singleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
+        final filteredOptions = _applyChoiceFilter(formStackForm);
         return ChoiceInputWidget.single(
             this,
             formStackForm,
             text,
             resultFormat!,
             title,
-            options,
+            filteredOptions,
             selectionType ?? SelectionType.arrow,
             autoTrigger ?? false);
       case InputType.dropdown:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        return ChoiceInputWidget.dropdown(this, formStackForm, text,
-            resultFormat!, title, options, autoTrigger ?? false);
+        return ChoiceInputWidget.dropdown(
+            this,
+            formStackForm,
+            text,
+            resultFormat!,
+            title,
+            _applyChoiceFilter(formStackForm),
+            autoTrigger ?? false);
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
-        return ChoiceInputWidget.multiple(this, formStackForm, text,
-            resultFormat!, title, selectionType ?? SelectionType.tick, options);
+        return ChoiceInputWidget.multiple(
+            this,
+            formStackForm,
+            text,
+            resultFormat!,
+            title,
+            selectionType ?? SelectionType.tick,
+            _applyChoiceFilter(formStackForm));
       case InputType.otp:
         resultFormat = resultFormat ??
             ResultFormat.length("Please enter all fields", count);
@@ -252,9 +307,43 @@ class QuestionStep extends FormStep<QuestionStep> {
             ResultFormat.singleChoice("Please select an option.");
         return SurveyInputWidget.imageChoice(
             this, formStackForm, text, resultFormat!, title, options, true);
+      case InputType.hidden:
+        return SurveyInputWidget.hidden(this, formStackForm, text, title);
+      case InputType.calculate:
+        return SurveyInputWidget.calculate(
+            this, formStackForm, text, title, calculateCallback);
+      case InputType.barcode:
+        resultFormat = resultFormat ??
+            ResultFormat.notBlank("Please scan or enter a code.");
+        return SurveyInputWidget.barcode(
+            this, formStackForm, text, resultFormat!, title);
+      case InputType.audio:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please record audio.");
+        return SurveyInputWidget.audio(
+            this, formStackForm, text, resultFormat!, title);
+      case InputType.geotrace:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please trace a path.");
+        return SurveyInputWidget.geotrace(
+            this, formStackForm, text, resultFormat!, title);
+      case InputType.geoshape:
+        resultFormat =
+            resultFormat ?? ResultFormat.notNull("Please draw a shape.");
+        return SurveyInputWidget.geoshape(
+            this, formStackForm, text, resultFormat!, title);
       default:
     }
     throw UnimplementedError();
+  }
+
+  /// Applies choiceFilter if defined, filtering options based on current results.
+  List<Options>? _applyChoiceFilter(FormStackForm formStackForm) {
+    if (choiceFilter != null && options != null) {
+      formStackForm.generateResult();
+      return choiceFilter!(options!, formStackForm.result);
+    }
+    return options;
   }
 
   factory QuestionStep.from(Map<String, dynamic>? element,

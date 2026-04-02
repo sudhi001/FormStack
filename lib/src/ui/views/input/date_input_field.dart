@@ -47,7 +47,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
           ),
         ),
         constraints:
-            const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 150),
+            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 150),
         child: ScrollConfiguration(
           behavior: MyCustomScrollBehavior(),
           child: CupertinoDatePicker(

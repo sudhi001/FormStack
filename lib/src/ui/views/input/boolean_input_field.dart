@@ -23,7 +23,9 @@ class BooleanInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: const BoxConstraints(minWidth: 200, maxWidth: 400),
+      constraints: BoxConstraints(
+          minWidth: 200,
+          maxWidth: FormStackTheme.responsiveInputWidth(context)),
       child: StatefulBuilder(builder: (context, setState) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -74,32 +76,37 @@ class BooleanInputWidgetView extends BaseStepView<QuestionStep> {
     required bool isSelected,
     VoidCallback? onTap,
   }) {
-    final color =
-        isSelected ? Theme.of(context).colorScheme.primary : Colors.grey;
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: isSelected ? 2 : 1),
+    final color = isSelected
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.outline;
+    return Semantics(
+        label: label,
+        selected: isSelected,
+        button: true,
+        child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          color: isSelected ? color.withValues(alpha: 0.08) : null,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 36, color: color),
-            const SizedBox(height: 8),
-            Text(label,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(color: color, fontWeight: FontWeight.w600)),
-          ],
-        ),
-      ),
-    );
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            decoration: BoxDecoration(
+              border: Border.all(color: color, width: isSelected ? 2 : 1),
+              borderRadius: BorderRadius.circular(12),
+              color: isSelected ? color.withValues(alpha: 0.08) : null,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 36, color: color),
+                const SizedBox(height: 8),
+                Text(label,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ));
   }
 
   @override

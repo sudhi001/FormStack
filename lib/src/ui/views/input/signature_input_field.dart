@@ -27,9 +27,9 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
             Container(
               height: 150,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
+                border: Border.all(color: FormStackTheme.borderColor(context)),
                 borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
+                color: FormStackTheme.canvasBackgroundColor(context),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
@@ -56,7 +56,8 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
                           _captureSignature();
                         },
                   child: CustomPaint(
-                    painter: _SignaturePainter(_strokes),
+                    painter: _SignaturePainter(
+                        _strokes, FormStackTheme.canvasStrokeColor(context)),
                     size: Size.infinite,
                   ),
                 ),
@@ -90,7 +91,7 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
     try {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
-      final painter = _SignaturePainter(_strokes);
+      final painter = _SignaturePainter(_strokes, Colors.black);
       painter.paint(canvas, const Size(500, 150));
       final picture = recorder.endRecording();
       final image = await picture.toImage(500, 150);
@@ -125,12 +126,13 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
 
 class _SignaturePainter extends CustomPainter {
   final List<List<Offset>> strokes;
-  _SignaturePainter(this.strokes);
+  final Color strokeColor;
+  _SignaturePainter(this.strokes, this.strokeColor);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black
+      ..color = strokeColor
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke;

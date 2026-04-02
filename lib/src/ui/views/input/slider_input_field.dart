@@ -28,7 +28,7 @@ class SliderInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: const BoxConstraints(minWidth: 300, maxWidth: 500),
+      constraints: BoxConstraints(minWidth: 200, maxWidth: 500),
       child: StatefulBuilder(builder: (context, setState) {
         return Column(
           mainAxisSize: MainAxisSize.min,

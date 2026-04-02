@@ -129,6 +129,24 @@ class HomeScreen extends StatelessWidget {
                       _navigate(context, const ResearchKitFeaturesDemo()),
                 ),
                 _DemoCard(
+                  icon: Icons.storage_outlined,
+                  color: const Color(0xFF6D5F00),
+                  title: 'Data Collection (ODK)',
+                  subtitle:
+                      'Repeat groups, calculate, hidden, cascading selects, barcode, audio, geotrace',
+                  onTap: () =>
+                      _navigate(context, const DataCollectionDemo()),
+                ),
+                _DemoCard(
+                  icon: Icons.translate,
+                  color: const Color(0xFF355CA8),
+                  title: 'Multi-Language & Offline',
+                  subtitle:
+                      'FormStackLocale with runtime switching, offline save/resume, display step',
+                  onTap: () =>
+                      _navigate(context, const AdvancedFeaturesDemo()),
+                ),
+                _DemoCard(
                   icon: Icons.data_object,
                   color: const Color(0xFF5C5D72),
                   title: 'Load from JSON',

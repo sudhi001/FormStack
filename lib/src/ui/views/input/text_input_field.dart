@@ -49,11 +49,12 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
     }
     return Container(
         decoration: formStep.inputStyle == InputStyle.basic
-            ? const BoxDecoration(
-                color: Color.fromRGBO(242, 242, 247, 1),
+            ? BoxDecoration(
+                color: FormStackTheme.surfaceColor(context),
                 border: Border(
-                    top: BorderSide(color: Colors.grey),
-                    bottom: BorderSide(color: Colors.grey)),
+                    top: BorderSide(color: FormStackTheme.borderColor(context)),
+                    bottom:
+                        BorderSide(color: FormStackTheme.borderColor(context))),
               )
             : null,
         constraints:

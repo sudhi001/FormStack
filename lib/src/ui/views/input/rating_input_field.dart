@@ -21,7 +21,7 @@ class RatingInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: const BoxConstraints(minWidth: 200, maxWidth: 400),
+      constraints: BoxConstraints(minWidth: 200, maxWidth: 500),
       child: StatefulBuilder(builder: (context, setState) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,11 @@
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/audio_input_field.dart';
+import 'package:formstack/src/ui/views/input/barcode_input_field.dart';
 import 'package:formstack/src/ui/views/input/boolean_input_field.dart';
+import 'package:formstack/src/ui/views/input/calculate_input_field.dart';
+import 'package:formstack/src/ui/views/input/hidden_input_field.dart';
 import 'package:formstack/src/ui/views/input/image_choice_input_field.dart';
+import 'package:formstack/src/ui/views/input/geotrace_input_field.dart';
 import 'package:formstack/src/ui/views/input/slider_input_field.dart';
 import 'package:formstack/src/ui/views/input/rating_input_field.dart';
 import 'package:formstack/src/ui/views/input/nps_input_field.dart';
@@ -142,5 +147,70 @@ class SurveyInputWidget {
     return ImageChoiceInputWidgetView(
         formStackForm, questionStep, text, resultFormat,
         title: title, options: options ?? [], singleSelection: singleSelection);
+  }
+
+  /// Create hidden data field (no UI, auto-advances)
+  static HiddenInputWidgetView hidden(QuestionStep questionStep,
+      FormStackForm formStackForm, String? text, String? title) {
+    return HiddenInputWidgetView(formStackForm, questionStep, text,
+        title: title);
+  }
+
+  /// Create calculated field with auto-computed value
+  static CalculateInputWidgetView calculate(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      String? title,
+      dynamic Function(Map<String, dynamic>)? calculateCallback) {
+    return CalculateInputWidgetView(formStackForm, questionStep, text,
+        title: title, calculateCallback: calculateCallback);
+  }
+
+  /// Create barcode/QR code scanner input
+  static BarcodeInputWidgetView barcode(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return BarcodeInputWidgetView(
+        formStackForm, questionStep, text, resultFormat,
+        title: title);
+  }
+
+  /// Create audio recording input
+  static AudioInputWidgetView audio(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return AudioInputWidgetView(formStackForm, questionStep, text, resultFormat,
+        title: title);
+  }
+
+  /// Create geotrace (path/line on map) input
+  static GeotraceInputWidgetView geotrace(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return GeotraceInputWidgetView(
+        formStackForm, questionStep, text, resultFormat,
+        title: title, isPolygon: false);
+  }
+
+  /// Create geoshape (polygon on map) input
+  static GeotraceInputWidgetView geoshape(
+      QuestionStep questionStep,
+      FormStackForm formStackForm,
+      String? text,
+      ResultFormat resultFormat,
+      String? title) {
+    return GeotraceInputWidgetView(
+        formStackForm, questionStep, text, resultFormat,
+        title: title, isPolygon: true);
   }
 }

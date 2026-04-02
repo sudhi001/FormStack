@@ -157,7 +157,14 @@ class FormStack {
       required LocationWrapper initialLocation,
       String? backgroundAnimationFile,
       Alignment? backgroundAlignment,
+      UIStyle? defaultStyle,
       required List<FormStep> steps}) {
+    // Apply default style to steps that don't have their own
+    if (defaultStyle != null) {
+      for (var step in steps) {
+        step.style ??= defaultStyle;
+      }
+    }
     var list = LinkedList<FormStep>();
     list.addAll(steps);
     FormWizard form = FormWizard(list,
@@ -166,7 +173,7 @@ class FormStack {
         backgroundAlignment: backgroundAlignment,
         backgroundAnimationFile: backgroundAnimationFile,
         initialLocation: initialLocation);
-    _forms.putIfAbsent(name, () => form);
+    _forms[name] = form;
     return this;
   }
 
@@ -559,5 +566,83 @@ class FormStack {
         formByInstaceAndName(name: name, formName: formName) ??
             _forms[formName];
     return form?.exportAsJson();
+  }
+
+  // --- Persistence API ---
+
+  FormPersistence? _persistence;
+
+  /// Enable offline save & resume with a [FormPersistence] implementation.
+  ///
+  /// ```dart
+  /// FormStack.api().enablePersistence(SharedPrefsPersistence(prefs));
+  /// ```
+  void enablePersistence(FormPersistence persistence) {
+    _persistence = persistence;
+  }
+
+  /// Save the current form state as a draft.
+  ///
+  /// ```dart
+  /// await FormStack.api().saveDraft(formName: "myForm");
+  /// ```
+  Future<void> saveDraft(
+      {String name = "default", String formName = "default"}) async {
+    if (_persistence == null) return;
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    if (form == null) return;
+    form.generateResult();
+    final draft = FormDraft(
+      formId: form.id?.id ?? formName,
+      formName: formName,
+      results: Map.from(form.result),
+      currentStepId: form.getStep(form.getCurrentIndex().toString())?.id?.id,
+    );
+    await _persistence!.save(draft.formId, draft.toJson());
+  }
+
+  /// Resume a saved draft by restoring results into the form.
+  ///
+  /// ```dart
+  /// await FormStack.api().resumeDraft(formName: "myForm");
+  /// ```
+  Future<bool> resumeDraft(
+      {String name = "default", String formName = "default"}) async {
+    if (_persistence == null) return false;
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    if (form == null) return false;
+    final formId = form.id?.id ?? formName;
+    final data = await _persistence!.load(formId);
+    if (data == null) return false;
+    final draft = FormDraft.fromJson(data);
+    // Restore results to steps
+    for (var step in form.steps) {
+      final stepId = step.id?.id;
+      if (stepId != null && draft.results.containsKey(stepId)) {
+        step.result = draft.results[stepId];
+      }
+    }
+    return true;
+  }
+
+  /// Delete a saved draft.
+  Future<void> deleteDraft(
+      {String name = "default", String formName = "default"}) async {
+    if (_persistence == null) return;
+    FormStackForm? form =
+        formByInstaceAndName(name: name, formName: formName) ??
+            _forms[formName];
+    final formId = form?.id?.id ?? formName;
+    await _persistence!.delete(formId);
+  }
+
+  /// List all saved draft IDs.
+  Future<List<String>> listDrafts() async {
+    if (_persistence == null) return [];
+    return _persistence!.listDrafts();
   }
 }

@@ -34,7 +34,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
               )
             : null,
         constraints:
-            const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 300),
+            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 300),
         child: StatefulBuilder(builder: (context, setState) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),

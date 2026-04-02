@@ -67,9 +67,13 @@ abstract class FormStackForm {
   /// Current step being displayed.
   FormStep? _currentStep;
 
-  /// Cached step views to prevent recreation on navigation.
-  /// Each step's view is built once and reused on subsequent visits.
+  /// Cached step views to prevent state loss on back navigation.
   final Map<String, Widget> _viewCache = {};
+
+  /// Clears the view cache, forcing widgets to rebuild on next render.
+  void clearViewCache() {
+    _viewCache.clear();
+  }
 
   /// Returns the progress of the form as a value between 0.0 and 1.0.
   double getProgress() {

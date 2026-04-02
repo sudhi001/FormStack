@@ -18,7 +18,7 @@ class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
     }
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
+      constraints: BoxConstraints(maxWidth: 500, maxHeight: 600),
       child: StatefulBuilder(builder: (context, setState) {
         return Column(
           mainAxisSize: MainAxisSize.min,

@@ -28,6 +28,9 @@ class ParserUtils {
               backgroundAnimationFile: value?["backgroundAnimationFile"],
               backgroundAlignment:
                   alignmentFromString(value?["backgroundAlignment"]),
+              defaultStyle: value?["theme"] != null
+                  ? UIStyle.from(value!["theme"])
+                  : null,
               initialLocation: locationWrapper);
         } catch (e) {
           throw FormatException('Error parsing form "$key": $e');
@@ -70,6 +73,15 @@ class ParserUtils {
     return relevantConditions;
   }
 
+  static FormStep _createRepeatStep(Map<String, dynamic>? element,
+      List<RelevantCondition> relevantCondition) {
+    List<FormStep> steps = [];
+    cast<List>(element?["steps"])?.forEach((el) {
+      _addFormStep(steps, el);
+    });
+    return RepeatStep.from(element, relevantCondition, steps);
+  }
+
   static FormStep createNestedStep(Map<String, dynamic>? element,
       List<RelevantCondition> relevantCondition) {
     List<FormStep> steps = [];
@@ -104,6 +116,8 @@ class ParserUtils {
         step.add(ReviewStep.from(element, _parseRelevant(element)));
       } else if (type == ConsentStep.tag) {
         step.add(ConsentStep.from(element, _parseRelevant(element)));
+      } else if (type == RepeatStep.tag) {
+        step.add(_createRepeatStep(element, _parseRelevant(element)));
       } else {
         throw FormatException('Unknown step type: $type');
       }

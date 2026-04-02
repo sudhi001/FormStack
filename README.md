@@ -7,7 +7,7 @@
 
 A cross-platform alternative to Apple ResearchKit for Flutter. Build dynamic forms, surveys, and research questionnaires from Dart objects or JSON -- on iOS, Android, Web, macOS, Windows, and Linux.
 
-30 input types, 8 step types, 35+ validators, conditional navigation, structured consent flows, answer review, progress tracking, and full extensibility. Every ResearchKit UI pattern can be reproduced with FormStack.
+35 input types, 9 step types, 35+ validators, conditional navigation, structured consent flows, answer review, progress tracking, and full extensibility. Every ResearchKit UI pattern can be reproduced with FormStack.
 
 ### Why FormStack over ResearchKit?
 
@@ -16,7 +16,7 @@ A cross-platform alternative to Apple ResearchKit for Flutter. Build dynamic for
 | **Platforms** | iOS only | iOS, Android, Web, macOS, Windows, Linux |
 | **Language** | Swift/Objective-C | Dart (Flutter) |
 | **Form source** | Code only | Dart objects or JSON |
-| **Input types** | ~15 answer formats | 30 input types |
+| **Input types** | ~15 answer formats | 35 input types |
 | **Validators** | Basic (length, regex) | 35+ built-in + custom subclassing |
 | **Extensibility** | Subclass ORKStep | Subclass FormStep, BaseStepView, ResultFormat, RelevantCondition |
 | **Results** | ORKTaskResult hierarchy | TaskResult/StepResult with timestamps + JSON export |
@@ -53,7 +53,7 @@ If you're migrating from Apple ResearchKit, here's how the concepts map:
 | ResearchKit (iOS) | FormStack (Flutter) | Notes |
 |---|---|---|
 | `ORKInstructionStep` | `InstructionStep` | Supports Lottie animations, static images, and video URLs |
-| `ORKQuestionStep` | `QuestionStep` | 30 input types vs ResearchKit's ~15 |
+| `ORKQuestionStep` | `QuestionStep` | 35 input types vs ResearchKit's ~15 |
 | `ORKFormStep` | `NestedStep` | Multiple fields on one screen with cross-field validation |
 | `ORKCompletionStep` | `CompletionStep` | Loading/success/error Lottie animations, async callbacks |
 | `ORKConsentDocument` + `ORKVisualConsentStep` | `ConsentStep` | Expandable sections with 8 predefined types |
@@ -151,7 +151,7 @@ Scaffold(body: FormStack.api().render());
 
 ```yaml
 dependencies:
-  formstack: ^2.1.1
+  formstack: ^2.5.0
 ```
 
 ```bash
@@ -246,6 +246,8 @@ Scaffold(body: FormStack.api().render());
 | `banner` | Rectangular image upload | `String` (base64) |
 | `signature` | Draw signature on canvas | `String` (base64 PNG) |
 | `mapLocation` | Google Maps picker | Location coordinates |
+| `geotrace` | Trace a path/line on map | `List<Map>` (lat/lng points) |
+| `geoshape` | Draw a polygon on map | `List<Map>` (lat/lng points) |
 
 ### Special
 
@@ -255,6 +257,10 @@ Scaffold(body: FormStack.api().render());
 | `consent` | Checkbox with agreement text | `bool` |
 | `dynamicKeyValue` | Add/remove key-value pairs | `List<KeyValue>` |
 | `htmlEditor` | Rich text editor | `String` |
+| `hidden` | Hidden data field (no UI, auto-advances) | `dynamic` |
+| `calculate` | Auto-computed from other results | `dynamic` |
+| `barcode` | Barcode/QR scanner with manual fallback | `String` |
+| `audio` | Audio recording with timer | `String` |
 
 ---
 
@@ -374,6 +380,28 @@ ConsentStep(
 
 **ConsentSectionType values:** `overview`, `dataGathering`, `privacy`, `dataUse`, `timeCommitment`, `studyTasks`, `withdrawing`, `custom`
 
+### RepeatStep
+
+Dynamic repeating sections where users add/remove entries. Modeled after ODK's `repeat`.
+
+```dart
+RepeatStep(
+  id: GenericIdentifier(id: "members"),
+  title: "Household Members",
+  minRepeat: 1,
+  maxRepeat: 10,
+  addButtonText: "Add Member",
+  steps: [
+    QuestionStep(title: "", inputType: InputType.name, label: "Name",
+        id: GenericIdentifier(id: "name"), width: 400),
+    QuestionStep(title: "", inputType: InputType.number, label: "Age",
+        id: GenericIdentifier(id: "age"), width: 400),
+  ],
+)
+```
+
+Result: `List<Map<String, dynamic>>` - one map per repetition.
+
 ### DisplayStep
 
 Show web content or data lists.
@@ -484,7 +512,7 @@ selectionType: SelectionType.toggle   // Switch toggle
 selectionType: SelectionType.dropdown // Dropdown menu
 ```
 
-### Custom Theme
+### Custom Theme (Dart)
 
 ```dart
 QuestionStep(
@@ -496,13 +524,124 @@ QuestionStep(
     Colors.indigo,       // Input border color
     8.0,                 // Title bottom padding
     12.0,                // Button border radius
+    inputBackground: Colors.grey.shade100,
+    inputTextColor: Colors.black87,
+    titleColor: Colors.indigo,
+    iconColor: Colors.indigo,
+    cardBackground: Colors.white,
+    fontSize: 16.0,
   ),
-  nextButtonText: "Continue",
-  backButtonText: "Previous",
 )
 ```
 
+### Custom Theme (JSON)
+
+Apply a form-level theme to all steps, or style individual steps:
+
+```json
+{
+  "my_form": {
+    "theme": {
+      "backgroundColor": "#3F51B5",
+      "foregroundColor": "#FFFFFF",
+      "borderColor": "#3F51B5",
+      "borderRadius": 12,
+      "inputBackground": "#F5F5F5",
+      "inputTextColor": "#212121",
+      "titleColor": "#3F51B5",
+      "subtitleColor": "#757575",
+      "iconColor": "#3F51B5",
+      "cardBackground": "#FFFFFF",
+      "fontSize": 16
+    },
+    "steps": [
+      {
+        "type": "QuestionStep",
+        "id": "name",
+        "title": "Your Name",
+        "inputType": "name",
+        "style": {
+          "backgroundColor": "#FF5722",
+          "foregroundColor": "#FFFFFF",
+          "borderRadius": 24
+        }
+      }
+    ]
+  }
+}
+```
+
+The `theme` key applies to all steps as a default. Individual step `style` overrides the form theme.
+
+### Dark Mode
+
+FormStack automatically adapts to your app's theme. No configuration needed:
+
+```dart
+MaterialApp(
+  theme: ThemeData.light(useMaterial3: true),
+  darkTheme: ThemeData.dark(useMaterial3: true),
+  themeMode: ThemeMode.system, // Auto dark/light
+  home: Scaffold(body: FormStack.api().render()),
+)
+```
+
+All colors resolve from `Theme.of(context).colorScheme` at runtime.
+
 ---
+
+## Cascading Selects
+
+Filter choices based on previous answers:
+
+```dart
+QuestionStep(
+  title: "State",
+  inputType: InputType.dropdown,
+  options: allStates, // Full list
+  choiceFilter: (options, results) =>
+      options.where((o) => o.value == results["country"]).toList(),
+)
+```
+
+## Calculated Fields
+
+Auto-compute values from other step results:
+
+```dart
+QuestionStep(
+  title: "BMI",
+  inputType: InputType.calculate,
+  calculateCallback: (results) {
+    final weight = double.tryParse(results["weight"]?.toString() ?? "") ?? 0;
+    final height = double.tryParse(results["height"]?.toString() ?? "") ?? 1;
+    return (weight / (height * height)).toStringAsFixed(1);
+  },
+  helperText: "Calculated from height and weight",
+)
+```
+
+## Multi-Language Support
+
+```dart
+final locale = FormStackLocale(
+  defaultLocale: 'en',
+  translations: {
+    'en': {'name_title': 'Your Name', 'name_hint': 'Enter full name'},
+    'es': {'name_title': 'Tu Nombre', 'name_hint': 'Ingrese nombre completo'},
+    'fr': {'name_title': 'Votre Nom', 'name_hint': 'Entrez le nom complet'},
+  },
+);
+
+QuestionStep(
+  title: locale.t('name_title'),
+  hint: locale.t('name_hint'),
+  inputType: InputType.name,
+)
+
+// Switch language at runtime
+locale.setLocale('es');
+```
 
 ## Conditional Navigation
 
@@ -736,12 +875,12 @@ All step types and properties are supported in JSON. Wrap forms in a named objec
 
 ## Examples
 
-The [example app](example/) demonstrates all features across 10 demo screens:
+The [example app](example/) demonstrates all features across 12 demo screens:
 
 | Demo | Features |
 |------|----------|
-| All Input Types | All 30 input types with descriptions |
-| Styles & Display | InputStyle, ComponentsStyle, Display sizes, UIStyle |
+| All Input Types | Core input types: text, email, name, password, number, date, time, choices, OTP, smile, file, key-value, avatar, banner |
+| Styles & Display | InputStyle, ComponentsStyle, Display sizes, UIStyle, JSON theming, dark mode |
 | Selection Types | Arrow, tick, toggle, dropdown |
 | Validation | Email, password, phone, URL, age, zip, dateRange, custom, compose |
 | Conditional Nav | ExpressionRelevant branching and path convergence |
@@ -749,6 +888,8 @@ The [example app](example/) demonstrates all features across 10 demo screens:
 | API Features | setResult, setError, callbacks, progress tracking |
 | Survey Components | Slider, rating, NPS, consent, signature, ranking, phone, currency |
 | ResearchKit Features | Boolean, image choice, consent flow, review step, progress bar, timestamps |
+| Data Collection (ODK) | RepeatStep, calculate, hidden, cascading selects, barcode, audio, geotrace, geoshape |
+| Multi-Language & Offline | FormStackLocale, runtime language switching, DisplayStep, offline save/resume |
 | Load from JSON | Multi-file JSON loading with form linking |
 
 Run the example:
@@ -893,11 +1034,12 @@ lib/
   src/
     formstack.dart             # FormStack singleton API
     formstack_form.dart        # Form navigation and state
-    input_types.dart           # InputType enum (30 values)
+    input_types.dart           # InputType enum (35 values)
     core/
       form_step.dart           # Base FormStep class, enums
       parser.dart              # JSON parser
       ui_style.dart            # UIStyle, HexColor
+      form_locale.dart         # FormStackLocale (multi-language)
     step/
       question_step.dart       # QuestionStep (all input types)
       completion_step.dart     # CompletionStep (finish with animation)
@@ -906,6 +1048,7 @@ lib/
       display_step.dart        # DisplayStep (web/list content)
       review_step.dart         # ReviewStep (answer review before submit)
       consent_step.dart        # ConsentStep (consent document flow)
+      repeat_step.dart         # RepeatStep (dynamic repeating sections)
       pop_step.dart            # PopStep (navigation)
     result/
       result_format.dart       # 35+ validators (subclassable)
@@ -935,6 +1078,11 @@ lib/
       image_input_field.dart   # Avatar/banner upload
       dynamic_key_value_field.dart # Key-value pairs
       map_input_field.dart     # Google Maps
+      hidden_input_field.dart   # Hidden data field
+      calculate_input_field.dart # Calculated field
+      barcode_input_field.dart  # Barcode/QR scanner
+      audio_input_field.dart    # Audio recording
+      geotrace_input_field.dart # Geotrace/geoshape map input
       html_input_field.dart    # Rich text editor
 ```
 

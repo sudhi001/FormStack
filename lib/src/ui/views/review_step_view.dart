@@ -17,7 +17,7 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
     }
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
+      constraints: BoxConstraints(maxWidth: 500, maxHeight: 500),
       child: ListView.separated(
         shrinkWrap: true,
         cacheExtent: 300,

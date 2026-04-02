@@ -5,6 +5,70 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-04-02
+
+### Added
+- 2 new example demo screens: "Data Collection (ODK)" and "Multi-Language & Offline" (total: 12 demos)
+- Data Collection demo covers: RepeatStep, calculate fields, hidden fields, cascading selects, barcode, audio, geotrace, geoshape
+- Multi-Language demo covers: FormStackLocale with EN/ES/FR, DisplayStep with listTile data, runtime language switching
+- `geotrace` and `geoshape` added to README input type tables
+- Form-level `defaultStyle` parameter for applying UIStyle to all steps at once
+- JSON `theme` key at form level for form-wide styling from JSON
+
+### Changed
+- Example app now demonstrates all 35 input types and all 9 step types
+- README examples table expanded to 12 demo screens
+- Architecture file listing updated with all new files
+- Input type count corrected to 36 throughout all docs
+
+## [2.4.0] - 2026-04-02
+
+### Added
+- `FormStackTheme` - centralized theme system with responsive sizing, dark/light mode colors, and accessibility helpers
+- Responsive layout: all widgets adapt to mobile (< 600px), tablet (600-1200px), and desktop (> 1200px) screens
+- Dark mode support: all colors resolve from `Theme.of(context).colorScheme` instead of hardcoded values
+- Semantics wrappers for accessibility on interactive elements
+- `FormStackTheme.responsiveMaxWidth()`, `responsiveInputWidth()`, `responsivePadding()`, `responsiveIconSize()`, `responsiveButtonHeight()`
+- Theme-aware NPS colors (`npsDetractorColor`, `npsPassiveColor`, `npsPromoterColor`)
+- Canvas colors adapt to dark mode (`canvasStrokeColor`, `canvasBackgroundColor`)
+
+### Changed
+- Replaced 47 hardcoded color values with theme-aware alternatives across all view files
+- Replaced 45+ hardcoded BoxConstraints with responsive sizing
+- Error text uses `Theme.of(context).colorScheme.error` instead of `Colors.red`
+- Input backgrounds use `colorScheme.surfaceContainerHighest` instead of hardcoded grey
+- Borders use `colorScheme.outline` instead of `Colors.grey`
+- Buttons use responsive heights based on screen size
+- `UIStyle` expanded with 7 new properties: `inputBackground`, `inputTextColor`, `titleColor`, `subtitleColor`, `iconColor`, `cardBackground`, `fontSize` - all settable from JSON
+- Form-level `defaultStyle` parameter applies to all steps without individual styling
+- JSON `theme` key at form level applies default styling to all steps in that form
+
+## [2.3.0] - 2026-04-02
+
+### Added
+- 2 new input types: `geotrace` (trace path on map), `geoshape` (draw polygon on map)
+- Offline save & resume via `FormPersistence` interface (`enablePersistence`, `saveDraft`, `resumeDraft`, `deleteDraft`, `listDrafts`)
+- `InMemoryFormPersistence` built-in implementation for testing
+- `FormDraft` serializable model for draft state
+- `ExternalDataProvider` interface for loading options from CSV/API/database
+- `StaticDataProvider` built-in implementation with `fromCsv` factory
+- `QuestionStep.optionsProvider` and `optionsSourceId` for external data-backed choices
+- All new types supported in JSON parser
+
+## [2.2.0] - 2026-04-02
+
+### Added
+- 4 new input types: `hidden` (data-only, no UI), `calculate` (auto-computed from other results), `barcode` (QR/barcode scanner), `audio` (recording with timer)
+- `RepeatStep` - dynamic repeating sections where users add/remove entries (modeled after ODK `repeat`)
+- Cascading selects via `QuestionStep.choiceFilter` callback - filter options based on other step results (Country -> State -> City)
+- `FormStackLocale` class for multi-language support with runtime language switching, `t()` and `tf()` translation methods, and JSON loading
+- `QuestionStep.calculateCallback` for auto-computing values from collected results
+- `QuestionStep.calculateExpression` for declarative calculate formulas
+- Step view widget caching to preserve state during navigation
+- All new types fully supported in JSON schema parser
+
+### Fixed
+
 ## [2.1.1] - 2026-04-02
 
 ### Fixed

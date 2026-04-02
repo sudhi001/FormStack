@@ -32,18 +32,15 @@ class NPSInputWidgetView extends BaseStepView<QuestionStep> {
               children: List.generate(11, (index) {
                 final isSelected = _selectedScore == index;
                 Color bgColor;
-                if (isSelected) {
-                  bgColor = index <= 6
-                      ? Colors.red.shade400
-                      : index <= 8
-                          ? Colors.amber.shade400
-                          : Colors.green.shade400;
+                if (index <= 6) {
+                  bgColor = FormStackTheme.npsDetractorColor(context,
+                      selected: isSelected);
+                } else if (index <= 8) {
+                  bgColor = FormStackTheme.npsPassiveColor(context,
+                      selected: isSelected);
                 } else {
-                  bgColor = index <= 6
-                      ? Colors.red.shade50
-                      : index <= 8
-                          ? Colors.amber.shade50
-                          : Colors.green.shade50;
+                  bgColor = FormStackTheme.npsPromoterColor(context,
+                      selected: isSelected);
                 }
                 return SizedBox(
                   width: 40,
@@ -66,7 +63,9 @@ class NPSInputWidgetView extends BaseStepView<QuestionStep> {
                           '$index',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: isSelected ? Colors.white : Colors.black87,
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 
@@ -6,10 +5,11 @@ class ListTitlesView {
   static Widget buildView(BuildContext context, DisplayStep formStep) {
     return Container(
         decoration: formStep.componentsStyle == ComponentsStyle.minimal
-            ? const BoxDecoration(
+            ? BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey),
-                  bottom: BorderSide(color: Colors.grey),
+                  top: BorderSide(color: FormStackTheme.dividerColor(context)),
+                  bottom:
+                      BorderSide(color: FormStackTheme.dividerColor(context)),
                 ),
               )
             : null,
@@ -21,8 +21,8 @@ class ListTitlesView {
           physics: const ClampingScrollPhysics(),
           separatorBuilder: (context, index) => Divider(
               color: formStep.componentsStyle == ComponentsStyle.minimal
-                  ? Colors.grey
-                  : CupertinoColors.white,
+                  ? FormStackTheme.dividerColor(context)
+                  : Colors.transparent,
               height: 5),
           itemBuilder: (context, index) {
             final DynamicData dynamicData = formStep.data[index];
@@ -44,7 +44,7 @@ class ListTitlesView {
               )
             : const BorderRadius.vertical(),
         child: Container(
-          color: isBasicStyle ? const Color.fromRGBO(242, 242, 247, 1) : null,
+          color: isBasicStyle ? FormStackTheme.cardColor(context) : null,
           padding: const EdgeInsets.all(7),
           child: ListTile(
               title: Text(dynamicData.title,

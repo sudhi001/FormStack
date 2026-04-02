@@ -41,7 +41,7 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
           ),
         ),
         constraints:
-            const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 200),
+            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: _buildTextFields(context),

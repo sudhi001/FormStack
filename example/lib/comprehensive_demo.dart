@@ -1291,7 +1291,338 @@ class _ResearchKitFeaturesDemoState
 }
 
 // ---------------------------------------------------------------------------
-// 10. JSON LOAD DEMO
+// 10. DATA COLLECTION DEMO (ODK features)
+// ---------------------------------------------------------------------------
+class DataCollectionDemo extends FormDemoScreen {
+  const DataCollectionDemo({super.key});
+
+  @override
+  State<DataCollectionDemo> createState() => _DataCollectionDemoState();
+}
+
+class _DataCollectionDemoState
+    extends FormDemoScreenState<DataCollectionDemo> {
+  @override
+  String get formName => "data_collection";
+
+  @override
+  void buildForm(BuildContext context) {
+    FormStack.api().form(
+      name: formName,
+      initialLocation: LocationWrapper(0, 0),
+      mapKey: MapKey("", "", ""),
+      steps: [
+        InstructionStep(
+          id: GenericIdentifier(id: "intro"),
+          title: "Data Collection Demo",
+          text:
+              "ODK-inspired features: repeat groups, calculate fields, cascading selects, barcode, audio, geotrace",
+          cancellable: false,
+          display: Display.medium,
+        ),
+
+        // Hidden field (auto-advances, stores metadata)
+        QuestionStep(
+          id: GenericIdentifier(id: "form_start_time"),
+          title: "",
+          inputType: InputType.hidden,
+          defaultValue: DateTime.now().toUtc().toIso8601String(),
+        ),
+
+        // Cascading selects (Country -> filtered options)
+        QuestionStep(
+          title: "Select Region",
+          text: "InputType.dropdown with cascading selects via choiceFilter",
+          inputType: InputType.dropdown,
+          componentsStyle: ComponentsStyle.basic,
+          options: [
+            Options("north", "North America"),
+            Options("europe", "Europe"),
+            Options("asia", "Asia"),
+          ],
+          id: GenericIdentifier(id: "region"),
+          cancellable: true,
+        ),
+        QuestionStep(
+          title: "Select Country",
+          text: "Options filtered based on selected region",
+          inputType: InputType.dropdown,
+          componentsStyle: ComponentsStyle.basic,
+          options: [
+            Options("us", "United States", value: "north"),
+            Options("ca", "Canada", value: "north"),
+            Options("uk", "United Kingdom", value: "europe"),
+            Options("de", "Germany", value: "europe"),
+            Options("jp", "Japan", value: "asia"),
+            Options("in", "India", value: "asia"),
+          ],
+          choiceFilter: (options, results) {
+            final region = results["region"];
+            if (region == null || region is! List<Options>) return options;
+            final regionKey = region.isNotEmpty ? region.first.key : "";
+            return options.where((o) => o.value == regionKey).toList();
+          },
+          id: GenericIdentifier(id: "country"),
+          cancellable: true,
+        ),
+
+        // Calculate field
+        QuestionStep(
+          title: "Your Age",
+          text: "Enter your age (used in BMI calculation later)",
+          inputType: InputType.number,
+          inputStyle: InputStyle.outline,
+          id: GenericIdentifier(id: "age"),
+          cancellable: true,
+        ),
+        QuestionStep(
+          title: "Age Category",
+          text: "InputType.calculate - auto-computed from your age",
+          inputType: InputType.calculate,
+          helperText: "Calculated automatically from age input",
+          calculateCallback: (results) {
+            final age =
+                int.tryParse(results["age"]?.toString() ?? "") ?? 0;
+            if (age < 18) return "Minor (under 18)";
+            if (age < 65) return "Adult (18-64)";
+            return "Senior (65+)";
+          },
+          id: GenericIdentifier(id: "age_category"),
+          cancellable: true,
+        ),
+
+        // Barcode scanner
+        QuestionStep(
+          title: "Scan Item Barcode",
+          text: "InputType.barcode - QR/barcode scanner with manual fallback",
+          inputType: InputType.barcode,
+          id: GenericIdentifier(id: "barcode"),
+          cancellable: true,
+          isOptional: true,
+        ),
+
+        // Audio recording
+        QuestionStep(
+          title: "Voice Note",
+          text: "InputType.audio - record audio with timer controls",
+          inputType: InputType.audio,
+          id: GenericIdentifier(id: "audio"),
+          cancellable: true,
+          isOptional: true,
+        ),
+
+        // Geotrace
+        QuestionStep(
+          title: "Trace Route",
+          text: "InputType.geotrace - add coordinate points to trace a path",
+          inputType: InputType.geotrace,
+          id: GenericIdentifier(id: "route"),
+          cancellable: true,
+          isOptional: true,
+        ),
+
+        // Geoshape
+        QuestionStep(
+          title: "Mark Area",
+          text:
+              "InputType.geoshape - add coordinate points to draw a polygon boundary",
+          inputType: InputType.geoshape,
+          id: GenericIdentifier(id: "area"),
+          cancellable: true,
+          isOptional: true,
+        ),
+
+        // Repeat Step
+        RepeatStep(
+          id: GenericIdentifier(id: "household"),
+          title: "Household Members",
+          text: "Add each person in the household (RepeatStep with add/remove)",
+          minRepeat: 1,
+          maxRepeat: 5,
+          addButtonText: "Add Member",
+          cancellable: true,
+          steps: [
+            QuestionStep(
+              title: "",
+              inputType: InputType.name,
+              inputStyle: InputStyle.outline,
+              label: "Full Name",
+              id: GenericIdentifier(id: "member_name"),
+              width: 400,
+            ),
+            QuestionStep(
+              title: "",
+              inputType: InputType.number,
+              inputStyle: InputStyle.outline,
+              label: "Age",
+              id: GenericIdentifier(id: "member_age"),
+              width: 400,
+              isOptional: true,
+            ),
+          ],
+        ),
+
+        CompletionStep(
+          id: GenericIdentifier(id: "done"),
+          title: "Data Collection Complete",
+          text: "All ODK-style features demonstrated",
+          onFinish: (result) {
+            debugPrint("Data collection result: $result");
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 11. ADVANCED FEATURES DEMO (Locale, Offline, Display)
+// ---------------------------------------------------------------------------
+class AdvancedFeaturesDemo extends FormDemoScreen {
+  const AdvancedFeaturesDemo({super.key});
+
+  @override
+  State<AdvancedFeaturesDemo> createState() => _AdvancedFeaturesDemoState();
+}
+
+class _AdvancedFeaturesDemoState
+    extends FormDemoScreenState<AdvancedFeaturesDemo> {
+  @override
+  String get formName => "advanced";
+
+  final _locale = FormStackLocale(
+    defaultLocale: 'en',
+    translations: {
+      'en': {
+        'welcome_title': 'Multi-Language Demo',
+        'welcome_text':
+            'This form demonstrates runtime language switching. Current: English',
+        'name_title': 'Your Name',
+        'name_hint': 'Enter your full name',
+        'feedback_title': 'Feedback',
+        'feedback_hint': 'Tell us what you think',
+        'done_title': 'Complete!',
+        'done_text': 'Thank you for your feedback',
+      },
+      'es': {
+        'welcome_title': 'Demo Multilingue',
+        'welcome_text':
+            'Este formulario demuestra el cambio de idioma. Actual: Espanol',
+        'name_title': 'Tu Nombre',
+        'name_hint': 'Ingrese su nombre completo',
+        'feedback_title': 'Comentarios',
+        'feedback_hint': 'Cuentanos que piensas',
+        'done_title': 'Completado!',
+        'done_text': 'Gracias por tus comentarios',
+      },
+      'fr': {
+        'welcome_title': 'Demo Multilingue',
+        'welcome_text':
+            'Ce formulaire demontre le changement de langue. Actuel: Francais',
+        'name_title': 'Votre Nom',
+        'name_hint': 'Entrez votre nom complet',
+        'feedback_title': 'Commentaires',
+        'feedback_hint': 'Dites-nous ce que vous pensez',
+        'done_title': 'Termine!',
+        'done_text': 'Merci pour vos commentaires',
+      },
+    },
+  );
+
+  @override
+  void buildForm(BuildContext context) {
+    FormStack.api().form(
+      name: formName,
+      initialLocation: LocationWrapper(0, 0),
+      mapKey: MapKey("", "", ""),
+      steps: [
+        InstructionStep(
+          id: GenericIdentifier(id: "intro"),
+          title: _locale.t('welcome_title'),
+          text: _locale.t('welcome_text'),
+          cancellable: false,
+          display: Display.medium,
+        ),
+
+        // Language selector
+        QuestionStep(
+          title: "Select Language / Seleccionar Idioma / Choisir la Langue",
+          text: "FormStackLocale with runtime switching",
+          inputType: InputType.singleChoice,
+          selectionType: SelectionType.tick,
+          componentsStyle: ComponentsStyle.basic,
+          autoTrigger: true,
+          options: [
+            Options("en", "English"),
+            Options("es", "Espanol"),
+            Options("fr", "Francais"),
+          ],
+          id: GenericIdentifier(id: "language"),
+          cancellable: true,
+        ),
+
+        // Name field with locale
+        QuestionStep(
+          title: _locale.t('name_title'),
+          inputType: InputType.name,
+          inputStyle: InputStyle.outline,
+          hint: _locale.t('name_hint'),
+          id: GenericIdentifier(id: "name"),
+          cancellable: true,
+        ),
+
+        // Feedback
+        QuestionStep(
+          title: _locale.t('feedback_title'),
+          inputType: InputType.text,
+          inputStyle: InputStyle.outline,
+          hint: _locale.t('feedback_hint'),
+          numberOfLines: 3,
+          id: GenericIdentifier(id: "feedback"),
+          cancellable: true,
+          isOptional: true,
+        ),
+
+        // Display Step (web content)
+        DisplayStep(
+          id: GenericIdentifier(id: "terms"),
+          title: "Terms & Conditions",
+          text: "DisplayStep with listTile type showing structured data",
+          displayStepType: DisplayStepType.listTile,
+          data: [
+            DynamicData("Privacy Policy",
+                subTitle: "We protect your data",
+                leading: "1",
+                trailing: "Required"),
+            DynamicData("Terms of Use",
+                subTitle: "Standard usage terms",
+                leading: "2",
+                trailing: "Required"),
+            DynamicData("Data Retention",
+                subTitle: "Kept for 30 days",
+                leading: "3",
+                trailing: "Optional"),
+          ],
+          cancellable: true,
+        ),
+
+        CompletionStep(
+          id: GenericIdentifier(id: "done"),
+          title: _locale.t('done_title'),
+          text: _locale.t('done_text'),
+          onFinish: (result) {
+            debugPrint("Advanced features result: $result");
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 12. JSON LOAD DEMO
 // ---------------------------------------------------------------------------
 class JSONLoadDemo extends StatefulWidget {
   const JSONLoadDemo({super.key});

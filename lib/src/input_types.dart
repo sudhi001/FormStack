@@ -89,4 +89,24 @@ enum InputType {
 
   /// Select from a grid of images with labels.
   imageChoice,
+
+  /// Hidden field that stores data without any UI. Use with [FormStep.defaultValue]
+  /// or [QuestionStep.calculateExpression] to set computed values.
+  hidden,
+
+  /// Auto-calculated field derived from other step results.
+  /// Use [QuestionStep.calculateExpression] to define the formula.
+  calculate,
+
+  /// Barcode/QR code scanner using device camera.
+  barcode,
+
+  /// Audio recording input. Records and returns file path.
+  audio,
+
+  /// Trace a path/line on a map. Returns list of lat/lng coordinates.
+  geotrace,
+
+  /// Draw a polygon/shape on a map. Returns list of lat/lng coordinates forming a closed area.
+  geoshape,
 }

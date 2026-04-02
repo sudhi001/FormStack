@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
@@ -40,10 +39,11 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
         decoration: formStep.componentsStyle == ComponentsStyle.minimal
-            ? const BoxDecoration(
+            ? BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey),
-                  bottom: BorderSide(color: Colors.grey),
+                  top: BorderSide(color: FormStackTheme.dividerColor(context)),
+                  bottom:
+                      BorderSide(color: FormStackTheme.dividerColor(context)),
                 ),
               )
             : null,
@@ -57,7 +57,8 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                     : null,
                 decoration: formStep.componentsStyle == ComponentsStyle.basic
                     ? BoxDecoration(
-                        border: Border.all(color: Colors.blueGrey),
+                        border: Border.all(
+                            color: FormStackTheme.borderColor(context)),
                         borderRadius: BorderRadius.circular(5),
                       )
                     : null,
@@ -111,8 +112,8 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
             physics: const ClampingScrollPhysics(),
             separatorBuilder: (context, index) => Divider(
                 color: formStep.componentsStyle == ComponentsStyle.minimal
-                    ? Colors.grey
-                    : CupertinoColors.white,
+                    ? FormStackTheme.dividerColor(context)
+                    : Colors.transparent,
                 height: 5),
             itemBuilder: (context, index) => ClipRRect(
                 borderRadius: formStep.componentsStyle == ComponentsStyle.basic
@@ -123,7 +124,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                     : const BorderRadius.vertical(),
                 child: Container(
                   color: formStep.componentsStyle == ComponentsStyle.basic
-                      ? const Color.fromRGBO(242, 242, 247, 1)
+                      ? FormStackTheme.cardColor(context)
                       : null,
                   padding: const EdgeInsets.all(7),
                   child: ListTile(
@@ -140,11 +141,11 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
                           )
                         : null,
                     trailing: autoTrigger
-                        ? _selectionIcon(setState, index)
+                        ? _selectionIcon(context, setState, index)
                         : selectionType != SelectionType.tick
-                            ? _selectionIcon(setState, index)
+                            ? _selectionIcon(context, setState, index)
                             : (_selectedOptions.contains(options[index])
-                                ? _selectionIcon(setState, index)
+                                ? _selectionIcon(context, setState, index)
                                 : null),
                   ),
                 )),
@@ -176,7 +177,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     showValidationError();
   }
 
-  Widget _selectionIcon(StateSetter setState, int index) {
+  Widget _selectionIcon(BuildContext context, StateSetter setState, int index) {
     switch (selectionType) {
       case SelectionType.arrow:
         return const Icon(Icons.arrow_forward_ios_rounded,
@@ -185,10 +186,10 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
         return Icon(Icons.check, color: formStackForm.primaryColor);
       case SelectionType.toggle:
         return Switch(
-          inactiveThumbColor: Colors.black,
-          activeThumbColor: Colors.black,
-          activeTrackColor: const Color.fromRGBO(242, 242, 247, 1),
-          inactiveTrackColor: const Color.fromRGBO(242, 242, 247, 1),
+          inactiveThumbColor: Theme.of(context).colorScheme.onSurface,
+          activeThumbColor: Theme.of(context).colorScheme.onSurface,
+          activeTrackColor: FormStackTheme.surfaceColor(context),
+          inactiveTrackColor: FormStackTheme.surfaceColor(context),
           value: _selectedOptions.contains(options[index]),
           onChanged: (bool value) {
             onItemTap(setState, index);
