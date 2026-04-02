@@ -8,23 +8,21 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final int maxCount;
   DynamicKeyValueWidgetView(
-      super.formKitForm, super.formStep, super.text, this.resultFormat,
+      super.formStackForm, super.formStep, super.text, this.resultFormat,
       {super.key, super.title, required this.maxCount});
 
   final List<KeyValue> _result = [];
   final List<TextEditingController> _keyControllers = [];
   final List<TextEditingController> _valueControllers = [];
   int _fieldCount = 1;
-  dynamic _lastFormStepResult;
+  bool _isInitialized = false;
 
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    if (_lastFormStepResult != formStep.result) {
+    if (!_isInitialized) {
       _initializeFromFormStep(formStep);
       _ensureControllersExist();
-      _lastFormStepResult = formStep.result;
-    } else {
-      _ensureControllersExist();
+      _isInitialized = true;
     }
 
     return Container(
@@ -177,14 +175,14 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
             FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z@.]"))
           ],
           decoration: InputDecoration(
-              enabledBorder: inputBoder(),
-              border: inputBoder(),
+              enabledBorder: inputBorder(),
+              border: inputBorder(),
               labelText: name,
               hintStyle: Theme.of(context).textTheme.bodySmall),
         ));
   }
 
-  InputBorder inputBoder() {
+  InputBorder inputBorder() {
     switch (formStep.inputStyle) {
       case InputStyle.basic:
         return InputBorder.none;

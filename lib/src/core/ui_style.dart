@@ -13,13 +13,13 @@ class UIStyle {
   UIStyle(this.backgroundColor, this.foregroundColor, this.borderColor,
       this.titleBottomPadding, this.borderRadius);
 
-  /// The [backgroundColor] is used for th background color..
+  /// The [backgroundColor] is used for the background color.
   final Color backgroundColor;
 
-  /// The [foregroundColor] is used for th foreground color..
+  /// The [foregroundColor] is used for the foreground color.
   final Color foregroundColor;
 
-  /// The [borderColor] is used for th border color of textfield..
+  /// The [borderColor] is used for the border color of text field.
   final Color borderColor;
 
   /// The [borderRadius] is used border radius or corner curve..

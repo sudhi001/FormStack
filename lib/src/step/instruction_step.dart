@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/core/ui_style.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/instruction_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
@@ -31,10 +29,10 @@ class InstructionStep extends FormStep {
       : super();
 
   @override
-  FormStepView buildView(FormStackForm formKitForm) {
+  FormStepView buildView(FormStackForm formStackForm) {
     resultFormat =
         resultFormat ??= ResultFormat.date("", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
-    return InstructionStepView(formKitForm, this, text, title: title);
+    return InstructionStepView(formStackForm, this, text, title: title);
   }
 
   factory InstructionStep.from(Map<String, dynamic>? element,

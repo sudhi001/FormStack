@@ -11,7 +11,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final DateInputFormats format;
   DateInputWidgetView(
-      super.formKitForm, super.formStep, super.text, this.resultFormat,
+      super.formStackForm, super.formStep, super.text, this.resultFormat,
       {super.key, super.title, this.format = DateInputFormats.dateOnly});
 
   final FocusNode _focusNode = FocusNode();

@@ -4,7 +4,7 @@ import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
 class PopStepView extends BaseStepView<PopStep> {
-  PopStepView(super.formKitForm, super.formStep, super.text,
+  PopStepView(super.formStackForm, super.formStep, super.text,
       {super.key, super.title, cancellable});
 
   @override

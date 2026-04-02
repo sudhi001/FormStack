@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/core/ui_style.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/display_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
@@ -32,8 +30,8 @@ class DisplayStep extends FormStep {
       : super();
 
   @override
-  FormStepView buildView(FormStackForm formKitForm) {
-    return DisplayStepView(formKitForm, this, text, title: title);
+  FormStepView buildView(FormStackForm formStackForm) {
+    return DisplayStepView(formStackForm, this, text, title: title);
   }
 
   factory DisplayStep.from(Map<String, dynamic>? element,

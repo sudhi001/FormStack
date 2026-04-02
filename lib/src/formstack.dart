@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/step/nested_step.dart';
 import 'package:formstack/src/ui/views/formstack_view.dart';
 import 'package:formstack/src/core/parser.dart';
 
@@ -141,7 +140,7 @@ class FormStack {
   ///   CompletionStep(
   ///     id: GenericIdentifier(id: "IS_COMPLETED"),
   ///     title: "Survey Completed",
-  ///     text: "ENd Of ",
+  ///     text: "End of survey",
   ///     onFinish: (result) {
   ///       debugPrint("Completed With Result : $result");
   ///     },

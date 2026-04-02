@@ -1,7 +1,7 @@
 import 'package:formstack/src/expression/base_expression.dart';
 
 class InExpressionEvaluator extends ExpressionEvaluator<int> {
-  InExpressionEvaluator(super.intput);
+  InExpressionEvaluator(super.input);
 
   @override
   bool isValid(String condition, int input) {

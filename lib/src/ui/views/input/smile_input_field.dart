@@ -8,7 +8,7 @@ import 'package:reviews_slider/reviews_slider.dart';
 class SmileInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   SmileInputWidgetView(
-      super.formKitForm, super.formStep, super.text, this.resultFormat,
+      super.formStackForm, super.formStep, super.text, this.resultFormat,
       {super.key, super.title});
 
   final FocusNode _focusNode = FocusNode();

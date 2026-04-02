@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/core/ui_style.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/completion_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
@@ -42,11 +40,11 @@ class CompletionStep extends FormStep {
       super.cancellable})
       : super();
   @override
-  FormStepView buildView(FormStackForm formKitForm) {
-    formKitForm.onFinish = onFinish;
+  FormStepView buildView(FormStackForm formStackForm) {
+    formStackForm.onFinish = onFinish;
     resultFormat =
         resultFormat ??= ResultFormat.date("", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
-    return CompletionStepView(formKitForm, this, text,
+    return CompletionStepView(formStackForm, this, text,
         title: title,
         autoTrigger: autoTrigger ?? false,
         onBeforeFinishCallback: onBeforeFinishCallback);

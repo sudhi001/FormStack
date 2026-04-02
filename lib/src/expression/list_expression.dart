@@ -7,7 +7,7 @@ import 'package:formstack/src/expression/base_expression.dart';
 //(e.g., IN DEMO  or  NOT_IN DEMO).
 ///
 class ListExpressionEvaluator extends ExpressionEvaluator<List> {
-  ListExpressionEvaluator(super.intput);
+  ListExpressionEvaluator(super.input);
 
   @override
   bool isValid(String condition, List input) {

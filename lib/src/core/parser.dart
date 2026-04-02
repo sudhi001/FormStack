@@ -1,14 +1,9 @@
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/relevant/expression_relevant_condition.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
-import 'package:formstack/src/result/result_format.dart';
-import 'package:formstack/src/step/display_step.dart';
-import 'package:formstack/src/step/nested_step.dart';
 import 'package:formstack/src/step/pop_step.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
 ///
-/// ParserUtils - to hanlde JSON parsing related process.
+/// ParserUtils - to handle JSON parsing related process.
 /// This class will change in future.
 ///
 class ParserUtils {
@@ -76,12 +71,12 @@ class ParserUtils {
   }
 
   static FormStep createNestedStep(Map<String, dynamic>? element,
-      List<RelevantCondition> relaventCondition) {
+      List<RelevantCondition> relevantCondition) {
     List<FormStep> steps = [];
     cast<List>(element?["steps"])?.forEach((el) {
       _addFormStep(steps, el);
     });
-    return NestedStep.from(element, relaventCondition, steps);
+    return NestedStep.from(element, relevantCondition, steps);
   }
 
   static void _addFormStep(List<FormStep> step, element) {

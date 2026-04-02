@@ -5,9 +5,9 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   final String? title;
   final String? text;
 
-  final FormStackForm formKitForm;
+  final FormStackForm formStackForm;
   final T formStep;
-  const FormStepView(this.formKitForm, this.formStep, this.text,
+  const FormStepView(this.formStackForm, this.formStep, this.text,
       {super.key, this.title});
 
   Widget buildWithFrom(BuildContext context, T formStep);

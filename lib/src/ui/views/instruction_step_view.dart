@@ -4,7 +4,7 @@ import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
 class InstructionStepView extends BaseStepView<InstructionStep> {
-  InstructionStepView(super.formKitForm, super.formStep, super.text,
+  InstructionStepView(super.formStackForm, super.formStep, super.text,
       {super.key, super.title, cancellable});
 
   @override
@@ -13,6 +13,7 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
         constraints: const BoxConstraints(maxWidth: 300.0),
         child: ListView.builder(
           shrinkWrap: true,
+          cacheExtent: 300,
           itemBuilder: (context, index) {
             DynamicData instruction = formStep.instructions![index];
             return Center(

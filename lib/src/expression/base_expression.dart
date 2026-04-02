@@ -6,28 +6,28 @@ import 'package:formstack/src/expression/list_expression.dart';
 import 'package:formstack/src/expression/string_expression.dart';
 
 abstract class ExpressionEvaluator<T> {
-  const ExpressionEvaluator(this.intput);
-  factory ExpressionEvaluator.of(T intput) {
-    if (intput is DateTime) {
-      return DateTimeExpressionEvaluator(cast<DateTime>(intput)!)
+  const ExpressionEvaluator(this.input);
+  factory ExpressionEvaluator.of(T input) {
+    if (input is DateTime) {
+      return DateTimeExpressionEvaluator(cast<DateTime>(input)!)
           as ExpressionEvaluator<T>;
-    } else if (intput is List) {
-      return ListExpressionEvaluator(cast<List>(intput)!)
+    } else if (input is List) {
+      return ListExpressionEvaluator(cast<List>(input)!)
           as ExpressionEvaluator<T>;
-    } else if (intput is String) {
-      return StringExpressionEvaluator(cast<String>(intput)!)
+    } else if (input is String) {
+      return StringExpressionEvaluator(cast<String>(input)!)
           as ExpressionEvaluator<T>;
-    } else if (intput is int) {
-      return InExpressionEvaluator(_intOrStringValue(intput))
+    } else if (input is int) {
+      return InExpressionEvaluator(_intOrStringValue(input))
           as ExpressionEvaluator<T>;
     } else {
-      return CommonExpressionEvaluator(intput) as ExpressionEvaluator<T>;
+      return CommonExpressionEvaluator(input) as ExpressionEvaluator<T>;
     }
   }
-  final T intput;
+  final T input;
   bool isValid(String condition, T input);
 
-  bool evaluate(String condition) => isValid(condition, intput);
+  bool evaluate(String condition) => isValid(condition, input);
 }
 
 int _intOrStringValue(dynamic o) {

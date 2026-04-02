@@ -7,9 +7,9 @@ class PopStep extends FormStep {
   PopStep({super.id}) : super();
 
   @override
-  FormStepView buildView(FormStackForm formKitForm) {
+  FormStepView buildView(FormStackForm formStackForm) {
     cancellable = false;
     nextButtonText = "";
-    return PopStepView(formKitForm, this, text, title: title);
+    return PopStepView(formStackForm, this, text, title: title);
   }
 }

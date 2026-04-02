@@ -34,6 +34,9 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
   bool disabled;
   final double? width;
   FormStep? previousStep;
+  final String? helperText;
+  dynamic defaultValue;
+  final String? semanticLabel;
   FormStep(
       {this.id,
       this.title,
@@ -59,10 +62,16 @@ abstract class FormStep<T> extends LinkedListEntry<FormStep> {
       this.relevantConditions,
       this.cancelButtonText = "Cancel",
       this.previousStep,
-      this.resultFormat}) {
+      this.resultFormat,
+      this.helperText,
+      this.defaultValue,
+      this.semanticLabel}) {
     id ??= StepIdentifier();
+    if (defaultValue != null && result == null) {
+      result = defaultValue;
+    }
   }
-  FormStepView buildView(FormStackForm formKitForm);
+  FormStepView buildView(FormStackForm formStackForm);
 }
 
 enum Display { small, normal, medium, large, extraLarge }

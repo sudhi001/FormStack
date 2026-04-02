@@ -12,7 +12,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   final TextInputType keyboardType;
   final int? numberOfLines;
   final List<dynamic> filter;
-  TextFieldInputWidgetView(super.formKitForm, super.formStep, super.text,
+  TextFieldInputWidgetView(super.formStackForm, super.formStep, super.text,
       this.resultFormat, this.formatter,
       {super.key,
       super.title,
@@ -24,21 +24,26 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   FilePickerResult? fileResult;
+  bool _hasRequestedFocus = false;
+  bool _hasRestoredResult = false;
+
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    // Sync controller with formStep result
-    if (formStep.result != null) {
-      if (formStep.inputType == InputType.file) {
-        _controller.text = cast<PlatformFile>(formStep.result)!.name;
-      } else {
-        _controller.text = formStep.result;
+    // Sync controller with formStep result only on first build
+    if (!_hasRestoredResult) {
+      _hasRestoredResult = true;
+      if (formStep.result != null) {
+        if (formStep.inputType == InputType.file) {
+          _controller.text = cast<PlatformFile>(formStep.result)!.name;
+        } else {
+          _controller.text = formStep.result;
+        }
       }
-    } else {
-      _controller.clear();
     }
 
-    // Only request focus if not a file input
-    if (formStep.inputType != InputType.file) {
+    // Only request focus once if not a file input
+    if (!_hasRequestedFocus && formStep.inputType != InputType.file) {
+      _hasRequestedFocus = true;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _focusNode.requestFocus();
       });
@@ -85,8 +90,8 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
           resultFormat.isValid(input ?? '') ? null : validationError(),
       inputFormatters: formatter,
       decoration: InputDecoration(
-          border: inputBoder(),
-          enabledBorder: inputBoder(),
+          border: inputBorder(),
+          enabledBorder: inputBorder(),
           suffixIcon: formStep.inputType == InputType.file
               ? IconButton(
                   focusNode: _focusNode,
@@ -124,7 +129,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
     super.dispose();
   }
 
-  InputBorder inputBoder() {
+  InputBorder inputBorder() {
     switch (formStep.inputStyle) {
       case InputStyle.basic:
         return InputBorder.none;

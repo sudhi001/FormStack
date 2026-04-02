@@ -5,12 +5,12 @@ import 'package:formstack/src/ui/views/input/text_input_field.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 ///
-/// TextFeildWidgetView Create and disply all textfield like ui.
+/// TextFieldWidgetView creates and displays all text field UI components.
 ///
 ///
 // ignore: must_be_immutable
-class TextFeildWidgetView extends TextFieldInputWidgetView {
-  TextFeildWidgetView(super.formKitForm, super.formStep, super.text,
+class TextFieldWidgetView extends TextFieldInputWidgetView {
+  TextFieldWidgetView(super.formStackForm, super.formStep, super.text,
       super.resultFormat, super.formatter,
       {super.key,
       super.title,
@@ -20,16 +20,16 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
       super.filter = const []});
 
   ///
-  /// Creat Email input field
+  /// Create Email input field
   ///
-  factory TextFeildWidgetView.email(
+  factory TextFieldWidgetView.email(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return TextFeildWidgetView(
-      formKitForm,
+    return TextFieldWidgetView(
+      formStackForm,
       questionStep,
       text,
       resultFormat,
@@ -45,16 +45,16 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
   }
 
   ///
-  /// Creat Name input field
+  /// Create Name input field
   ///
-  factory TextFeildWidgetView.name(
+  factory TextFieldWidgetView.name(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return TextFeildWidgetView(
-      formKitForm,
+    return TextFieldWidgetView(
+      formStackForm,
       questionStep,
       text,
       resultFormat,
@@ -70,17 +70,17 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
   }
 
   ///
-  /// Creat File input field
+  /// Create File input field
   ///
-  factory TextFeildWidgetView.file(
+  factory TextFieldWidgetView.file(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title,
       List<dynamic>? filter) {
-    return TextFeildWidgetView(
-        formKitForm, questionStep, text, resultFormat, const [],
+    return TextFieldWidgetView(
+        formStackForm, questionStep, text, resultFormat, const [],
         title: title,
         keyboardType: TextInputType.none,
         textCapitalization: TextCapitalization.none,
@@ -93,16 +93,16 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
   }
 
   ///
-  /// Creat Password input field
+  /// Create Password input field
   ///
-  factory TextFeildWidgetView.password(
+  factory TextFieldWidgetView.password(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return TextFeildWidgetView(
-        formKitForm,
+    return TextFieldWidgetView(
+        formStackForm,
         questionStep,
         text,
         resultFormat,
@@ -115,17 +115,17 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
   }
 
   ///
-  /// Creat Text input field
+  /// Create Text input field
   ///
-  factory TextFeildWidgetView.text(
+  factory TextFieldWidgetView.text(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title,
       int? numberOfLines) {
-    return TextFeildWidgetView(
-        formKitForm,
+    return TextFieldWidgetView(
+        formStackForm,
         questionStep,
         text,
         resultFormat,
@@ -140,16 +140,16 @@ class TextFeildWidgetView extends TextFieldInputWidgetView {
   }
 
   ///
-  /// Creat Number input field
+  /// Create Number input field
   ///
-  factory TextFeildWidgetView.number(
+  factory TextFieldWidgetView.number(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return TextFeildWidgetView(
-      formKitForm,
+    return TextFieldWidgetView(
+      formStackForm,
       questionStep,
       text,
       resultFormat,

@@ -1,537 +1,628 @@
-# 🚀 FormStack - Dynamic Form Builder for Flutter
+# FormStack
 
 [![pub package](https://img.shields.io/pub/v/formstack.svg)](https://pub.dev/packages/formstack)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D1.17-02569B?logo=flutter)](https://flutter.dev)
 
-> **The most powerful and flexible form builder for Flutter applications. Create dynamic, responsive forms with minimal code using JSON or Dart objects.**
+A powerful Flutter library for building dynamic forms and surveys from Dart objects or JSON. Supports 28 input types, 30+ validators, conditional navigation, nested steps, and full JSON schema configuration.
 
-## ✨ Why Choose FormStack?
-
-- 🎯 **20+ Input Types** - From simple text fields to complex map location pickers
-- 🎨 **Multiple Styles** - Beautiful, customizable UI components
-- 📱 **Responsive Design** - Works perfectly on all screen sizes
-- 🔧 **JSON or Dart** - Build forms using JSON files or Dart objects
-- ⚡ **High Performance** - Optimized for smooth user experience
-- 🛡️ **Built-in Validation** - Comprehensive validation with custom error messages
-- 🧩 **Modular Architecture** - Easy to extend and customize
-- 💾 **Memory Efficient** - No memory leaks, proper resource management
-
-## 🎬 Quick Demo
-
-```dart
-import 'package:formstack/formstack.dart';
-
-// Create a form in just a few lines!
-FormStack.api().form(
-  steps: [
-    InstructionStep(
-      title: "Welcome!",
-      text: "Let's get started with your information",
-    ),
-    QuestionStep(
-      title: "Your Name",
-      inputType: InputType.name,
-      id: GenericIdentifier(id: "name"),
-    ),
-    QuestionStep(
-      title: "Email Address",
-      inputType: InputType.email,
-      id: GenericIdentifier(id: "email"),
-    ),
-    CompletionStep(
-      title: "Thank You!",
-      text: "Your information has been submitted",
-    ),
-  ],
-).render();
-```
-
-## 📦 Installation
-
-Add FormStack to your `pubspec.yaml`:
+## Installation
 
 ```yaml
 dependencies:
-  formstack: ^latest_version
+  formstack: ^2.0.0
 ```
-
-Then run:
 
 ```bash
 flutter pub get
 ```
 
-## 🚀 Quick Start
-
-### 1. Basic Form Setup
+## Quick Start
 
 ```dart
-import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 
-class MyForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FormStack.api().form(
-        steps: [
-          QuestionStep(
-            title: "What's your name?",
-            inputType: InputType.name,
-            id: GenericIdentifier(id: "name"),
-          ),
-          QuestionStep(
-            title: "Enter your email",
-            inputType: InputType.email,
-            id: GenericIdentifier(id: "email"),
-          ),
-        ],
-      ).render(),
-    );
-  }
-}
+// Build and render a form
+FormStack.api().form(steps: [
+  QuestionStep(
+    title: "Your Name",
+    inputType: InputType.name,
+    id: GenericIdentifier(id: "name"),
+  ),
+  QuestionStep(
+    title: "Email",
+    inputType: InputType.email,
+    id: GenericIdentifier(id: "email"),
+  ),
+  CompletionStep(
+    title: "Done!",
+    id: GenericIdentifier(id: "done"),
+    onFinish: (result) => print(result),
+  ),
+]);
+
+// In your widget
+Scaffold(body: FormStack.api().render());
 ```
 
-### 2. Load from JSON
+Or load from JSON:
 
 ```dart
-// Load form from JSON file
-await FormStack.api().loadFromAsset('assets/my_form.json');
-
-// Render the form
-FormStack.api().render()
+await FormStack.api().loadFromAsset('assets/form.json');
+Scaffold(body: FormStack.api().render());
 ```
 
-## 🎨 Available Input Types
+---
 
-### 📝 Text Inputs
-- **Email** - Email validation with regex
-- **Name** - Name validation (letters only)
-- **Password** - Secure password input
-- **Text** - Multi-line text input
-- **Number** - Numeric input with validation
+## Supported Input Types
 
-### 📅 Date & Time
-- **Date** - Date picker
-- **Time** - Time picker  
-- **DateTime** - Combined date and time picker
+### Text Inputs
 
-### ✅ Choice Inputs
-- **Single Choice** - Radio button selection
-- **Multiple Choice** - Checkbox selection
-- **Dropdown** - Traditional dropdown menu
+| InputType | Description | Keyboard | Validation |
+|-----------|-------------|----------|------------|
+| `email` | Email address | Email keyboard | Regex email validation |
+| `name` | Person name | Text, auto-capitalize words | Letters only, min 2 chars |
+| `password` | Secure password | Visible password | Uppercase, lowercase, digit, special char, 8+ |
+| `text` | General text | Multiline | Non-empty, configurable `numberOfLines` |
+| `number` | Numeric input | Number pad | Digits only, supports `mask` formatting |
+| `phone` | Phone with country code | Phone | Country code dropdown + E.164 format |
+| `currency` | Money amount | Decimal number | Currency symbol prefix, formatted input |
 
-### 🎯 Special Inputs
-- **OTP** - One-time password input
-- **Smile Rating** - 1-5 star rating slider
-- **File Upload** - File picker with filters
-- **Dynamic Key-Value** - Custom key-value pairs
-- **HTML Editor** - Rich text editor
-- **Map Location** - Interactive map picker
-- **Avatar** - Circular image upload
-- **Banner** - Rectangular image upload
+### Date & Time
 
-## 🎨 Styling Options
+| InputType | Description | Result Type |
+|-----------|-------------|-------------|
+| `date` | Date picker | `DateTime` |
+| `time` | Time picker | `DateTime` |
+| `dateTime` | Combined date + time | `DateTime` |
 
-### Component Styles
-```dart
-QuestionStep(
-  title: "Styled Input",
-  inputType: InputType.text,
-  componentsStyle: ComponentsStyle.basic, // or ComponentsStyle.minimal
-)
-```
+### Choice Inputs
 
-### Input Styles
-```dart
-QuestionStep(
-  title: "Outlined Input",
-  inputType: InputType.text,
-  inputStyle: InputStyle.outline, // or InputStyle.underLined, InputStyle.basic
-)
-```
+| InputType | Description | Selection Styles |
+|-----------|-------------|-----------------|
+| `singleChoice` | Select one option | `arrow`, `tick`, `toggle` |
+| `multipleChoice` | Select multiple | `tick`, `toggle` |
+| `dropdown` | Dropdown menu | Standard dropdown |
+| `ranking` | Drag-to-reorder list | Reorderable with rank numbers |
 
-### Selection Types
-```dart
-QuestionStep(
-  title: "Choose Option",
-  inputType: InputType.singleChoice,
-  selectionType: SelectionType.tick, // or SelectionType.arrow, SelectionType.toggle, SelectionType.dropdown
-  options: [
-    Options("option1", "Option 1"),
-    Options("option2", "Option 2"),
-  ],
-)
-```
+### Survey & Rating
 
-## 📋 Form Components
+| InputType | Description | Result Type |
+|-----------|-------------|-------------|
+| `slider` | Range slider | `double` (configurable min/max/step) |
+| `rating` | Star rating | `int` (1 to N stars) |
+| `nps` | Net Promoter Score (0-10) | `int` (color-coded scale) |
+| `smile` | Emoji satisfaction | `int` (1-5 scale) |
+
+### Media & Files
+
+| InputType | Description | Result Type |
+|-----------|-------------|-------------|
+| `file` | File picker with filters | `PlatformFile` |
+| `avatar` | Circular image upload | `String` (base64) |
+| `banner` | Rectangular image upload | `String` (base64) |
+| `signature` | Draw signature on canvas | `String` (base64 PNG) |
+| `mapLocation` | Google Maps picker | Location coordinates |
+
+### Special
+
+| InputType | Description | Result Type |
+|-----------|-------------|-------------|
+| `otp` | Multi-digit OTP entry | `int` |
+| `consent` | Checkbox with agreement text | `bool` |
+| `dynamicKeyValue` | Add/remove key-value pairs | `List<KeyValue>` |
+| `htmlEditor` | Rich text editor | `String` |
+
+---
+
+## Step Types
 
 ### InstructionStep
-Display information or instructions to users.
+
+Welcome screens, information pages, instructions.
 
 ```dart
 InstructionStep(
-  title: "Welcome to Our App",
-  text: "Please complete the following steps",
+  id: GenericIdentifier(id: "welcome"),
+  title: "Customer Survey",
+  text: "This will take about 2 minutes",
   cancellable: false,
+  display: Display.medium,
 )
 ```
 
 ### QuestionStep
-Interactive input fields with validation.
+
+The main input step. Supports all 28 input types.
 
 ```dart
 QuestionStep(
-  title: "Your Question",
-  text: "Additional description",
+  id: GenericIdentifier(id: "email"),
+  title: "Email Address",
+  text: "We'll send your receipt here",
   inputType: InputType.email,
+  inputStyle: InputStyle.outline,
   isOptional: false,
-  id: GenericIdentifier(id: "unique_id"),
+  hint: "you@example.com",
 )
 ```
 
 ### CompletionStep
-Success/completion screen with animations.
+
+Form completion with loading/success/error animations.
 
 ```dart
 CompletionStep(
-  title: "Form Completed!",
-  text: "Thank you for your submission",
-  onFinish: (result) {
-    print("Form result: $result");
+  id: GenericIdentifier(id: "done"),
+  title: "Submitting...",
+  autoTrigger: false,
+  onFinish: (result) => print("Result: $result"),
+  onBeforeFinishCallback: (result) async {
+    await submitToApi(result);
+    return true; // false shows error animation
   },
 )
 ```
 
 ### NestedStep
-Multi-step forms with sub-forms.
+
+Multiple fields on a single screen.
 
 ```dart
 NestedStep(
-  title: "Personal Information",
+  id: GenericIdentifier(id: "contact"),
+  title: "Contact Information",
+  verticalPadding: 10,
+  validationExpression: "",
   steps: [
-    QuestionStep(/* ... */),
-    QuestionStep(/* ... */),
+    QuestionStep(title: "", inputType: InputType.name, label: "First Name",
+        id: GenericIdentifier(id: "first"), width: 400),
+    QuestionStep(title: "", inputType: InputType.name, label: "Last Name",
+        id: GenericIdentifier(id: "last"), width: 400),
+    QuestionStep(title: "", inputType: InputType.email, label: "Email",
+        id: GenericIdentifier(id: "email"), width: 400),
   ],
 )
 ```
 
-## 🛡️ Validation
+### DisplayStep
 
-FormStack includes comprehensive validation:
-
-```dart
-// Built-in validations
-ResultFormat.email("Please enter a valid email")
-ResultFormat.password("Password must be at least 8 characters")
-ResultFormat.notNull("This field is required")
-
-// Custom validation
-ResultFormat.custom("Invalid input", (value) => value.length > 5)
-
-// Advanced validations
-ResultFormat.phone("Please enter a valid phone number")
-ResultFormat.creditCard("Invalid credit card number")
-ResultFormat.url("Please enter a valid URL")
-ResultFormat.ssn("Invalid Social Security Number")
-ResultFormat.zipCode("Invalid ZIP code")
-ResultFormat.age("Age must be between 0 and 150")
-ResultFormat.percentage("Percentage must be between 0 and 100")
-```
-
-## 📱 Responsive Design
-
-FormStack automatically adapts to different screen sizes:
+Show web content or data lists.
 
 ```dart
-QuestionStep(
-  title: "Responsive Text",
-  inputType: InputType.text,
-  display: Display.large, // small, normal, medium, large, extraLarge
+DisplayStep(
+  id: GenericIdentifier(id: "info"),
+  url: "https://example.com/terms",
+  displayStepType: DisplayStepType.web,
 )
 ```
-
-## 🔧 Advanced Features
-
-### Form Progress Tracking
-```dart
-// Get form completion progress
-double progress = FormStack.api().getFormProgress();
-print("Form is ${(progress * 100).toInt()}% complete");
-
-// Get detailed statistics
-Map<String, dynamic> stats = FormStack.api().getFormStats();
-print("Total steps: ${stats['totalSteps']}");
-print("Completed: ${stats['completedSteps']}");
-```
-
-### Conditional Logic
-```dart
-QuestionStep(
-  title: "Choose Type",
-  inputType: InputType.singleChoice,
-  options: [
-    Options("personal", "Personal"),
-    Options("business", "Business"),
-  ],
-  relevantConditions: [
-    RelevantCondition(
-      id: "show_business_fields",
-      expression: "IN business",
-    ),
-  ],
-)
-```
-
-### Custom Styling
-```dart
-QuestionStep(
-  title: "Custom Styled",
-  inputType: InputType.text,
-  style: UIStyle(
-    backgroundColor: Colors.blue,
-    foregroundColor: Colors.white,
-    borderRadius: 12.0,
-    borderColor: Colors.blue.shade300,
-  ),
-)
-```
-
-## 📄 JSON Configuration
-
-Create forms using JSON for easy configuration:
-
-```json
-{
-  "steps": [
-    {
-      "type": "InstructionStep",
-      "title": "Welcome",
-      "text": "Please complete this form",
-      "cancellable": false
-    },
-    {
-      "type": "QuestionStep",
-      "title": "Your Name",
-      "inputType": "name",
-      "inputStyle": "outline",
-      "componentsStyle": "basic",
-      "isOptional": false,
-      "id": "name"
-    },
-    {
-      "type": "QuestionStep",
-      "title": "Email",
-      "inputType": "email",
-      "inputStyle": "outline",
-      "componentsStyle": "basic",
-      "isOptional": false,
-      "id": "email"
-    },
-    {
-      "type": "CompletionStep",
-      "title": "Thank You!",
-      "text": "Your information has been submitted",
-      "autoTrigger": true,
-      "id": "completion"
-    }
-  ]
-}
-```
-
-## 🎯 Real-World Examples
-
-### User Registration Form
-```dart
-FormStack.api().form(
-  steps: [
-    InstructionStep(
-      title: "Create Account",
-      text: "Please provide your information to create an account",
-    ),
-    QuestionStep(
-      title: "Full Name",
-      inputType: InputType.name,
-      id: GenericIdentifier(id: "full_name"),
-    ),
-    QuestionStep(
-      title: "Email Address",
-      inputType: InputType.email,
-      id: GenericIdentifier(id: "email"),
-    ),
-    QuestionStep(
-      title: "Password",
-      inputType: InputType.password,
-      id: GenericIdentifier(id: "password"),
-    ),
-    QuestionStep(
-      title: "Phone Number",
-      inputType: InputType.number,
-      id: GenericIdentifier(id: "phone"),
-    ),
-    CompletionStep(
-      title: "Account Created!",
-      text: "Welcome to our platform",
-      onFinish: (result) {
-        // Handle registration
-        print("User registered: $result");
-      },
-    ),
-  ],
-).render();
-```
-
-### Survey Form
-```dart
-FormStack.api().form(
-  steps: [
-    InstructionStep(
-      title: "Customer Survey",
-      text: "Help us improve our service",
-    ),
-    QuestionStep(
-      title: "How satisfied are you?",
-      inputType: InputType.smile,
-      id: GenericIdentifier(id: "satisfaction"),
-    ),
-    QuestionStep(
-      title: "What features do you use?",
-      inputType: InputType.multipleChoice,
-      selectionType: SelectionType.tick,
-      options: [
-        Options("feature1", "Feature 1"),
-        Options("feature2", "Feature 2"),
-        Options("feature3", "Feature 3"),
-      ],
-      id: GenericIdentifier(id: "features"),
-    ),
-    QuestionStep(
-      title: "Additional Comments",
-      inputType: InputType.text,
-      numberOfLines: 3,
-      id: GenericIdentifier(id: "comments"),
-    ),
-  ],
-).render();
-```
-
-## 🏗️ Architecture
-
-FormStack follows a modular architecture:
-
-```
-lib/
-├── src/
-│   ├── core/           # Core form logic
-│   ├── ui/             # UI components
-│   │   ├── views/      # Form views
-│   │   └── input/      # Input field widgets
-│   ├── result/         # Validation and result handling
-│   ├── step/           # Step definitions
-│   └── utils/          # Utility functions
-```
-
-## 🔧 Customization
-
-### Custom Input Types
-```dart
-// Create custom input widgets by extending BaseStepView
-class CustomInputWidget extends BaseStepView<QuestionStep> {
-  // Implementation
-}
-```
-
-### Custom Validation
-```dart
-// Create custom validation rules
-ResultFormat.custom("Custom error", (value) {
-  return value.contains("@") && value.length > 5;
-})
-```
-
-## 📊 Performance
-
-FormStack is optimized for performance:
-
-- **Memory Efficient**: Proper disposal of controllers and resources
-- **Lazy Loading**: Components load only when needed
-- **Optimized Rebuilds**: Minimal widget rebuilds
-- **Caching**: Form state caching for better performance
-
-## 🧪 Testing
-
-FormStack includes comprehensive testing utilities:
-
-```dart
-// Test form validation
-test('email validation', () {
-  expect('test@example.com'.isValidEmail(), true);
-  expect('invalid-email'.isValidEmail(), false);
-});
-
-// Test form completion
-test('form completion', () {
-  FormStack.api().form(/* ... */);
-  expect(FormStack.api().isFormCompleted(), false);
-});
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Setup
-```bash
-git clone https://github.com/your-org/formstack.git
-cd formstack
-flutter pub get
-flutter test
-```
-
-## 📚 Documentation
-
-- [API Reference](https://pub.dev/documentation/formstack/latest/)
-- [Examples](https://github.com/your-org/formstack/tree/main/example)
-- [Migration Guide](MIGRATION.md)
-- [FAQ](FAQ.md)
-
-## 🆘 Support
-
-- 📖 [Documentation](https://pub.dev/documentation/formstack/latest/)
-- 🐛 [Issue Tracker](https://github.com/your-org/formstack/issues)
-- 💬 [Discussions](https://github.com/your-org/formstack/discussions)
-- 📧 [Email Support](mailto:support@formstack.dev)
-
-## 📄 License
-
-FormStack is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
-## 🙏 Acknowledgments
-
-- Flutter team for the amazing framework
-- Community contributors
-- All the developers who use FormStack
-
-## 📈 Roadmap
-
-- [ ] Form analytics and insights
-- [ ] Auto-save functionality
-- [ ] Multi-language support
-- [ ] Advanced conditional logic
-- [ ] Form templates
-- [ ] Export/Import functionality
-- [ ] Real-time collaboration
 
 ---
 
-<div align="center">
+## Validation
 
-**⭐ Star this repository if you find it helpful!**
+### Built-in Validators
 
-[![GitHub stars](https://img.shields.io/github/stars/your-org/formstack?style=social)](https://github.com/your-org/formstack/stargazers)
-[![Twitter Follow](https://img.shields.io/twitter/follow/formstack_dev?style=social)](https://twitter.com/formstack_dev)
+```dart
+// Text validators
+ResultFormat.email("Invalid email")
+ResultFormat.name("Invalid name")
+ResultFormat.password("Weak password")
+ResultFormat.text("Required")
+ResultFormat.number("Must be a number")
+ResultFormat.phone("Invalid phone")
+ResultFormat.url("Invalid URL")
 
-Made with ❤️ by the FormStack team
+// Numeric range validators
+ResultFormat.min("Must be at least 18", 18)
+ResultFormat.max("Cannot exceed 100", 100)
+ResultFormat.range("Must be 1-10", 1, 10)
+ResultFormat.age("Invalid age (0-150)")
+ResultFormat.percentage("Must be 0-100")
 
-</div>
+// String length validators
+ResultFormat.minLength("Too short", 3)
+ResultFormat.maxLength("Too long", 50)
+ResultFormat.pattern("Invalid format", r'^[A-Z]{3}\d{4}$')
+ResultFormat.length("Must be exactly 6 digits", 6)
+
+// Choice validators
+ResultFormat.singleChoice("Please select one")
+ResultFormat.multipleChoice("Select at least one")
+ResultFormat.minSelections("Select at least 2", 2)
+ResultFormat.maxSelections("Select at most 3", 3)
+
+// Specialty validators
+ResultFormat.creditCard("Invalid card number")    // Luhn algorithm
+ResultFormat.ssn("Invalid SSN")                    // ###-##-####
+ResultFormat.zipCode("Invalid zip")                // #####(-####)
+ResultFormat.iban("Invalid IBAN")                  // ISO 13616
+ResultFormat.consent("You must agree")             // Must be true
+ResultFormat.fileSize("File too large", 5242880)   // Max bytes
+ResultFormat.notNull("Required")
+ResultFormat.notBlank("Cannot be empty")
+ResultFormat.notEmpty("List cannot be empty")
+
+// Custom validator
+ResultFormat.custom("Must start with 'hello'",
+    (value) => value.startsWith('hello'))
+
+// Compose multiple validators
+ResultFormat.compose([
+  ResultFormat.minLength("Too short", 3),
+  ResultFormat.maxLength("Too long", 50),
+  ResultFormat.pattern("Letters only", r'^[a-zA-Z\s]+$'),
+])
+```
+
+---
+
+## Styling
+
+### Input Styles
+
+```dart
+inputStyle: InputStyle.basic      // Flat, no border
+inputStyle: InputStyle.outline    // Full border
+inputStyle: InputStyle.underLined // Bottom border only
+```
+
+### Component Styles
+
+```dart
+componentsStyle: ComponentsStyle.minimal  // Clean, minimal
+componentsStyle: ComponentsStyle.basic    // Card-style with background
+```
+
+### Display Sizes
+
+```dart
+display: Display.small       // Compact
+display: Display.normal      // Standard (default)
+display: Display.medium      // Larger headings
+display: Display.large       // Big text
+display: Display.extraLarge  // Maximum size
+```
+
+### Selection Types (for choices)
+
+```dart
+selectionType: SelectionType.arrow    // Navigate arrows
+selectionType: SelectionType.tick     // Checkmark
+selectionType: SelectionType.toggle   // Switch toggle
+selectionType: SelectionType.dropdown // Dropdown menu
+```
+
+### Custom Theme
+
+```dart
+QuestionStep(
+  title: "Styled",
+  inputType: InputType.text,
+  style: UIStyle(
+    Colors.indigo,       // Button background
+    Colors.white,        // Button foreground
+    Colors.indigo,       // Input border color
+    8.0,                 // Title bottom padding
+    12.0,                // Button border radius
+  ),
+  nextButtonText: "Continue",
+  backButtonText: "Previous",
+)
+```
+
+---
+
+## Conditional Navigation
+
+Route users to different steps based on their answers:
+
+```dart
+QuestionStep(
+  id: GenericIdentifier(id: "role"),
+  title: "Your Role",
+  inputType: InputType.singleChoice,
+  autoTrigger: true,
+  options: [
+    Options("dev", "Developer"),
+    Options("designer", "Designer"),
+  ],
+  relevantConditions: [
+    ExpressionRelevant(
+      identifier: GenericIdentifier(id: "dev_questions"),
+      expression: "IN dev",
+    ),
+    ExpressionRelevant(
+      identifier: GenericIdentifier(id: "design_questions"),
+      expression: "IN designer",
+    ),
+  ],
+)
+```
+
+**Expression syntax:**
+- `IN value` - Result contains the value
+- `NOT_IN value` - Result does not contain the value
+- `FOR_ALL` - Always matches (converge paths)
+- `= value` / `!= value` - Exact match
+
+Cross-form navigation with `formName`:
+
+```dart
+ExpressionRelevant(
+  identifier: GenericIdentifier(id: "step_id"),
+  expression: "IN selected_option",
+  formName: "another_form",  // Navigate to a different form
+)
+```
+
+---
+
+## API Reference
+
+### FormStack
+
+```dart
+// Create/get instance (supports named instances)
+FormStack.api()
+FormStack.api(name: "myForm")
+
+// Build form from Dart objects
+FormStack.api().form(steps: [...], name: "formName")
+
+// Load from JSON
+await FormStack.api().loadFromAsset('assets/form.json')
+await FormStack.api().loadFromAssets(['assets/a.json', 'assets/b.json'])
+
+// Render
+FormStack.api().render()
+FormStack.api().render(name: "formName")
+
+// Pre-fill data
+FormStack.api().setResult({"email": "user@test.com"}, formName: "myForm")
+
+// Set validation error on a field
+FormStack.api().setError(GenericIdentifier(id: "email"), "Already taken", formName: "myForm")
+
+// Update options dynamically
+FormStack.api().setOptions([Options("a", "A")], GenericIdentifier(id: "choice"))
+
+// Disable specific fields
+FormStack.api().setDisabledUI(["field_id_1", "field_id_2"])
+
+// Completion callback with async pre-validation
+FormStack.api().addCompletionCallback(
+  GenericIdentifier(id: "done"),
+  formName: "myForm",
+  onFinish: (result) => print(result),
+  onBeforeFinishCallback: (result) async {
+    final success = await api.submit(result);
+    return success; // false = show error animation
+  },
+);
+
+// Progress tracking
+double progress = FormStack.api().getFormProgress();       // 0.0 - 1.0
+int step = FormStack.api().getCurrentStepIndex();
+bool done = FormStack.api().isFormCompleted();
+Map stats = FormStack.api().getFormStats();
+// stats: {totalSteps, completedSteps, requiredSteps, optionalSteps, progress, isCompleted}
+
+// Back navigation control
+FormStack.api().systemBackNavigation(true, () => print("Back pressed"));
+
+// Cleanup
+FormStack.clearForms();
+FormStack.api().clearConfiguration();
+```
+
+---
+
+## JSON Schema
+
+All step types and properties are supported in JSON. Wrap forms in a named object:
+
+```json
+{
+  "my_form": {
+    "backgroundAnimationFile": "assets/bg.json",
+    "steps": [
+      {
+        "type": "InstructionStep",
+        "id": "welcome",
+        "title": "Welcome",
+        "text": "Complete this survey",
+        "cancellable": false,
+        "display": "medium"
+      },
+      {
+        "type": "QuestionStep",
+        "id": "name",
+        "title": "Full Name",
+        "inputType": "name",
+        "inputStyle": "outline",
+        "isOptional": false,
+        "hint": "John Doe",
+        "helperText": "Enter your legal name"
+      },
+      {
+        "type": "QuestionStep",
+        "id": "satisfaction",
+        "title": "How satisfied are you?",
+        "inputType": "slider",
+        "minValue": 0,
+        "maxValue": 10,
+        "stepValue": 1,
+        "defaultValue": 5
+      },
+      {
+        "type": "QuestionStep",
+        "id": "rating",
+        "title": "Rate our service",
+        "inputType": "rating",
+        "ratingCount": 5
+      },
+      {
+        "type": "QuestionStep",
+        "id": "recommend",
+        "title": "Would you recommend us?",
+        "inputType": "nps"
+      },
+      {
+        "type": "QuestionStep",
+        "id": "country",
+        "title": "Country",
+        "inputType": "dropdown",
+        "componentsStyle": "basic",
+        "options": [
+          {"key": "US", "title": "United States"},
+          {"key": "UK", "title": "United Kingdom"},
+          {"key": "IN", "title": "India"}
+        ]
+      },
+      {
+        "type": "QuestionStep",
+        "id": "phone",
+        "title": "Phone",
+        "inputType": "phone",
+        "phoneCountryCode": "+1"
+      },
+      {
+        "type": "QuestionStep",
+        "id": "budget",
+        "title": "Budget",
+        "inputType": "currency",
+        "currencySymbol": "$"
+      },
+      {
+        "type": "QuestionStep",
+        "id": "priorities",
+        "title": "Rank by priority",
+        "inputType": "ranking",
+        "options": [
+          {"key": "speed", "title": "Speed"},
+          {"key": "quality", "title": "Quality"},
+          {"key": "cost", "title": "Cost"}
+        ]
+      },
+      {
+        "type": "QuestionStep",
+        "id": "agree",
+        "title": "Agreement",
+        "inputType": "consent",
+        "consentText": "I agree to the terms and conditions"
+      },
+      {
+        "type": "QuestionStep",
+        "id": "sig",
+        "title": "Signature",
+        "inputType": "signature"
+      },
+      {
+        "type": "CompletionStep",
+        "id": "done",
+        "title": "Thank you!",
+        "autoTrigger": true
+      }
+    ]
+  }
+}
+```
+
+### Supported JSON Fields
+
+**All Steps:** `type`, `id`, `title`, `text`, `description`, `hint`, `label`, `display`, `isOptional`, `cancellable`, `disabled`, `nextButtonText`, `backButtonText`, `cancelButtonText`, `footerBackButton`, `componentsStyle`, `crossAxisAlignmentContent`, `titleIconAnimationFile`, `titleIconMaxWidth`, `width`, `helperText`, `defaultValue`, `semanticLabel`, `style`
+
+**QuestionStep:** `inputType`, `inputStyle`, `options`, `selectionType`, `autoTrigger`, `numberOfLines`, `count`, `maxCount`, `mask`, `filter`, `maxHeight`, `lengthLimit`, `textAlign`, `relevantConditions`, `minValue`, `maxValue`, `stepValue`, `minSelections`, `maxSelections`, `consentText`, `currencySymbol`, `phoneCountryCode`, `ratingCount`
+
+**CompletionStep:** `autoTrigger`, `successLottieAssetsFilePath`, `loadingLottieAssetsFilePath`, `errorLottieAssetsFilePath`
+
+**NestedStep:** `steps`, `validationExpression`, `verticalPadding`
+
+**DisplayStep:** `url`, `displayStepType`, `data`
+
+---
+
+## Examples
+
+The [example app](example/) demonstrates all features across 9 demo screens:
+
+| Demo | Features |
+|------|----------|
+| All Input Types | All 28 input types with descriptions |
+| Styles & Display | InputStyle, ComponentsStyle, Display sizes, UIStyle |
+| Selection Types | Arrow, tick, toggle, dropdown |
+| Validation | Email, password, phone, URL, age, zip, custom, compose |
+| Conditional Nav | ExpressionRelevant branching and path convergence |
+| Nested Steps | Multi-field screens with cross-field validation |
+| API Features | setResult, setError, callbacks, progress tracking |
+| Survey Components | Slider, rating, NPS, consent, signature, ranking, phone, currency |
+| Load from JSON | Multi-file JSON loading with form linking |
+
+Run the example:
+
+```bash
+cd example
+flutter run
+```
+
+---
+
+## Architecture
+
+```
+lib/
+  formstack.dart              # Public API exports
+  src/
+    formstack.dart             # FormStack singleton API
+    formstack_form.dart        # Form navigation and state
+    input_types.dart           # InputType enum (28 values)
+    core/
+      form_step.dart           # Base FormStep class, enums
+      parser.dart              # JSON parser
+      ui_style.dart            # UIStyle, HexColor
+    step/
+      question_step.dart       # QuestionStep (all input types)
+      completion_step.dart     # CompletionStep (finish with animation)
+      instruction_step.dart    # InstructionStep (info screens)
+      nested_step.dart         # NestedStep (multi-field)
+      display_step.dart        # DisplayStep (web/list content)
+      pop_step.dart            # PopStep (navigation)
+    result/
+      result_format.dart       # 30+ validators
+      common_result.dart       # Options, KeyValue, DynamicData
+      identifiers.dart         # GenericIdentifier, StepIdentifier
+    relevant/
+      relevant_condition.dart  # RelevantCondition base
+      expression_relevant_condition.dart  # Expression-based routing
+      dynamic_relevant_condition.dart     # Callback-based routing
+    ui/views/input/
+      text_input_field.dart    # Text/email/password/number
+      choice_input_field.dart  # Single/multiple choice
+      date_input_field.dart    # Date/time pickers
+      slider_input_field.dart  # Range slider
+      rating_input_field.dart  # Star rating
+      nps_input_field.dart     # Net Promoter Score
+      consent_input_field.dart # Checkbox consent
+      signature_input_field.dart # Signature pad
+      ranking_input_field.dart # Drag-to-reorder
+      phone_input_field.dart   # Phone with country code
+      currency_input_field.dart # Currency input
+      otp_input_field.dart     # OTP digits
+      smile_input_field.dart   # Emoji rating
+      image_input_field.dart   # Avatar/banner upload
+      dynamic_key_value_field.dart # Key-value pairs
+      map_input_field.dart     # Google Maps
+      html_input_field.dart    # Rich text editor
+```
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
+
+## Links
+
+- [pub.dev](https://pub.dev/packages/formstack)
+- [API Docs](https://pub.dev/documentation/formstack/latest/)
+- [Issues](https://github.com/sudhi001/FormStack/issues)
+- [Source](https://github.com/sudhi001/FormStack)

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/step/nested_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
 
 // ignore: must_be_immutable
 class NestedStepView extends BaseStepView<NestedStep> {
-  NestedStepView(super.formKitForm, super.formStep, super.text,
+  NestedStepView(super.formStackForm, super.formStep, super.text,
       {super.key, super.title, cancellable});
 
   final List<BaseStepView> _components = [];
   ResultFormat? resultFormat;
   bool _isInitialized = false;
+  bool _hasRequestedFocus = false;
 
   @override
   Widget? buildWInputWidget(BuildContext context, NestedStep formStep) {
@@ -20,15 +20,18 @@ class NestedStepView extends BaseStepView<NestedStep> {
       for (var element in formStep.steps!) {
         FormStep questions = element;
         questions.componentOnly = true;
-        _components.add(questions.buildView(formKitForm) as BaseStepView);
+        _components.add(questions.buildView(formStackForm) as BaseStepView);
       }
       _isInitialized = true;
     }
 
-    // Use post frame callback for focus management
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      requestFocus();
-    });
+    // Use post frame callback for focus management only once
+    if (!_hasRequestedFocus) {
+      _hasRequestedFocus = true;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        requestFocus();
+      });
+    }
 
     return Wrap(
       spacing: 7,

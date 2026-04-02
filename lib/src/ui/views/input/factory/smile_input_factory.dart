@@ -9,20 +9,20 @@ import 'package:formstack/src/ui/views/input/smile_input_field.dart';
 // ignore: must_be_immutable
 class SmileInputWidget extends SmileInputWidgetView {
   SmileInputWidget(
-      super.formKitForm, super.formStep, super.text, super.resultFormat,
+      super.formStackForm, super.formStep, super.text, super.resultFormat,
       {super.key, super.title});
 
   ///
-  ///Factory method to create smile wiget.
+  /// Factory method to create smile widget.
   ///
   factory SmileInputWidget.smile(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
     return SmileInputWidget(
-      formKitForm,
+      formStackForm,
       questionStep,
       text,
       resultFormat,

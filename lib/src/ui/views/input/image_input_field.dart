@@ -13,7 +13,7 @@ import 'package:lottie/lottie.dart';
 class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final bool circular;
-  ImageInputWidgetView(this.circular, super.formKitForm, super.formStep,
+  ImageInputWidgetView(this.circular, super.formStackForm, super.formStep,
       super.text, this.resultFormat,
       {super.key, super.title});
 
@@ -213,12 +213,24 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     return (_fileResult?.files.isNotEmpty ?? false)
         ? kIsWeb
             ? Image.memory(_fileResult!.files.first.bytes!,
-                width: 400, height: 150, fit: BoxFit.cover)
+                width: 400,
+                height: 150,
+                fit: BoxFit.cover,
+                cacheWidth: 800,
+                cacheHeight: 300)
             : Image.file(File(_fileResult!.files.first.path!),
-                width: 400, height: 150, fit: BoxFit.cover)
+                width: 400,
+                height: 150,
+                fit: BoxFit.cover,
+                cacheWidth: 800,
+                cacheHeight: 300)
         : _value != null
             ? Image.memory(_dataFromBase64String(_value!),
-                width: 400, height: 150, fit: BoxFit.cover)
+                width: 400,
+                height: 150,
+                fit: BoxFit.cover,
+                cacheWidth: 800,
+                cacheHeight: 300)
             : Lottie.asset(
                 'packages/formstack/assets/lottiefiles/placeholder.json',
                 height: 150,
@@ -231,14 +243,26 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
         ? kIsWeb
             ? ClipOval(
                 child: Image.memory(_fileResult!.files.first.bytes!,
-                    width: 150, height: 150, fit: BoxFit.cover))
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover,
+                    cacheWidth: 300,
+                    cacheHeight: 300))
             : ClipOval(
                 child: Image.file(File(_fileResult!.files.first.path!),
-                    width: 150, height: 150, fit: BoxFit.cover))
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover,
+                    cacheWidth: 300,
+                    cacheHeight: 300))
         : _value != null
             ? ClipOval(
                 child: Image.memory(_dataFromBase64String(_value!),
-                    width: 150, height: 150, fit: BoxFit.cover))
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover,
+                    cacheWidth: 300,
+                    cacheHeight: 300))
             : Lottie.asset('packages/formstack/assets/lottiefiles/avatar.json',
                 height: 200, fit: BoxFit.fill);
   }

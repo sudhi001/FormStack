@@ -11,7 +11,7 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
   final OnBeforeFinishCallback? onBeforeFinishCallback;
   final bool autoTrigger;
   CompletionStepView(
-    super.formKitForm,
+    super.formStackForm,
     super.formStep,
     super.text, {
     super.key,
@@ -19,7 +19,8 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
     this.onBeforeFinishCallback,
     required this.autoTrigger,
   });
-  final GlobalKey<State> loadingKey = GlobalKey<State>();
+  final ValueNotifier<int> _stateNotifier =
+      ValueNotifier<int>(0); // 0=loading, 1=success, 2=error
   bool isCompleted = false;
   bool isLoading = true;
   Timer? _delayTimer;
@@ -61,9 +62,9 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
       'packages/formstack/assets/lottiefiles/failed.json',
     );
 
-    return StatefulBuilder(
-        key: loadingKey,
-        builder: (context, state) {
+    return ValueListenableBuilder<int>(
+        valueListenable: _stateNotifier,
+        builder: (context, state, _) {
           return ConstrainedBox(
             constraints: const BoxConstraints(
               maxHeight: 200.0,
@@ -99,12 +100,11 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
     if (_isDisposed) return false;
 
     isLoading = false;
-    // ignore: invalid_use_of_protected_member
-    loadingKey.currentState?.setState(() {});
+    _stateNotifier.value = isCompleted ? 1 : 2;
 
     final completer = Completer<bool>();
     _delayTimer = Timer(const Duration(seconds: 1), () {
-      if (!_isDisposed && loadingKey.currentState != null) {
+      if (!_isDisposed) {
         completer.complete(isCompleted);
       } else {
         completer.complete(false);
@@ -118,6 +118,7 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
   void dispose() {
     _isDisposed = true;
     _delayTimer?.cancel();
+    _stateNotifier.dispose();
     _loadingWidget = null;
     _successWidget = null;
     _errorWidget = null;

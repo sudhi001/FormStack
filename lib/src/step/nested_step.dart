@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/core/ui_style.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/nested_step_view.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
@@ -37,9 +35,9 @@ class NestedStep extends FormStep {
       : super();
 
   @override
-  FormStepView buildView(FormStackForm formKitForm) {
-    formKitForm.onFinish = onFinish;
-    return NestedStepView(formKitForm, this, text, title: title);
+  FormStepView buildView(FormStackForm formStackForm) {
+    formStackForm.onFinish = onFinish;
+    return NestedStepView(formStackForm, this, text, title: title);
   }
 
   factory NestedStep.from(Map<String, dynamic>? element,

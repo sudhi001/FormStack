@@ -15,13 +15,13 @@ abstract class ResultFormat {
   factory ResultFormat.smile(String errorMsg) = _SmileResultType;
   factory ResultFormat.name(String errorMsg) = _NameResultType;
   factory ResultFormat.password(String errorMsg) = _PasswordResultType;
-  factory ResultFormat.text(String errorMsg) = _TextesultType;
+  factory ResultFormat.text(String errorMsg) = _TextResultType;
   factory ResultFormat.number(String errorMsg) = _NumberResultType;
   factory ResultFormat.expression(String expression) = _ExpressionResultType;
   factory ResultFormat.date(String errorMsg, String format) = DateResultType;
   factory ResultFormat.singleChoice(String errorMsg) = _SingleChoiceResultType;
   factory ResultFormat.multipleChoice(String errorMsg) =
-      _MultipleChoiceesultType;
+      _MultipleChoiceResultType;
   factory ResultFormat.location(String errorMsg) = _GeoLocationResultType;
   factory ResultFormat.phone(String errorMsg) = _PhoneResultType;
   factory ResultFormat.url(String errorMsg) = _URLResultType;
@@ -32,6 +32,26 @@ abstract class ResultFormat {
   factory ResultFormat.percentage(String errorMsg) = _PercentageResultType;
   factory ResultFormat.custom(
       String errorMsg, bool Function(String) validator) = _CustomResultType;
+  factory ResultFormat.min(String errorMsg, num min) = _MinResultType;
+  factory ResultFormat.max(String errorMsg, num max) = _MaxResultType;
+  factory ResultFormat.range(String errorMsg, num min, num max) =
+      _RangeResultType;
+  factory ResultFormat.minLength(String errorMsg, int min) =
+      _MinLengthResultType;
+  factory ResultFormat.maxLength(String errorMsg, int max) =
+      _MaxLengthResultType;
+  factory ResultFormat.pattern(String errorMsg, String regex) =
+      _PatternResultType;
+  factory ResultFormat.minSelections(String errorMsg, int min) =
+      _MinSelectionsResultType;
+  factory ResultFormat.maxSelections(String errorMsg, int max) =
+      _MaxSelectionsResultType;
+  factory ResultFormat.fileSize(String errorMsg, int maxBytes) =
+      _FileSizeResultType;
+  factory ResultFormat.iban(String errorMsg) = _IBANResultType;
+  factory ResultFormat.consent(String errorMsg) = _ConsentResultType;
+  factory ResultFormat.compose(List<ResultFormat> validators) =
+      _CompositeResultType;
   bool isValid(dynamic input);
   String error();
 }
@@ -161,9 +181,9 @@ class _EmailResultType extends ResultFormat {
   }
 }
 
-class _TextesultType extends ResultFormat {
+class _TextResultType extends ResultFormat {
   final String errorMsg;
-  _TextesultType(this.errorMsg) : super._();
+  _TextResultType(this.errorMsg) : super._();
 
   @override
   bool isValid(dynamic input) {
@@ -255,9 +275,9 @@ class _SingleChoiceResultType extends ResultFormat {
   }
 }
 
-class _MultipleChoiceesultType extends ResultFormat {
+class _MultipleChoiceResultType extends ResultFormat {
   final String errorMsg;
-  _MultipleChoiceesultType(this.errorMsg) : super._();
+  _MultipleChoiceResultType(this.errorMsg) : super._();
   @override
   bool isValid(dynamic input) {
     final list = cast<List<Options>>(input);
@@ -547,5 +567,215 @@ class ExpressionLanguage {
     data['or'] = or.map((v) => v.toJson()).toList();
     data['orValidationMessage'] = orValidationMessage;
     return data;
+  }
+}
+
+// --- New validators ---
+
+class _MinResultType extends ResultFormat {
+  final String errorMsg;
+  final num min;
+  _MinResultType(this.errorMsg, this.min) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final value = _toNum(input);
+    return value != null && value >= min;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _MaxResultType extends ResultFormat {
+  final String errorMsg;
+  final num max;
+  _MaxResultType(this.errorMsg, this.max) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final value = _toNum(input);
+    return value != null && value <= max;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _RangeResultType extends ResultFormat {
+  final String errorMsg;
+  final num min;
+  final num max;
+  _RangeResultType(this.errorMsg, this.min, this.max) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final value = _toNum(input);
+    return value != null && value >= min && value <= max;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _MinLengthResultType extends ResultFormat {
+  final String errorMsg;
+  final int min;
+  _MinLengthResultType(this.errorMsg, this.min) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final str = cast<String>(input);
+    return str != null && str.length >= min;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _MaxLengthResultType extends ResultFormat {
+  final String errorMsg;
+  final int max;
+  _MaxLengthResultType(this.errorMsg, this.max) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final str = cast<String>(input);
+    return str != null && str.length <= max;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _PatternResultType extends ResultFormat {
+  final String errorMsg;
+  final String regex;
+  _PatternResultType(this.errorMsg, this.regex) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final str = cast<String>(input);
+    return str != null && RegExp(regex).hasMatch(str);
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _MinSelectionsResultType extends ResultFormat {
+  final String errorMsg;
+  final int min;
+  _MinSelectionsResultType(this.errorMsg, this.min) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final list = cast<List>(input);
+    return list != null && list.length >= min;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _MaxSelectionsResultType extends ResultFormat {
+  final String errorMsg;
+  final int max;
+  _MaxSelectionsResultType(this.errorMsg, this.max) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    final list = cast<List>(input);
+    return list != null && list.length <= max;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _FileSizeResultType extends ResultFormat {
+  final String errorMsg;
+  final int maxBytes;
+  _FileSizeResultType(this.errorMsg, this.maxBytes) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    if (input == null) return false;
+    if (input is List<int>) return input.length <= maxBytes;
+    return true;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _IBANResultType extends ResultFormat {
+  final String errorMsg;
+  _IBANResultType(this.errorMsg) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    return cast<String>(input)?.isValidIBAN() ?? false;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _ConsentResultType extends ResultFormat {
+  final String errorMsg;
+  _ConsentResultType(this.errorMsg) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    return input == true;
+  }
+
+  @override
+  String error() => errorMsg;
+}
+
+class _CompositeResultType extends ResultFormat {
+  final List<ResultFormat> validators;
+  String _lastError = "";
+  _CompositeResultType(this.validators) : super._();
+
+  @override
+  bool isValid(dynamic input) {
+    for (final v in validators) {
+      if (!v.isValid(input)) {
+        _lastError = v.error();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  String error() => _lastError;
+}
+
+num? _toNum(dynamic input) {
+  if (input is num) return input;
+  if (input is String) return num.tryParse(input);
+  return null;
+}
+
+extension IBANValidator on String {
+  bool isValidIBAN() {
+    final cleaned = replaceAll(RegExp(r'\s'), '').toUpperCase();
+    if (cleaned.length < 15 || cleaned.length > 34) return false;
+    if (!RegExp(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]+$').hasMatch(cleaned)) {
+      return false;
+    }
+    // Move first 4 chars to end and convert letters to numbers
+    final rearranged = cleaned.substring(4) + cleaned.substring(0, 4);
+    final numericString = rearranged.split('').map((c) {
+      final code = c.codeUnitAt(0);
+      return code >= 65 && code <= 90 ? '${code - 55}' : c;
+    }).join();
+    // Mod 97 check
+    BigInt value = BigInt.parse(numericString);
+    return value % BigInt.from(97) == BigInt.one;
   }
 }

@@ -8,18 +8,29 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final int count;
   OTPInputWidgetView(
-      super.formKitForm, super.formStep, super.text, this.resultFormat,
+      super.formStackForm, super.formStep, super.text, this.resultFormat,
       {super.key, super.title, required this.count});
 
   final List<TextEditingController?> _textControllers = [];
   final List<FocusNode?> _focusNodes = [];
   final List<String?> _verificationCode = [];
+  bool _isInitialized = false;
+
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
-    if (formStep.result != null) {
+    if (!_isInitialized) {
+      _initControllers();
+      _isInitialized = true;
+    }
+
+    // Restore result into verification code only once during init
+    if (formStep.result != null && _verificationCode.every((c) => c == "")) {
       if (formStep.result is int) {
         var iStr = formStep.result.toString().split('');
-        _verificationCode.addAll(iStr);
+        for (int i = 0; i < iStr.length && i < count; i++) {
+          _verificationCode[i] = iStr[i];
+          _textControllers[i]?.text = iStr[i];
+        }
       }
     }
 
@@ -34,20 +45,21 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
             const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 200),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
-          child: generateTextFields(context),
+          child: _buildTextFields(context),
         ));
   }
 
-  Widget generateTextFields(BuildContext context) {
-    _textControllers.clear();
-    _focusNodes.clear();
-    _verificationCode.clear();
-    List<Widget> textFields = List.generate(count, (int i) {
+  void _initControllers() {
+    for (int i = 0; i < count; i++) {
       _textControllers.add(TextEditingController());
       _focusNodes.add(FocusNode());
       _verificationCode.add("");
-      return _buildTextField(context: context, index: i);
-    });
+    }
+  }
+
+  Widget _buildTextFields(BuildContext context) {
+    List<Widget> textFields = List.generate(
+        count, (int i) => _buildTextField(context: context, index: i));
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,7 +92,9 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
           controller: _textControllers[index],
           maxLines: 1,
           onEditingComplete: () {
-            _focusNodes[index + 1]?.requestFocus();
+            if (index + 1 < count) {
+              _focusNodes[index + 1]?.requestFocus();
+            }
           },
           onChanged: (value) {
             _verificationCode[index] = value;
@@ -101,15 +115,15 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
             LengthLimitingTextInputFormatter(1)
           ],
           decoration: InputDecoration(
-              enabledBorder: inputBoder(),
-              border: inputBoder(),
+              enabledBorder: inputBorder(),
+              border: inputBorder(),
               hintText: formStep.hint,
               labelText: formStep.label,
               hintStyle: Theme.of(context).textTheme.bodySmall),
         ));
   }
 
-  InputBorder inputBoder() {
+  InputBorder inputBorder() {
     switch (formStep.inputStyle) {
       case InputStyle.basic:
         return InputBorder.none;

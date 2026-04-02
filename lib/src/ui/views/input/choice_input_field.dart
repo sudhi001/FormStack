@@ -11,7 +11,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   final bool singleSelection;
   final bool autoTrigger;
   final SelectionType selectionType;
-  ChoiceInputWidgetView(super.formKitForm, super.formStep, super.text,
+  ChoiceInputWidgetView(super.formStackForm, super.formStep, super.text,
       this.resultFormat, this.options,
       {super.key,
       super.title,
@@ -108,6 +108,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
           return ListView.separated(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
+            cacheExtent: 300,
             physics: const ClampingScrollPhysics(),
             separatorBuilder: (context, index) => Divider(
                 color: formStep.componentsStyle == ComponentsStyle.minimal
@@ -182,7 +183,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
         return const Icon(Icons.arrow_forward_ios_rounded,
             color: Colors.grey, size: 24);
       case SelectionType.tick:
-        return Icon(Icons.check, color: formKitForm.primaryColor);
+        return Icon(Icons.check, color: formStackForm.primaryColor);
       case SelectionType.toggle:
         return Switch(
           inactiveThumbColor: Colors.black,
@@ -195,7 +196,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
           },
         );
       default:
-        return Icon(Icons.check, color: formKitForm.primaryColor);
+        return Icon(Icons.check, color: formStackForm.primaryColor);
     }
   }
 

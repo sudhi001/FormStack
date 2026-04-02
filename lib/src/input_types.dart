@@ -17,5 +17,13 @@ enum InputType {
   htmlEditor,
   mapLocation,
   avatar,
-  banner
+  banner,
+  slider,
+  rating,
+  nps,
+  consent,
+  signature,
+  ranking,
+  phone,
+  currency,
 }

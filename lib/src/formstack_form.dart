@@ -2,9 +2,6 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
-import 'package:formstack/src/result/result_format.dart';
-import 'package:formstack/src/step/nested_step.dart';
 import 'package:intl/intl.dart';
 
 abstract class FormStackForm {
@@ -100,11 +97,11 @@ abstract class FormStackForm {
           relevantStack.putIfAbsent(nextStepId, () => currentStep);
         }
       } else if (formName?.isNotEmpty ?? false) {
-        FormStackForm? nextFormSatck = FormStack.formByInstaceAndName(
+        FormStackForm? nextFormStack = FormStack.formByInstaceAndName(
             name: fromInstanceName, formName: formName!);
-        if (nextFormSatck != null) {
-          nextFormSatck.previousFormStackForm = this;
-          onRenderFormStackForm?.call(nextFormSatck);
+        if (nextFormStack != null) {
+          nextFormStack.previousFormStackForm = this;
+          onRenderFormStackForm?.call(nextFormStack);
           return;
         } else {
           nextStep = currentStep.next;

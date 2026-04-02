@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 ///  the corresponding value of the given date expression.
 ///
 class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
-  DateTimeExpressionEvaluator(super.intput);
+  DateTimeExpressionEvaluator(super.input);
 
   @override
   bool isValid(String condition, DateTime input) {

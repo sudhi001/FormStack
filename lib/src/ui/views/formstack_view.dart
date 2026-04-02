@@ -3,8 +3,8 @@ import 'package:formstack/formstack.dart';
 import 'package:lottie/lottie.dart';
 
 class FormStackView extends StatefulWidget {
-  const FormStackView(this.formKitForm, {super.key});
-  final FormStackForm formKitForm;
+  const FormStackView(this.formStackForm, {super.key});
+  final FormStackForm formStackForm;
 
   @override
   State<StatefulWidget> createState() => _FormStackViewState();
@@ -12,7 +12,7 @@ class FormStackView extends StatefulWidget {
 
 class _FormStackViewState extends State<FormStackView> {
   late Widget child;
-  late FormStackForm _formKitForm;
+  late FormStackForm _formStackForm;
   Widget? _backgroundWidget;
   bool _hasBackgroundAnimation = false;
   bool _isDisposed = false;
@@ -20,18 +20,18 @@ class _FormStackViewState extends State<FormStackView> {
   @override
   void initState() {
     super.initState();
-    _formKitForm = widget.formKitForm;
-    _hasBackgroundAnimation = _formKitForm.backgroundAnimationFile != null;
+    _formStackForm = widget.formStackForm;
+    _hasBackgroundAnimation = _formStackForm.backgroundAnimationFile != null;
 
-    child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
+    child = _formStackForm.render(onUpdate, onUpdateFormStackForm);
   }
 
   Widget? _buildBackgroundWidget() {
     if (!_hasBackgroundAnimation) return null;
     if (_backgroundWidget == null &&
-        _formKitForm.backgroundAnimationFile != null) {
+        _formStackForm.backgroundAnimationFile != null) {
       _backgroundWidget = Lottie.asset(
-        _formKitForm.backgroundAnimationFile!,
+        _formStackForm.backgroundAnimationFile!,
         fit: BoxFit.cover,
       );
     }
@@ -52,15 +52,15 @@ class _FormStackViewState extends State<FormStackView> {
     }
 
     return PopScope(
-      canPop: !_formKitForm.preventSystemBackNavigation,
+      canPop: !_formStackForm.preventSystemBackNavigation,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop && !_isDisposed) {
-          _formKitForm.onSystemNavigationBackClick?.call();
+          _formStackForm.onSystemNavigationBackClick?.call();
         }
       },
       child: _hasBackgroundAnimation
           ? Stack(
-              alignment: _formKitForm.backgroundAlignment ?? Alignment.center,
+              alignment: _formStackForm.backgroundAlignment ?? Alignment.center,
               children: [
                 _buildBackgroundWidget() ?? const SizedBox.shrink(),
                 child,
@@ -73,7 +73,7 @@ class _FormStackViewState extends State<FormStackView> {
   void onUpdate(FormStep formStep) {
     if (mounted && !_isDisposed) {
       setState(() {
-        child = _formKitForm.render(onUpdate, onUpdateFormStackForm,
+        child = _formStackForm.render(onUpdate, onUpdateFormStackForm,
             formStep: formStep);
       });
     }
@@ -81,9 +81,9 @@ class _FormStackViewState extends State<FormStackView> {
 
   void onUpdateFormStackForm(FormStackForm formStackForm) {
     if (mounted && !_isDisposed) {
-      _formKitForm = formStackForm;
+      _formStackForm = formStackForm;
       setState(() {
-        child = _formKitForm.render(onUpdate, onUpdateFormStackForm);
+        child = _formStackForm.render(onUpdate, onUpdateFormStackForm);
       });
     }
   }

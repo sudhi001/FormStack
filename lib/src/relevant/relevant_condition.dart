@@ -1,10 +1,10 @@
 import 'package:formstack/src/result/identifiers.dart';
 
-/// Revant condition abstract class
+/// Relevant condition abstract class
 abstract class RelevantCondition {
   RelevantCondition({required this.identifier, this.formName});
 
-  /// [identifier] - Idetifier eg: GenericIdentifier(id:"DEMO")
+  /// [identifier] - Identifier eg: GenericIdentifier(id:"DEMO")
   final Identifier identifier;
 
   /// [formName] - name of Form

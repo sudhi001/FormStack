@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/step/display_step.dart';
 
 class ListTitlesView {
   static Widget buildView(BuildContext context, DisplayStep formStep) {
@@ -18,6 +17,7 @@ class ListTitlesView {
         child: ListView.separated(
           padding: EdgeInsets.zero,
           shrinkWrap: true,
+          cacheExtent: 300,
           physics: const ClampingScrollPhysics(),
           separatorBuilder: (context, index) => Divider(
               color: formStep.componentsStyle == ComponentsStyle.minimal

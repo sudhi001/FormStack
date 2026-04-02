@@ -5,7 +5,7 @@ import 'package:formstack/src/expression/base_expression.dart';
 //(e.g., IN DEMO  or  NOT_IN DEMO).
 ///
 class StringExpressionEvaluator extends ExpressionEvaluator<String> {
-  StringExpressionEvaluator(super.intput);
+  StringExpressionEvaluator(super.input);
 
   @override
   bool isValid(String condition, String input) {

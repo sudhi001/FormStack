@@ -4,22 +4,23 @@ import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:lottie/lottie.dart';
 
 ///
-/// base class of al step view including any componets.
-/// Abstract class with basic compoents methods that required for form navigation and validation.
+/// Base class of all step views including any components.
+/// Abstract class with basic component methods required for form navigation and validation.
 ///
 // ignore: must_be_immutable
 abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
-  BaseStepView(super.formKitForm, super.formStep, super.text,
+  BaseStepView(super.formStackForm, super.formStep, super.text,
       {super.key, super.title});
 
-  /// State of error widget
-  final GlobalKey<State> errorKey = GlobalKey<State>();
+  /// Notifier for error visibility state
+  final ValueNotifier<bool> _showErrorNotifier = ValueNotifier<bool>(false);
 
   /// state of error
-  bool showError = false;
+  bool get showError => _showErrorNotifier.value;
+  set showError(bool value) => _showErrorNotifier.value = value;
   bool _hasCheckedError = false;
 
-  /// Build the Widget / Component to render on the basis o  FormStep object.
+  /// Build the Widget / Component to render on the basis of FormStep object.
   @override
   Widget buildWithFrom(BuildContext context, T formStep) {
     if (!_hasCheckedError) {
@@ -64,26 +65,26 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   void requestFocus();
 
   ///
-  ///Trigger when the user click on the back button
+  /// Triggered when the user clicks the back button
   ///
   @override
   void onBack() {
     clearFocus();
     formStep.result = resultValue();
-    formKitForm.backStep(formStep);
+    formStackForm.backStep(formStep);
   }
 
   @override
   void dispose() {
-    // Clean up any resources if needed
+    _showErrorNotifier.dispose();
   }
 
   ///
-  ///Function triggern on When the user cancelled the step.
+  /// Function triggered when the user cancels the step.
   ///
   @override
   void onCancel() {
-    formKitForm.cancelStep(formStep);
+    formStackForm.cancelStep(formStep);
   }
 
   ///
@@ -94,8 +95,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     if (isProcessing) return;
     setLoading(true);
     formStep.result = resultValue();
-    formKitForm.generateResult();
-    await onBeforeFinish(formKitForm.result);
+    formStackForm.generateResult();
+    await onBeforeFinish(formStackForm.result);
     setLoading(false);
     onNext();
   }
@@ -127,10 +128,10 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   void onNext() {
     if (formStep.isOptional ?? false) {
       clearFocus();
-      formKitForm.nextStep(formStep);
+      formStackForm.nextStep(formStep);
     } else if (isValid()) {
       clearFocus();
-      formKitForm.nextStep(formStep);
+      formStackForm.nextStep(formStep);
     } else {
       showValidationError();
     }
@@ -138,26 +139,20 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   void _checkAndShowDefaultValidationError() {
     if (formStep.error != null && !showError) {
-      // ignore: invalid_use_of_protected_member
-      errorKey.currentState?.setState(() {
-        showError = true;
-      });
-      formKitForm.validationError(formStep.error!);
+      _showErrorNotifier.value = true;
+      formStackForm.validationError(formStep.error!);
       formStep.error = null;
     }
   }
 
   ///
-  /// Show validation Error and hide the validation mesage if it's valid
+  /// Show validation error and hide the validation message if it's valid
   ///
   void showValidationError() {
     if (!showError) {
-      // ignore: invalid_use_of_protected_member
-      errorKey.currentState?.setState(() {
-        showError = true;
-      });
+      _showErrorNotifier.value = true;
     }
-    formKitForm.validationError(validationError());
+    formStackForm.validationError(validationError());
   }
 
   ///
@@ -165,10 +160,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   ///
   void hideValidationError() {
     if (showError) {
-      // ignore: invalid_use_of_protected_member
-      errorKey.currentState?.setState(() {
-        showError = false;
-      });
+      _showErrorNotifier.value = false;
     }
   }
 
@@ -242,10 +234,10 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                   IgnorePointer(
                       ignoring: formStep.disabled, child: inputWidget),
                 ],
-                StatefulBuilder(
-                    key: errorKey,
-                    builder: (context, setState) {
-                      return showError
+                ValueListenableBuilder<bool>(
+                    valueListenable: _showErrorNotifier,
+                    builder: (context, isError, _) {
+                      return isError
                           ? Text(
                               validationError(),
                               style: Theme.of(context)

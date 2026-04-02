@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/core/ui_style.dart';
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/common_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/survey_input_factory.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
@@ -29,6 +28,17 @@ class QuestionStep extends FormStep<QuestionStep> {
   final int? lengthLimit;
 
   final TextAlign textAlign;
+
+  // New properties for industry-standard inputs
+  final num? minValue;
+  final num? maxValue;
+  final num? stepValue;
+  final int? minSelections;
+  final int? maxSelections;
+  final String? consentText;
+  final String? currencySymbol;
+  final String? phoneCountryCode;
+  final int? ratingCount;
 
   QuestionStep(
       {super.id,
@@ -68,70 +78,82 @@ class QuestionStep extends FormStep<QuestionStep> {
       super.backButtonText,
       super.titleIconMaxWidth,
       super.cancelButtonText,
-      super.cancellable})
+      super.cancellable,
+      super.helperText,
+      super.defaultValue,
+      super.semanticLabel,
+      this.minValue,
+      this.maxValue,
+      this.stepValue,
+      this.minSelections,
+      this.maxSelections,
+      this.consentText,
+      this.currencySymbol,
+      this.phoneCountryCode,
+      this.ratingCount})
       : super();
 
   @override
-  FormStepView buildView(FormStackForm formKitForm) {
-    formKitForm.onValidationError = onValidationError;
-    formKitForm.onFinish = onFinish;
+  FormStepView buildView(FormStackForm formStackForm) {
+    formStackForm.onValidationError = onValidationError;
+    formStackForm.onFinish = onFinish;
     switch (inputType) {
       case InputType.email:
         resultFormat =
             resultFormat ?? ResultFormat.email("Please enter a valid email.");
-        return TextFeildWidgetView.email(
-            this, formKitForm, text, resultFormat!, title);
+        return TextFieldWidgetView.email(
+            this, formStackForm, text, resultFormat!, title);
       case InputType.name:
         resultFormat =
             resultFormat ?? ResultFormat.name("Please enter a valid name.");
-        return TextFeildWidgetView.name(
-            this, formKitForm, text, resultFormat!, title);
+        return TextFieldWidgetView.name(
+            this, formStackForm, text, resultFormat!, title);
       case InputType.file:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please select a file.");
-        return TextFeildWidgetView.file(
-            this, formKitForm, text, resultFormat!, title, filter);
+        return TextFieldWidgetView.file(
+            this, formStackForm, text, resultFormat!, title, filter);
       case InputType.password:
         resultFormat = resultFormat ??
             ResultFormat.password("Please enter a valid password.");
-        return TextFeildWidgetView.password(
-            this, formKitForm, text, resultFormat!, title);
+        return TextFieldWidgetView.password(
+            this, formStackForm, text, resultFormat!, title);
       case InputType.text:
         resultFormat =
             resultFormat ?? ResultFormat.notBlank("Please enter a valid data.");
-        return TextFeildWidgetView.text(
-            this, formKitForm, text, resultFormat!, title, numberOfLines);
+        return TextFieldWidgetView.text(
+            this, formStackForm, text, resultFormat!, title, numberOfLines);
       case InputType.number:
         resultFormat =
             resultFormat ?? ResultFormat.number("Please enter a valid number.");
-        return TextFeildWidgetView.number(
-            this, formKitForm, text, resultFormat!, title);
+        return TextFieldWidgetView.number(
+            this, formStackForm, text, resultFormat!, title);
       case InputType.date:
         resultFormat = resultFormat ??
             ResultFormat.date("Please enter a valid date.", "dd-MM-yyyy");
         return DateInputWidget.date(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
       case InputType.time:
         resultFormat = resultFormat ??
             ResultFormat.date("Please enter a valid time.", "HH:mm:ss");
         return DateInputWidget.time(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
       case InputType.dateTime:
         resultFormat = resultFormat ??
             ResultFormat.date(
                 "Please enter a valid date.", "yyyy-MM-dd'T'HH:mm");
         return DateInputWidget.dateTime(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
       case InputType.smile:
         resultFormat = resultFormat ?? ResultFormat.smile("Please select.");
         return SmileInputWidget.smile(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
       case InputType.singleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
         return ChoiceInputWidget.single(
             this,
-            formKitForm,
+            formStackForm,
             text,
             resultFormat!,
             title,
@@ -141,43 +163,86 @@ class QuestionStep extends FormStep<QuestionStep> {
       case InputType.dropdown:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        return ChoiceInputWidget.dropdown(this, formKitForm, text,
+        return ChoiceInputWidget.dropdown(this, formStackForm, text,
             resultFormat!, title, options, autoTrigger ?? false);
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
-        return ChoiceInputWidget.multiple(this, formKitForm, text,
+        return ChoiceInputWidget.multiple(this, formStackForm, text,
             resultFormat!, title, selectionType ?? SelectionType.tick, options);
       case InputType.otp:
         resultFormat = resultFormat ??
             ResultFormat.length("Please enter all fields", count);
         return CommonInputWidget.otp(
-            this, formKitForm, text, resultFormat!, title, count);
+            this, formStackForm, text, resultFormat!, title, count);
       case InputType.dynamicKeyValue:
         resultFormat =
             resultFormat ?? ResultFormat.notEmpty("Please add any one");
         return CommonInputWidget.dynamicKeyValueField(
-            this, formKitForm, text, resultFormat!, title, maxCount);
+            this, formStackForm, text, resultFormat!, title, maxCount);
       case InputType.htmlEditor:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.htmlWidget(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
       case InputType.mapLocation:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.map(
-            this, formKitForm, text, resultFormat!, title, maxHeight ?? 600);
+            this, formStackForm, text, resultFormat!, title, maxHeight ?? 600);
       case InputType.avatar:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please update image.");
         return CommonInputWidget.avatar(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
       case InputType.banner:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please update image.");
         return CommonInputWidget.banner(
-            this, formKitForm, text, resultFormat!, title);
+            this, formStackForm, text, resultFormat!, title);
+
+      // --- New industry-standard input types ---
+      case InputType.slider:
+        resultFormat = resultFormat ??
+            ResultFormat.range(
+                "Please select a value.", minValue ?? 0, maxValue ?? 100);
+        return SurveyInputWidget.slider(this, formStackForm, text,
+            resultFormat!, title, minValue, maxValue, stepValue);
+      case InputType.rating:
+        resultFormat = resultFormat ??
+            ResultFormat.range("Please select a rating.", 1, ratingCount ?? 5);
+        return SurveyInputWidget.rating(
+            this, formStackForm, text, resultFormat!, title, ratingCount);
+      case InputType.nps:
+        resultFormat =
+            resultFormat ?? ResultFormat.range("Please select a score.", 0, 10);
+        return SurveyInputWidget.nps(
+            this, formStackForm, text, resultFormat!, title);
+      case InputType.consent:
+        resultFormat =
+            resultFormat ?? ResultFormat.consent("You must agree to continue.");
+        return SurveyInputWidget.consent(
+            this, formStackForm, text, resultFormat!, title, consentText);
+      case InputType.signature:
+        resultFormat = resultFormat ??
+            ResultFormat.notNull("Please provide your signature.");
+        return SurveyInputWidget.signature(
+            this, formStackForm, text, resultFormat!, title);
+      case InputType.ranking:
+        resultFormat =
+            resultFormat ?? ResultFormat.notEmpty("Please rank the items.");
+        return SurveyInputWidget.ranking(
+            this, formStackForm, text, resultFormat!, title, options);
+      case InputType.phone:
+        resultFormat = resultFormat ??
+            ResultFormat.phone("Please enter a valid phone number.");
+        return SurveyInputWidget.phone(
+            this, formStackForm, text, resultFormat!, title, phoneCountryCode);
+      case InputType.currency:
+        resultFormat =
+            resultFormat ?? ResultFormat.notBlank("Please enter an amount.");
+        return SurveyInputWidget.currency(
+            this, formStackForm, text, resultFormat!, title, currencySymbol);
       default:
     }
     throw UnimplementedError();
@@ -238,6 +303,18 @@ class QuestionStep extends FormStep<QuestionStep> {
         title: element?["title"],
         titleIconAnimationFile: element?["titleIconAnimationFile"],
         titleIconMaxWidth: element?["titleIconMaxWidth"],
+        helperText: element?["helperText"],
+        defaultValue: element?["defaultValue"],
+        semanticLabel: element?["semanticLabel"],
+        minValue: element?["minValue"],
+        maxValue: element?["maxValue"],
+        stepValue: element?["stepValue"],
+        minSelections: element?["minSelections"],
+        maxSelections: element?["maxSelections"],
+        consentText: element?["consentText"],
+        currencySymbol: element?["currencySymbol"],
+        phoneCountryCode: element?["phoneCountryCode"],
+        ratingCount: element?["ratingCount"],
         id: GenericIdentifier(id: element?["id"]));
   }
 }

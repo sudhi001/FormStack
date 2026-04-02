@@ -9,18 +9,18 @@ import 'package:formstack/src/ui/views/input/date_input_field.dart';
 // ignore: must_be_immutable
 class DateInputWidget extends DateInputWidgetView {
   DateInputWidget(
-      super.formKitForm, super.formStep, super.text, super.resultFormat,
+      super.formStackForm, super.formStep, super.text, super.resultFormat,
       {super.key, super.title, super.format});
 
-//// Crete date Only components
+  /// Create date only components
   factory DateInputWidget.date(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
     return DateInputWidget(
-      formKitForm,
+      formStackForm,
       questionStep,
       text,
       resultFormat,
@@ -31,12 +31,12 @@ class DateInputWidget extends DateInputWidgetView {
   // Create Time only components
   factory DateInputWidget.time(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
     return DateInputWidget(
-      formKitForm,
+      formStackForm,
       questionStep,
       text,
       resultFormat,
@@ -48,11 +48,11 @@ class DateInputWidget extends DateInputWidgetView {
   /// Create Date and Time components
   factory DateInputWidget.dateTime(
       QuestionStep questionStep,
-      FormStackForm formKitForm,
+      FormStackForm formStackForm,
       String? text,
       ResultFormat resultFormat,
       String? title) {
-    return DateInputWidget(formKitForm, questionStep, text, resultFormat,
+    return DateInputWidget(formStackForm, questionStep, text, resultFormat,
         title: title, format: DateInputFormats.dateTime);
   }
 }
