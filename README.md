@@ -6,6 +6,26 @@
 
 A powerful Flutter library for building dynamic forms and surveys from Dart objects or JSON. Supports 28 input types, 30+ validators, conditional navigation, nested steps, and full JSON schema configuration.
 
+## Screenshots
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img1.png" width="200" alt="Instruction Step" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img2.png" width="200" alt="Name Input" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img3.png" width="200" alt="Email Input" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img4.png" width="200" alt="Multiline Text" />
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img5.png" width="200" alt="Multiple Choice" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img6.png" width="200" alt="Multiple Choice Selected" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img7.png" width="200" alt="Single Choice" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img8.png" width="200" alt="Time Picker" />
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img9.png" width="200" alt="Date Picker" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img10.png" width="200" alt="Smile Rating" />
+  <img src="https://raw.githubusercontent.com/sudhi001/FormStack/main/screenshots/img11.png" width="200" alt="Completion Step" />
+</p>
+
 ## Installation
 
 ```yaml
