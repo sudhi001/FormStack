@@ -1,6 +1,6 @@
 name: formstack
 description: A cross-platform ResearchKit alternative for Flutter. Build dynamic forms and surveys with 30 input types, 35+ validators, consent flows, and JSON support.
-version: 2.1.0
+version: 2.1.1
 homepage: https://github.com/sudhi001/FormStack
 repository: https://github.com/sudhi001/FormStack
 issue_tracker: https://github.com/sudhi001/FormStack/issues
@@ -13,6 +13,14 @@ topics:
 screenshots:
   - description: 'Logo of formstack framework'
     path: screenshots/logo.png
+
+platforms:
+  android:
+  ios:
+  web:
+  macos:
+  windows:
+  linux:
 
 environment:
   sdk: '>=2.19.6 <4.0.0'

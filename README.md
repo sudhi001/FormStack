@@ -151,7 +151,7 @@ Scaffold(body: FormStack.api().render());
 
 ```yaml
 dependencies:
-  formstack: ^2.1.0
+  formstack: ^2.1.1
 ```
 
 ```bash

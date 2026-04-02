@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2026-04-02
+
+### Fixed
+- Step view widget caching to prevent state loss during navigation (TextEditingController text, slider values, selected choices now preserved when navigating back)
+- Controller and FocusNode memory leaks caused by widget recreation on every step change
+- Cache cleared on form reset via `clearResult()` for clean restarts
+- Step timestamps (`startTime`, `endTime`) reset properly on form clear
+
 ## [2.1.0] - 2026-04-02
 
 ### Added

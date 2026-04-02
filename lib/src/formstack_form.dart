@@ -51,8 +51,11 @@ abstract class FormStackForm {
 
   void clearResult() {
     relevantStack.clear();
+    _viewCache.clear();
     for (var entry in steps) {
       entry.result = null;
+      entry.startTime = null;
+      entry.endTime = null;
       if (entry is NestedStep) {
         for (var stepEntry in entry.steps ?? []) {
           stepEntry.result = null;
@@ -63,6 +66,10 @@ abstract class FormStackForm {
 
   /// Current step being displayed.
   FormStep? _currentStep;
+
+  /// Cached step views to prevent recreation on navigation.
+  /// Each step's view is built once and reused on subsequent visits.
+  final Map<String, Widget> _viewCache = {};
 
   /// Returns the progress of the form as a value between 0.0 and 1.0.
   double getProgress() {
@@ -217,7 +224,9 @@ abstract class FormStackForm {
       step.startTime = DateTime.now().toUtc();
       step.onStepWillPresent?.call(step);
     }
-    return step.buildView(this);
+    // Cache step views to prevent state loss on navigation
+    final stepId = step.id?.id ?? '';
+    return _viewCache.putIfAbsent(stepId, () => step.buildView(this));
   }
 
   /// Retrieves a step by its identifier string.
