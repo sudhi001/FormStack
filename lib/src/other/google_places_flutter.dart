@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/src/other/model/place_details.dart';
 import 'package:formstack/src/other/model/prediction.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:http/http.dart' as http;
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -37,29 +37,35 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
 
 class _GooglePlaceAutoCompleteTextFieldState
     extends State<GooglePlaceAutoCompleteTextField> {
-  final PublishSubject<String> _subject = PublishSubject<String>();
-  StreamSubscription<String>? _subscription;
   OverlayEntry? _overlayEntry;
   final List<Prediction> _predictions = [];
   final LayerLink _layerLink = LayerLink();
-  final Dio _dio = Dio();
+  final http.Client _client = http.Client();
   final Map<String, List<Prediction>> _cache = {};
   static const int _maxCacheSize = 50;
 
-  @override
-  void initState() {
-    super.initState();
-    _subscription = _subject.stream
-        .distinct()
-        .debounceTime(Duration(milliseconds: widget.debounceTime))
-        .listen(_onTextChanged);
+  // Debounce state. This used to be an rxdart PublishSubject with .distinct()
+  // and .debounceTime(); a timer and the last-seen value do the same job
+  // without the dependency.
+  Timer? _debounce;
+  String? _lastQuery;
+
+  /// Schedules [text] for lookup once typing pauses, skipping a repeat of the
+  /// value already queried.
+  void _onQueryChanged(String text) {
+    if (text == _lastQuery) return;
+    _lastQuery = text;
+    _debounce?.cancel();
+    _debounce = Timer(
+      Duration(milliseconds: widget.debounceTime),
+      () => _onTextChanged(text),
+    );
   }
 
   @override
   void dispose() {
-    _subscription?.cancel();
-    _subject.close();
-    _dio.close();
+    _debounce?.cancel();
+    _client.close();
     _removeOverlay();
     _cache.clear();
     super.dispose();
@@ -73,7 +79,7 @@ class _GooglePlaceAutoCompleteTextFieldState
         decoration: widget.inputDecoration,
         style: widget.textStyle,
         controller: widget.textEditingController,
-        onChanged: _subject.add,
+        onChanged: _onQueryChanged,
       ),
     );
   }
@@ -119,20 +125,34 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   Future<List<Prediction>> _getLocation(String text) async {
-    String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+    // Built through Uri rather than string interpolation: the query is
+    // whatever the user typed, and an unescaped '&' or '=' would otherwise
+    // rewrite the request.
+    final uri =
+        Uri.https('maps.googleapis.com', '/maps/api/place/autocomplete/json', {
+          'input': text,
+          'key': widget.googleAPIKey,
+          if (widget.countries?.isNotEmpty ?? false)
+            'components': widget.countries!.map((c) => 'country:$c').join('|'),
+        });
 
-    if (widget.countries != null && widget.countries!.isNotEmpty) {
-      final countries = widget.countries!.map((c) => "country:$c").join('|');
-      url = "$url&components=$countries";
+    final body = await _getJson(uri);
+    if (body == null) return const [];
+    return PlacesAutocompleteResponse.fromJson(body).predictions ?? const [];
+  }
+
+  /// Performs a GET and decodes the JSON body, or returns null on any
+  /// non-200 response or unparseable payload.
+  Future<Map<String, dynamic>?> _getJson(Uri uri) async {
+    final response = await _client.get(uri);
+    if (response.statusCode != 200) {
+      debugPrint(
+        'formstack: Places request failed (${response.statusCode}) for ${uri.path}',
+      );
+      return null;
     }
-
-    final response = await _dio.get(url);
-    final subscriptionResponse = PlacesAutocompleteResponse.fromJson(
-      response.data,
-    );
-
-    return subscriptionResponse.predictions ?? [];
+    final decoded = jsonDecode(response.body);
+    return decoded is Map<String, dynamic> ? decoded : null;
   }
 
   void _showOverlay() {
@@ -209,11 +229,15 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   Future<void> _getPlaceDetailsFromPlaceId(Prediction prediction) async {
     try {
-      final url =
-          "https://maps.googleapis.com/maps/api/place/details/json?place_id=${prediction.placeId}&key=${widget.googleAPIKey}";
+      final uri = Uri.https(
+        'maps.googleapis.com',
+        '/maps/api/place/details/json',
+        {'place_id': prediction.placeId ?? '', 'key': widget.googleAPIKey},
+      );
 
-      final response = await _dio.get(url);
-      final placeDetails = PlaceDetails.fromJson(response.data);
+      final body = await _getJson(uri);
+      if (body == null) return;
+      final placeDetails = PlaceDetails.fromJson(body);
 
       if (placeDetails.result != null) {
         final lat =

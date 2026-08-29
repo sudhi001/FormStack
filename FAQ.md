@@ -154,9 +154,9 @@ Raise `maxCachedViews` to trade memory for back-navigation fidelity, or set it
 to `0` to disable caching entirely.
 
 ### Does FormStack pull in Google Maps and a camera SDK?
-Maps, webview and file-picking are unconditional dependencies today, so yes —
-this is the library's largest outstanding issue and is tracked in
-`ARCHITECTURE.md`.
+Maps, webview and file-picking are unconditional dependencies today, so yes for
+those — this is the library's largest outstanding issue and is tracked in
+`ARCHITECTURE.md`. `dio` and `rxdart` were removed in 3.0.
 
 Barcode scanning and audio recording are not: they reach hardware through
 `DeviceCapabilities`, so an app that never scans or records inherits no

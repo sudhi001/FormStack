@@ -145,7 +145,9 @@ Recorded here rather than left implicit. Roughly in priority order.
    `BaseStepView` to a `StatefulWidget` whose `State` holds the controllers
    would let the framework own lifetime, delete `maxCachedViews`, and remove
    every `// ignore: must_be_immutable`. It touches every input widget.
-2. **Heavy transitive dependencies.** `google_maps_flutter`, `location`,
+2. **Heavy transitive dependencies.** `dio` and `rxdart` are gone — they backed
+   a single file and were replaced by `http` and a `Timer`. What remains is
+   harder: `google_maps_flutter`, `location`,
    `webview_flutter` and `file_picker` are unconditional dependencies, so an
    application using FormStack purely for text and choice inputs still inherits
    map and camera SDKs, their permission declarations and their iOS privacy
@@ -155,6 +157,12 @@ Recorded here rather than left implicit. Roughly in priority order.
    consumers, and the pattern is already proven by `DeviceCapabilities` —
    `barcode` and `audio` reach their platform dependency through a port rather
    than a direct import.
+
+   Note the sequencing constraint: the example app is shipped inside the
+   published archive, so it cannot hold a path dependency on an unpublished
+   sibling package. `formstack_maps` has to be published *before* the core can
+   drop the dependency and the example can reference it. That is why this is
+   two releases rather than one commit.
 3. **`FormStack` is doing several jobs** — instance registry, form builder,
    statistics, persistence facade. The persistence and statistics APIs would sit
    better on `FormStackForm`.
@@ -171,7 +179,7 @@ Recorded here rather than left implicit. Roughly in priority order.
 
 ## Testing
 
-141 tests, 52% line coverage.
+146 tests, 52% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.

@@ -40,6 +40,11 @@ or JSON are unaffected.
   received a fully-defaulted `UIStyle`, so `step.style ??= formTheme` never
   fired and the documented `"theme"` key was silently ignored. Step factories
   now use `UIStyle.maybeFrom`, which returns null for an absent style.
+- **The Places autocomplete built its URLs by string interpolation.** The
+  search text went into the query unescaped, so an `&` or `=` in what the user
+  typed rewrote the request — appending or replacing parameters, including the
+  API key. Both endpoints are now built with `Uri.https` and encoded query
+  parameters, and a non-200 response is handled rather than parsed.
 - **Malformed form definitions failed obscurely.** A relevant condition without
   an `id` or `expression`, an option that is not an object, or a
   `relevantConditions` value that is not a list produced a `NoSuchMethodError`
@@ -89,7 +94,7 @@ or JSON are unaffected.
   `borderRadius` and `elementSpacing` now apply to the subtree, with
   `FormStackTheme.of(context)`, `copyWith` and value equality.
 - `FormStackForm.stepAfter` / `stepBefore` for explicit ordered navigation.
-- A test suite — 141 tests, 52% line coverage, from none — covering validators,
+- A test suite — 146 tests, 52% line coverage, from none — covering validators,
   navigation and branching, JSON parsing and its failure modes, the registries,
   persistence, the view-disposal chain, and a smoke test that builds every
   built-in input type, the input registry's resolution order, the theme scope,
@@ -145,7 +150,12 @@ or JSON are unaffected.
   `flutter create` leftovers containing only generated plugin registrants,
   which `flutter pub get` rewrote on every machine. Platform support is
   declared in `pubspec.yaml` and is unchanged at 6 of 6.
-- Dropped the unused `http` dependency.
+- **Dropped `dio` and `rxdart`.** Both existed for one file: the Places
+  autocomplete used `Dio` for two GET requests and an rxdart `PublishSubject`
+  with `.distinct().debounceTime()` for its input debounce. A `http.Client` and
+  a `Timer` do the same work, so every consumer sheds two dependency trees.
+  `http` — a far smaller package — takes their place; it was previously
+  declared but never imported.
 - Upgraded `file_picker` (10 → 12) and `location` (8 → 10), which were two and
   three major versions behind and caused resolution conflicts for applications
   using either package directly. The `file_picker` 12 API made the
