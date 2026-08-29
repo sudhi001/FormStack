@@ -3,8 +3,14 @@ import 'package:formstack/formstack.dart';
 
 // ignore: must_be_immutable
 class NestedStepView extends BaseStepView<NestedStep> {
-  NestedStepView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title, cancellable});
+  NestedStepView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+    cancellable,
+  });
 
   final List<BaseStepView> _components = [];
   ResultFormat? resultFormat;

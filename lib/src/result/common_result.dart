@@ -23,13 +23,21 @@ class Options {
 
   /// Creates an [Options] from a JSON map.
   factory Options.from(Map<String, dynamic> data) {
-    return Options(data["key"], data["title"],
-        subTitle: data["subTitle"], value: data["value"]);
+    return Options(
+      data["key"],
+      data["title"],
+      subTitle: data["subTitle"],
+      value: data["value"],
+    );
   }
 
   /// Converts this option to a JSON map.
-  Map<String, dynamic> toJson() =>
-      {"key": key, "title": title, "subTitle": subTitle, "value": value};
+  Map<String, dynamic> toJson() => {
+    "key": key,
+    "title": title,
+    "subTitle": subTitle,
+    "value": value,
+  };
 
   @override
   bool operator ==(Object other) {
@@ -74,10 +82,12 @@ class DynamicData {
 
   /// Creates a [DynamicData] from a JSON map.
   factory DynamicData.from(Map<String, dynamic> data) {
-    return DynamicData(data["title"],
-        subTitle: data["subTitle"],
-        trailing: data["trailing"],
-        leading: data["leading"]);
+    return DynamicData(
+      data["title"],
+      subTitle: data["subTitle"],
+      trailing: data["trailing"],
+      leading: data["leading"],
+    );
   }
 
   /// Parses a list of JSON maps into [DynamicData] instances.
@@ -91,11 +101,11 @@ class DynamicData {
 
   /// Converts this data to a JSON map.
   Map<String, dynamic> toJson() => {
-        "title": title,
-        "subTitle": subTitle,
-        "trailing": trailing,
-        "leading": leading
-      };
+    "title": title,
+    "subTitle": subTitle,
+    "trailing": trailing,
+    "leading": leading,
+  };
 }
 
 /// Wrapper for latitude/longitude coordinates.

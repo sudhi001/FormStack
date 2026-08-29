@@ -8,8 +8,14 @@ class CurrencyInputWidgetView extends BaseStepView<QuestionStep> {
   final String currencySymbol;
 
   CurrencyInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, this.currencySymbol = "\$"});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.currencySymbol = "\$",
+  });
 
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -48,9 +54,9 @@ class CurrencyInputWidgetView extends BaseStepView<QuestionStep> {
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           prefixText: '$currencySymbol ',
-          prefixStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          prefixStyle: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           hintText: formStep.hint ?? "0.00",
           labelText: formStep.label,
         ),

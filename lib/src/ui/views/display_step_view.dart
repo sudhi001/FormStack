@@ -6,8 +6,14 @@ import 'package:formstack/src/ui/views/web_view.dart';
 
 // ignore: must_be_immutable
 class DisplayStepView extends BaseStepView<DisplayStep> {
-  DisplayStepView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title, cancellable});
+  DisplayStepView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+    cancellable,
+  });
 
   @override
   Widget? buildWInputWidget(BuildContext context, DisplayStep formStep) {

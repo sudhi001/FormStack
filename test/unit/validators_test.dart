@@ -120,8 +120,10 @@ void main() {
     });
 
     test('a custom validator defaults to the "custom" code', () {
-      final outcome =
-          ResultFormat.custom('nope', (v) => v == 'yes').validate('no');
+      final outcome = ResultFormat.custom(
+        'nope',
+        (v) => v == 'yes',
+      ).validate('no');
       expect(outcome.code, 'custom');
       expect(outcome.message, 'nope');
     });

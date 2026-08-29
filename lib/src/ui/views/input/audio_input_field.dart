@@ -14,8 +14,13 @@ class AudioInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
 
   AudioInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   bool _isRecording = false;
   bool _hasRecording = false;
@@ -32,117 +37,119 @@ class AudioInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Recording visualization
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: _isRecording
-                    ? Colors.red.shade50
-                    : _hasRecording
-                        ? Colors.green.shade50
-                        : Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Recording visualization
+              Container(
+                height: 120,
+                decoration: BoxDecoration(
                   color: _isRecording
-                      ? Colors.red.shade200
+                      ? Colors.red.shade50
                       : _hasRecording
-                          ? Colors.green.shade200
-                          : Colors.grey.shade300,
+                      ? Colors.green.shade50
+                      : Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: _isRecording
+                        ? Colors.red.shade200
+                        : _hasRecording
+                        ? Colors.green.shade200
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _isRecording
+                            ? Icons.mic
+                            : _hasRecording
+                            ? Icons.audio_file
+                            : Icons.mic_none,
+                        size: 40,
+                        color: _isRecording
+                            ? Colors.red
+                            : _hasRecording
+                            ? Colors.green.shade700
+                            : Colors.grey,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _isRecording
+                            ? _formatDuration(_recordingDurationSeconds)
+                            : _hasRecording
+                            ? "Recording saved (${_formatDuration(_recordingDurationSeconds)})"
+                            : "Tap record to start",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: _isRecording ? Colors.red : null,
+                          fontWeight: _isRecording ? FontWeight.bold : null,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _isRecording
-                          ? Icons.mic
-                          : _hasRecording
-                              ? Icons.audio_file
-                              : Icons.mic_none,
-                      size: 40,
-                      color: _isRecording
-                          ? Colors.red
-                          : _hasRecording
-                              ? Colors.green.shade700
-                              : Colors.grey,
+              const SizedBox(height: 16),
+              // Controls
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_hasRecording && !_isRecording) ...[
+                    // Delete button
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _hasRecording = false;
+                          _recordingDurationSeconds = 0;
+                          formStep.result = null;
+                        });
+                      },
+                      icon: const Icon(Icons.delete_outline),
+                      color: Colors.red,
+                      tooltip: "Delete recording",
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _isRecording
-                          ? _formatDuration(_recordingDurationSeconds)
-                          : _hasRecording
-                              ? "Recording saved (${_formatDuration(_recordingDurationSeconds)})"
-                              : "Tap record to start",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: _isRecording ? Colors.red : null,
-                            fontWeight: _isRecording ? FontWeight.bold : null,
-                          ),
-                    ),
+                    const SizedBox(width: 16),
                   ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Controls
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (_hasRecording && !_isRecording) ...[
-                  // Delete button
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _hasRecording = false;
-                        _recordingDurationSeconds = 0;
-                        formStep.result = null;
-                      });
-                    },
-                    icon: const Icon(Icons.delete_outline),
-                    color: Colors.red,
-                    tooltip: "Delete recording",
+                  // Record/Stop button
+                  SizedBox(
+                    width: 64,
+                    height: 64,
+                    child: ElevatedButton(
+                      onPressed: formStep.disabled
+                          ? null
+                          : () {
+                              setState(() {
+                                if (_isRecording) {
+                                  _stopRecording(setState);
+                                } else {
+                                  _startRecording(setState);
+                                }
+                              });
+                            },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: _isRecording
+                            ? Colors.red
+                            : Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Icon(
+                        _isRecording ? Icons.stop : Icons.mic,
+                        size: 32,
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 16),
                 ],
-                // Record/Stop button
-                SizedBox(
-                  width: 64,
-                  height: 64,
-                  child: ElevatedButton(
-                    onPressed: formStep.disabled
-                        ? null
-                        : () {
-                            setState(() {
-                              if (_isRecording) {
-                                _stopRecording(setState);
-                              } else {
-                                _startRecording(setState);
-                              }
-                            });
-                          },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: _isRecording
-                          ? Colors.red
-                          : Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Icon(
-                      _isRecording ? Icons.stop : Icons.mic,
-                      size: 32,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      }),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -188,12 +195,14 @@ class AudioInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   void _report(Object error, StackTrace stack, String what) {
-    FlutterError.reportError(FlutterErrorDetails(
-      exception: error,
-      stack: stack,
-      library: 'formstack',
-      context: ErrorDescription('$what for step ${formStep.id?.id}'),
-    ));
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stack,
+        library: 'formstack',
+        context: ErrorDescription('$what for step ${formStep.id?.id}'),
+      ),
+    );
   }
 
   String _formatDuration(int seconds) {

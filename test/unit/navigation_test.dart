@@ -69,14 +69,20 @@ void main() {
 
   group('conditional navigation', () {
     test('a matching condition routes to its target step', () {
-      final branching = question('start', conditions: [
-        ExpressionRelevant(
-          expression: '= yes',
-          identifier: GenericIdentifier(id: 'yesPath'),
-        ),
+      final branching = question(
+        'start',
+        conditions: [
+          ExpressionRelevant(
+            expression: '= yes',
+            identifier: GenericIdentifier(id: 'yesPath'),
+          ),
+        ],
+      );
+      final form = buildForm([
+        branching,
+        question('noPath'),
+        question('yesPath'),
       ]);
-      final form =
-          buildForm([branching, question('noPath'), question('yesPath')]);
       final visited = <String?>[];
       form.onUpdate = (step) => visited.add(step.id?.id);
 
@@ -87,14 +93,20 @@ void main() {
     });
 
     test('a non-matching condition falls through to the next step', () {
-      final branching = question('start', conditions: [
-        ExpressionRelevant(
-          expression: '= yes',
-          identifier: GenericIdentifier(id: 'yesPath'),
-        ),
+      final branching = question(
+        'start',
+        conditions: [
+          ExpressionRelevant(
+            expression: '= yes',
+            identifier: GenericIdentifier(id: 'yesPath'),
+          ),
+        ],
+      );
+      final form = buildForm([
+        branching,
+        question('noPath'),
+        question('yesPath'),
       ]);
-      final form =
-          buildForm([branching, question('noPath'), question('yesPath')]);
       final visited = <String?>[];
       form.onUpdate = (step) => visited.add(step.id?.id);
 
@@ -105,14 +117,20 @@ void main() {
     });
 
     test('back from a branch target returns to the branching step', () {
-      final branching = question('start', conditions: [
-        ExpressionRelevant(
-          expression: '= yes',
-          identifier: GenericIdentifier(id: 'yesPath'),
-        ),
+      final branching = question(
+        'start',
+        conditions: [
+          ExpressionRelevant(
+            expression: '= yes',
+            identifier: GenericIdentifier(id: 'yesPath'),
+          ),
+        ],
+      );
+      final form = buildForm([
+        branching,
+        question('noPath'),
+        question('yesPath'),
       ]);
-      final form =
-          buildForm([branching, question('noPath'), question('yesPath')]);
       final visited = <String?>[];
       form.onUpdate = (step) => visited.add(step.id?.id);
 
@@ -132,8 +150,12 @@ void main() {
     });
 
     test('progress reports position, total and percentage together', () {
-      final form = buildForm(
-          [question('a'), question('b'), question('c'), question('d')]);
+      final form = buildForm([
+        question('a'),
+        question('b'),
+        question('c'),
+        question('d'),
+      ]);
       form.render((_) {}, null, formStep: form.getStep('c'));
 
       final progress = form.progress;

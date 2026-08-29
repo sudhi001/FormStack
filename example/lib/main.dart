@@ -65,8 +65,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'Styles & Display Sizes',
                   subtitle:
                       'Input styles (basic, outline, underline), component styles, and 5 display sizes',
-                  onTap: () =>
-                      _navigate(context, const StylesAndDisplayDemo()),
+                  onTap: () => _navigate(context, const StylesAndDisplayDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.checklist_rtl,
@@ -74,8 +73,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'Selection Types',
                   subtitle:
                       'Arrow, tick, toggle, and dropdown selection styles for choice inputs',
-                  onTap: () =>
-                      _navigate(context, const SelectionTypesDemo()),
+                  onTap: () => _navigate(context, const SelectionTypesDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.verified_user_outlined,
@@ -91,8 +89,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'Conditional Navigation',
                   subtitle:
                       'Dynamic form routing based on user selections using relevant conditions',
-                  onTap: () =>
-                      _navigate(context, const ConditionalNavDemo()),
+                  onTap: () => _navigate(context, const ConditionalNavDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.view_agenda_outlined,
@@ -116,8 +113,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'Survey Components',
                   subtitle:
                       'Slider, star rating, NPS, consent, signature, ranking, phone, currency',
-                  onTap: () =>
-                      _navigate(context, const SurveyComponentsDemo()),
+                  onTap: () => _navigate(context, const SurveyComponentsDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.science_outlined,
@@ -134,8 +130,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'Data Collection (ODK)',
                   subtitle:
                       'Repeat groups, calculate, hidden, cascading selects, barcode, audio, geotrace',
-                  onTap: () =>
-                      _navigate(context, const DataCollectionDemo()),
+                  onTap: () => _navigate(context, const DataCollectionDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.translate,
@@ -143,8 +138,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'Multi-Language & Offline',
                   subtitle:
                       'FormStackLocale with runtime switching, offline save/resume, display step',
-                  onTap: () =>
-                      _navigate(context, const AdvancedFeaturesDemo()),
+                  onTap: () => _navigate(context, const AdvancedFeaturesDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.data_object,

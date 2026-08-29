@@ -4,8 +4,13 @@ import 'package:formstack/formstack.dart';
 /// View for the structured consent document step.
 // ignore: must_be_immutable
 class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
-  ConsentStepViewWidget(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title});
+  ConsentStepViewWidget(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+  });
 
   bool _isAgreed = false;
   bool _isInitialized = false;
@@ -19,68 +24,76 @@ class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Consent sections list
-            if (formStep.sections.isNotEmpty)
-              Flexible(
-                child: ListView.builder(
-                  cacheExtent: 300,
-                  shrinkWrap: true,
-                  itemCount: formStep.sections.length,
-                  itemBuilder: (context, index) {
-                    return _buildSectionTile(context, formStep.sections[index]);
-                  },
-                ),
-              ),
-            const SizedBox(height: 16),
-            const Divider(),
-            // Agreement checkbox
-            InkWell(
-              borderRadius: BorderRadius.circular(8),
-              onTap: formStep.disabled
-                  ? null
-                  : () {
-                      setState(() {
-                        _isAgreed = !_isAgreed;
-                        formStep.result = _isAgreed;
-                      });
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Consent sections list
+              if (formStep.sections.isNotEmpty)
+                Flexible(
+                  child: ListView.builder(
+                    cacheExtent: 300,
+                    shrinkWrap: true,
+                    itemCount: formStep.sections.length,
+                    itemBuilder: (context, index) {
+                      return _buildSectionTile(
+                        context,
+                        formStep.sections[index],
+                      );
                     },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Checkbox(
-                      value: _isAgreed,
-                      onChanged: formStep.disabled
-                          ? null
-                          : (value) {
-                              setState(() {
-                                _isAgreed = value ?? false;
-                                formStep.result = _isAgreed;
-                              });
-                            },
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Text(
-                          formStep.agreementText,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              const SizedBox(height: 16),
+              const Divider(),
+              // Agreement checkbox
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: formStep.disabled
+                    ? null
+                    : () {
+                        setState(() {
+                          _isAgreed = !_isAgreed;
+                          formStep.result = _isAgreed;
+                        });
+                      },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 4,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                        value: _isAgreed,
+                        onChanged: formStep.disabled
+                            ? null
+                            : (value) {
+                                setState(() {
+                                  _isAgreed = value ?? false;
+                                  formStep.result = _isAgreed;
+                                });
+                              },
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Text(
+                            formStep.agreementText,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -101,21 +114,26 @@ class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
             size: 20,
           ),
         ),
-        title: Text(section.title,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall
-                ?.copyWith(fontWeight: FontWeight.w600)),
-        subtitle: Text(section.summary,
-            style: Theme.of(context).textTheme.bodySmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis),
+        title: Text(
+          section.title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          section.summary,
+          style: Theme.of(context).textTheme.bodySmall,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         children: [
           if (section.content != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Text(section.content!,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(
+                section.content!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
         ],
       ),

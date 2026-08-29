@@ -20,10 +20,16 @@ void main() {
       final names = (jsonDecode(data) as Map<String, dynamic>).keys;
       for (final formName in names) {
         final form = FormStack.formByInstaceAndName(formName: formName);
-        expect(form, isNotNull,
-            reason: 'form "$formName" missing in $name.json');
-        expect(form!.steps, isNotEmpty,
-            reason: 'form "$formName" has no steps');
+        expect(
+          form,
+          isNotNull,
+          reason: 'form "$formName" missing in $name.json',
+        );
+        expect(
+          form!.steps,
+          isNotEmpty,
+          reason: 'form "$formName" has no steps',
+        );
       }
     });
   }

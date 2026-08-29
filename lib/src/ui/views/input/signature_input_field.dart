@@ -9,8 +9,13 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
 
   SignatureInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   final List<List<Offset>> _strokes = [];
   String? _signatureBase64;
@@ -21,71 +26,80 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
       // No maxHeight: the pad (150) plus its spacing and Clear button needs
       // ~206px, so a 200px cap overflowed by 6px on every build. The step
       // content already scrolls, so the column is free to size itself.
-      constraints:
-          const BoxConstraints(minWidth: 300, maxWidth: 500, minHeight: 150),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                border: Border.all(color: FormStackTheme.borderColor(context)),
-                borderRadius: BorderRadius.circular(8),
-                color: FormStackTheme.canvasBackgroundColor(context),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: GestureDetector(
-                  onPanStart: formStep.disabled
-                      ? null
-                      : (details) {
-                          setState(() {
-                            _strokes.add([details.localPosition]);
-                          });
-                        },
-                  onPanUpdate: formStep.disabled
-                      ? null
-                      : (details) {
-                          setState(() {
-                            if (_strokes.isNotEmpty) {
-                              _strokes.last.add(details.localPosition);
-                            }
-                          });
-                        },
-                  onPanEnd: formStep.disabled
-                      ? null
-                      : (details) {
-                          _captureSignature();
-                        },
-                  child: CustomPaint(
-                    painter: _SignaturePainter(
-                        _strokes, FormStackTheme.canvasStrokeColor(context)),
-                    size: Size.infinite,
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 500,
+        minHeight: 150,
+      ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 150,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: FormStackTheme.borderColor(context),
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  color: FormStackTheme.canvasBackgroundColor(context),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: GestureDetector(
+                    onPanStart: formStep.disabled
+                        ? null
+                        : (details) {
+                            setState(() {
+                              _strokes.add([details.localPosition]);
+                            });
+                          },
+                    onPanUpdate: formStep.disabled
+                        ? null
+                        : (details) {
+                            setState(() {
+                              if (_strokes.isNotEmpty) {
+                                _strokes.last.add(details.localPosition);
+                              }
+                            });
+                          },
+                    onPanEnd: formStep.disabled
+                        ? null
+                        : (details) {
+                            _captureSignature();
+                          },
+                    child: CustomPaint(
+                      painter: _SignaturePainter(
+                        _strokes,
+                        FormStackTheme.canvasStrokeColor(context),
+                      ),
+                      size: Size.infinite,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: formStep.disabled
-                    ? null
-                    : () {
-                        setState(() {
-                          _strokes.clear();
-                          _signatureBase64 = null;
-                          formStep.result = null;
-                        });
-                      },
-                icon: const Icon(Icons.refresh, size: 18),
-                label: const Text("Clear"),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: formStep.disabled
+                      ? null
+                      : () {
+                          setState(() {
+                            _strokes.clear();
+                            _signatureBase64 = null;
+                            formStep.result = null;
+                          });
+                        },
+                  icon: const Icon(Icons.refresh, size: 18),
+                  label: const Text("Clear"),
+                ),
               ),
-            ),
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
   }
 

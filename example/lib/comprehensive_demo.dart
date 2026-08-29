@@ -71,7 +71,8 @@ class _AllInputTypesDemoState extends FormDemoScreenState<AllInputTypesDemo> {
         ),
         QuestionStep(
           title: "Name",
-          text: "InputType.name with letters-only filter and word capitalization",
+          text:
+              "InputType.name with letters-only filter and word capitalization",
           inputType: InputType.name,
           inputStyle: InputStyle.outline,
           hint: "John Doe",
@@ -426,8 +427,7 @@ class SelectionTypesDemo extends FormDemoScreen {
   State<SelectionTypesDemo> createState() => _SelectionTypesDemoState();
 }
 
-class _SelectionTypesDemoState
-    extends FormDemoScreenState<SelectionTypesDemo> {
+class _SelectionTypesDemoState extends FormDemoScreenState<SelectionTypesDemo> {
   @override
   String get formName => "selections";
 
@@ -549,8 +549,8 @@ class _ValidationDemoState extends FormDemoScreenState<ValidationDemo> {
               "ResultFormat.password - requires uppercase, lowercase, number, special char, 8+ chars",
           inputType: InputType.password,
           inputStyle: InputStyle.outline,
-          resultFormat: ResultFormat.password(
-              "Must include A-Z, a-z, 0-9, special char"),
+          resultFormat:
+              ResultFormat.password("Must include A-Z, a-z, 0-9, special char"),
           id: GenericIdentifier(id: "v_password"),
           cancellable: true,
         ),
@@ -653,8 +653,7 @@ class ConditionalNavDemo extends FormDemoScreen {
   State<ConditionalNavDemo> createState() => _ConditionalNavDemoState();
 }
 
-class _ConditionalNavDemoState
-    extends FormDemoScreenState<ConditionalNavDemo> {
+class _ConditionalNavDemoState extends FormDemoScreenState<ConditionalNavDemo> {
   @override
   String get formName => "cond_main";
 
@@ -680,12 +679,10 @@ class _ConditionalNavDemoState
           selectionType: SelectionType.arrow,
           autoTrigger: true,
           options: [
-            Options("developer", "Developer",
-                subTitle: "Software engineering"),
+            Options("developer", "Developer", subTitle: "Software engineering"),
             Options("designer", "Designer",
                 subTitle: "UI/UX and visual design"),
-            Options("manager", "Manager",
-                subTitle: "Project management"),
+            Options("manager", "Manager", subTitle: "Project management"),
           ],
           id: GenericIdentifier(id: "role"),
           cancellable: true,
@@ -708,8 +705,7 @@ class _ConditionalNavDemoState
         // Developer path
         QuestionStep(
           title: "Favorite Language?",
-          text:
-              "You selected Developer - this question is developer-specific",
+          text: "You selected Developer - this question is developer-specific",
           inputType: InputType.singleChoice,
           selectionType: SelectionType.tick,
           componentsStyle: ComponentsStyle.basic,
@@ -732,8 +728,7 @@ class _ConditionalNavDemoState
         // Designer path
         QuestionStep(
           title: "Favorite Tool?",
-          text:
-              "You selected Designer - this question is designer-specific",
+          text: "You selected Designer - this question is designer-specific",
           inputType: InputType.singleChoice,
           selectionType: SelectionType.tick,
           componentsStyle: ComponentsStyle.basic,
@@ -755,8 +750,7 @@ class _ConditionalNavDemoState
         // Manager path
         QuestionStep(
           title: "Team Size?",
-          text:
-              "You selected Manager - this question is manager-specific",
+          text: "You selected Manager - this question is manager-specific",
           inputType: InputType.singleChoice,
           selectionType: SelectionType.tick,
           componentsStyle: ComponentsStyle.basic,
@@ -1300,8 +1294,7 @@ class DataCollectionDemo extends FormDemoScreen {
   State<DataCollectionDemo> createState() => _DataCollectionDemoState();
 }
 
-class _DataCollectionDemoState
-    extends FormDemoScreenState<DataCollectionDemo> {
+class _DataCollectionDemoState extends FormDemoScreenState<DataCollectionDemo> {
   @override
   String get formName => "data_collection";
 
@@ -1381,8 +1374,7 @@ class _DataCollectionDemoState
           inputType: InputType.calculate,
           helperText: "Calculated automatically from age input",
           calculateCallback: (results) {
-            final age =
-                int.tryParse(results["age"]?.toString() ?? "") ?? 0;
+            final age = int.tryParse(results["age"]?.toString() ?? "") ?? 0;
             if (age < 18) return "Minor (under 18)";
             if (age < 65) return "Adult (18-64)";
             return "Senior (65+)";

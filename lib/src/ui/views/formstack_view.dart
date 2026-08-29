@@ -76,8 +76,11 @@ class _FormStackViewState extends State<FormStackView> {
   void onUpdate(FormStep formStep) {
     if (mounted && !_isDisposed) {
       setState(() {
-        child = _formStackForm.render(onUpdate, onUpdateFormStackForm,
-            formStep: formStep);
+        child = _formStackForm.render(
+          onUpdate,
+          onUpdateFormStackForm,
+          formStep: formStep,
+        );
       });
     }
   }

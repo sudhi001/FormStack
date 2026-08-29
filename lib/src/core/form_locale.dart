@@ -32,10 +32,8 @@ class FormStackLocale {
   final Map<String, Map<String, String>> translations;
 
   /// Creates a [FormStackLocale] with the given translations.
-  FormStackLocale({
-    required this.defaultLocale,
-    required this.translations,
-  }) : _currentLocale = defaultLocale;
+  FormStackLocale({required this.defaultLocale, required this.translations})
+    : _currentLocale = defaultLocale;
 
   /// Returns the current locale key.
   String get currentLocale => _currentLocale;

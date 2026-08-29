@@ -17,8 +17,8 @@ class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
     final operator = parts.length == 2
         ? parts[0]
         : parts.length > 1
-            ? parts[1]
-            : parts[0];
+        ? parts[1]
+        : parts[0];
     final right = parts.length > 2 ? parseExpression(parts[2], input) : null;
 
     switch (operator) {
@@ -52,11 +52,21 @@ class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
 
     switch (functionName) {
       case 'YEAR':
-        return DateFormat(format).parse(argument).add(
-            Duration(days: date.difference(DateTime(date.year, 1, 1)).inDays));
+        return DateFormat(format)
+            .parse(argument)
+            .add(
+              Duration(days: date.difference(DateTime(date.year, 1, 1)).inDays),
+            );
       case 'MONTH':
-        return DateFormat(format).parse(argument).add(Duration(
-            days: date.difference(DateTime(date.year, date.month, 1)).inDays));
+        return DateFormat(format)
+            .parse(argument)
+            .add(
+              Duration(
+                days: date
+                    .difference(DateTime(date.year, date.month, 1))
+                    .inDays,
+              ),
+            );
       case 'DAY':
         return DateFormat(format).parse(argument);
       default:

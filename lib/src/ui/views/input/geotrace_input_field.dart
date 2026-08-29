@@ -10,8 +10,14 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
   final bool isPolygon;
 
   GeotraceInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, this.isPolygon = false});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.isPolygon = false,
+  });
 
   final List<Map<String, double>> _points = [];
   bool _isInitialized = false;
@@ -33,115 +39,126 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints:
-          const BoxConstraints(minWidth: 300, maxWidth: 500, maxHeight: 450),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Map placeholder with points visualization
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 500,
+        maxHeight: 450,
+      ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Map placeholder with points visualization
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isPolygon
+                                ? Icons.pentagon_outlined
+                                : Icons.timeline,
+                            size: 40,
+                            color: Colors.grey.shade400,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            isPolygon
+                                ? "${_points.length} points (polygon)"
+                                : "${_points.length} points (path)",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Draw points as dots
+                    if (_points.isNotEmpty)
+                      CustomPaint(
+                        size: Size.infinite,
+                        painter: _PointsPainter(_points, isPolygon: isPolygon),
+                      ),
+                  ],
+                ),
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isPolygon ? Icons.pentagon_outlined : Icons.timeline,
-                          size: 40,
-                          color: Colors.grey.shade400,
+              const SizedBox(height: 12),
+              // Points list
+              if (_points.isNotEmpty)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 120),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _points.length,
+                    itemBuilder: (context, index) {
+                      final p = _points[index];
+                      return ListTile(
+                        dense: true,
+                        leading: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer,
+                          child: Text(
+                            '${index + 1}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          isPolygon
-                              ? "${_points.length} points (polygon)"
-                              : "${_points.length} points (path)",
+                        title: Text(
+                          'Lat: ${p['lat']!.toStringAsFixed(4)}, Lng: ${p['lng']!.toStringAsFixed(4)}',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
-                      ],
-                    ),
-                  ),
-                  // Draw points as dots
-                  if (_points.isNotEmpty)
-                    CustomPaint(
-                      size: Size.infinite,
-                      painter: _PointsPainter(_points, isPolygon: isPolygon),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            // Points list
-            if (_points.isNotEmpty)
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 120),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _points.length,
-                  itemBuilder: (context, index) {
-                    final p = _points[index];
-                    return ListTile(
-                      dense: true,
-                      leading: CircleAvatar(
-                        radius: 12,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        child: Text('${index + 1}',
-                            style: const TextStyle(fontSize: 10)),
-                      ),
-                      title: Text(
-                          'Lat: ${p['lat']!.toStringAsFixed(4)}, Lng: ${p['lng']!.toStringAsFixed(4)}',
-                          style: Theme.of(context).textTheme.bodySmall),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.close, size: 16),
-                        onPressed: () {
-                          setState(() {
-                            _points.removeAt(index);
-                            formStep.result = List.from(_points);
-                          });
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            const SizedBox(height: 8),
-            // Add point button
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: formStep.disabled
-                        ? null
-                        : () => _addPointDialog(context, setState),
-                    icon: const Icon(Icons.add_location_alt, size: 18),
-                    label: const Text("Add Point"),
-                  ),
-                ),
-                if (_points.isNotEmpty) ...[
-                  const SizedBox(width: 8),
-                  OutlinedButton(
-                    onPressed: () {
-                      setState(() {
-                        _points.clear();
-                        formStep.result = null;
-                      });
+                        trailing: IconButton(
+                          icon: const Icon(Icons.close, size: 16),
+                          onPressed: () {
+                            setState(() {
+                              _points.removeAt(index);
+                              formStep.result = List.from(_points);
+                            });
+                          },
+                        ),
+                      );
                     },
-                    child: const Text("Clear"),
                   ),
+                ),
+              const SizedBox(height: 8),
+              // Add point button
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: formStep.disabled
+                          ? null
+                          : () => _addPointDialog(context, setState),
+                      icon: const Icon(Icons.add_location_alt, size: 18),
+                      label: const Text("Add Point"),
+                    ),
+                  ),
+                  if (_points.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          _points.clear();
+                          formStep.result = null;
+                        });
+                      },
+                      child: const Text("Clear"),
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          ],
-        );
-      }),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -157,24 +174,32 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
           children: [
             TextField(
               controller: latController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Latitude"),
+                border: OutlineInputBorder(),
+                labelText: "Latitude",
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: lngController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Longitude"),
+                border: OutlineInputBorder(),
+                labelText: "Longitude",
+              ),
             ),
           ],
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Cancel"),
+          ),
           FilledButton(
             onPressed: () {
               final lat = double.tryParse(latController.text);
@@ -245,9 +270,11 @@ class _PointsPainter extends CustomPainter {
     final lngRange = maxLng - minLng == 0 ? 1.0 : maxLng - minLng;
 
     Offset toOffset(Map<String, double> p) {
-      final x = padding +
+      final x =
+          padding +
           ((p['lng']! - minLng) / lngRange) * (size.width - 2 * padding);
-      final y = padding +
+      final y =
+          padding +
           ((maxLat - p['lat']!) / latRange) * (size.height - 2 * padding);
       return Offset(x, y);
     }

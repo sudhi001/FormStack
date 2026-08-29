@@ -8,8 +8,14 @@ class PhoneInputWidgetView extends BaseStepView<QuestionStep> {
   final String defaultCountryCode;
 
   PhoneInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, this.defaultCountryCode = "+1"});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.defaultCountryCode = "+1",
+  });
 
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -81,61 +87,67 @@ class PhoneInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _countryCode,
-                  items: _countryCodes
-                      .map((code) => DropdownMenuItem(
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _countryCode,
+                    items: _countryCodes
+                        .map(
+                          (code) => DropdownMenuItem(
                             value: code,
-                            child: Text(code,
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ))
-                      .toList(),
-                  onChanged: formStep.disabled
-                      ? null
-                      : (value) {
-                          setState(() {
-                            _countryCode = value ?? _countryCode;
-                            formStep.result =
-                                '$_countryCode${_controller.text}';
-                          });
-                        },
+                            child: Text(
+                              code,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: formStep.disabled
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _countryCode = value ?? _countryCode;
+                              formStep.result =
+                                  '$_countryCode${_controller.text}';
+                            });
+                          },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextFormField(
-                controller: _controller,
-                focusNode: _focusNode,
-                enabled: !formStep.disabled,
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9\s\-]')),
-                  LengthLimitingTextInputFormatter(15),
-                ],
-                onChanged: (value) {
-                  formStep.result = '$_countryCode$value';
-                },
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  hintText: formStep.hint ?? "Phone number",
-                  labelText: formStep.label,
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextFormField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  enabled: !formStep.disabled,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9\s\-]')),
+                    LengthLimitingTextInputFormatter(15),
+                  ],
+                  onChanged: (value) {
+                    formStep.result = '$_countryCode$value';
+                  },
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    hintText: formStep.hint ?? "Phone number",
+                    labelText: formStep.label,
+                  ),
                 ),
               ),
-            ),
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
   }
 

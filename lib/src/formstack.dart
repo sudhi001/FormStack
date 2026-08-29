@@ -65,8 +65,10 @@ class FormStack {
   }
 
   /// Get the particular form from different instance.
-  static FormStackForm? formByInstaceAndName(
-      {String name = "default", String formName = "default"}) {
+  static FormStackForm? formByInstaceAndName({
+    String name = "default",
+    String formName = "default",
+  }) {
     return api(name: name)._forms[formName];
   }
 
@@ -150,49 +152,62 @@ class FormStack {
   ///
   ///
   ///
-  FormStack form(
-      {String name = "default",
-      required MapKey mapKey,
-      required LocationWrapper initialLocation,
-      String? backgroundAnimationFile,
-      Alignment? backgroundAlignment,
-      UIStyle? defaultStyle,
-      required List<FormStep> steps}) {
+  FormStack form({
+    String name = "default",
+    required MapKey mapKey,
+    required LocationWrapper initialLocation,
+    String? backgroundAnimationFile,
+    Alignment? backgroundAlignment,
+    UIStyle? defaultStyle,
+    required List<FormStep> steps,
+  }) {
     // Apply default style to steps that don't have their own
     if (defaultStyle != null) {
       for (var step in steps) {
         step.style ??= defaultStyle;
       }
     }
-    final FormWizard form = FormWizard(List<FormStep>.of(steps),
-        mapKey: mapKey,
-        fromInstanceName: instanceName,
-        backgroundAlignment: backgroundAlignment,
-        backgroundAnimationFile: backgroundAnimationFile,
-        initialLocation: initialLocation);
+    final FormWizard form = FormWizard(
+      List<FormStep>.of(steps),
+      mapKey: mapKey,
+      fromInstanceName: instanceName,
+      backgroundAlignment: backgroundAlignment,
+      backgroundAnimationFile: backgroundAnimationFile,
+      initialLocation: initialLocation,
+    );
     _forms[name] = form;
     return this;
   }
 
   ///Load single json file from assets folder
-  Future<FormStack> loadFromAsset(String path,
-      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
-    return loadFromAssets([path],
-        mapKey: mapKey, initialLocation: initialLocation);
+  Future<FormStack> loadFromAsset(
+    String path, {
+    MapKey? mapKey,
+    LocationWrapper? initialLocation,
+  }) async {
+    return loadFromAssets(
+      [path],
+      mapKey: mapKey,
+      initialLocation: initialLocation,
+    );
   }
 
   ///Import and parse multiple JSON files located in the assets folder.
-  Future<FormStack> loadFromAssets(List<String> files,
-      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
+  Future<FormStack> loadFromAssets(
+    List<String> files, {
+    MapKey? mapKey,
+    LocationWrapper? initialLocation,
+  }) async {
     for (var element in files) {
       try {
         final String data = await rootBundle.loadString(element);
         final Map<String, dynamic> jsonData = json.decode(data);
         ParserUtils.buildFormFromJson(
-            this,
-            jsonData,
-            mapKey ?? MapKey("", "", ""),
-            initialLocation ?? LocationWrapper(0, 0));
+          this,
+          jsonData,
+          mapKey ?? MapKey("", "", ""),
+          initialLocation ?? LocationWrapper(0, 0),
+        );
       } catch (e) {
         throw FormatException('Error loading asset $element: $e');
       }
@@ -201,31 +216,47 @@ class FormStack {
   }
 
   /// Build the form from the JSON content
-  Future<FormStack> buildFormFromJsonString(String data,
-      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
+  Future<FormStack> buildFormFromJsonString(
+    String data, {
+    MapKey? mapKey,
+    LocationWrapper? initialLocation,
+  }) async {
     try {
       final Map<String, dynamic>? body =
           json.decode(data) as Map<String, dynamic>?;
-      return await buildFormFromJson(body,
-          mapKey: mapKey, initialLocation: initialLocation);
+      return await buildFormFromJson(
+        body,
+        mapKey: mapKey,
+        initialLocation: initialLocation,
+      );
     } catch (e) {
       throw FormatException('Invalid JSON format: $e');
     }
   }
 
   /// Build the form from Map (JSON)
-  Future<FormStack> buildFormFromJson(Map<String, dynamic>? body,
-      {MapKey? mapKey, LocationWrapper? initialLocation}) async {
+  Future<FormStack> buildFormFromJson(
+    Map<String, dynamic>? body, {
+    MapKey? mapKey,
+    LocationWrapper? initialLocation,
+  }) async {
     if (body == null) {
       throw ArgumentError('JSON body cannot be null');
     }
-    ParserUtils.buildFormFromJson(this, body, mapKey ?? MapKey("", "", ""),
-        initialLocation ?? LocationWrapper(0, 0));
+    ParserUtils.buildFormFromJson(
+      this,
+      body,
+      mapKey ?? MapKey("", "", ""),
+      initialLocation ?? LocationWrapper(0, 0),
+    );
     return this;
   }
 
-  FormStack addResultForm(Identifier identifier, ResultFormat? resultFormat,
-      {String? formName = "default"}) {
+  FormStack addResultForm(
+    Identifier identifier,
+    ResultFormat? resultFormat, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       _applyToStep(formStack, identifier, (step) {
@@ -237,8 +268,10 @@ class FormStack {
 
   /// Add validation error listener
   FormStack addOnValidationError(
-      Identifier identifier, Function(String)? onValidationError,
-      {String? formName = "default"}) {
+    Identifier identifier,
+    Function(String)? onValidationError, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       _applyToStepWithType<QuestionStep>(formStack, identifier, (step) {
@@ -250,8 +283,10 @@ class FormStack {
 
   /// Prevent System back navigation or getting call back when the user click the system back button.
   FormStack systemBackNavigation(
-      bool disabled, VoidCallback onBackNavigationClick,
-      {String? formName = "default"}) {
+    bool disabled,
+    VoidCallback onBackNavigationClick, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       formStack.preventSystemBackNavigation = disabled;
@@ -306,8 +341,11 @@ class FormStack {
   }
 
   /// Add the Error
-  FormStack setError(Identifier identifier, String message,
-      {String? formName = "default"}) {
+  FormStack setError(
+    Identifier identifier,
+    String message, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       _applyToStep(formStack, identifier, (step) {
@@ -318,8 +356,11 @@ class FormStack {
   }
 
   /// Add the Result
-  FormStack setOptions(List<Options> options, GenericIdentifier identifier,
-      {String? formName = "default"}) {
+  FormStack setOptions(
+    List<Options> options,
+    GenericIdentifier identifier, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
@@ -352,8 +393,10 @@ class FormStack {
   }
 
   /// Add the Result
-  FormStack setResult(Map<String, dynamic> input,
-      {String? formName = "default"}) {
+  FormStack setResult(
+    Map<String, dynamic> input, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
@@ -380,8 +423,10 @@ class FormStack {
   }
 
   /// Disable UI
-  FormStack setDisabledUI(List<String> disabledUIIds,
-      {String? formName = "default"}) {
+  FormStack setDisabledUI(
+    List<String> disabledUIIds, {
+    String? formName = "default",
+  }) {
     final FormStackForm? formStack = _forms[formName];
     if (formStack != null) {
       for (var entry in formStack.steps) {
@@ -405,7 +450,8 @@ class FormStack {
     final form = _forms[name];
     if (form == null) {
       throw StateError(
-          'Form "$name" not found. Create it first using FormStack.api().form(...)');
+        'Form "$name" not found. Create it first using FormStack.api().form(...)',
+      );
     }
     return FormStackView(form);
   }
@@ -488,9 +534,10 @@ class FormStack {
   }
 
   /// Auto-save form data
-  FormStack enableAutoSave(
-      {String name = "default",
-      Duration interval = const Duration(seconds: 30)}) {
+  FormStack enableAutoSave({
+    String name = "default",
+    Duration interval = const Duration(seconds: 30),
+  }) {
     final FormStackForm? form = _forms[name];
     if (form != null) {
       // Implementation would go here for auto-save functionality
@@ -514,11 +561,14 @@ class FormStack {
   /// ```dart
   /// final step = FormStack.api().getStep("email", formName: "myForm");
   /// ```
-  FormStep? getStep(String stepId,
-      {String name = "default", String formName = "default"}) {
+  FormStep? getStep(
+    String stepId, {
+    String name = "default",
+    String formName = "default",
+  }) {
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     return form?.getStep(stepId);
   }
 
@@ -527,11 +577,14 @@ class FormStack {
   /// ```dart
   /// final email = FormStack.api().getStepResult("email");
   /// ```
-  dynamic getStepResult(String stepId,
-      {String name = "default", String formName = "default"}) {
+  dynamic getStepResult(
+    String stepId, {
+    String name = "default",
+    String formName = "default",
+  }) {
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     return form?.getStepResult(stepId);
   }
 
@@ -543,11 +596,13 @@ class FormStack {
   /// print(taskResult.totalDuration);
   /// print(taskResult.completedSteps);
   /// ```
-  TaskResult? getTaskResult(
-      {String name = "default", String formName = "default"}) {
+  TaskResult? getTaskResult({
+    String name = "default",
+    String formName = "default",
+  }) {
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     return form?.getTaskResult();
   }
 
@@ -558,11 +613,13 @@ class FormStack {
   /// final json = FormStack.api().exportAsJson(formName: "myForm");
   /// await api.post('/submit', body: json);
   /// ```
-  Map<String, dynamic>? exportAsJson(
-      {String name = "default", String formName = "default"}) {
+  Map<String, dynamic>? exportAsJson({
+    String name = "default",
+    String formName = "default",
+  }) {
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     return form?.exportAsJson();
   }
 
@@ -584,12 +641,14 @@ class FormStack {
   /// ```dart
   /// await FormStack.api().saveDraft(formName: "myForm");
   /// ```
-  Future<void> saveDraft(
-      {String name = "default", String formName = "default"}) async {
+  Future<void> saveDraft({
+    String name = "default",
+    String formName = "default",
+  }) async {
     if (_persistence == null) return;
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     if (form == null) return;
     form.generateResult();
     final draft = FormDraft(
@@ -606,12 +665,14 @@ class FormStack {
   /// ```dart
   /// await FormStack.api().resumeDraft(formName: "myForm");
   /// ```
-  Future<bool> resumeDraft(
-      {String name = "default", String formName = "default"}) async {
+  Future<bool> resumeDraft({
+    String name = "default",
+    String formName = "default",
+  }) async {
     if (_persistence == null) return false;
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     if (form == null) return false;
     final formId = form.id?.id ?? formName;
     final data = await _persistence!.load(formId);
@@ -628,12 +689,14 @@ class FormStack {
   }
 
   /// Delete a saved draft.
-  Future<void> deleteDraft(
-      {String name = "default", String formName = "default"}) async {
+  Future<void> deleteDraft({
+    String name = "default",
+    String formName = "default",
+  }) async {
     if (_persistence == null) return;
     final FormStackForm? form =
         formByInstaceAndName(name: name, formName: formName) ??
-            _forms[formName];
+        _forms[formName];
     final formId = form?.id?.id ?? formName;
     await _persistence!.delete(formId);
   }

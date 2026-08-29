@@ -104,12 +104,12 @@ class FormDraft {
 
   /// Converts to a JSON-serializable map.
   Map<String, dynamic> toJson() => {
-        'formId': formId,
-        'formName': formName,
-        'results': results,
-        'currentStepId': currentStepId,
-        'savedAt': savedAt.toIso8601String(),
-      };
+    'formId': formId,
+    'formName': formName,
+    'results': results,
+    'currentStepId': currentStepId,
+    'savedAt': savedAt.toIso8601String(),
+  };
 
   /// Creates a [FormDraft] from a JSON map.
   factory FormDraft.fromJson(Map<String, dynamic> json) {

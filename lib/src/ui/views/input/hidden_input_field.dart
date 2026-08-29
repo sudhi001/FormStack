@@ -5,8 +5,13 @@ import 'package:formstack/formstack.dart';
 /// Used for metadata, calculated values, or pre-set data.
 // ignore: must_be_immutable
 class HiddenInputWidgetView extends BaseStepView<QuestionStep> {
-  HiddenInputWidgetView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title});
+  HiddenInputWidgetView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+  });
 
   @override
   Widget? buildWInputWidget(BuildContext context, QuestionStep formStep) {

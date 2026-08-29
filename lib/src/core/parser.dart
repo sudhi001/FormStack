@@ -49,8 +49,12 @@ class ParserUtils {
   /// malformed definition points at itself. This method is deliberately
   /// synchronous: as an `async` method its exceptions would escape to the zone
   /// instead of reaching the caller.
-  static void buildFormFromJson(FormStack formStack, Map<String, dynamic>? body,
-      MapKey mapKey, LocationWrapper locationWrapper) {
+  static void buildFormFromJson(
+    FormStack formStack,
+    Map<String, dynamic>? body,
+    MapKey mapKey,
+    LocationWrapper locationWrapper,
+  ) {
     if (body == null) {
       throw ArgumentError.notNull('body');
     }
@@ -67,8 +71,9 @@ class ParserUtils {
           name: key,
           mapKey: mapKey,
           backgroundAnimationFile: definition['backgroundAnimationFile'],
-          backgroundAlignment:
-              alignmentFromString(definition['backgroundAlignment']),
+          backgroundAlignment: alignmentFromString(
+            definition['backgroundAlignment'],
+          ),
           defaultStyle: definition['theme'] != null
               ? UIStyle.from(definition['theme'])
               : null,
@@ -102,12 +107,14 @@ class ParserUtils {
     if (declared == null) return conditions;
     if (declared is! List) {
       throw FormatException(
-          '"relevantConditions" must be a list, got: $declared');
+        '"relevantConditions" must be a list, got: $declared',
+      );
     }
     for (final el in declared) {
       if (el is! Map) {
         throw FormatException(
-            'Each relevant condition must be an object, got: $el');
+          'Each relevant condition must be an object, got: $el',
+        );
       }
       // A condition targets either a step in this form ("id") or another form
       // ("formName"). One of the two must be present; neither would produce a
@@ -116,19 +123,23 @@ class ParserUtils {
       final formName = (el['formName'] ?? '').toString();
       if (target.isEmpty && formName.isEmpty) {
         throw FormatException(
-            'A relevant condition needs a target step "id" or a "formName": $el');
+          'A relevant condition needs a target step "id" or a "formName": $el',
+        );
       }
       final expression = el['expression'];
       if (expression is! String || expression.isEmpty) {
         throw FormatException(
-            'Relevant condition for "${target.isEmpty ? formName : target}" '
-            'needs an "expression": $el');
+          'Relevant condition for "${target.isEmpty ? formName : target}" '
+          'needs an "expression": $el',
+        );
       }
-      conditions.add(ExpressionRelevant(
-        expression: expression,
-        formName: formName,
-        identifier: GenericIdentifier(id: target),
-      ));
+      conditions.add(
+        ExpressionRelevant(
+          expression: expression,
+          formName: formName,
+          identifier: GenericIdentifier(id: target),
+        ),
+      );
     }
     return conditions;
   }
@@ -149,7 +160,8 @@ class ParserUtils {
       rethrow;
     } catch (e) {
       throw FormatException(
-          'Error creating step of type "${json['type']}": $e');
+        'Error creating step of type "${json['type']}": $e',
+      );
     }
   }
 }

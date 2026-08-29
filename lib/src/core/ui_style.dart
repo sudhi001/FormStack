@@ -75,15 +75,20 @@ class UIStyle {
   final double? fontSize;
 
   /// Creates a [UIStyle].
-  UIStyle(this.backgroundColor, this.foregroundColor, this.borderColor,
-      this.titleBottomPadding, this.borderRadius,
-      {this.inputBackground,
-      this.inputTextColor,
-      this.titleColor,
-      this.subtitleColor,
-      this.iconColor,
-      this.cardBackground,
-      this.fontSize});
+  UIStyle(
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor,
+    this.titleBottomPadding,
+    this.borderRadius, {
+    this.inputBackground,
+    this.inputTextColor,
+    this.titleColor,
+    this.subtitleColor,
+    this.iconColor,
+    this.cardBackground,
+    this.fontSize,
+  });
 
   /// Creates a [UIStyle] from a JSON map, or returns null when [style] is null.
   ///
@@ -114,13 +119,15 @@ class UIStyle {
       inputTextColor: style?["inputTextColor"] != null
           ? HexColor(style!["inputTextColor"])
           : null,
-      titleColor:
-          style?["titleColor"] != null ? HexColor(style!["titleColor"]) : null,
+      titleColor: style?["titleColor"] != null
+          ? HexColor(style!["titleColor"])
+          : null,
       subtitleColor: style?["subtitleColor"] != null
           ? HexColor(style!["subtitleColor"])
           : null,
-      iconColor:
-          style?["iconColor"] != null ? HexColor(style!["iconColor"]) : null,
+      iconColor: style?["iconColor"] != null
+          ? HexColor(style!["iconColor"])
+          : null,
       cardBackground: style?["cardBackground"] != null
           ? HexColor(style!["cardBackground"])
           : null,

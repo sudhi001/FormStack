@@ -18,9 +18,11 @@ import 'package:formstack/src/relevant/relevant_condition.dart';
 /// ```
 class ExpressionRelevant extends RelevantCondition {
   /// Creates an expression-based condition.
-  ExpressionRelevant(
-      {required super.identifier, super.formName, required String expression})
-      : _expression = expression;
+  ExpressionRelevant({
+    required super.identifier,
+    super.formName,
+    required String expression,
+  }) : _expression = expression;
 
   final String _expression;
 

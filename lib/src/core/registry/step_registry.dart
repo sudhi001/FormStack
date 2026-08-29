@@ -4,10 +4,11 @@ import 'package:formstack/formstack.dart';
 ///
 /// [json] is the raw step object; [relevantConditions] are the navigation
 /// conditions the parser has already resolved for it.
-typedef StepFactory = FormStep Function(
-  Map<String, dynamic> json,
-  List<RelevantCondition> relevantConditions,
-);
+typedef StepFactory =
+    FormStep Function(
+      Map<String, dynamic> json,
+      List<RelevantCondition> relevantConditions,
+    );
 
 /// Maps the JSON `"type"` discriminator to the step it constructs.
 ///
@@ -80,8 +81,9 @@ class StepRegistry {
     final factory = _factories[type];
     if (factory == null) {
       throw FormatException(
-          'Unknown step type "$type". Registered: ${registered.join(', ')}. '
-          'Add your own with StepRegistry.instance.register("$type", ...).');
+        'Unknown step type "$type". Registered: ${registered.join(', ')}. '
+        'Add your own with StepRegistry.instance.register("$type", ...).',
+      );
     }
     return factory(json, relevantConditions);
   }

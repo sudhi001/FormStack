@@ -10,8 +10,13 @@ import 'package:lottie/lottie.dart';
 ///
 // ignore: must_be_immutable
 abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
-  BaseStepView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title});
+  BaseStepView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+  });
 
   /// Notifier for error visibility state
   final ValueNotifier<bool> _showErrorNotifier = ValueNotifier<bool>(false);
@@ -42,11 +47,11 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     final Widget? inputWidget = buildWInputWidget(context, formStep);
     return (formStep.componentOnly)
         ? (formStep.width != null
-            ? SizedBox(
-                width: formStep.width,
-                child: _createComponent(context, inputWidget),
-              )
-            : _createComponent(context, inputWidget))
+              ? SizedBox(
+                  width: formStep.width,
+                  child: _createComponent(context, inputWidget),
+                )
+              : _createComponent(context, inputWidget))
         : Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: _createAppBar(context),
@@ -54,7 +59,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
               bottom: false,
               child: _createComponent(context, inputWidget),
             ),
-            bottomNavigationBar: _createFooterView(context));
+            bottomNavigationBar: _createFooterView(context),
+          );
   }
 
   /// Check if the step result is valid.
@@ -187,7 +193,9 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: padding, vertical: padding * 0.75),
+                  horizontal: padding,
+                  vertical: padding * 0.75,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: formStep.crossAxisAlignmentContent,
@@ -200,60 +208,67 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                     if (formStep.titleIconAnimationFile != null) ...[
                       Container(
                         constraints: BoxConstraints(
-                            minWidth: 75,
-                            maxWidth: formStep.titleIconMaxWidth ?? 300,
-                            minHeight: 50,
-                            maxHeight: formStep.titleIconMaxWidth ?? 300),
+                          minWidth: 75,
+                          maxWidth: formStep.titleIconMaxWidth ?? 300,
+                          minHeight: 50,
+                          maxHeight: formStep.titleIconMaxWidth ?? 300,
+                        ),
                         child: Lottie.asset(formStep.titleIconAnimationFile!),
                       ),
-                      _divisionPadding(context: context)
+                      _divisionPadding(context: context),
                     ],
                     if (formStep.titleIconImagePath != null) ...[
                       Container(
                         constraints: BoxConstraints(
-                            minWidth: 75,
-                            maxWidth: formStep.titleIconMaxWidth ?? 300,
-                            minHeight: 50,
-                            maxHeight: formStep.titleIconMaxWidth ?? 300),
+                          minWidth: 75,
+                          maxWidth: formStep.titleIconMaxWidth ?? 300,
+                          minHeight: 50,
+                          maxHeight: formStep.titleIconMaxWidth ?? 300,
+                        ),
                         child: formStep.titleIconImagePath!.startsWith('http')
-                            ? Image.network(formStep.titleIconImagePath!,
-                                fit: BoxFit.contain)
-                            : Image.asset(formStep.titleIconImagePath!,
-                                fit: BoxFit.contain),
+                            ? Image.network(
+                                formStep.titleIconImagePath!,
+                                fit: BoxFit.contain,
+                              )
+                            : Image.asset(
+                                formStep.titleIconImagePath!,
+                                fit: BoxFit.contain,
+                              ),
                       ),
-                      _divisionPadding(context: context)
+                      _divisionPadding(context: context),
                     ],
                     if (title != null && title!.isNotEmpty) ...[
                       Semantics(
                         header: true,
                         child: Container(
-                            constraints: BoxConstraints(maxWidth: maxWidth),
-                            padding: EdgeInsets.only(
-                                bottom:
-                                    formStep.style?.titleBottomPadding ?? 0),
-                            child:
-                                Text(title ?? "", style: _titleStyle(context))),
+                          constraints: BoxConstraints(maxWidth: maxWidth),
+                          padding: EdgeInsets.only(
+                            bottom: formStep.style?.titleBottomPadding ?? 0,
+                          ),
+                          child: Text(title ?? "", style: _titleStyle(context)),
+                        ),
                       ),
-                      _divisionPadding(context: context)
+                      _divisionPadding(context: context),
                     ],
                     if (text != null && text!.isNotEmpty) ...[
                       Container(
-                          constraints: BoxConstraints(maxWidth: maxWidth),
-                          child:
-                              Text(text ?? "", style: _subtitleStyle(context))),
+                        constraints: BoxConstraints(maxWidth: maxWidth),
+                        child: Text(text ?? "", style: _subtitleStyle(context)),
+                      ),
                       _divisionPadding(context: context),
                     ],
                     if (formStep.helperText?.isNotEmpty ?? false) ...[
                       Container(
                         constraints: BoxConstraints(maxWidth: maxWidth),
-                        child: Text(formStep.helperText!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant)),
+                        child: Text(
+                          formStep.helperText!,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
                       ),
                       _divisionPadding(context: context),
                     ],
@@ -261,42 +276,48 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       Semantics(
                         label: formStep.semanticLabel ?? formStep.title,
                         child: IgnorePointer(
-                            ignoring: formStep.disabled, child: inputWidget),
+                          ignoring: formStep.disabled,
+                          child: inputWidget,
+                        ),
                       ),
                     ],
                     ValueListenableBuilder<bool>(
-                        valueListenable: _showErrorNotifier,
-                        builder: (context, isError, _) {
-                          return isError
-                              ? Semantics(
-                                  liveRegion: true,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Text(
-                                      validationError(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .apply(
-                                              color: FormStackTheme.errorColor(
-                                                  context)),
-                                    ),
+                      valueListenable: _showErrorNotifier,
+                      builder: (context, isError, _) {
+                        return isError
+                            ? Semantics(
+                                liveRegion: true,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    validationError(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .apply(
+                                          color: FormStackTheme.errorColor(
+                                            context,
+                                          ),
+                                        ),
                                   ),
-                                )
-                              : const SizedBox.shrink();
-                        }),
+                                ),
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
                     if (formStep.description?.isNotEmpty ?? false)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Text(formStep.description ?? "",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
-                            textAlign: TextAlign.center),
+                        child: Text(
+                          formStep.description ?? "",
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                   ],
                 ),
@@ -349,29 +370,29 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     return (formStep.cancellable ?? false)
         ? (formStep.footerBackButton)
-            ? null
-            : AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: Semantics(
-                  button: true,
-                  label: "Go back",
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: onBack,
-                  ),
-                ),
-                actions: [
-                  Semantics(
+              ? null
+              : AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  leading: Semantics(
                     button: true,
-                    label: "Cancel form",
-                    child: TextButton(
-                      onPressed: onCancel,
-                      child: Text(formStep.cancelButtonText ?? "Cancel"),
+                    label: "Go back",
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: onBack,
                     ),
                   ),
-                ],
-              )
+                  actions: [
+                    Semantics(
+                      button: true,
+                      label: "Cancel form",
+                      child: TextButton(
+                        onPressed: onCancel,
+                        child: Text(formStep.cancelButtonText ?? "Cancel"),
+                      ),
+                    ),
+                  ],
+                )
         : null;
   }
 
@@ -382,7 +403,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     final padding = FormStackTheme.responsivePadding(context);
     final maxWidth = FormStackTheme.responsiveMaxWidth(context);
     final borderRadius = BorderRadius.circular(
-        formStep.style?.borderRadius ?? FormStackTheme.radius(context));
+      formStep.style?.borderRadius ?? FormStackTheme.radius(context),
+    );
 
     return SafeArea(
       child: Padding(
@@ -406,14 +428,17 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                         icon: const Icon(Icons.arrow_back, size: 18),
                         label: Text(formStep.backButtonText ?? "Back"),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: formStep.style?.backgroundColor ??
+                          foregroundColor:
+                              formStep.style?.backgroundColor ??
                               Theme.of(context).colorScheme.primary,
                           side: BorderSide(
-                            color: formStep.style?.backgroundColor ??
+                            color:
+                                formStep.style?.backgroundColor ??
                                 Theme.of(context).colorScheme.outline,
                           ),
                           shape: RoundedRectangleBorder(
-                              borderRadius: borderRadius),
+                            borderRadius: borderRadius,
+                          ),
                           minimumSize: Size(0, btnHeight),
                         ),
                       ),
@@ -424,7 +449,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
                 // --- Primary: Next button (filled) ---
                 Expanded(
-                  flex: formStep.footerBackButton &&
+                  flex:
+                      formStep.footerBackButton &&
                           (formStep.cancellable ?? false)
                       ? 2
                       : 1,
@@ -436,16 +462,18 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       builder: (context, isProcessing, _) => ElevatedButton(
                         onPressed: isProcessing ? null : onNextButtonClick,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: formStep.style?.backgroundColor ??
+                          backgroundColor:
+                              formStep.style?.backgroundColor ??
                               Theme.of(context).colorScheme.primary,
-                          foregroundColor: formStep.style?.foregroundColor ??
+                          foregroundColor:
+                              formStep.style?.foregroundColor ??
                               Theme.of(context).colorScheme.onPrimary,
-                          disabledBackgroundColor: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withValues(alpha: 0.5),
+                          disabledBackgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.5),
                           shape: RoundedRectangleBorder(
-                              borderRadius: borderRadius),
+                            borderRadius: borderRadius,
+                          ),
                           minimumSize: Size(0, btnHeight),
                           maximumSize: Size(double.infinity, btnHeight + 10),
                         ),
@@ -455,7 +483,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                                 width: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: formStep.style?.foregroundColor ??
+                                  color:
+                                      formStep.style?.foregroundColor ??
                                       Theme.of(context).colorScheme.onPrimary,
                                 ),
                               )
@@ -483,7 +512,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   Widget _divisionPadding({BuildContext? context}) {
     final spacing = context == null ? 8.0 : FormStackTheme.spacing(context);
     return SizedBox(
-        height: formStep.display == Display.small ? spacing / 2 : spacing);
+      height: formStep.display == Display.small ? spacing / 2 : spacing,
+    );
   }
 
   Widget _buildProgressBar(BuildContext context) {
@@ -491,20 +521,22 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     // twice on every build.
     final progress = formStackForm.progress;
     if (!progress.isMeaningful) return const SizedBox.shrink();
-    final captionStyle = Theme.of(context)
-        .textTheme
-        .bodySmall
-        ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
+    final captionStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
     return Semantics(
-      label: "Step ${progress.step} of ${progress.total}, "
+      label:
+          "Step ${progress.step} of ${progress.total}, "
           "${progress.percent} percent complete",
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Step ${progress.step} of ${progress.total}',
-                  style: captionStyle),
+              Text(
+                'Step ${progress.step} of ${progress.total}',
+                style: captionStyle,
+              ),
               Text('${progress.percent}%', style: captionStyle),
             ],
           ),
@@ -514,8 +546,9 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
             child: LinearProgressIndicator(
               value: progress.fraction,
               minHeight: 4,
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
             ),
           ),
         ],

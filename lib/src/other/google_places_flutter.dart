@@ -128,8 +128,9 @@ class _GooglePlaceAutoCompleteTextFieldState
     }
 
     final response = await _dio.get(url);
-    final subscriptionResponse =
-        PlacesAutocompleteResponse.fromJson(response.data);
+    final subscriptionResponse = PlacesAutocompleteResponse.fromJson(
+      response.data,
+    );
 
     return subscriptionResponse.predictions ?? [];
   }

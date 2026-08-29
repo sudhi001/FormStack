@@ -40,8 +40,10 @@ class AudioRecording {
   const AudioRecording({required this.path, required this.duration});
 
   /// Converts to a JSON-serializable map.
-  Map<String, dynamic> toJson() =>
-      {'path': path, 'durationMs': duration.inMilliseconds};
+  Map<String, dynamic> toJson() => {
+    'path': path,
+    'durationMs': duration.inMilliseconds,
+  };
 
   @override
   String toString() => 'AudioRecording($path, ${duration.inSeconds}s)';

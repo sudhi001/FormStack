@@ -63,14 +63,13 @@ class FormStackTheme {
     double? borderRadius,
     double? contentPadding,
     double? elementSpacing,
-  }) =>
-      FormStackTheme(
-        maxContentWidth: maxContentWidth ?? this.maxContentWidth,
-        inputMaxWidth: inputMaxWidth ?? this.inputMaxWidth,
-        borderRadius: borderRadius ?? this.borderRadius,
-        contentPadding: contentPadding ?? this.contentPadding,
-        elementSpacing: elementSpacing ?? this.elementSpacing,
-      );
+  }) => FormStackTheme(
+    maxContentWidth: maxContentWidth ?? this.maxContentWidth,
+    inputMaxWidth: inputMaxWidth ?? this.inputMaxWidth,
+    borderRadius: borderRadius ?? this.borderRadius,
+    contentPadding: contentPadding ?? this.contentPadding,
+    elementSpacing: elementSpacing ?? this.elementSpacing,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -82,8 +81,13 @@ class FormStackTheme {
       other.elementSpacing == elementSpacing;
 
   @override
-  int get hashCode => Object.hash(maxContentWidth, inputMaxWidth, borderRadius,
-      contentPadding, elementSpacing);
+  int get hashCode => Object.hash(
+    maxContentWidth,
+    inputMaxWidth,
+    borderRadius,
+    contentPadding,
+    elementSpacing,
+  );
 
   /// Responsive content width based on screen size.
   ///
@@ -188,8 +192,10 @@ class FormStackTheme {
   // --- NPS-specific semantic colors (adapt to dark mode) ---
 
   /// NPS detractor color (0-6).
-  static Color npsDetractorColor(BuildContext context,
-      {bool selected = false}) {
+  static Color npsDetractorColor(
+    BuildContext context, {
+    bool selected = false,
+  }) {
     final brightness = Theme.of(context).brightness;
     if (selected) return Colors.red.shade400;
     return brightness == Brightness.dark

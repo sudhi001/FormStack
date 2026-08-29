@@ -13,11 +13,11 @@ import 'package:formstack/src/relevant/relevant_condition.dart';
 /// ```
 class DynamicConditionalRelevant extends RelevantCondition {
   /// Creates a callback-based condition.
-  DynamicConditionalRelevant(
-      {required super.identifier,
-      super.formName,
-      required Function(dynamic)? isValidCallBack})
-      : _isValidCallBack = isValidCallBack;
+  DynamicConditionalRelevant({
+    required super.identifier,
+    super.formName,
+    required Function(dynamic)? isValidCallBack,
+  }) : _isValidCallBack = isValidCallBack;
 
   final Function(dynamic)? _isValidCallBack;
 

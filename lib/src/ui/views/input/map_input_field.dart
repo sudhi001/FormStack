@@ -6,8 +6,14 @@ class MapWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final double maxHeight;
   MapWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, this.maxHeight = 600});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.maxHeight = 600,
+  });
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (formStackForm.mapKey.web.isEmpty) {
@@ -17,18 +23,25 @@ class MapWidgetView extends BaseStepView<QuestionStep> {
       return const Text("Google map Android  key is empty");
     }
     return Container(
-        decoration: formStep.componentsStyle == ComponentsStyle.basic
-            ? const BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey),
-                  bottom: BorderSide(color: Colors.grey),
-                ),
-              )
-            : null,
-        constraints:
-            BoxConstraints(minWidth: 300, maxWidth: 1200, maxHeight: maxHeight),
-        child: MapWidget(formStackForm.mapKey, formStackForm.initialLocation,
-            (p0) => {formStep.result = p0}));
+      decoration: formStep.componentsStyle == ComponentsStyle.basic
+          ? const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.grey),
+                bottom: BorderSide(color: Colors.grey),
+              ),
+            )
+          : null,
+      constraints: BoxConstraints(
+        minWidth: 300,
+        maxWidth: 1200,
+        maxHeight: maxHeight,
+      ),
+      child: MapWidget(
+        formStackForm.mapKey,
+        formStackForm.initialLocation,
+        (p0) => {formStep.result = p0},
+      ),
+    );
   }
 
   @override

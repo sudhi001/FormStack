@@ -5,8 +5,13 @@ import 'package:formstack/formstack.dart';
 class HTMLWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   HTMLWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
@@ -19,12 +24,16 @@ class HTMLWidgetView extends BaseStepView<QuestionStep> {
               ),
             )
           : null,
-      constraints:
-          const BoxConstraints(minWidth: 300, maxWidth: 1200, maxHeight: 300),
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 1200,
+        maxHeight: 300,
+      ),
       child: const Column(
         children: [
           Text(
-              'HTML Editor temporarily disabled due to flutter_quill compatibility issues'),
+            'HTML Editor temporarily disabled due to flutter_quill compatibility issues',
+          ),
         ],
       ),
     );

@@ -7,8 +7,14 @@ class RankingInputWidgetView extends BaseStepView<QuestionStep> {
   final List<Options> options;
 
   RankingInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, required this.options});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    required this.options,
+  });
 
   late List<Options> _rankedOptions;
   bool _isInitialized = false;
@@ -25,51 +31,61 @@ class RankingInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints:
-          const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 400),
-      child: StatefulBuilder(builder: (context, setState) {
-        return ReorderableListView.builder(
-          shrinkWrap: true,
-          itemCount: _rankedOptions.length,
-          onReorder: (oldIndex, newIndex) {
-            setState(() {
-              if (newIndex > oldIndex) newIndex--;
-              final item = _rankedOptions.removeAt(oldIndex);
-              _rankedOptions.insert(newIndex, item);
-              formStep.result = _rankedOptions;
-            });
-          },
-          itemBuilder: (context, index) {
-            final option = _rankedOptions[index];
-            return Card(
-              key: ValueKey(option.key),
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: ListTile(
-                leading: CircleAvatar(
-                  radius: 14,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                  child: Text(
-                    '${index + 1}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+      constraints: const BoxConstraints(
+        minWidth: 200,
+        maxWidth: 500,
+        maxHeight: 400,
+      ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return ReorderableListView.builder(
+            shrinkWrap: true,
+            itemCount: _rankedOptions.length,
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                if (newIndex > oldIndex) newIndex--;
+                final item = _rankedOptions.removeAt(oldIndex);
+                _rankedOptions.insert(newIndex, item);
+                formStep.result = _rankedOptions;
+              });
+            },
+            itemBuilder: (context, index) {
+              final option = _rankedOptions[index];
+              return Card(
+                key: ValueKey(option.key),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 14,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
                     ),
                   ),
+                  title: Text(
+                    option.title,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  subtitle: option.subTitle != null
+                      ? Text(
+                          option.subTitle!,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        )
+                      : null,
+                  trailing: const Icon(Icons.drag_handle, color: Colors.grey),
                 ),
-                title: Text(option.title,
-                    style: Theme.of(context).textTheme.bodyMedium),
-                subtitle: option.subTitle != null
-                    ? Text(option.subTitle!,
-                        style: Theme.of(context).textTheme.bodySmall)
-                    : null,
-                trailing: const Icon(Icons.drag_handle, color: Colors.grey),
-              ),
-            );
-          },
-        );
-      }),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

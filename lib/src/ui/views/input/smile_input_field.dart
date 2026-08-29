@@ -8,8 +8,13 @@ import 'package:reviews_slider/reviews_slider.dart';
 class SmileInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   SmileInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   final FocusNode _focusNode = FocusNode();
   int value = 0;
@@ -22,19 +27,25 @@ class SmileInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey),
-            bottom: BorderSide(color: Colors.grey),
-          ),
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.grey),
+          bottom: BorderSide(color: Colors.grey),
         ),
-        constraints:
-            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: ReviewSlider(
-              onChange: (int value) => this.value = value, initialValue: value),
-        ));
+      ),
+      constraints: const BoxConstraints(
+        minWidth: 200,
+        maxWidth: 500,
+        maxHeight: 200,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: ReviewSlider(
+          onChange: (int value) => this.value = value,
+          initialValue: value,
+        ),
+      ),
+    );
   }
 
   @override

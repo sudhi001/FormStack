@@ -6,8 +6,13 @@ class NPSInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
 
   NPSInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   int? _selectedScore;
   bool _isInitialized = false;
@@ -21,72 +26,84 @@ class NPSInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 300, maxWidth: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Wrap(
-              spacing: 4,
-              runSpacing: 4,
-              alignment: WrapAlignment.center,
-              children: List.generate(11, (index) {
-                final isSelected = _selectedScore == index;
-                Color bgColor;
-                if (index <= 6) {
-                  bgColor = FormStackTheme.npsDetractorColor(context,
-                      selected: isSelected);
-                } else if (index <= 8) {
-                  bgColor = FormStackTheme.npsPassiveColor(context,
-                      selected: isSelected);
-                } else {
-                  bgColor = FormStackTheme.npsPromoterColor(context,
-                      selected: isSelected);
-                }
-                return SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Material(
-                    color: bgColor,
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                alignment: WrapAlignment.center,
+                children: List.generate(11, (index) {
+                  final isSelected = _selectedScore == index;
+                  Color bgColor;
+                  if (index <= 6) {
+                    bgColor = FormStackTheme.npsDetractorColor(
+                      context,
+                      selected: isSelected,
+                    );
+                  } else if (index <= 8) {
+                    bgColor = FormStackTheme.npsPassiveColor(
+                      context,
+                      selected: isSelected,
+                    );
+                  } else {
+                    bgColor = FormStackTheme.npsPromoterColor(
+                      context,
+                      selected: isSelected,
+                    );
+                  }
+                  return SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Material(
+                      color: bgColor,
                       borderRadius: BorderRadius.circular(8),
-                      onTap: formStep.disabled
-                          ? null
-                          : () {
-                              setState(() {
-                                _selectedScore = index;
-                                formStep.result = index;
-                              });
-                            },
-                      child: Center(
-                        child: Text(
-                          '$index',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: formStep.disabled
+                            ? null
+                            : () {
+                                setState(() {
+                                  _selectedScore = index;
+                                  formStep.result = index;
+                                });
+                              },
+                        child: Center(
+                          child: Text(
+                            '$index',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Not at all likely',
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                );
-              }),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Not at all likely',
-                    style: Theme.of(context).textTheme.bodySmall),
-                Text('Extremely likely',
-                    style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-          ],
-        );
-      }),
+                  Text(
+                    'Extremely likely',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 

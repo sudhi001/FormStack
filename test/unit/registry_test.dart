@@ -98,8 +98,13 @@ void main() {
 
       expect(
         () => step.buildView(form),
-        throwsA(isA<StateError>()
-            .having((e) => e.message, 'message', contains('missing'))),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('missing'),
+          ),
+        ),
       );
     });
 
@@ -151,13 +156,15 @@ void main() {
       );
 
       final a = QuestionStep(
-          id: GenericIdentifier(id: 'a'),
-          inputType: InputType.custom,
-          customInputType: 'stub');
+        id: GenericIdentifier(id: 'a'),
+        inputType: InputType.custom,
+        customInputType: 'stub',
+      );
       final b = QuestionStep(
-          id: GenericIdentifier(id: 'b'),
-          inputType: InputType.custom,
-          customInputType: 'stub');
+        id: GenericIdentifier(id: 'b'),
+        inputType: InputType.custom,
+        customInputType: 'stub',
+      );
       final form = formWith([a, b]);
       a.buildView(form);
       b.buildView(form);
@@ -168,7 +175,9 @@ void main() {
 
     test('unregister restores the built-in behaviour', () {
       InputRegistry.instance.register(
-          'text', (ctx) => _StubInputView(ctx.form, ctx.step, ctx.text));
+        'text',
+        (ctx) => _StubInputView(ctx.form, ctx.step, ctx.text),
+      );
       expect(InputRegistry.instance.unregister('text'), isTrue);
       expect(InputRegistry.instance.contains('text'), isFalse);
     });
@@ -194,7 +203,8 @@ void main() {
       );
 
       await FormStack.api().buildFormFromJsonString(
-          '{"default":{"steps":[{"type":"AuditStep","id":"audit","title":"Audit"}]}}');
+        '{"default":{"steps":[{"type":"AuditStep","id":"audit","title":"Audit"}]}}',
+      );
 
       final form = FormStack.formByInstaceAndName()!;
       expect(form.getStep('audit')?.title, 'Audit');
@@ -203,15 +213,19 @@ void main() {
     test('built-ins are restored automatically after a reset', () async {
       StepRegistry.instance.reset();
       await FormStack.api().buildFormFromJsonString(
-          '{"default":{"steps":[{"type":"CompletionStep","id":"done"}]}}');
+        '{"default":{"steps":[{"type":"CompletionStep","id":"done"}]}}',
+      );
       expect(FormStack.formByInstaceAndName()!.getStep('done'), isNotNull);
     });
   });
 
   group('ValidatorRegistry', () {
     test('builds a single validator from an object', () {
-      final validator = ResultFormat.fromJson(
-          {'type': 'minLength', 'message': 'too short', 'min': 4})!;
+      final validator = ResultFormat.fromJson({
+        'type': 'minLength',
+        'message': 'too short',
+        'min': 4,
+      })!;
       expect(validator.isValid('abc'), isFalse);
       expect(validator.isValid('abcd'), isTrue);
     });
@@ -237,8 +251,13 @@ void main() {
     test('an unknown type names what is available', () {
       expect(
         () => ResultFormat.fromJson({'type': 'nonsense'}),
-        throwsA(isA<FormatException>()
-            .having((e) => e.message, 'message', contains('nonsense'))),
+        throwsA(
+          isA<FormatException>().having(
+            (e) => e.message,
+            'message',
+            contains('nonsense'),
+          ),
+        ),
       );
     });
 
@@ -249,20 +268,28 @@ void main() {
             ResultFormat.custom(message, (v) => (int.tryParse(v) ?? 1).isEven),
       );
 
-      final validator = ResultFormat.fromJson(
-          {'type': 'evenNumber', 'message': 'must be even'})!;
+      final validator = ResultFormat.fromJson({
+        'type': 'evenNumber',
+        'message': 'must be even',
+      })!;
       expect(validator.isValid('4'), isTrue);
       expect(validator.isValid('5'), isFalse);
     });
 
     test('pattern requires a regex', () {
-      expect(() => ResultFormat.fromJson({'type': 'pattern', 'message': 'x'}),
-          throwsA(isA<FormatException>()));
+      expect(
+        () => ResultFormat.fromJson({'type': 'pattern', 'message': 'x'}),
+        throwsA(isA<FormatException>()),
+      );
     });
 
     test('numeric arguments are coerced from strings', () {
-      final validator = ResultFormat.fromJson(
-          {'type': 'range', 'message': 'out', 'min': '1', 'max': '5'})!;
+      final validator = ResultFormat.fromJson({
+        'type': 'range',
+        'message': 'out',
+        'min': '1',
+        'max': '5',
+      })!;
       expect(validator.isValid(3), isTrue);
       expect(validator.isValid(9), isFalse);
     });

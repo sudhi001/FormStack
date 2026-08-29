@@ -8,8 +8,14 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final int count;
   OTPInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, required this.count});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    required this.count,
+  });
 
   final List<TextEditingController?> _textControllers = [];
   final List<FocusNode?> _focusNodes = [];
@@ -35,18 +41,22 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey),
-            bottom: BorderSide(color: Colors.grey),
-          ),
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.grey),
+          bottom: BorderSide(color: Colors.grey),
         ),
-        constraints:
-            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: _buildTextFields(context),
-        ));
+      ),
+      constraints: const BoxConstraints(
+        minWidth: 200,
+        maxWidth: 500,
+        maxHeight: 200,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: _buildTextFields(context),
+      ),
+    );
   }
 
   void _initControllers() {
@@ -59,12 +69,15 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
 
   Widget _buildTextFields(BuildContext context) {
     final List<Widget> textFields = List.generate(
-        count, (int i) => _buildTextField(context: context, index: i));
+      count,
+      (int i) => _buildTextField(context: context, index: i),
+    );
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: textFields);
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: textFields,
+    );
   }
 
   @override
@@ -80,48 +93,51 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
 
   Widget _buildTextField({required BuildContext context, required int index}) {
     return Container(
-        width: 50,
-        margin: const EdgeInsets.symmetric(horizontal: 7),
-        child: TextFormField(
-          autofocus: true,
-          enabled: !formStep.disabled,
-          autocorrect: false,
-          minLines: 1,
-          focusNode: _focusNodes[index],
-          textAlign: TextAlign.center,
-          controller: _textControllers[index],
-          maxLines: 1,
-          onEditingComplete: () {
-            if (index + 1 < count) {
-              _focusNodes[index + 1]?.requestFocus();
-            }
-          },
-          onChanged: (value) {
-            _verificationCode[index] = value;
-            if (index >= count - 1) {
-              onNextButtonClick();
-            } else {
-              _focusNodes[index]?.unfocus();
-              _focusNodes[index + 1]?.requestFocus();
-            }
-          },
-          keyboardType: TextInputType.number,
-          validator: (input) =>
-              resultFormat.isValid(_textControllers[index]!.text)
-                  ? null
-                  : validationError(),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-            LengthLimitingTextInputFormatter(1)
-          ],
-          decoration: InputDecoration(
-              enabledBorder:
-                  formStep.inputStyle.toInputBorder(style: formStep.style),
-              border: formStep.inputStyle.toInputBorder(style: formStep.style),
-              hintText: formStep.hint,
-              labelText: formStep.label,
-              hintStyle: Theme.of(context).textTheme.bodySmall),
-        ));
+      width: 50,
+      margin: const EdgeInsets.symmetric(horizontal: 7),
+      child: TextFormField(
+        autofocus: true,
+        enabled: !formStep.disabled,
+        autocorrect: false,
+        minLines: 1,
+        focusNode: _focusNodes[index],
+        textAlign: TextAlign.center,
+        controller: _textControllers[index],
+        maxLines: 1,
+        onEditingComplete: () {
+          if (index + 1 < count) {
+            _focusNodes[index + 1]?.requestFocus();
+          }
+        },
+        onChanged: (value) {
+          _verificationCode[index] = value;
+          if (index >= count - 1) {
+            onNextButtonClick();
+          } else {
+            _focusNodes[index]?.unfocus();
+            _focusNodes[index + 1]?.requestFocus();
+          }
+        },
+        keyboardType: TextInputType.number,
+        validator: (input) =>
+            resultFormat.isValid(_textControllers[index]!.text)
+            ? null
+            : validationError(),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+          LengthLimitingTextInputFormatter(1),
+        ],
+        decoration: InputDecoration(
+          enabledBorder: formStep.inputStyle.toInputBorder(
+            style: formStep.style,
+          ),
+          border: formStep.inputStyle.toInputBorder(style: formStep.style),
+          hintText: formStep.hint,
+          labelText: formStep.label,
+          hintStyle: Theme.of(context).textTheme.bodySmall,
+        ),
+      ),
+    );
   }
 
   @override

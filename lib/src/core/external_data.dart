@@ -28,7 +28,9 @@ abstract class ExternalDataProvider {
   /// [sourceId] identifies which data set to load (e.g., table name, endpoint).
   /// [params] contains any filter parameters (e.g., `{"country": "US"}`).
   Future<List<Options>> loadOptions(
-      String sourceId, Map<String, dynamic> params);
+    String sourceId,
+    Map<String, dynamic> params,
+  );
 }
 
 /// Loads options from a static list of maps (simulates CSV/JSON data).
@@ -55,15 +57,19 @@ class StaticDataProvider implements ExternalDataProvider {
 
   @override
   Future<List<Options>> loadOptions(
-      String sourceId, Map<String, dynamic> params) async {
+    String sourceId,
+    Map<String, dynamic> params,
+  ) async {
     final rows = data[sourceId] ?? [];
     return rows
-        .map((row) => Options(
-              row['key']?.toString() ?? '',
-              row['title']?.toString() ?? '',
-              subTitle: row['subTitle']?.toString(),
-              value: row['value'],
-            ))
+        .map(
+          (row) => Options(
+            row['key']?.toString() ?? '',
+            row['title']?.toString() ?? '',
+            subTitle: row['subTitle']?.toString(),
+            value: row['value'],
+          ),
+        )
         .toList();
   }
 

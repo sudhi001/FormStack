@@ -12,8 +12,14 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final DateInputFormats format;
   DateInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, this.format = DateInputFormats.dateOnly});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.format = DateInputFormats.dateOnly,
+  });
 
   final FocusNode _focusNode = FocusNode();
   DateTime? _chosenDateTime;
@@ -22,8 +28,9 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.result != null) {
       if (formStep.result is String) {
         try {
-          final DateResultType? dateResultType =
-              cast<DateResultType>(resultFormat);
+          final DateResultType? dateResultType = cast<DateResultType>(
+            resultFormat,
+          );
           if (dateResultType != null) {
             return DateFormat(dateResultType.format).parse(formStep.result);
           }
@@ -42,31 +49,35 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     _chosenDateTime = chosenDateTime;
     return Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey),
-            bottom: BorderSide(color: Colors.grey),
-          ),
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.grey),
+          bottom: BorderSide(color: Colors.grey),
         ),
-        constraints:
-            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 150),
-        child: ScrollConfiguration(
-          behavior: MyCustomScrollBehavior(),
-          child: CupertinoDatePicker(
-            minuteInterval: 1,
-            key: UniqueKey(),
-            mode: format == DateInputFormats.dateTime
-                ? CupertinoDatePickerMode.dateAndTime
-                : format == DateInputFormats.dateOnly
-                    ? CupertinoDatePickerMode.date
-                    : CupertinoDatePickerMode.time,
-            initialDateTime: chosenDateTime,
-            onDateTimeChanged: (DateTime newDateTime) {
-              _chosenDateTime = newDateTime;
-              formStep.result = newDateTime;
-            },
-          ),
-        ));
+      ),
+      constraints: const BoxConstraints(
+        minWidth: 200,
+        maxWidth: 500,
+        maxHeight: 150,
+      ),
+      child: ScrollConfiguration(
+        behavior: MyCustomScrollBehavior(),
+        child: CupertinoDatePicker(
+          minuteInterval: 1,
+          key: UniqueKey(),
+          mode: format == DateInputFormats.dateTime
+              ? CupertinoDatePickerMode.dateAndTime
+              : format == DateInputFormats.dateOnly
+              ? CupertinoDatePickerMode.date
+              : CupertinoDatePickerMode.time,
+          initialDateTime: chosenDateTime,
+          onDateTimeChanged: (DateTime newDateTime) {
+            _chosenDateTime = newDateTime;
+            formStep.result = newDateTime;
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -109,14 +120,10 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        // etc.
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    // etc.
+  };
 }
 
-enum DateInputFormats {
-  dateOnly,
-  dateTime,
-  timeOnly,
-}
+enum DateInputFormats { dateOnly, dateTime, timeOnly }

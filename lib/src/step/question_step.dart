@@ -67,7 +67,10 @@ class QuestionStep extends FormStep {
   /// )
   /// ```
   final List<Options> Function(
-      List<Options> options, Map<String, dynamic> results)? choiceFilter;
+    List<Options> options,
+    Map<String, dynamic> results,
+  )?
+  choiceFilter;
 
   /// External data provider for loading options dynamically.
   /// Used with [ExternalDataProvider] for API/CSV-backed choice lists.
@@ -82,64 +85,64 @@ class QuestionStep extends FormStep {
   /// registered override for a built-in type. See [InputRegistry].
   final String? customInputType;
 
-  QuestionStep(
-      {super.id,
-      this.customInputType,
-      super.title = "",
-      required this.inputType,
-      super.text,
-      super.style,
-      super.display,
-      super.hint,
-      super.footerBackButton,
-      this.selectionType,
-      super.description,
-      this.onFinish,
-      this.lengthLimit,
-      super.label,
-      super.disabled,
-      this.count = 0,
-      this.mask,
-      this.maxCount = 100,
-      this.maxHeight = 600,
-      this.filter,
-      this.textAlign = TextAlign.start,
-      super.width,
-      super.componentsStyle = ComponentsStyle.minimal,
-      this.inputStyle = InputStyle.basic,
-      super.resultFormat,
-      this.onValidationError,
-      super.isOptional = false,
-      this.options,
-      super.crossAxisAlignmentContent,
-      super.relevantConditions,
-      this.autoTrigger = false,
-      this.numberOfLines,
-      super.componentOnly,
-      super.titleIconAnimationFile,
-      super.nextButtonText,
-      super.backButtonText,
-      super.titleIconMaxWidth,
-      super.cancelButtonText,
-      super.cancellable,
-      super.helperText,
-      super.defaultValue,
-      super.semanticLabel,
-      this.minValue,
-      this.maxValue,
-      this.stepValue,
-      this.minSelections,
-      this.maxSelections,
-      this.consentText,
-      this.currencySymbol,
-      this.phoneCountryCode,
-      this.ratingCount,
-      this.calculateExpression,
-      this.calculateCallback,
-      this.choiceFilter,
-      this.optionsProvider,
-      this.optionsSourceId})
-      : super();
+  QuestionStep({
+    super.id,
+    this.customInputType,
+    super.title = "",
+    required this.inputType,
+    super.text,
+    super.style,
+    super.display,
+    super.hint,
+    super.footerBackButton,
+    this.selectionType,
+    super.description,
+    this.onFinish,
+    this.lengthLimit,
+    super.label,
+    super.disabled,
+    this.count = 0,
+    this.mask,
+    this.maxCount = 100,
+    this.maxHeight = 600,
+    this.filter,
+    this.textAlign = TextAlign.start,
+    super.width,
+    super.componentsStyle = ComponentsStyle.minimal,
+    this.inputStyle = InputStyle.basic,
+    super.resultFormat,
+    this.onValidationError,
+    super.isOptional = false,
+    this.options,
+    super.crossAxisAlignmentContent,
+    super.relevantConditions,
+    this.autoTrigger = false,
+    this.numberOfLines,
+    super.componentOnly,
+    super.titleIconAnimationFile,
+    super.nextButtonText,
+    super.backButtonText,
+    super.titleIconMaxWidth,
+    super.cancelButtonText,
+    super.cancellable,
+    super.helperText,
+    super.defaultValue,
+    super.semanticLabel,
+    this.minValue,
+    this.maxValue,
+    this.stepValue,
+    this.minSelections,
+    this.maxSelections,
+    this.consentText,
+    this.currencySymbol,
+    this.phoneCountryCode,
+    this.ratingCount,
+    this.calculateExpression,
+    this.calculateCallback,
+    this.choiceFilter,
+    this.optionsProvider,
+    this.optionsSourceId,
+  }) : super();
 
   /// The registry key this step resolves against.
   ///
@@ -153,15 +156,20 @@ class QuestionStep extends FormStep {
 
     // Application-registered inputs take precedence, which is what lets a host
     // app add new input types or replace a built-in one without forking.
-    final custom =
-        InputRegistry.instance.build(inputTypeKey, this, formStackForm);
+    final custom = InputRegistry.instance.build(
+      inputTypeKey,
+      this,
+      formStackForm,
+    );
     if (custom != null) return custom;
 
     if (inputType == InputType.custom) {
-      throw StateError('QuestionStep "${id?.id}" uses InputType.custom but '
-          '"$inputTypeKey" is not registered. Register it first: '
-          'InputRegistry.instance.register("$inputTypeKey", (ctx) => ...). '
-          'Registered: ${InputRegistry.instance.registered.join(', ')}');
+      throw StateError(
+        'QuestionStep "${id?.id}" uses InputType.custom but '
+        '"$inputTypeKey" is not registered. Register it first: '
+        'InputRegistry.instance.register("$inputTypeKey", (ctx) => ...). '
+        'Registered: ${InputRegistry.instance.registered.join(', ')}',
+      );
     }
 
     switch (inputType) {
@@ -169,201 +177,391 @@ class QuestionStep extends FormStep {
         resultFormat =
             resultFormat ?? ResultFormat.email("Please enter a valid email.");
         return TextFieldWidgetView.email(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.name:
         resultFormat =
             resultFormat ?? ResultFormat.name("Please enter a valid name.");
         return TextFieldWidgetView.name(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.file:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please select a file.");
         return TextFieldWidgetView.file(
-            this, formStackForm, text, resultFormat!, title, filter);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          filter,
+        );
       case InputType.password:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.password("Please enter a valid password.");
         return TextFieldWidgetView.password(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.text:
         resultFormat =
             resultFormat ?? ResultFormat.notBlank("Please enter a valid data.");
         return TextFieldWidgetView.text(
-            this, formStackForm, text, resultFormat!, title, numberOfLines);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          numberOfLines,
+        );
       case InputType.number:
         resultFormat =
             resultFormat ?? ResultFormat.number("Please enter a valid number.");
         return TextFieldWidgetView.number(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.date:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.date("Please enter a valid date.", "dd-MM-yyyy");
         return DateInputWidget.date(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.time:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.date("Please enter a valid time.", "HH:mm:ss");
         return DateInputWidget.time(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.dateTime:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.date(
-                "Please enter a valid date.", "yyyy-MM-dd'T'HH:mm");
+              "Please enter a valid date.",
+              "yyyy-MM-dd'T'HH:mm",
+            );
         return DateInputWidget.dateTime(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.smile:
         resultFormat = resultFormat ?? ResultFormat.smile("Please select.");
         return SmileInputWidget.smile(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.singleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
         final filteredOptions = _applyChoiceFilter(formStackForm);
         return ChoiceInputWidget.single(
-            this,
-            formStackForm,
-            text,
-            resultFormat!,
-            title,
-            filteredOptions,
-            selectionType ?? SelectionType.arrow,
-            autoTrigger ?? false);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          filteredOptions,
+          selectionType ?? SelectionType.arrow,
+          autoTrigger ?? false,
+        );
       case InputType.dropdown:
         resultFormat =
             resultFormat ?? ResultFormat.singleChoice("Please select any.");
         return ChoiceInputWidget.dropdown(
-            this,
-            formStackForm,
-            text,
-            resultFormat!,
-            title,
-            _applyChoiceFilter(formStackForm),
-            autoTrigger ?? false);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          _applyChoiceFilter(formStackForm),
+          autoTrigger ?? false,
+        );
       case InputType.multipleChoice:
         resultFormat =
             resultFormat ?? ResultFormat.multipleChoice("Please select any.");
         return ChoiceInputWidget.multiple(
-            this,
-            formStackForm,
-            text,
-            resultFormat!,
-            title,
-            selectionType ?? SelectionType.tick,
-            _applyChoiceFilter(formStackForm));
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          selectionType ?? SelectionType.tick,
+          _applyChoiceFilter(formStackForm),
+        );
       case InputType.otp:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.length("Please enter all fields", count);
         return CommonInputWidget.otp(
-            this, formStackForm, text, resultFormat!, title, count);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          count,
+        );
       case InputType.dynamicKeyValue:
         resultFormat =
             resultFormat ?? ResultFormat.notEmpty("Please add any one");
         return CommonInputWidget.dynamicKeyValueField(
-            this, formStackForm, text, resultFormat!, title, maxCount);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          maxCount,
+        );
       case InputType.htmlEditor:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.htmlWidget(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.mapLocation:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please enter any.");
         return CommonInputWidget.map(
-            this, formStackForm, text, resultFormat!, title, maxHeight ?? 600);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          maxHeight ?? 600,
+        );
       case InputType.avatar:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please update image.");
         return CommonInputWidget.avatar(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.banner:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please update image.");
         return CommonInputWidget.banner(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
 
       // --- New industry-standard input types ---
       case InputType.slider:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.range(
-                "Please select a value.", minValue ?? 0, maxValue ?? 100);
-        return SurveyInputWidget.slider(this, formStackForm, text,
-            resultFormat!, title, minValue, maxValue, stepValue);
+              "Please select a value.",
+              minValue ?? 0,
+              maxValue ?? 100,
+            );
+        return SurveyInputWidget.slider(
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          minValue,
+          maxValue,
+          stepValue,
+        );
       case InputType.rating:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.range("Please select a rating.", 1, ratingCount ?? 5);
         return SurveyInputWidget.rating(
-            this, formStackForm, text, resultFormat!, title, ratingCount);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          ratingCount,
+        );
       case InputType.nps:
         resultFormat =
             resultFormat ?? ResultFormat.range("Please select a score.", 0, 10);
         return SurveyInputWidget.nps(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.consent:
         resultFormat =
             resultFormat ?? ResultFormat.consent("You must agree to continue.");
         return SurveyInputWidget.consent(
-            this, formStackForm, text, resultFormat!, title, consentText);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          consentText,
+        );
       case InputType.signature:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.notNull("Please provide your signature.");
         return SurveyInputWidget.signature(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.ranking:
         resultFormat =
             resultFormat ?? ResultFormat.notEmpty("Please rank the items.");
         return SurveyInputWidget.ranking(
-            this, formStackForm, text, resultFormat!, title, options);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          options,
+        );
       case InputType.phone:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.phone("Please enter a valid phone number.");
         return SurveyInputWidget.phone(
-            this, formStackForm, text, resultFormat!, title, phoneCountryCode);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          phoneCountryCode,
+        );
       case InputType.currency:
         resultFormat =
             resultFormat ?? ResultFormat.notBlank("Please enter an amount.");
         return SurveyInputWidget.currency(
-            this, formStackForm, text, resultFormat!, title, currencySymbol);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          currencySymbol,
+        );
       case InputType.boolean:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please select Yes or No.");
         return SurveyInputWidget.boolean(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.imageChoice:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.singleChoice("Please select an option.");
         return SurveyInputWidget.imageChoice(
-            this, formStackForm, text, resultFormat!, title, options, true);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+          options,
+          true,
+        );
       case InputType.hidden:
         return SurveyInputWidget.hidden(this, formStackForm, text, title);
       case InputType.calculate:
         return SurveyInputWidget.calculate(
-            this, formStackForm, text, title, calculateCallback);
+          this,
+          formStackForm,
+          text,
+          title,
+          calculateCallback,
+        );
       case InputType.barcode:
-        resultFormat = resultFormat ??
+        resultFormat =
+            resultFormat ??
             ResultFormat.notBlank("Please scan or enter a code.");
         return SurveyInputWidget.barcode(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.audio:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please record audio.");
         return SurveyInputWidget.audio(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.geotrace:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please trace a path.");
         return SurveyInputWidget.geotrace(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.geoshape:
         resultFormat =
             resultFormat ?? ResultFormat.notNull("Please draw a shape.");
         return SurveyInputWidget.geoshape(
-            this, formStackForm, text, resultFormat!, title);
+          this,
+          formStackForm,
+          text,
+          resultFormat!,
+          title,
+        );
       case InputType.custom:
         break;
     }
     throw UnimplementedError(
-        'No widget is registered for input type "$inputTypeKey" '
-        '(step "${id?.id}").');
+      'No widget is registered for input type "$inputTypeKey" '
+      '(step "${id?.id}").',
+    );
   }
 
   /// Applies choiceFilter if defined, filtering options based on current results.
@@ -375,19 +573,23 @@ class QuestionStep extends FormStep {
     return options;
   }
 
-  factory QuestionStep.from(Map<String, dynamic>? element,
-      List<RelevantCondition> relevantConditions) {
+  factory QuestionStep.from(
+    Map<String, dynamic>? element,
+    List<RelevantCondition> relevantConditions,
+  ) {
     final List<Options> options = [];
     for (final el in cast<List<dynamic>>(element?["options"]) ?? const []) {
       if (el is! Map) {
         throw FormatException('Each option must be an object, got: $el');
       }
-      options.add(Options(
-        (el["key"] ?? '').toString(),
-        (el["title"] ?? '').toString(),
-        subTitle: el["subTitle"]?.toString(),
-        value: el["value"],
-      ));
+      options.add(
+        Options(
+          (el["key"] ?? '').toString(),
+          (el["title"] ?? '').toString(),
+          subTitle: el["subTitle"]?.toString(),
+          value: el["value"],
+        ),
+      );
     }
     final rawInputType = (element?["inputType"] ?? "").toString();
     final matched = InputType.values
@@ -398,73 +600,81 @@ class QuestionStep extends FormStep {
     // host application registered. Only a name that matches neither is fatal.
     if (matched == null && !InputRegistry.instance.contains(rawInputType)) {
       throw FormatException(
-          'Unknown inputType "$rawInputType". Built-in types: '
-          '${InputType.values.map((e) => e.name).join(', ')}. '
-          'Custom types must be registered with InputRegistry first.');
+        'Unknown inputType "$rawInputType". Built-in types: '
+        '${InputType.values.map((e) => e.name).join(', ')}. '
+        'Custom types must be registered with InputRegistry first.',
+      );
     }
     final InputType inputType = matched ?? InputType.custom;
     return QuestionStep(
-        inputType: inputType,
-        customInputType: matched == null ? rawInputType : null,
-        resultFormat: ResultFormat.fromJson(
-            element?["validators"] ?? element?["validator"]),
-        options: options,
-        footerBackButton: element?["footerBackButton"] ?? false,
-        selectionType: element?["selectionType"] != null
-            ? SelectionType.values
-                .firstWhere((e) => e.name == element?["selectionType"])
-            : null,
-        filter: element?["filter"] ?? [],
-        lengthLimit: element?["lengthLimit"] ?? -1,
-        count: element?["count"] ?? 4,
-        disabled: element?["disabled"] ?? false,
-        maxHeight: element?["maxHeight"] ?? 600,
-        maxCount: element?["maxCount"] ?? 100,
-        mask: element?["mask"],
-        description: element?["description"],
-        textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
-        style: UIStyle.maybeFrom(element?["style"]),
-        crossAxisAlignmentContent: crossAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        display: element?["display"] != null
-            ? Display.values.firstWhere((e) => e.name == element?["display"])
-            : Display.normal,
-        relevantConditions: relevantConditions,
-        cancellable: element?["cancellable"],
-        hint: element?["hint"],
-        label: element?["label"],
-        componentsStyle: element?["componentsStyle"] != null
-            ? ComponentsStyle.values
-                .firstWhere((e) => e.name == element?["componentsStyle"])
-            : ComponentsStyle.minimal,
-        inputStyle: element?["inputStyle"] != null
-            ? InputStyle.values
-                .firstWhere((e) => e.name == element?["inputStyle"])
-            : InputStyle.basic,
-        autoTrigger: element?["autoTrigger"] ?? false,
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        nextButtonText: element?["nextButtonText"],
-        numberOfLines: element?["numberOfLines"],
-        text: element?["text"],
-        width: element?["width"],
-        title: element?["title"],
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        helperText: element?["helperText"],
-        defaultValue: element?["defaultValue"],
-        semanticLabel: element?["semanticLabel"],
-        minValue: element?["minValue"],
-        maxValue: element?["maxValue"],
-        stepValue: element?["stepValue"],
-        minSelections: element?["minSelections"],
-        maxSelections: element?["maxSelections"],
-        consentText: element?["consentText"],
-        currencySymbol: element?["currencySymbol"],
-        phoneCountryCode: element?["phoneCountryCode"],
-        ratingCount: element?["ratingCount"],
-        id: GenericIdentifier(id: element?["id"]));
+      inputType: inputType,
+      customInputType: matched == null ? rawInputType : null,
+      resultFormat: ResultFormat.fromJson(
+        element?["validators"] ?? element?["validator"],
+      ),
+      options: options,
+      footerBackButton: element?["footerBackButton"] ?? false,
+      selectionType: element?["selectionType"] != null
+          ? SelectionType.values.firstWhere(
+              (e) => e.name == element?["selectionType"],
+            )
+          : null,
+      filter: element?["filter"] ?? [],
+      lengthLimit: element?["lengthLimit"] ?? -1,
+      count: element?["count"] ?? 4,
+      disabled: element?["disabled"] ?? false,
+      maxHeight: element?["maxHeight"] ?? 600,
+      maxCount: element?["maxCount"] ?? 100,
+      mask: element?["mask"],
+      description: element?["description"],
+      textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
+      style: UIStyle.maybeFrom(element?["style"]),
+      crossAxisAlignmentContent:
+          crossAlignmentFromString(
+            element?["crossAxisAlignmentContent"] ?? "center",
+          ) ??
+          CrossAxisAlignment.center,
+      display: element?["display"] != null
+          ? Display.values.firstWhere((e) => e.name == element?["display"])
+          : Display.normal,
+      relevantConditions: relevantConditions,
+      cancellable: element?["cancellable"],
+      hint: element?["hint"],
+      label: element?["label"],
+      componentsStyle: element?["componentsStyle"] != null
+          ? ComponentsStyle.values.firstWhere(
+              (e) => e.name == element?["componentsStyle"],
+            )
+          : ComponentsStyle.minimal,
+      inputStyle: element?["inputStyle"] != null
+          ? InputStyle.values.firstWhere(
+              (e) => e.name == element?["inputStyle"],
+            )
+          : InputStyle.basic,
+      autoTrigger: element?["autoTrigger"] ?? false,
+      backButtonText: element?["backButtonText"],
+      cancelButtonText: element?["cancelButtonText"],
+      isOptional: element?["isOptional"],
+      nextButtonText: element?["nextButtonText"],
+      numberOfLines: element?["numberOfLines"],
+      text: element?["text"],
+      width: element?["width"],
+      title: element?["title"],
+      titleIconAnimationFile: element?["titleIconAnimationFile"],
+      titleIconMaxWidth: element?["titleIconMaxWidth"],
+      helperText: element?["helperText"],
+      defaultValue: element?["defaultValue"],
+      semanticLabel: element?["semanticLabel"],
+      minValue: element?["minValue"],
+      maxValue: element?["maxValue"],
+      stepValue: element?["stepValue"],
+      minSelections: element?["minSelections"],
+      maxSelections: element?["maxSelections"],
+      consentText: element?["consentText"],
+      currencySymbol: element?["currencySymbol"],
+      phoneCountryCode: element?["phoneCountryCode"],
+      ratingCount: element?["ratingCount"],
+      id: GenericIdentifier(id: element?["id"]),
+    );
   }
 }

@@ -13,8 +13,13 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
 
   BarcodeInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -31,78 +36,84 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Scan button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed:
-                    formStep.disabled ? null : () => _scan(context, setState),
-                icon: const Icon(Icons.qr_code_scanner, size: 28),
-                label: Text(
-                    _controller.text.isEmpty ? "Tap to Scan" : "Scan Again"),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Scan button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: formStep.disabled
+                      ? null
+                      : () => _scan(context, setState),
+                  icon: const Icon(Icons.qr_code_scanner, size: 28),
+                  label: Text(
+                    _controller.text.isEmpty ? "Tap to Scan" : "Scan Again",
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            // Manual entry fallback
-            TextFormField(
-              controller: _controller,
-              focusNode: _focusNode,
-              enabled: !formStep.disabled,
-              onChanged: (value) {
-                formStep.result = value;
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(
-                    RegExp(r'[a-zA-Z0-9\-._~:/?#\[\]@!$&()*+,;=%]')),
-              ],
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                hintText: formStep.hint ?? "Or enter code manually",
-                labelText: formStep.label ?? "Barcode / QR Code",
-                prefixIcon: const Icon(Icons.qr_code),
-              ),
-            ),
-            if (_controller.text.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 12),
+              // Manual entry fallback
+              TextFormField(
+                controller: _controller,
+                focusNode: _focusNode,
+                enabled: !formStep.disabled,
+                onChanged: (value) {
+                  formStep.result = value;
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(r'[a-zA-Z0-9\-._~:/?#\[\]@!$&()*+,;=%]'),
+                  ),
+                ],
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: formStep.hint ?? "Or enter code manually",
+                  labelText: formStep.label ?? "Barcode / QR Code",
+                  prefixIcon: const Icon(Icons.qr_code),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.check_circle,
-                        color: Colors.green.shade700, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        "Scanned: ${_controller.text}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.green.shade700),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+              ),
+              if (_controller.text.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green.shade700,
+                        size: 16,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          "Scanned: ${_controller.text}",
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.green.shade700),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 
@@ -121,13 +132,16 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
       formStep.result = scanned;
       setState(() {});
     } catch (e, stack) {
-      FlutterError.reportError(FlutterErrorDetails(
-        exception: e,
-        stack: stack,
-        library: 'formstack',
-        context:
-            ErrorDescription('scanning a barcode for step ${formStep.id?.id}'),
-      ));
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: stack,
+          library: 'formstack',
+          context: ErrorDescription(
+            'scanning a barcode for step ${formStep.id?.id}',
+          ),
+        ),
+      );
     }
   }
 
@@ -155,12 +169,14 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
                     children: [
                       Icon(Icons.camera_alt, color: Colors.white54, size: 48),
                       SizedBox(height: 8),
-                      Text("Camera scanner placeholder",
-                          style:
-                              TextStyle(color: Colors.white54, fontSize: 12)),
-                      Text("Add mobile_scanner package for live scanning",
-                          style:
-                              TextStyle(color: Colors.white38, fontSize: 10)),
+                      Text(
+                        "Camera scanner placeholder",
+                        style: TextStyle(color: Colors.white54, fontSize: 12),
+                      ),
+                      Text(
+                        "Add mobile_scanner package for live scanning",
+                        style: TextStyle(color: Colors.white38, fontSize: 10),
+                      ),
                     ],
                   ),
                 ),

@@ -7,9 +7,11 @@ import 'package:google_maps/google_maps.dart';
 import 'package:location/location.dart' as lo;
 import 'map_widget.dart';
 
-MapWidget getMapWidget(MapKey mapKey, LocationWrapper? latLng,
-        Function(LocationWrapper) onChange) =>
-    WebMap(mapKey, latLng, onChange);
+MapWidget getMapWidget(
+  MapKey mapKey,
+  LocationWrapper? latLng,
+  Function(LocationWrapper) onChange,
+) => WebMap(mapKey, latLng, onChange);
 
 class WebMap extends StatefulWidget implements MapWidget {
   final LocationWrapper? latLng;
@@ -46,29 +48,35 @@ class WebMapState extends State<WebMap> {
           children: [
             Expanded(
               child: GooglePlaceAutoCompleteTextField(
-                  textEditingController: controller,
-                  googleAPIKey: widget.mapKey.web,
-                  inputDecoration:
-                      const InputDecoration(hintText: "SEARCH PLACE HERE.."),
-                  debounceTime: 800,
-                  isLatLngRequired: true,
-                  getPlaceDetailWithLatLng: (Prediction prediction) {
-                    setState(() {
-                      currentLat = LatLng(double.parse(prediction.lat ?? '0'),
-                          double.parse(prediction.lng ?? '0'));
-                      widget.onChange.call(getUserLocation());
-                    });
-                  },
-                  itmClick: (Prediction prediction) {
-                    controller
-                      ..text = prediction.description ?? ''
-                      ..selection = TextSelection.fromPosition(
-                          TextPosition(offset: prediction.description!.length));
-                  }),
+                textEditingController: controller,
+                googleAPIKey: widget.mapKey.web,
+                inputDecoration: const InputDecoration(
+                  hintText: "SEARCH PLACE HERE..",
+                ),
+                debounceTime: 800,
+                isLatLngRequired: true,
+                getPlaceDetailWithLatLng: (Prediction prediction) {
+                  setState(() {
+                    currentLat = LatLng(
+                      double.parse(prediction.lat ?? '0'),
+                      double.parse(prediction.lng ?? '0'),
+                    );
+                    widget.onChange.call(getUserLocation());
+                  });
+                },
+                itmClick: (Prediction prediction) {
+                  controller
+                    ..text = prediction.description ?? ''
+                    ..selection = TextSelection.fromPosition(
+                      TextPosition(offset: prediction.description!.length),
+                    );
+                },
+              ),
             ),
             IconButton(
-                onPressed: _goToTheLake,
-                icon: const ft.Icon(Icons.my_location, color: Colors.black))
+              onPressed: _goToTheLake,
+              icon: const ft.Icon(Icons.my_location, color: Colors.black),
+            ),
           ],
         ),
         Expanded(

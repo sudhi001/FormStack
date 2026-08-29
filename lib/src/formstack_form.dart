@@ -34,19 +34,21 @@ abstract class FormStackForm {
   Map<String, dynamic> result = {};
   FormStackForm? previousFormStackForm;
 
-  FormStackForm(this.steps,
-      {this.id,
-      required this.fromInstanceName,
-      this.onUpdate,
-      this.onRenderFormStackForm,
-      this.backgroundAnimationFile,
-      this.onValidationError,
-      this.onSystemNavigationBackClick,
-      this.primaryColor = Colors.black,
-      required this.mapKey,
-      this.preventSystemBackNavigation = false,
-      this.backgroundAlignment,
-      required this.initialLocation}) {
+  FormStackForm(
+    this.steps, {
+    this.id,
+    required this.fromInstanceName,
+    this.onUpdate,
+    this.onRenderFormStackForm,
+    this.backgroundAnimationFile,
+    this.onValidationError,
+    this.onSystemNavigationBackClick,
+    this.primaryColor = Colors.black,
+    required this.mapKey,
+    this.preventSystemBackNavigation = false,
+    this.backgroundAlignment,
+    required this.initialLocation,
+  }) {
     id ??= FormIdentifier();
   }
 
@@ -235,7 +237,8 @@ abstract class FormStackForm {
       for (RelevantCondition element in currentStep!.relevantConditions!) {
         if (element.isValid(currentStep.result)) {
           nextStep = steps.firstWhereOrNull(
-              (e) => (e.id?.id ?? "") == element.identifier.id);
+            (e) => (e.id?.id ?? "") == element.identifier.id,
+          );
           formName = element.formName;
           break;
         }
@@ -247,7 +250,9 @@ abstract class FormStackForm {
         }
       } else if (formName?.isNotEmpty ?? false) {
         final FormStackForm? nextFormStack = FormStack.formByInstaceAndName(
-            name: fromInstanceName, formName: formName!);
+          name: fromInstanceName,
+          formName: formName!,
+        );
         if (nextFormStack != null) {
           nextFormStack.previousFormStackForm = this;
           onRenderFormStackForm?.call(nextFormStack);
@@ -288,8 +293,9 @@ abstract class FormStackForm {
       if (entry.resultFormat != null) {
         final dateResultType = cast<DateResultType>(entry.resultFormat);
         if (dateResultType != null) {
-          final formattedDate =
-              DateFormat(dateResultType.format).format(resultValue);
+          final formattedDate = DateFormat(
+            dateResultType.format,
+          ).format(resultValue);
           final entryId = entry.id?.id;
           if (entryId != null) {
             result.putIfAbsent(entryId, () => formattedDate);
@@ -319,17 +325,21 @@ abstract class FormStackForm {
     }
   }
 
-  Widget render(Function(FormStep) onUpdate,
-      Function(FormStackForm)? onRenderFormStackForm,
-      {FormStep? formStep}) {
+  Widget render(
+    Function(FormStep) onUpdate,
+    Function(FormStackForm)? onRenderFormStackForm, {
+    FormStep? formStep,
+  }) {
     this.onUpdate = onUpdate;
     this.onRenderFormStackForm = onRenderFormStackForm;
     final step = formStep ?? steps.first;
     // Record timestamps and fire lifecycle callbacks
     if (_currentStep != null && _currentStep != step) {
       _currentStep!.endTime ??= DateTime.now().toUtc();
-      _currentStep!.onStepDidComplete
-          ?.call(_currentStep!, _currentStep!.result);
+      _currentStep!.onStepDidComplete?.call(
+        _currentStep!,
+        _currentStep!.result,
+      );
     }
     _currentStep = step;
     if (step.startTime == null) {
@@ -383,13 +393,15 @@ abstract class FormStackForm {
 }
 
 class FormWizard extends FormStackForm {
-  FormWizard(super.steps,
-      {required super.mapKey,
-      required super.fromInstanceName,
-      required super.initialLocation,
-      super.backgroundAlignment,
-      super.id,
-      super.backgroundAnimationFile});
+  FormWizard(
+    super.steps, {
+    required super.mapKey,
+    required super.fromInstanceName,
+    required super.initialLocation,
+    super.backgroundAlignment,
+    super.id,
+    super.backgroundAnimationFile,
+  });
 }
 
 /// An immutable snapshot of how far through a form the user is.

@@ -43,8 +43,12 @@ void main() {
       await FormStack.api().buildFormFromJsonString(_survey);
       final form = FormStack.formByInstaceAndName()!;
 
-      expect(
-          form.steps.map((s) => s.id?.id), ['intro', 'email', 'age', 'done']);
+      expect(form.steps.map((s) => s.id?.id), [
+        'intro',
+        'email',
+        'age',
+        'done',
+      ]);
       expect(form.getStep('intro'), isA<InstructionStep>());
       expect(form.getStep('email'), isA<QuestionStep>());
       expect(form.getStep('done'), isA<CompletionStep>());
@@ -69,8 +73,13 @@ void main() {
       const bad = '{"default":{"steps":[{"type":"NoSuchStep","id":"x"}]}}';
       expect(
         () => FormStack.api().buildFormFromJsonString(bad),
-        throwsA(isA<FormatException>()
-            .having((e) => e.message, 'message', contains('NoSuchStep'))),
+        throwsA(
+          isA<FormatException>().having(
+            (e) => e.message,
+            'message',
+            contains('NoSuchStep'),
+          ),
+        ),
       );
     });
 
@@ -79,8 +88,13 @@ void main() {
           '{"default":{"steps":[{"type":"QuestionStep","id":"x","inputType":"telepathy"}]}}';
       expect(
         () => FormStack.api().buildFormFromJsonString(bad),
-        throwsA(isA<FormatException>()
-            .having((e) => e.message, 'message', contains('telepathy'))),
+        throwsA(
+          isA<FormatException>().having(
+            (e) => e.message,
+            'message',
+            contains('telepathy'),
+          ),
+        ),
       );
     });
 
@@ -153,50 +167,62 @@ void main() {
       const bad = '''
       {"default":{"steps":[{"type":"QuestionStep","id":"q","inputType":"text",
         "relevantConditions":[{"expression":"= yes"}]}]}}''';
-      expect(() => FormStack.api().buildFormFromJsonString(bad),
-          throwsA(isA<FormatException>()));
+      expect(
+        () => FormStack.api().buildFormFromJsonString(bad),
+        throwsA(isA<FormatException>()),
+      );
     });
 
-    test('a cross-form condition may target a formName instead of an id',
-        () async {
-      // Empty "id" with a "formName" is how navigation to another form is
-      // expressed; it must not be treated as a malformed condition.
-      const crossForm = '''
+    test(
+      'a cross-form condition may target a formName instead of an id',
+      () async {
+        // Empty "id" with a "formName" is how navigation to another form is
+        // expressed; it must not be treated as a malformed condition.
+        const crossForm = '''
       {"default":{"steps":[{"type":"QuestionStep","id":"q","inputType":"text",
         "relevantConditions":[{"id":"","expression":"= yes","formName":"other"}]}]},
        "other":{"steps":[{"type":"CompletionStep","id":"done"}]}}''';
-      await FormStack.api().buildFormFromJsonString(crossForm);
-      final form = FormStack.formByInstaceAndName()!;
-      expect(form.getStep('q')!.relevantConditions!.single.formName, 'other');
-    });
+        await FormStack.api().buildFormFromJsonString(crossForm);
+        final form = FormStack.formByInstaceAndName()!;
+        expect(form.getStep('q')!.relevantConditions!.single.formName, 'other');
+      },
+    );
 
     test('a relevant condition without an expression is rejected', () {
       const bad = '''
       {"default":{"steps":[{"type":"QuestionStep","id":"q","inputType":"text",
         "relevantConditions":[{"id":"target"}]}]}}''';
-      expect(() => FormStack.api().buildFormFromJsonString(bad),
-          throwsA(isA<FormatException>()));
+      expect(
+        () => FormStack.api().buildFormFromJsonString(bad),
+        throwsA(isA<FormatException>()),
+      );
     });
 
     test('relevantConditions must be a list', () {
       const bad =
           '{"default":{"steps":[{"type":"QuestionStep","id":"q","inputType":"text","relevantConditions":"nope"}]}}';
-      expect(() => FormStack.api().buildFormFromJsonString(bad),
-          throwsA(isA<FormatException>()));
+      expect(
+        () => FormStack.api().buildFormFromJsonString(bad),
+        throwsA(isA<FormatException>()),
+      );
     });
 
     test('an option that is not an object is rejected', () {
       const bad =
           '{"default":{"steps":[{"type":"QuestionStep","id":"q","inputType":"dropdown","options":["US"]}]}}';
-      expect(() => FormStack.api().buildFormFromJsonString(bad),
-          throwsA(isA<FormatException>()));
+      expect(
+        () => FormStack.api().buildFormFromJsonString(bad),
+        throwsA(isA<FormatException>()),
+      );
     });
 
     test('an unknown validator names the step it came from', () {
       const bad =
           '{"default":{"steps":[{"type":"QuestionStep","id":"q","inputType":"text","validators":[{"type":"wat"}]}]}}';
-      expect(() => FormStack.api().buildFormFromJsonString(bad),
-          throwsA(isA<FormatException>()));
+      expect(
+        () => FormStack.api().buildFormFromJsonString(bad),
+        throwsA(isA<FormatException>()),
+      );
     });
 
     test('numeric style values survive being written as strings', () async {

@@ -130,10 +130,8 @@ class InputRegistry {
     final resolved =
         step.resultFormat ?? defaultValidatorFor(type) ?? ResultFormat.none();
     step.resultFormat = resolved;
-    return builder(InputBuildContext(
-      step: step,
-      form: form,
-      resultFormat: resolved,
-    ));
+    return builder(
+      InputBuildContext(step: step, form: form, resultFormat: resolved),
+    );
   }
 }

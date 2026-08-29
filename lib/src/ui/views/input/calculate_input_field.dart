@@ -7,8 +7,14 @@ import 'package:formstack/formstack.dart';
 class CalculateInputWidgetView extends BaseStepView<QuestionStep> {
   final dynamic Function(Map<String, dynamic>)? calculateCallback;
 
-  CalculateInputWidgetView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title, this.calculateCallback});
+  CalculateInputWidgetView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+    this.calculateCallback,
+  });
 
   dynamic _calculatedValue;
 
@@ -38,14 +44,16 @@ class CalculateInputWidgetView extends BaseStepView<QuestionStep> {
           Text(
             _calculatedValue.toString(),
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           if (formStep.helperText != null) ...[
             const SizedBox(height: 4),
-            Text(formStep.helperText!,
-                style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              formStep.helperText!,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ],
         ],
       ),

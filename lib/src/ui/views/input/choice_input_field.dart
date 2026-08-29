@@ -9,13 +9,18 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   final bool singleSelection;
   final bool autoTrigger;
   final SelectionType selectionType;
-  ChoiceInputWidgetView(super.formStackForm, super.formStep, super.text,
-      this.resultFormat, this.options,
-      {super.key,
-      super.title,
-      required this.selectionType,
-      this.singleSelection = false,
-      this.autoTrigger = false});
+  ChoiceInputWidgetView(
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat,
+    this.options, {
+    super.key,
+    super.title,
+    required this.selectionType,
+    this.singleSelection = false,
+    this.autoTrigger = false,
+  });
 
   final FocusNode _focusNode = FocusNode();
   List<Options> _selectedOptions = [];
@@ -38,72 +43,73 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     _selectedOptions = selectedOptions;
 
     return Container(
-        decoration: formStep.componentsStyle == ComponentsStyle.minimal
-            ? BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: FormStackTheme.dividerColor(context)),
-                  bottom:
-                      BorderSide(color: FormStackTheme.dividerColor(context)),
-                ),
-              )
-            : null,
-        constraints:
-            const BoxConstraints(minWidth: 300, maxWidth: 400, maxHeight: 600),
-        child: StatefulBuilder(builder: (context, setState) {
+      decoration: formStep.componentsStyle == ComponentsStyle.minimal
+          ? BoxDecoration(
+              border: Border(
+                top: BorderSide(color: FormStackTheme.dividerColor(context)),
+                bottom: BorderSide(color: FormStackTheme.dividerColor(context)),
+              ),
+            )
+          : null,
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 400,
+        maxHeight: 600,
+      ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
           if (selectionType == SelectionType.dropdown) {
             return Container(
-                padding: formStep.componentsStyle == ComponentsStyle.basic
-                    ? const EdgeInsets.symmetric(horizontal: 7)
-                    : null,
-                decoration: formStep.componentsStyle == ComponentsStyle.basic
-                    ? BoxDecoration(
-                        border: Border.all(
-                            color: FormStackTheme.borderColor(context)),
-                        borderRadius: BorderRadius.circular(5),
-                      )
-                    : null,
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                    focusColor: Colors.transparent,
-                    hint: _selectedOptions.isEmpty
-                        ? const Text('Select ')
-                        : Text(_selectedOptions.first.title),
-                    isExpanded: true,
-                    iconSize: 30.0,
-                    items: options.map(
-                      (val) {
-                        return DropdownMenuItem<Options>(
-                          value: val,
-                          child: Text(val.title),
-                        );
-                      },
-                    ).toList(),
-                    onChanged: (val) {
-                      if (val != null) {
-                        setState(
-                          () {
-                            if (singleSelection) {
-                              _selectedOptions.clear();
-                              _selectedOptions.add(val);
-                            } else {
-                              if (!_selectedOptions.contains(val)) {
-                                _selectedOptions.add(val);
-                              } else {
-                                _selectedOptions.remove(val);
-                              }
-                            }
-                            formStep.result = _selectedOptions;
-                            if (autoTrigger) {
-                              onNextButtonClick();
-                            }
-                          },
-                        );
-                        HapticFeedback.selectionClick();
-                        showValidationError();
-                      }
-                    },
-                  ),
-                ));
+              padding: formStep.componentsStyle == ComponentsStyle.basic
+                  ? const EdgeInsets.symmetric(horizontal: 7)
+                  : null,
+              decoration: formStep.componentsStyle == ComponentsStyle.basic
+                  ? BoxDecoration(
+                      border: Border.all(
+                        color: FormStackTheme.borderColor(context),
+                      ),
+                      borderRadius: BorderRadius.circular(5),
+                    )
+                  : null,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton(
+                  focusColor: Colors.transparent,
+                  hint: _selectedOptions.isEmpty
+                      ? const Text('Select ')
+                      : Text(_selectedOptions.first.title),
+                  isExpanded: true,
+                  iconSize: 30.0,
+                  items: options.map((val) {
+                    return DropdownMenuItem<Options>(
+                      value: val,
+                      child: Text(val.title),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      setState(() {
+                        if (singleSelection) {
+                          _selectedOptions.clear();
+                          _selectedOptions.add(val);
+                        } else {
+                          if (!_selectedOptions.contains(val)) {
+                            _selectedOptions.add(val);
+                          } else {
+                            _selectedOptions.remove(val);
+                          }
+                        }
+                        formStep.result = _selectedOptions;
+                        if (autoTrigger) {
+                          onNextButtonClick();
+                        }
+                      });
+                      HapticFeedback.selectionClick();
+                      showValidationError();
+                    }
+                  },
+                ),
+              ),
+            );
           }
           return ListView.separated(
             cacheExtent: 300,
@@ -111,68 +117,74 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
             separatorBuilder: (context, index) => Divider(
-                color: formStep.componentsStyle == ComponentsStyle.minimal
-                    ? FormStackTheme.dividerColor(context)
-                    : Colors.transparent,
-                height: 5),
+              color: formStep.componentsStyle == ComponentsStyle.minimal
+                  ? FormStackTheme.dividerColor(context)
+                  : Colors.transparent,
+              height: 5,
+            ),
             itemBuilder: (context, index) => ClipRRect(
-                borderRadius: formStep.componentsStyle == ComponentsStyle.basic
-                    ? const BorderRadius.vertical(
-                        top: Radius.circular(12),
-                        bottom: Radius.circular(12),
-                      )
-                    : const BorderRadius.vertical(),
-                child: Container(
-                  color: formStep.componentsStyle == ComponentsStyle.basic
-                      ? FormStackTheme.cardColor(context)
-                      : null,
-                  padding: const EdgeInsets.all(7),
-                  child: ListTile(
-                    onTap: selectionType == SelectionType.toggle
-                        ? null
-                        : () => onItemTap(setState, index),
-                    title: Text(options[index].title,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    subtitle: options[index].subTitle != null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(options[index].subTitle ?? "",
-                                style: Theme.of(context).textTheme.bodySmall),
-                          )
-                        : null,
-                    trailing: autoTrigger
-                        ? _selectionIcon(context, setState, index)
-                        : selectionType != SelectionType.tick
-                            ? _selectionIcon(context, setState, index)
-                            : (_selectedOptions.contains(options[index])
-                                ? _selectionIcon(context, setState, index)
-                                : null),
+              borderRadius: formStep.componentsStyle == ComponentsStyle.basic
+                  ? const BorderRadius.vertical(
+                      top: Radius.circular(12),
+                      bottom: Radius.circular(12),
+                    )
+                  : const BorderRadius.vertical(),
+              child: Container(
+                color: formStep.componentsStyle == ComponentsStyle.basic
+                    ? FormStackTheme.cardColor(context)
+                    : null,
+                padding: const EdgeInsets.all(7),
+                child: ListTile(
+                  onTap: selectionType == SelectionType.toggle
+                      ? null
+                      : () => onItemTap(setState, index),
+                  title: Text(
+                    options[index].title,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                )),
+                  subtitle: options[index].subTitle != null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Text(
+                            options[index].subTitle ?? "",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        )
+                      : null,
+                  trailing: autoTrigger
+                      ? _selectionIcon(context, setState, index)
+                      : selectionType != SelectionType.tick
+                      ? _selectionIcon(context, setState, index)
+                      : (_selectedOptions.contains(options[index])
+                            ? _selectionIcon(context, setState, index)
+                            : null),
+                ),
+              ),
+            ),
             itemCount: options.length,
           );
-        }));
+        },
+      ),
+    );
   }
 
   void onItemTap(StateSetter setState, int index) {
-    setState(
-      () {
-        if (singleSelection) {
-          _selectedOptions.clear();
+    setState(() {
+      if (singleSelection) {
+        _selectedOptions.clear();
+        _selectedOptions.add(options[index]);
+      } else {
+        if (!_selectedOptions.contains(options[index])) {
           _selectedOptions.add(options[index]);
         } else {
-          if (!_selectedOptions.contains(options[index])) {
-            _selectedOptions.add(options[index]);
-          } else {
-            _selectedOptions.remove(options[index]);
-          }
+          _selectedOptions.remove(options[index]);
         }
-        formStep.result = _selectedOptions;
-        if (autoTrigger) {
-          onNextButtonClick();
-        }
-      },
-    );
+      }
+      formStep.result = _selectedOptions;
+      if (autoTrigger) {
+        onNextButtonClick();
+      }
+    });
     HapticFeedback.selectionClick();
     showValidationError();
   }
@@ -180,8 +192,11 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   Widget _selectionIcon(BuildContext context, StateSetter setState, int index) {
     switch (selectionType) {
       case SelectionType.arrow:
-        return const Icon(Icons.arrow_forward_ios_rounded,
-            color: Colors.grey, size: 24);
+        return const Icon(
+          Icons.arrow_forward_ios_rounded,
+          color: Colors.grey,
+          size: 24,
+        );
       case SelectionType.tick:
         return Icon(Icons.check, color: formStackForm.primaryColor);
       case SelectionType.toggle:

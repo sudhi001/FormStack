@@ -4,8 +4,13 @@ import 'package:formstack/formstack.dart';
 /// View that displays all form results for review before final submission.
 // ignore: must_be_immutable
 class ReviewStepView extends BaseStepView<ReviewStep> {
-  ReviewStepView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title});
+  ReviewStepView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+  });
 
   @override
   Widget? buildWInputWidget(BuildContext context, ReviewStep formStep) {
@@ -38,16 +43,16 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
       title: Text(
         _formatKey(key),
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 2),
         child: Text(
           displayValue,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -60,7 +65,8 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
         .replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (m) => '${m[1]} ${m[2]}')
         .split(' ')
         .map(
-            (w) => w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '')
+          (w) => w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '',
+        )
         .join(' ')
         .trim();
   }

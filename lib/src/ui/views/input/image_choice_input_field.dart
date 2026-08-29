@@ -12,11 +12,15 @@ class ImageChoiceInputWidgetView extends BaseStepView<QuestionStep> {
   final bool singleSelection;
 
   ImageChoiceInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key,
-      super.title,
-      required this.options,
-      this.singleSelection = true});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    required this.options,
+    this.singleSelection = true,
+  });
 
   List<Options> _selectedOptions = [];
   bool _isInitialized = false;
@@ -31,47 +35,52 @@ class ImageChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints:
-          const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return GridView.builder(
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.0,
-          ),
-          itemCount: options.length,
-          itemBuilder: (context, index) {
-            final option = options[index];
-            final isSelected = _selectedOptions.contains(option);
-            return _buildImageOption(
-              context,
-              option: option,
-              isSelected: isSelected,
-              onTap: formStep.disabled
-                  ? null
-                  : () {
-                      setState(() {
-                        if (singleSelection) {
-                          _selectedOptions.clear();
-                          _selectedOptions.add(option);
-                        } else {
-                          if (isSelected) {
-                            _selectedOptions.remove(option);
-                          } else {
+      constraints: const BoxConstraints(
+        minWidth: 200,
+        maxWidth: 500,
+        maxHeight: 500,
+      ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return GridView.builder(
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.0,
+            ),
+            itemCount: options.length,
+            itemBuilder: (context, index) {
+              final option = options[index];
+              final isSelected = _selectedOptions.contains(option);
+              return _buildImageOption(
+                context,
+                option: option,
+                isSelected: isSelected,
+                onTap: formStep.disabled
+                    ? null
+                    : () {
+                        setState(() {
+                          if (singleSelection) {
+                            _selectedOptions.clear();
                             _selectedOptions.add(option);
+                          } else {
+                            if (isSelected) {
+                              _selectedOptions.remove(option);
+                            } else {
+                              _selectedOptions.add(option);
+                            }
                           }
-                        }
-                        formStep.result = _selectedOptions;
-                      });
-                      HapticFeedback.selectionClick();
-                    },
-            );
-          },
-        );
-      }),
+                          formStep.result = _selectedOptions;
+                        });
+                        HapticFeedback.selectionClick();
+                      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -109,12 +118,11 @@ class ImageChoiceInputWidgetView extends BaseStepView<QuestionStep> {
               child: Text(
                 option.title,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : null,
-                    ),
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
+                ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -123,8 +131,11 @@ class ImageChoiceInputWidgetView extends BaseStepView<QuestionStep> {
             if (isSelected)
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.check_circle,
-                    size: 20, color: Theme.of(context).colorScheme.primary),
+                child: Icon(
+                  Icons.check_circle,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
           ],
         ),
@@ -134,15 +145,19 @@ class ImageChoiceInputWidgetView extends BaseStepView<QuestionStep> {
 
   Widget _buildImage(String imagePath) {
     if (imagePath.startsWith('http')) {
-      return Image.network(imagePath,
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) =>
-              const Icon(Icons.broken_image, size: 48, color: Colors.grey));
-    }
-    return Image.asset(imagePath,
+      return Image.network(
+        imagePath,
         fit: BoxFit.contain,
         errorBuilder: (_, __, ___) =>
-            const Icon(Icons.image, size: 48, color: Colors.grey));
+            const Icon(Icons.broken_image, size: 48, color: Colors.grey),
+      );
+    }
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) =>
+          const Icon(Icons.image, size: 48, color: Colors.grey),
+    );
   }
 
   @override

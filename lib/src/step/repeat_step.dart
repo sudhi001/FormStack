@@ -75,14 +75,19 @@ class RepeatStep extends FormStep {
   }
 
   /// Creates a [RepeatStep] from a JSON map.
-  factory RepeatStep.from(Map<String, dynamic>? element,
-      List<RelevantCondition> relevantConditions, List<FormStep> steps) {
+  factory RepeatStep.from(
+    Map<String, dynamic>? element,
+    List<RelevantCondition> relevantConditions,
+    List<FormStep> steps,
+  ) {
     return RepeatStep(
       display: element?["display"] != null
           ? Display.values.firstWhere((e) => e.name == element?["display"])
           : Display.normal,
-      crossAxisAlignmentContent: crossAlignmentFromString(
-              element?["crossAxisAlignmentContent"] ?? "center") ??
+      crossAxisAlignmentContent:
+          crossAlignmentFromString(
+            element?["crossAxisAlignmentContent"] ?? "center",
+          ) ??
           CrossAxisAlignment.center,
       cancellable: element?["cancellable"],
       footerBackButton: element?["footerBackButton"] ?? false,

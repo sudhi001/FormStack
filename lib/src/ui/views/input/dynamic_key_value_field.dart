@@ -8,8 +8,14 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final int maxCount;
   DynamicKeyValueWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, required this.maxCount});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    required this.maxCount,
+  });
 
   final List<KeyValue> _result = [];
   final List<TextEditingController> _keyControllers = [];
@@ -26,17 +32,21 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-        decoration: formStep.componentsStyle == ComponentsStyle.basic
-            ? const BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey),
-                  bottom: BorderSide(color: Colors.grey),
-                ),
-              )
-            : null,
-        constraints:
-            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 300),
-        child: StatefulBuilder(builder: (context, setState) {
+      decoration: formStep.componentsStyle == ComponentsStyle.basic
+          ? const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.grey),
+                bottom: BorderSide(color: Colors.grey),
+              ),
+            )
+          : null,
+      constraints: const BoxConstraints(
+        minWidth: 200,
+        maxWidth: 500,
+        maxHeight: 300,
+      ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: SingleChildScrollView(
@@ -50,22 +60,41 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
               ),
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 
   Widget _generateTextFields(
-      BuildContext context, bool primary, int ind, StateSetter setState) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      Expanded(
+    BuildContext context,
+    bool primary,
+    int ind,
+    StateSetter setState,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
           child: _buildTextField(
-              context: context, name: "Key", isKey: true, index: ind)),
-      Expanded(
+            context: context,
+            name: "Key",
+            isKey: true,
+            index: ind,
+          ),
+        ),
+        Expanded(
           child: _buildTextField(
-              context: context, name: "Value", isKey: false, index: ind)),
-      Container(
+            context: context,
+            name: "Value",
+            isKey: false,
+            index: ind,
+          ),
+        ),
+        Container(
           decoration: BoxDecoration(
-              color: primary ? Colors.green : Colors.red,
-              shape: BoxShape.circle),
+            color: primary ? Colors.green : Colors.red,
+            shape: BoxShape.circle,
+          ),
           child: IconButton(
             onPressed: () {
               setState(() {
@@ -77,8 +106,10 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
               });
             },
             icon: Icon(primary ? Icons.add : Icons.remove, color: Colors.white),
-          ))
-    ]);
+          ),
+        ),
+      ],
+    );
   }
 
   void _initializeFromFormStep(QuestionStep formStep) {
@@ -150,37 +181,41 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     super.dispose();
   }
 
-  Widget _buildTextField(
-      {required BuildContext context,
-      required String name,
-      required bool isKey,
-      required int index}) {
+  Widget _buildTextField({
+    required BuildContext context,
+    required String name,
+    required bool isKey,
+    required int index,
+  }) {
     return Container(
-        width: 50,
-        margin: const EdgeInsets.symmetric(horizontal: 7),
-        child: TextFormField(
-          autofocus: true,
-          enabled: !formStep.disabled,
-          autocorrect: false,
-          minLines: 1,
-          controller: isKey ? _keyControllers[index] : _valueControllers[index],
-          maxLines: 1,
-          keyboardType: TextInputType.text,
-          validator: (input) => !isKey
-              ? null
-              : _keyControllers[index].text.isEmpty
-                  ? "Cannot Be empty"
-                  : null,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z@.]"))
-          ],
-          decoration: InputDecoration(
-              enabledBorder:
-                  formStep.inputStyle.toInputBorder(style: formStep.style),
-              border: formStep.inputStyle.toInputBorder(style: formStep.style),
-              labelText: name,
-              hintStyle: Theme.of(context).textTheme.bodySmall),
-        ));
+      width: 50,
+      margin: const EdgeInsets.symmetric(horizontal: 7),
+      child: TextFormField(
+        autofocus: true,
+        enabled: !formStep.disabled,
+        autocorrect: false,
+        minLines: 1,
+        controller: isKey ? _keyControllers[index] : _valueControllers[index],
+        maxLines: 1,
+        keyboardType: TextInputType.text,
+        validator: (input) => !isKey
+            ? null
+            : _keyControllers[index].text.isEmpty
+            ? "Cannot Be empty"
+            : null,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z@.]")),
+        ],
+        decoration: InputDecoration(
+          enabledBorder: formStep.inputStyle.toInputBorder(
+            style: formStep.style,
+          ),
+          border: formStep.inputStyle.toInputBorder(style: formStep.style),
+          labelText: name,
+          hintStyle: Theme.of(context).textTheme.bodySmall,
+        ),
+      ),
+    );
   }
 
   @override
@@ -197,11 +232,13 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     if (_fieldCount > 0 &&
         _keyControllers.isNotEmpty &&
         _valueControllers.isNotEmpty) {
-      for (int i = 0;
-          i < _fieldCount &&
-              i < _keyControllers.length &&
-              i < _valueControllers.length;
-          i++) {
+      for (
+        int i = 0;
+        i < _fieldCount &&
+            i < _keyControllers.length &&
+            i < _valueControllers.length;
+        i++
+      ) {
         final String key = _keyControllers[i].text.trim();
         final String value = _valueControllers[i].text.trim();
         if (key.isNotEmpty) {

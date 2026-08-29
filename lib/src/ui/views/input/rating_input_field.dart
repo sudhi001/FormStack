@@ -7,8 +7,14 @@ class RatingInputWidgetView extends BaseStepView<QuestionStep> {
   final int maxRating;
 
   RatingInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key, super.title, this.maxRating = 5});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.maxRating = 5,
+  });
 
   int _selectedRating = 0;
   bool _isInitialized = false;
@@ -22,37 +28,39 @@ class RatingInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(maxRating, (index) {
-            final starIndex = index + 1;
-            return GestureDetector(
-              onTap: formStep.disabled
-                  ? null
-                  : () {
-                      setState(() {
-                        _selectedRating = starIndex;
-                        formStep.result = starIndex;
-                      });
-                    },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Icon(
-                  starIndex <= _selectedRating
-                      ? Icons.star_rounded
-                      : Icons.star_outline_rounded,
-                  size: 40,
-                  color: starIndex <= _selectedRating
-                      ? Colors.amber
-                      : Colors.grey.shade400,
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(maxRating, (index) {
+              final starIndex = index + 1;
+              return GestureDetector(
+                onTap: formStep.disabled
+                    ? null
+                    : () {
+                        setState(() {
+                          _selectedRating = starIndex;
+                          formStep.result = starIndex;
+                        });
+                      },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Icon(
+                    starIndex <= _selectedRating
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
+                    size: 40,
+                    color: starIndex <= _selectedRating
+                        ? Colors.amber
+                        : Colors.grey.shade400,
+                  ),
                 ),
-              ),
-            );
-          }),
-        );
-      }),
+              );
+            }),
+          );
+        },
+      ),
     );
   }
 

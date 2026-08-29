@@ -54,11 +54,11 @@ class ValidationResult {
 
   /// A successful validation.
   const ValidationResult.valid()
-      : isValid = true,
-        code = '',
-        message = '',
-        params = const {},
-        children = const [];
+    : isValid = true,
+      code = '',
+      message = '',
+      params = const {},
+      children = const [];
 
   /// A failed validation for constraint [code] with a fallback [message].
   const ValidationResult.invalid(
@@ -67,22 +67,22 @@ class ValidationResult {
     Map<String, Object?> params = const {},
     List<ValidationResult> children = const [],
   }) : this._(
-          isValid: false,
-          code: code,
-          message: message,
-          params: params,
-          children: children,
-        );
+         isValid: false,
+         code: code,
+         message: message,
+         params: params,
+         children: children,
+       );
 
   /// Converts to a JSON-serializable map for logging or transport.
   Map<String, dynamic> toJson() => {
-        'isValid': isValid,
-        if (!isValid) 'code': code,
-        if (!isValid) 'message': message,
-        if (params.isNotEmpty) 'params': params,
-        if (children.isNotEmpty)
-          'children': children.map((c) => c.toJson()).toList(),
-      };
+    'isValid': isValid,
+    if (!isValid) 'code': code,
+    if (!isValid) 'message': message,
+    if (params.isNotEmpty) 'params': params,
+    if (children.isNotEmpty)
+      'children': children.map((c) => c.toJson()).toList(),
+  };
 
   @override
   String toString() => isValid

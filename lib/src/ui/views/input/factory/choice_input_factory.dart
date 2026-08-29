@@ -8,66 +8,91 @@ import 'package:formstack/src/ui/views/input/choice_input_field.dart';
 ///
 // ignore: must_be_immutable
 class ChoiceInputWidget extends ChoiceInputWidgetView {
-  ChoiceInputWidget(super.formStackForm, super.formStep, super.text,
-      super.resultFormat, super.options,
-      {super.key,
-      super.title,
-      super.singleSelection,
-      super.autoTrigger,
-      required super.selectionType});
+  ChoiceInputWidget(
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    super.resultFormat,
+    super.options, {
+    super.key,
+    super.title,
+    super.singleSelection,
+    super.autoTrigger,
+    required super.selectionType,
+  });
 
   ///
   ///Create Single choice components.
   ///
   factory ChoiceInputWidget.single(
-      QuestionStep questionStep,
-      FormStackForm formStackForm,
-      String? text,
-      ResultFormat resultFormat,
-      String? title,
-      List<Options>? options,
-      SelectionType selectionType,
-      bool autoTrigger) {
+    QuestionStep questionStep,
+    FormStackForm formStackForm,
+    String? text,
+    ResultFormat resultFormat,
+    String? title,
+    List<Options>? options,
+    SelectionType selectionType,
+    bool autoTrigger,
+  ) {
     return ChoiceInputWidget(
-        formStackForm, questionStep, text, resultFormat, options ?? [],
-        title: title,
-        singleSelection: true,
-        autoTrigger: autoTrigger,
-        selectionType: selectionType);
+      formStackForm,
+      questionStep,
+      text,
+      resultFormat,
+      options ?? [],
+      title: title,
+      singleSelection: true,
+      autoTrigger: autoTrigger,
+      selectionType: selectionType,
+    );
   }
 
   ///
   /// Create dropdown choice components.
   ///
   factory ChoiceInputWidget.dropdown(
-      QuestionStep questionStep,
-      FormStackForm formStackForm,
-      String? text,
-      ResultFormat resultFormat,
-      String? title,
-      List<Options>? options,
-      bool autoTrigger) {
+    QuestionStep questionStep,
+    FormStackForm formStackForm,
+    String? text,
+    ResultFormat resultFormat,
+    String? title,
+    List<Options>? options,
+    bool autoTrigger,
+  ) {
     return ChoiceInputWidget(
-        formStackForm, questionStep, text, resultFormat, options ?? [],
-        title: title,
-        singleSelection: true,
-        autoTrigger: autoTrigger,
-        selectionType: SelectionType.dropdown);
+      formStackForm,
+      questionStep,
+      text,
+      resultFormat,
+      options ?? [],
+      title: title,
+      singleSelection: true,
+      autoTrigger: autoTrigger,
+      selectionType: SelectionType.dropdown,
+    );
   }
 
   ///
   /// Create multiple choice components.
   ///
   factory ChoiceInputWidget.multiple(
-      QuestionStep questionStep,
-      FormStackForm formStackForm,
-      String? text,
-      ResultFormat resultFormat,
-      String? title,
-      SelectionType selectionType,
-      List<Options>? options) {
+    QuestionStep questionStep,
+    FormStackForm formStackForm,
+    String? text,
+    ResultFormat resultFormat,
+    String? title,
+    SelectionType selectionType,
+    List<Options>? options,
+  ) {
     return ChoiceInputWidget(
-        formStackForm, questionStep, text, resultFormat, options ?? [],
-        title: title, singleSelection: false, selectionType: selectionType);
+      formStackForm,
+      questionStep,
+      text,
+      resultFormat,
+      options ?? [],
+      title: title,
+      singleSelection: false,
+      selectionType: selectionType,
+    );
   }
 }

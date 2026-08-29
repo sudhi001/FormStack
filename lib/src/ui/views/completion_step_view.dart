@@ -18,8 +18,9 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
     this.onBeforeFinishCallback,
     required this.autoTrigger,
   });
-  final ValueNotifier<int> _stateNotifier =
-      ValueNotifier<int>(0); // 0=loading, 1=success, 2=error
+  final ValueNotifier<int> _stateNotifier = ValueNotifier<int>(
+    0,
+  ); // 0=loading, 1=success, 2=error
   bool isCompleted = false;
   bool isLoading = true;
   Timer? _delayTimer;
@@ -31,10 +32,7 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
 
   Widget _buildLottieWidget(String? assetPath, String defaultPath) {
     final path = assetPath ?? defaultPath;
-    return Lottie.asset(
-      path,
-      fit: BoxFit.contain,
-    );
+    return Lottie.asset(path, fit: BoxFit.contain);
   }
 
   @override
@@ -62,20 +60,18 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
     );
 
     return ValueListenableBuilder<int>(
-        valueListenable: _stateNotifier,
-        builder: (context, state, _) {
-          return ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: 200.0,
-              maxWidth: 200.0,
-            ),
-            child: isLoading
-                ? _loadingWidget!
-                : isCompleted
-                    ? _successWidget!
-                    : _errorWidget!,
-          );
-        });
+      valueListenable: _stateNotifier,
+      builder: (context, state, _) {
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 200.0, maxWidth: 200.0),
+          child: isLoading
+              ? _loadingWidget!
+              : isCompleted
+              ? _successWidget!
+              : _errorWidget!,
+        );
+      },
+    );
   }
 
   @override

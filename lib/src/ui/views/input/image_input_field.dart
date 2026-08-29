@@ -12,9 +12,15 @@ import 'package:lottie/lottie.dart';
 class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
   final bool circular;
-  ImageInputWidgetView(this.circular, super.formStackForm, super.formStep,
-      super.text, this.resultFormat,
-      {super.key, super.title});
+  ImageInputWidgetView(
+    this.circular,
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+  });
 
   final FocusNode _focusNode = FocusNode();
   String? _value;
@@ -30,12 +36,14 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     _value = value;
 
-    return StatefulBuilder(builder: (context, setState) {
-      return Container(
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Container(
           constraints: BoxConstraints(
-              minWidth: circular ? 150 : 250,
-              maxWidth: circular ? 160 : 450,
-              maxHeight: circular ? 200 : 200),
+            minWidth: circular ? 150 : 250,
+            maxWidth: circular ? 160 : 450,
+            maxHeight: circular ? 200 : 200,
+          ),
           child: Stack(
             children: [
               circular
@@ -45,58 +53,68 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                              blurRadius: 0.5,
-                              color: Colors.grey,
-                              spreadRadius: 1)
+                            blurRadius: 0.5,
+                            color: Colors.grey,
+                            spreadRadius: 1,
+                          ),
                         ],
                       ),
                       child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.white,
-                          radius: 65,
-                          child: _buildCircleImage()))
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.white,
+                        radius: 65,
+                        child: _buildCircleImage(),
+                      ),
+                    )
                   : Container(
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.rectangle,
                         boxShadow: [
                           BoxShadow(
-                              blurRadius: 0.5,
-                              color: Colors.grey,
-                              spreadRadius: 1)
-                        ],
-                      ),
-                      child: _buildSquareImage()),
-              Positioned(
-                  right: circular ? 0 : 7,
-                  bottom: circular ? 7 : 7,
-                  child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 0.5,
-                              color: Colors.grey,
-                              spreadRadius: 1)
-                        ],
-                      ),
-                      child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.camera_alt_outlined,
-                            color: Colors.black,
+                            blurRadius: 0.5,
+                            color: Colors.grey,
+                            spreadRadius: 1,
                           ),
-                          onPressed: () {
-                            suffixButtonClick(setState);
-                          },
-                        ),
-                      )))
+                        ],
+                      ),
+                      child: _buildSquareImage(),
+                    ),
+              Positioned(
+                right: circular ? 0 : 7,
+                bottom: circular ? 7 : 7,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 0.5,
+                        color: Colors.grey,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.camera_alt_outlined,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        suffixButtonClick(setState);
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ],
-          ));
-    });
+          ),
+        );
+      },
+    );
   }
 
   void suffixButtonClick(StateSetter setState) async {
@@ -105,8 +123,10 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
       final file = hasFilter
           ? await FilePicker.pickFile(
               type: FileType.custom,
-              allowedExtensions:
-                  formStep.filter!.map((item) => item as String).toList())
+              allowedExtensions: formStep.filter!
+                  .map((item) => item as String)
+                  .toList(),
+            )
           : await FilePicker.pickFile();
       if (file == null) return;
 
@@ -117,13 +137,16 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
       setState(() {});
     } catch (e, stack) {
       // A cancelled or failed pick must not take the form down with it.
-      FlutterError.reportError(FlutterErrorDetails(
-        exception: e,
-        stack: stack,
-        library: 'formstack',
-        context:
-            ErrorDescription('picking an image for step ${formStep.id?.id}'),
-      ));
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: stack,
+          library: 'formstack',
+          context: ErrorDescription(
+            'picking an image for step ${formStep.id?.id}',
+          ),
+        ),
+      );
     }
   }
 
@@ -187,30 +210,41 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   // just-picked-file branch to keep in sync.
   Widget _buildSquareImage() {
     return _value != null
-        ? Image.memory(_dataFromBase64String(_value!),
+        ? Image.memory(
+            _dataFromBase64String(_value!),
             width: 400,
             height: 150,
             fit: BoxFit.cover,
             cacheWidth: 800,
-            cacheHeight: 300)
-        : Lottie.asset('packages/formstack/assets/lottiefiles/placeholder.json',
-            height: 150, width: 400, fit: BoxFit.fitHeight);
+            cacheHeight: 300,
+          )
+        : Lottie.asset(
+            'packages/formstack/assets/lottiefiles/placeholder.json',
+            height: 150,
+            width: 400,
+            fit: BoxFit.fitHeight,
+          );
   }
 
   Widget _buildCircleImage() {
     return _value != null
         ? ClipOval(
-            child: Image.memory(_dataFromBase64String(_value!),
-                width: 150,
-                height: 150,
-                fit: BoxFit.cover,
-                cacheWidth: 300,
-                cacheHeight: 300))
+            child: Image.memory(
+              _dataFromBase64String(_value!),
+              width: 150,
+              height: 150,
+              fit: BoxFit.cover,
+              cacheWidth: 300,
+              cacheHeight: 300,
+            ),
+          )
         : ClipOval(
             child: Lottie.asset(
-                'packages/formstack/assets/lottiefiles/placeholder.json',
-                height: 150,
-                width: 150,
-                fit: BoxFit.fitHeight));
+              'packages/formstack/assets/lottiefiles/placeholder.json',
+              height: 150,
+              width: 150,
+              fit: BoxFit.fitHeight,
+            ),
+          );
   }
 }

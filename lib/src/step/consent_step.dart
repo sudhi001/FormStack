@@ -59,8 +59,10 @@ class ConsentSection {
   /// Creates a [ConsentSection] from a JSON map.
   factory ConsentSection.from(Map<String, dynamic> json) {
     return ConsentSection(
-      type: ConsentSectionType.values.firstWhere((e) => e.name == json["type"],
-          orElse: () => ConsentSectionType.custom),
+      type: ConsentSectionType.values.firstWhere(
+        (e) => e.name == json["type"],
+        orElse: () => ConsentSectionType.custom,
+      ),
       title: json["title"] ?? "",
       summary: json["summary"] ?? "",
       content: json["content"],
@@ -160,8 +162,10 @@ class ConsentStep extends FormStep {
   }
 
   /// Creates a [ConsentStep] from a JSON map.
-  factory ConsentStep.from(Map<String, dynamic>? element,
-      List<RelevantCondition> relevantConditions) {
+  factory ConsentStep.from(
+    Map<String, dynamic>? element,
+    List<RelevantCondition> relevantConditions,
+  ) {
     final List<ConsentSection> sections = [];
     if (element?["sections"] != null) {
       for (var s in element!["sections"]) {
@@ -172,8 +176,10 @@ class ConsentStep extends FormStep {
       display: element?["display"] != null
           ? Display.values.firstWhere((e) => e.name == element?["display"])
           : Display.normal,
-      crossAxisAlignmentContent: crossAlignmentFromString(
-              element?["crossAxisAlignmentContent"] ?? "center") ??
+      crossAxisAlignmentContent:
+          crossAlignmentFromString(
+            element?["crossAxisAlignmentContent"] ?? "center",
+          ) ??
           CrossAxisAlignment.center,
       style: UIStyle.maybeFrom(element?["style"]),
       cancellable: element?["cancellable"],
@@ -189,7 +195,8 @@ class ConsentStep extends FormStep {
       titleIconMaxWidth: element?["titleIconMaxWidth"],
       sections: sections,
       requiresSignature: element?["requiresSignature"] ?? false,
-      agreementText: element?["agreementText"] ??
+      agreementText:
+          element?["agreementText"] ??
           "I have read and agree to the terms above",
       id: GenericIdentifier(id: element?["id"]),
     );

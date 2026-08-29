@@ -10,28 +10,28 @@ class NestedStep extends FormStep {
   final int verticalPadding;
   Function(Map<String, dynamic>)? onFinish;
 
-  NestedStep(
-      {super.id,
-      super.title = "",
-      super.text,
-      super.display = Display.normal,
-      super.isOptional = false,
-      super.relevantConditions,
-      super.nextButtonText = "Start",
-      super.backButtonText,
-      super.style,
-      this.onFinish,
-      required this.verticalPadding,
-      super.footerBackButton = false,
-      this.steps = const [],
-      super.titleIconMaxWidth,
-      required this.validationExpression,
-      super.titleIconAnimationFile,
-      super.cancelButtonText,
-      super.crossAxisAlignmentContent,
-      super.resultFormat,
-      super.cancellable})
-      : super();
+  NestedStep({
+    super.id,
+    super.title = "",
+    super.text,
+    super.display = Display.normal,
+    super.isOptional = false,
+    super.relevantConditions,
+    super.nextButtonText = "Start",
+    super.backButtonText,
+    super.style,
+    this.onFinish,
+    required this.verticalPadding,
+    super.footerBackButton = false,
+    this.steps = const [],
+    super.titleIconMaxWidth,
+    required this.validationExpression,
+    super.titleIconAnimationFile,
+    super.cancelButtonText,
+    super.crossAxisAlignmentContent,
+    super.resultFormat,
+    super.cancellable,
+  }) : super();
 
   @override
   FormStepView buildView(FormStackForm formStackForm) {
@@ -39,30 +39,36 @@ class NestedStep extends FormStep {
     return NestedStepView(formStackForm, this, text, title: title);
   }
 
-  factory NestedStep.from(Map<String, dynamic>? element,
-      List<RelevantCondition> relevantConditions, List<FormStep> steps) {
+  factory NestedStep.from(
+    Map<String, dynamic>? element,
+    List<RelevantCondition> relevantConditions,
+    List<FormStep> steps,
+  ) {
     return NestedStep(
-        display: element?["display"] != null
-            ? Display.values.firstWhere((e) => e.name == element?["display"])
-            : Display.normal,
-        crossAxisAlignmentContent: crossAlignmentFromString(
-                element?["crossAxisAlignmentContent"] ?? "center") ??
-            CrossAxisAlignment.center,
-        cancellable: element?["cancellable"],
-        footerBackButton: element?["footerBackButton"] ?? false,
-        style: UIStyle.maybeFrom(element?["style"]),
-        relevantConditions: relevantConditions,
-        backButtonText: element?["backButtonText"],
-        cancelButtonText: element?["cancelButtonText"],
-        isOptional: element?["isOptional"],
-        steps: steps,
-        nextButtonText: element?["nextButtonText"],
-        text: element?["text"],
-        verticalPadding: element?["verticalPadding"] ?? 0,
-        validationExpression: element?["validationExpression"] ?? "",
-        title: element?["title"],
-        titleIconAnimationFile: element?["titleIconAnimationFile"],
-        titleIconMaxWidth: element?["titleIconMaxWidth"],
-        id: GenericIdentifier(id: element?["id"]));
+      display: element?["display"] != null
+          ? Display.values.firstWhere((e) => e.name == element?["display"])
+          : Display.normal,
+      crossAxisAlignmentContent:
+          crossAlignmentFromString(
+            element?["crossAxisAlignmentContent"] ?? "center",
+          ) ??
+          CrossAxisAlignment.center,
+      cancellable: element?["cancellable"],
+      footerBackButton: element?["footerBackButton"] ?? false,
+      style: UIStyle.maybeFrom(element?["style"]),
+      relevantConditions: relevantConditions,
+      backButtonText: element?["backButtonText"],
+      cancelButtonText: element?["cancelButtonText"],
+      isOptional: element?["isOptional"],
+      steps: steps,
+      nextButtonText: element?["nextButtonText"],
+      text: element?["text"],
+      verticalPadding: element?["verticalPadding"] ?? 0,
+      validationExpression: element?["validationExpression"] ?? "",
+      title: element?["title"],
+      titleIconAnimationFile: element?["titleIconAnimationFile"],
+      titleIconMaxWidth: element?["titleIconMaxWidth"],
+      id: GenericIdentifier(id: element?["id"]),
+    );
   }
 }

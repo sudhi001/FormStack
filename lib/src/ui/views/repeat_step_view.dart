@@ -4,8 +4,13 @@ import 'package:formstack/formstack.dart';
 /// View for RepeatStep - renders child steps N times with add/remove controls.
 // ignore: must_be_immutable
 class RepeatStepView extends BaseStepView<RepeatStep> {
-  RepeatStepView(super.formStackForm, super.formStep, super.text,
-      {super.key, super.title});
+  RepeatStepView(
+    super.formStackForm,
+    super.formStep,
+    super.text, {
+    super.key,
+    super.title,
+  });
 
   final List<List<BaseStepView>> _repetitions = [];
   bool _isInitialized = false;
@@ -24,42 +29,47 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: ListView.builder(
-                cacheExtent: 300,
-                shrinkWrap: true,
-                itemCount: _repetitions.length,
-                itemBuilder: (context, index) {
-                  return _buildRepetitionCard(context, index, setState);
-                },
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (_repetitions.length < formStep.maxRepeat)
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _addRepetition(null);
-                    });
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: ListView.builder(
+                  cacheExtent: 300,
+                  shrinkWrap: true,
+                  itemCount: _repetitions.length,
+                  itemBuilder: (context, index) {
+                    return _buildRepetitionCard(context, index, setState);
                   },
-                  icon: const Icon(Icons.add),
-                  label: Text(formStep.addButtonText),
                 ),
               ),
-          ],
-        );
-      }),
+              const SizedBox(height: 12),
+              if (_repetitions.length < formStep.maxRepeat)
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _addRepetition(null);
+                      });
+                    },
+                    icon: const Icon(Icons.add),
+                    label: Text(formStep.addButtonText),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 
   Widget _buildRepetitionCard(
-      BuildContext context, int index, StateSetter setState) {
+    BuildContext context,
+    int index,
+    StateSetter setState,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -74,9 +84,9 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
                 Text(
                   "#${index + 1}",
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
                 if (_repetitions.length > formStep.minRepeat)
                   IconButton(
@@ -94,11 +104,7 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
                   ),
               ],
             ),
-            Wrap(
-              spacing: 7,
-              runSpacing: 7,
-              children: _repetitions[index],
-            ),
+            Wrap(spacing: 7, runSpacing: 7, children: _repetitions[index]),
           ],
         ),
       ),

@@ -54,8 +54,12 @@ abstract class ResultFormat {
   factory ResultFormat.number(String errorMsg) = _NumberResultType;
   factory ResultFormat.expression(String expression) = _ExpressionResultType;
   factory ResultFormat.date(String errorMsg, String format) = DateResultType;
-  factory ResultFormat.dateRange(String errorMsg, String format,
-      {DateTime? minDate, DateTime? maxDate}) = _DateRangeResultType;
+  factory ResultFormat.dateRange(
+    String errorMsg,
+    String format, {
+    DateTime? minDate,
+    DateTime? maxDate,
+  }) = _DateRangeResultType;
   factory ResultFormat.singleChoice(String errorMsg) = _SingleChoiceResultType;
   factory ResultFormat.multipleChoice(String errorMsg) =
       _MultipleChoiceResultType;
@@ -68,7 +72,9 @@ abstract class ResultFormat {
   factory ResultFormat.age(String errorMsg) = _AgeResultType;
   factory ResultFormat.percentage(String errorMsg) = _PercentageResultType;
   factory ResultFormat.custom(
-      String errorMsg, bool Function(String) validator) = _CustomResultType;
+    String errorMsg,
+    bool Function(String) validator,
+  ) = _CustomResultType;
   factory ResultFormat.min(String errorMsg, num min) = _MinResultType;
   factory ResultFormat.max(String errorMsg, num max) = _MaxResultType;
   factory ResultFormat.range(String errorMsg, num min, num max) =
@@ -142,8 +148,8 @@ abstract class ResultFormat {
 ///
 /// `message` is the caller-supplied error text; `args` carries the remaining
 /// keys of the JSON object (`min`, `max`, `regex`, …).
-typedef ResultFormatFactory = ResultFormat Function(
-    String message, Map<String, dynamic> args);
+typedef ResultFormatFactory =
+    ResultFormat Function(String message, Map<String, dynamic> args);
 
 class DateResultType extends ResultFormat {
   @override
@@ -173,16 +179,16 @@ class _DateRangeResultType extends ResultFormat {
 
   @override
   Map<String, Object?> get params => {
-        'minDate': minDate?.toIso8601String(),
-        'maxDate': maxDate?.toIso8601String()
-      };
+    'minDate': minDate?.toIso8601String(),
+    'maxDate': maxDate?.toIso8601String(),
+  };
 
   final String errorMsg;
   final String format;
   final DateTime? minDate;
   final DateTime? maxDate;
   _DateRangeResultType(this.errorMsg, this.format, {this.minDate, this.maxDate})
-      : super._();
+    : super._();
 
   @override
   bool isValid(dynamic input) {
@@ -476,14 +482,17 @@ class _MultipleChoiceResultType extends ResultFormat {
 // so the patterns are compiled once at first use rather than per call.
 
 final RegExp _emailPattern = RegExp(
-    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+);
 final RegExp _namePattern = RegExp(r'^[a-zA-Z\s]+$');
-final RegExp _passwordPattern =
-    RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+final RegExp _passwordPattern = RegExp(
+  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+);
 final RegExp _digitsPattern = RegExp(r'^[0-9]+$');
 final RegExp _phonePattern = RegExp(r'^\+?[1-9]\d{1,14}$');
 final RegExp _urlPattern = RegExp(
-    r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$');
+  r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$',
+);
 final RegExp _nonDigitPattern = RegExp(r'\D');
 final RegExp _ssnPattern = RegExp(r'^\d{3}-?\d{2}-?\d{4}$');
 final RegExp _zipPattern = RegExp(r'^\d{5}(-\d{4})?$');
@@ -725,8 +734,9 @@ class ExpressionValidator {
   String error = "";
 
   bool validate(Map<String, dynamic> input, String expression) {
-    final ExpressionLanguage expressionLanguage =
-        ExpressionLanguage.fromJson(json.decode(expression));
+    final ExpressionLanguage expressionLanguage = ExpressionLanguage.fromJson(
+      json.decode(expression),
+    );
     bool isOrValid = false;
     if (expressionLanguage.or.isNotEmpty) {
       for (var element in expressionLanguage.or) {

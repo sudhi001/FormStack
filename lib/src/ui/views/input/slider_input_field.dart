@@ -9,12 +9,16 @@ class SliderInputWidgetView extends BaseStepView<QuestionStep> {
   final num stepValue;
 
   SliderInputWidgetView(
-      super.formStackForm, super.formStep, super.text, this.resultFormat,
-      {super.key,
-      super.title,
-      this.minValue = 0,
-      this.maxValue = 100,
-      this.stepValue = 1});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat, {
+    super.key,
+    super.title,
+    this.minValue = 0,
+    this.maxValue = 100,
+    this.stepValue = 1,
+  });
 
   double _currentValue = 0;
   bool _isInitialized = false;
@@ -29,49 +33,56 @@ class SliderInputWidgetView extends BaseStepView<QuestionStep> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-      child: StatefulBuilder(builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              _currentValue.toStringAsFixed(stepValue % 1 == 0 ? 0 : 1),
-              style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Text(minValue.toString(),
-                    style: Theme.of(context).textTheme.bodySmall),
-                Expanded(
-                  child: Slider(
-                    value: _currentValue,
-                    min: minValue.toDouble(),
-                    max: maxValue.toDouble(),
-                    divisions: stepValue > 0
-                        ? ((maxValue - minValue) / stepValue).round()
-                        : null,
-                    label: _currentValue
-                        .toStringAsFixed(stepValue % 1 == 0 ? 0 : 1),
-                    onChanged: formStep.disabled
-                        ? null
-                        : (value) {
-                            setState(() {
-                              _currentValue = value;
-                              formStep.result = value;
-                            });
-                          },
-                  ),
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _currentValue.toStringAsFixed(stepValue % 1 == 0 ? 0 : 1),
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                Text(maxValue.toString(),
-                    style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-          ],
-        );
-      }),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Text(
+                    minValue.toString(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Expanded(
+                    child: Slider(
+                      value: _currentValue,
+                      min: minValue.toDouble(),
+                      max: maxValue.toDouble(),
+                      divisions: stepValue > 0
+                          ? ((maxValue - minValue) / stepValue).round()
+                          : null,
+                      label: _currentValue.toStringAsFixed(
+                        stepValue % 1 == 0 ? 0 : 1,
+                      ),
+                      onChanged: formStep.disabled
+                          ? null
+                          : (value) {
+                              setState(() {
+                                _currentValue = value;
+                                formStep.result = value;
+                              });
+                            },
+                    ),
+                  ),
+                  Text(
+                    maxValue.toString(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 

@@ -5,8 +5,13 @@ import 'package:formstack/formstack.dart';
 /// Records disposal so the test can assert the form released its views.
 // ignore: must_be_immutable
 class _TrackedInputView extends BaseStepView<QuestionStep> {
-  _TrackedInputView(super.form, super.step, super.text, this.onDisposed,
-      {super.title});
+  _TrackedInputView(
+    super.form,
+    super.step,
+    super.text,
+    this.onDisposed, {
+    super.title,
+  });
 
   final void Function(String id) onDisposed;
   final TextEditingController controller = TextEditingController();
@@ -39,11 +44,11 @@ class _TrackedInputView extends BaseStepView<QuestionStep> {
 }
 
 QuestionStep trackedStep(String id) => QuestionStep(
-      id: GenericIdentifier(id: id),
-      inputType: InputType.custom,
-      customInputType: 'tracked',
-      title: id,
-    );
+  id: GenericIdentifier(id: id),
+  inputType: InputType.custom,
+  customInputType: 'tracked',
+  title: id,
+);
 
 void main() {
   late List<String> disposed;
@@ -54,8 +59,13 @@ void main() {
     InputRegistry.instance.reset();
     InputRegistry.instance.register(
       'tracked',
-      (ctx) => _TrackedInputView(ctx.form, ctx.step, ctx.text, disposed.add,
-          title: ctx.title),
+      (ctx) => _TrackedInputView(
+        ctx.form,
+        ctx.step,
+        ctx.text,
+        disposed.add,
+        title: ctx.title,
+      ),
     );
   });
 
@@ -76,8 +86,9 @@ void main() {
     expect(find.text('b'), findsNothing);
   });
 
-  testWidgets('removing the form disposes every cached step view',
-      (tester) async {
+  testWidgets('removing the form disposes every cached step view', (
+    tester,
+  ) async {
     // Regression guard: step views are StatelessWidgets holding controllers,
     // so nothing in the framework disposes them. The form must do it.
     await tester.pumpWidget(hostFor([trackedStep('a'), trackedStep('b')]));
@@ -88,8 +99,9 @@ void main() {
     expect(disposed, contains('a'));
   });
 
-  testWidgets('the view cache is bounded and evicts the oldest view',
-      (tester) async {
+  testWidgets('the view cache is bounded and evicts the oldest view', (
+    tester,
+  ) async {
     final steps = List.generate(6, (i) => trackedStep('s$i'));
     await tester.pumpWidget(hostFor(steps));
     final form = FormStack.formByInstaceAndName()!;
@@ -129,7 +141,8 @@ void main() {
 
   testWidgets('a progress bar reports position out of total', (tester) async {
     await tester.pumpWidget(
-        hostFor([trackedStep('a'), trackedStep('b'), trackedStep('c')]));
+      hostFor([trackedStep('a'), trackedStep('b'), trackedStep('c')]),
+    );
     expect(find.text('Step 1 of 3'), findsOneWidget);
   });
 }

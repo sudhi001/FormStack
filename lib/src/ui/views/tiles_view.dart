@@ -4,66 +4,80 @@ import 'package:formstack/formstack.dart';
 class ListTitlesView {
   static Widget buildView(BuildContext context, DisplayStep formStep) {
     return Container(
-        decoration: formStep.componentsStyle == ComponentsStyle.minimal
-            ? BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: FormStackTheme.dividerColor(context)),
-                  bottom:
-                      BorderSide(color: FormStackTheme.dividerColor(context)),
-                ),
-              )
-            : null,
-        constraints: const BoxConstraints(maxWidth: 300.0),
-        child: ListView.separated(
-          cacheExtent: 300,
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          separatorBuilder: (context, index) => Divider(
-              color: formStep.componentsStyle == ComponentsStyle.minimal
-                  ? FormStackTheme.dividerColor(context)
-                  : Colors.transparent,
-              height: 5),
-          itemBuilder: (context, index) {
-            final DynamicData dynamicData = formStep.data[index];
-            return _buildListTile(context, dynamicData, formStep);
-          },
-          itemCount: formStep.data.length,
-        ));
+      decoration: formStep.componentsStyle == ComponentsStyle.minimal
+          ? BoxDecoration(
+              border: Border(
+                top: BorderSide(color: FormStackTheme.dividerColor(context)),
+                bottom: BorderSide(color: FormStackTheme.dividerColor(context)),
+              ),
+            )
+          : null,
+      constraints: const BoxConstraints(maxWidth: 300.0),
+      child: ListView.separated(
+        cacheExtent: 300,
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        separatorBuilder: (context, index) => Divider(
+          color: formStep.componentsStyle == ComponentsStyle.minimal
+              ? FormStackTheme.dividerColor(context)
+              : Colors.transparent,
+          height: 5,
+        ),
+        itemBuilder: (context, index) {
+          final DynamicData dynamicData = formStep.data[index];
+          return _buildListTile(context, dynamicData, formStep);
+        },
+        itemCount: formStep.data.length,
+      ),
+    );
   }
 
   static Widget _buildListTile(
-      BuildContext context, DynamicData dynamicData, DisplayStep formStep) {
+    BuildContext context,
+    DynamicData dynamicData,
+    DisplayStep formStep,
+  ) {
     final bool isBasicStyle = formStep.componentsStyle == ComponentsStyle.basic;
 
     return ClipRRect(
-        borderRadius: isBasicStyle
-            ? const BorderRadius.vertical(
-                top: Radius.circular(12),
-                bottom: Radius.circular(12),
-              )
-            : const BorderRadius.vertical(),
-        child: Container(
-          color: isBasicStyle ? FormStackTheme.cardColor(context) : null,
-          padding: const EdgeInsets.all(7),
-          child: ListTile(
-              title: Text(dynamicData.title,
-                  style: Theme.of(context).textTheme.bodyMedium),
-              subtitle: dynamicData.subTitle != null
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(dynamicData.subTitle!,
-                          style: Theme.of(context).textTheme.bodySmall),
-                    )
-                  : null,
-              leading: dynamicData.leading != null
-                  ? Text(dynamicData.leading!,
-                      style: Theme.of(context).textTheme.headlineLarge)
-                  : null,
-              trailing: dynamicData.trailing != null
-                  ? Text(dynamicData.trailing!,
-                      style: Theme.of(context).textTheme.bodySmall)
-                  : null),
-        ));
+      borderRadius: isBasicStyle
+          ? const BorderRadius.vertical(
+              top: Radius.circular(12),
+              bottom: Radius.circular(12),
+            )
+          : const BorderRadius.vertical(),
+      child: Container(
+        color: isBasicStyle ? FormStackTheme.cardColor(context) : null,
+        padding: const EdgeInsets.all(7),
+        child: ListTile(
+          title: Text(
+            dynamicData.title,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          subtitle: dynamicData.subTitle != null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    dynamicData.subTitle!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              : null,
+          leading: dynamicData.leading != null
+              ? Text(
+                  dynamicData.leading!,
+                  style: Theme.of(context).textTheme.headlineLarge,
+                )
+              : null,
+          trailing: dynamicData.trailing != null
+              ? Text(
+                  dynamicData.trailing!,
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+              : null,
+        ),
+      ),
+    );
   }
 }

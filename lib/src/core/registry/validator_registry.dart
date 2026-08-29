@@ -67,8 +67,10 @@ class ValidatorRegistry {
     if (spec == null) return null;
     if (spec is ResultFormat) return spec;
     if (spec is List) {
-      final parts =
-          spec.map(build).whereType<ResultFormat>().toList(growable: false);
+      final parts = spec
+          .map(build)
+          .whereType<ResultFormat>()
+          .toList(growable: false);
       if (parts.isEmpty) return null;
       return parts.length == 1 ? parts.first : ResultFormat.compose(parts);
     }
@@ -78,7 +80,8 @@ class ValidatorRegistry {
       final type = map['type'];
       if (type is! String || type.isEmpty) {
         throw FormatException(
-            'Validator object must carry a non-empty "type": $spec');
+          'Validator object must carry a non-empty "type": $spec',
+        );
       }
       final message = (map['message'] ?? map['error'] ?? '').toString();
       return _buildNamed(type, message, map);
@@ -87,12 +90,16 @@ class ValidatorRegistry {
   }
 
   ResultFormat _buildNamed(
-      String type, String message, Map<String, dynamic> args) {
+    String type,
+    String message,
+    Map<String, dynamic> args,
+  ) {
     final factory = _factories[type];
     if (factory == null) {
       throw FormatException(
-          'Unknown validator "$type". Registered: ${registered.join(', ')}. '
-          'Add your own with ResultFormat.register("$type", ...).');
+        'Unknown validator "$type". Registered: ${registered.join(', ')}. '
+        'Add your own with ResultFormat.register("$type", ...).',
+      );
     }
     return factory(message, args);
   }
@@ -134,23 +141,36 @@ class ValidatorRegistry {
     put('min', (m, a) => ResultFormat.min(m, _num(a['min']) ?? 0));
     put('max', (m, a) => ResultFormat.max(m, _num(a['max']) ?? 0));
     put(
-        'range',
-        (m, a) => ResultFormat.range(
-            m, _num(a['min']) ?? 0, _num(a['max']) ?? double.maxFinite));
+      'range',
+      (m, a) => ResultFormat.range(
+        m,
+        _num(a['min']) ?? 0,
+        _num(a['max']) ?? double.maxFinite,
+      ),
+    );
     put('minLength', (m, a) => ResultFormat.minLength(m, _int(a['min']) ?? 0));
-    put('maxLength',
-        (m, a) => ResultFormat.maxLength(m, _int(a['max']) ?? 1 << 31));
-    put('minSelections',
-        (m, a) => ResultFormat.minSelections(m, _int(a['min']) ?? 0));
-    put('maxSelections',
-        (m, a) => ResultFormat.maxSelections(m, _int(a['max']) ?? 1 << 31));
-    put('fileSize',
-        (m, a) => ResultFormat.fileSize(m, _int(a['maxBytes']) ?? 1 << 31));
+    put(
+      'maxLength',
+      (m, a) => ResultFormat.maxLength(m, _int(a['max']) ?? 1 << 31),
+    );
+    put(
+      'minSelections',
+      (m, a) => ResultFormat.minSelections(m, _int(a['min']) ?? 0),
+    );
+    put(
+      'maxSelections',
+      (m, a) => ResultFormat.maxSelections(m, _int(a['max']) ?? 1 << 31),
+    );
+    put(
+      'fileSize',
+      (m, a) => ResultFormat.fileSize(m, _int(a['maxBytes']) ?? 1 << 31),
+    );
     put('pattern', (m, a) {
       final regex = a['regex'] ?? a['pattern'];
       if (regex is! String || regex.isEmpty) {
         throw const FormatException(
-            'Validator "pattern" requires a non-empty "regex".');
+          'Validator "pattern" requires a non-empty "regex".',
+        );
       }
       return ResultFormat.pattern(m, regex);
     });
@@ -158,21 +178,23 @@ class ValidatorRegistry {
       final expression = a['expression'] ?? a['value'];
       if (expression is! String || expression.isEmpty) {
         throw const FormatException(
-            'Validator "expression" requires a non-empty "expression".');
+          'Validator "expression" requires a non-empty "expression".',
+        );
       }
       return ResultFormat.expression(expression);
     });
     put(
-        'date',
-        (m, a) =>
-            ResultFormat.date(m, (a['format'] ?? 'yyyy-MM-dd').toString()));
+      'date',
+      (m, a) => ResultFormat.date(m, (a['format'] ?? 'yyyy-MM-dd').toString()),
+    );
     put(
-        'dateRange',
-        (m, a) => ResultFormat.dateRange(
-              m,
-              (a['format'] ?? 'yyyy-MM-dd').toString(),
-              minDate: _date(a['minDate']),
-              maxDate: _date(a['maxDate']),
-            ));
+      'dateRange',
+      (m, a) => ResultFormat.dateRange(
+        m,
+        (a['format'] ?? 'yyyy-MM-dd').toString(),
+        minDate: _date(a['minDate']),
+        maxDate: _date(a['maxDate']),
+      ),
+    );
   }
 }

@@ -23,7 +23,8 @@ extension InputStyleBorder on InputStyle {
       case InputStyle.underLined:
         return style != null
             ? UnderlineInputBorder(
-                borderSide: BorderSide(color: style.borderColor))
+                borderSide: BorderSide(color: style.borderColor),
+              )
             : const UnderlineInputBorder();
     }
   }

@@ -28,9 +28,9 @@ class _StubRecorder implements AudioRecorder {
 
   @override
   Future<AudioRecording?> stop() async => const AudioRecording(
-        path: '/tmp/recording.m4a',
-        duration: Duration(seconds: 3),
-      );
+    path: '/tmp/recording.m4a',
+    duration: Duration(seconds: 3),
+  );
 }
 
 void main() {
@@ -48,7 +48,10 @@ void main() {
       isOptional: true,
     );
     FormStack.api().form(
-      steps: [step, InstructionStep(id: GenericIdentifier(id: 'end'))],
+      steps: [
+        step,
+        InstructionStep(id: GenericIdentifier(id: 'end')),
+      ],
       mapKey: MapKey('', '', ''),
       initialLocation: LocationWrapper(0, 0),
     );
@@ -71,8 +74,9 @@ void main() {
   });
 
   group('barcode input', () {
-    testWidgets('uses a registered scanner and stores its value',
-        (tester) async {
+    testWidgets('uses a registered scanner and stores its value', (
+      tester,
+    ) async {
       final scanner = _StubScanner('9780306406157');
       DeviceCapabilities.instance.barcodeScanner = scanner;
 
@@ -84,8 +88,9 @@ void main() {
       expect(step.result, '9780306406157');
     });
 
-    testWidgets('a cancelled scan leaves the previous answer alone',
-        (tester) async {
+    testWidgets('a cancelled scan leaves the previous answer alone', (
+      tester,
+    ) async {
       DeviceCapabilities.instance.barcodeScanner = _StubScanner(null);
       final step = await pump(tester, InputType.barcode);
       step.result = 'previous';
@@ -96,8 +101,9 @@ void main() {
       expect(step.result, 'previous');
     });
 
-    testWidgets('a failing scanner does not take the form down',
-        (tester) async {
+    testWidgets('a failing scanner does not take the form down', (
+      tester,
+    ) async {
       DeviceCapabilities.instance.barcodeScanner = _ThrowingScanner();
       await pump(tester, InputType.barcode);
 
@@ -108,8 +114,9 @@ void main() {
       expect(find.text('Capture'), findsOneWidget);
     });
 
-    testWidgets('falls back to manual entry with no scanner registered',
-        (tester) async {
+    testWidgets('falls back to manual entry with no scanner registered', (
+      tester,
+    ) async {
       await pump(tester, InputType.barcode);
       await tester.tap(find.text('Tap to Scan'));
       await tester.pumpAndSettle();
@@ -120,8 +127,9 @@ void main() {
   });
 
   group('audio input', () {
-    testWidgets('uses a registered recorder and stores the file path',
-        (tester) async {
+    testWidgets('uses a registered recorder and stores the file path', (
+      tester,
+    ) async {
       final recorder = _StubRecorder();
       DeviceCapabilities.instance.audioRecorder = recorder;
 
@@ -136,8 +144,9 @@ void main() {
       expect(step.result, '/tmp/recording.m4a');
     });
 
-    testWidgets('without a recorder it records a duration marker only',
-        (tester) async {
+    testWidgets('without a recorder it records a duration marker only', (
+      tester,
+    ) async {
       final step = await pump(tester, InputType.audio);
 
       await tester.tap(find.byIcon(Icons.mic));

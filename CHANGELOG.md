@@ -124,11 +124,12 @@ or JSON are unaffected.
 - `ResultFormat.compose` no longer keeps mutable state across calls.
 - The duplicated `inputBorder()` implementation, previously copied into five
   input widgets, is a single `InputStyle.toInputBorder` extension.
-- **SDK floor corrected to Dart 3.8 / Flutter 3.32.** The package declared
+- **SDK floor corrected to Dart 3.10 / Flutter 3.38.2.** The package declared
   `flutter: ">=1.17.0"` while using `Color.withValues` (3.27) and
   `PopScope.onPopInvokedWithResult` (3.24), so the declared floor could never
   have compiled. The new floor is the lowest combination CI actually builds
-  and tests against, in the `min-sdk` job — an untested floor is a guess.
+  and tests against, in the `min-sdk` job — an untested floor is a guess. The
+  binding constraint is `file_picker` 12, which requires Dart 3.10.
 - **Removed the root `android/`, `ios/`, `linux/`, `macos/` and `windows/`
   folders.** This is a pure Dart package with no native code; they were
   `flutter create` leftovers containing only generated plugin registrants,

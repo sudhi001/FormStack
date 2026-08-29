@@ -9,16 +9,23 @@ import 'package:formstack/src/ui/views/input/date_input_field.dart';
 // ignore: must_be_immutable
 class DateInputWidget extends DateInputWidgetView {
   DateInputWidget(
-      super.formStackForm, super.formStep, super.text, super.resultFormat,
-      {super.key, super.title, super.format});
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    super.resultFormat, {
+    super.key,
+    super.title,
+    super.format,
+  });
 
   /// Create date only components
   factory DateInputWidget.date(
-      QuestionStep questionStep,
-      FormStackForm formStackForm,
-      String? text,
-      ResultFormat resultFormat,
-      String? title) {
+    QuestionStep questionStep,
+    FormStackForm formStackForm,
+    String? text,
+    ResultFormat resultFormat,
+    String? title,
+  ) {
     return DateInputWidget(
       formStackForm,
       questionStep,
@@ -30,11 +37,12 @@ class DateInputWidget extends DateInputWidgetView {
   }
   // Create Time only components
   factory DateInputWidget.time(
-      QuestionStep questionStep,
-      FormStackForm formStackForm,
-      String? text,
-      ResultFormat resultFormat,
-      String? title) {
+    QuestionStep questionStep,
+    FormStackForm formStackForm,
+    String? text,
+    ResultFormat resultFormat,
+    String? title,
+  ) {
     return DateInputWidget(
       formStackForm,
       questionStep,
@@ -47,12 +55,19 @@ class DateInputWidget extends DateInputWidgetView {
 
   /// Create Date and Time components
   factory DateInputWidget.dateTime(
-      QuestionStep questionStep,
-      FormStackForm formStackForm,
-      String? text,
-      ResultFormat resultFormat,
-      String? title) {
-    return DateInputWidget(formStackForm, questionStep, text, resultFormat,
-        title: title, format: DateInputFormats.dateTime);
+    QuestionStep questionStep,
+    FormStackForm formStackForm,
+    String? text,
+    ResultFormat resultFormat,
+    String? title,
+  ) {
+    return DateInputWidget(
+      formStackForm,
+      questionStep,
+      text,
+      resultFormat,
+      title: title,
+      format: DateInputFormats.dateTime,
+    );
   }
 }

@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:formstack/formstack.dart';
 
 QuestionStep question(String id) => QuestionStep(
-      id: GenericIdentifier(id: id),
-      inputType: InputType.text,
-      title: id,
-    );
+  id: GenericIdentifier(id: id),
+  inputType: InputType.text,
+  title: id,
+);
 
 void main() {
   late InMemoryFormPersistence store;

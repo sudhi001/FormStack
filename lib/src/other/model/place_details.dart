@@ -37,22 +37,23 @@ class Result {
   String? vicinity;
   String? website;
 
-  Result(
-      {this.addressComponents,
-      this.adrAddress,
-      this.formattedAddress,
-      this.geometry,
-      this.icon,
-      this.name,
-      this.photos,
-      this.placeId,
-      this.reference,
-      this.scope,
-      this.types,
-      this.url,
-      this.utcOffset,
-      this.vicinity,
-      this.website});
+  Result({
+    this.addressComponents,
+    this.adrAddress,
+    this.formattedAddress,
+    this.geometry,
+    this.icon,
+    this.name,
+    this.photos,
+    this.placeId,
+    this.reference,
+    this.scope,
+    this.types,
+    this.url,
+    this.utcOffset,
+    this.vicinity,
+    this.website,
+  });
 
   Result.fromJson(Map<String, dynamic> json) {
     final addressComponentsJson = json['address_components'];
@@ -64,8 +65,9 @@ class Result {
     }
     adrAddress = json['adr_address'];
     formattedAddress = json['formatted_address'];
-    geometry =
-        json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
+    geometry = json['geometry'] != null
+        ? Geometry.fromJson(json['geometry'])
+        : null;
     icon = json['icon'];
     name = json['name'];
     final photosJson = json['photos'];
@@ -88,8 +90,9 @@ class Result {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (addressComponents != null) {
-      data['address_components'] =
-          addressComponents!.map((v) => v.toJson()).toList();
+      data['address_components'] = addressComponents!
+          .map((v) => v.toJson())
+          .toList();
     }
     data['adr_address'] = adrAddress;
     data['formatted_address'] = formattedAddress;
@@ -142,10 +145,12 @@ class Geometry {
   Geometry({this.location, this.viewport});
 
   Geometry.fromJson(Map<String, dynamic> json) {
-    location =
-        json['location'] != null ? Location.fromJson(json['location']) : null;
-    viewport =
-        json['viewport'] != null ? Viewport.fromJson(json['viewport']) : null;
+    location = json['location'] != null
+        ? Location.fromJson(json['location'])
+        : null;
+    viewport = json['viewport'] != null
+        ? Viewport.fromJson(json['viewport'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -186,10 +191,12 @@ class Viewport {
   Viewport({this.northeast, this.southwest});
 
   Viewport.fromJson(Map<String, dynamic> json) {
-    northeast =
-        json['northeast'] != null ? Location.fromJson(json['northeast']) : null;
-    southwest =
-        json['southwest'] != null ? Location.fromJson(json['southwest']) : null;
+    northeast = json['northeast'] != null
+        ? Location.fromJson(json['northeast'])
+        : null;
+    southwest = json['southwest'] != null
+        ? Location.fromJson(json['southwest'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

@@ -12,14 +12,19 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   final TextInputType keyboardType;
   final int? numberOfLines;
   final List<dynamic> filter;
-  TextFieldInputWidgetView(super.formStackForm, super.formStep, super.text,
-      this.resultFormat, this.formatter,
-      {super.key,
-      super.title,
-      this.keyboardType = TextInputType.none,
-      this.numberOfLines = 1,
-      this.filter = const [],
-      this.textCapitalization = TextCapitalization.none});
+  TextFieldInputWidgetView(
+    super.formStackForm,
+    super.formStep,
+    super.text,
+    this.resultFormat,
+    this.formatter, {
+    super.key,
+    super.title,
+    this.keyboardType = TextInputType.none,
+    this.numberOfLines = 1,
+    this.filter = const [],
+    this.textCapitalization = TextCapitalization.none,
+  });
 
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -53,18 +58,22 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       });
     }
     return Container(
-        decoration: formStep.inputStyle == InputStyle.basic
-            ? BoxDecoration(
-                color: FormStackTheme.surfaceColor(context),
-                border: Border(
-                    top: BorderSide(color: FormStackTheme.borderColor(context)),
-                    bottom:
-                        BorderSide(color: FormStackTheme.borderColor(context))),
-              )
-            : null,
-        constraints:
-            const BoxConstraints(minWidth: 300, maxWidth: 400, minHeight: 50),
-        child: _buildComponent(context));
+      decoration: formStep.inputStyle == InputStyle.basic
+          ? BoxDecoration(
+              color: FormStackTheme.surfaceColor(context),
+              border: Border(
+                top: BorderSide(color: FormStackTheme.borderColor(context)),
+                bottom: BorderSide(color: FormStackTheme.borderColor(context)),
+              ),
+            )
+          : null,
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 400,
+        minHeight: 50,
+      ),
+      child: _buildComponent(context),
+    );
   }
 
   Widget _buildComponent(BuildContext context) {
@@ -73,8 +82,9 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       textAlign: formStep.textAlign,
       enabled: !formStep.disabled,
       readOnly: formStep.inputType == InputType.file,
-      enableInteractiveSelection:
-          formStep.inputType == InputType.file ? false : true,
+      enableInteractiveSelection: formStep.inputType == InputType.file
+          ? false
+          : true,
       autocorrect: false,
       minLines: numberOfLines,
       maxLines: numberOfLines,
@@ -91,18 +101,19 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
           resultFormat.isValid(input ?? '') ? null : validationError(),
       inputFormatters: formatter,
       decoration: InputDecoration(
-          border: formStep.inputStyle.toInputBorder(style: formStep.style),
-          enabledBorder:
-              formStep.inputStyle.toInputBorder(style: formStep.style),
-          suffixIcon: formStep.inputType == InputType.file
-              ? IconButton(
-                  focusNode: _focusNode,
-                  onPressed: suffixButtonClick,
-                  icon: const Icon(Icons.file_open))
-              : null,
-          hintText: formStep.hint,
-          labelText: formStep.label,
-          hintStyle: Theme.of(context).textTheme.bodySmall),
+        border: formStep.inputStyle.toInputBorder(style: formStep.style),
+        enabledBorder: formStep.inputStyle.toInputBorder(style: formStep.style),
+        suffixIcon: formStep.inputType == InputType.file
+            ? IconButton(
+                focusNode: _focusNode,
+                onPressed: suffixButtonClick,
+                icon: const Icon(Icons.file_open),
+              )
+            : null,
+        hintText: formStep.hint,
+        labelText: formStep.label,
+        hintStyle: Theme.of(context).textTheme.bodySmall,
+      ),
     );
   }
 
@@ -111,7 +122,8 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
         ? await FilePicker.pickFile()
         : await FilePicker.pickFile(
             type: FileType.custom,
-            allowedExtensions: filter.map((item) => item as String).toList());
+            allowedExtensions: filter.map((item) => item as String).toList(),
+          );
 
     if (pickedFile != null) {
       _controller.text = pickedFile!.name;

@@ -23,23 +23,27 @@ const _needsOptions = {
 };
 
 QuestionStep stepFor(InputType type) => QuestionStep(
-      id: GenericIdentifier(id: type.name),
-      inputType: type,
-      title: 'Question ${type.name}',
-      text: 'Body text',
-      options: _needsOptions.contains(type)
-          ? [Options('a', 'Option A'), Options('b', 'Option B')]
-          : null,
-      calculateCallback:
-          type == InputType.calculate ? (results) => results.length : null,
-    );
+  id: GenericIdentifier(id: type.name),
+  inputType: type,
+  title: 'Question ${type.name}',
+  text: 'Body text',
+  options: _needsOptions.contains(type)
+      ? [Options('a', 'Option A'), Options('b', 'Option B')]
+      : null,
+  calculateCallback: type == InputType.calculate
+      ? (results) => results.length
+      : null,
+);
 
 void main() {
   setUp(FormStack.clearConfiguration);
 
   Future<void> pumpStep(WidgetTester tester, QuestionStep step) async {
     FormStack.api().form(
-      steps: [step, InstructionStep(id: GenericIdentifier(id: 'end'))],
+      steps: [
+        step,
+        InstructionStep(id: GenericIdentifier(id: 'end')),
+      ],
       mapKey: MapKey('', '', ''),
       initialLocation: LocationWrapper(0, 0),
     );
@@ -54,8 +58,11 @@ void main() {
         await pumpStep(tester, stepFor(type));
         await tester.pump();
 
-        expect(tester.takeException(), isNull,
-            reason: 'building InputType.${type.name} threw');
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'building InputType.${type.name} threw',
+        );
 
         if (type == InputType.hidden) {
           // A hidden field has no UI and advances on its own, so the step it
@@ -69,8 +76,9 @@ void main() {
   });
 
   group('validation surfaces on the step', () {
-    testWidgets('an invalid answer blocks navigation and shows the message',
-        (tester) async {
+    testWidgets('an invalid answer blocks navigation and shows the message', (
+      tester,
+    ) async {
       final step = QuestionStep(
         id: GenericIdentifier(id: 'email'),
         inputType: InputType.email,
@@ -97,7 +105,10 @@ void main() {
       FormStack.api().form(
         steps: [
           step,
-          InstructionStep(id: GenericIdentifier(id: 'end'), title: 'Finished'),
+          InstructionStep(
+            id: GenericIdentifier(id: 'end'),
+            title: 'Finished',
+          ),
         ],
         mapKey: MapKey('', '', ''),
         initialLocation: LocationWrapper(0, 0),
@@ -111,8 +122,9 @@ void main() {
       expect(find.text('Finished'), findsOneWidget);
     });
 
-    testWidgets('an optional step advances without a valid answer',
-        (tester) async {
+    testWidgets('an optional step advances without a valid answer', (
+      tester,
+    ) async {
       final step = QuestionStep(
         id: GenericIdentifier(id: 'email'),
         inputType: InputType.email,
@@ -122,7 +134,10 @@ void main() {
       FormStack.api().form(
         steps: [
           step,
-          InstructionStep(id: GenericIdentifier(id: 'end'), title: 'Finished'),
+          InstructionStep(
+            id: GenericIdentifier(id: 'end'),
+            title: 'Finished',
+          ),
         ],
         mapKey: MapKey('', '', ''),
         initialLocation: LocationWrapper(0, 0),
@@ -139,17 +154,20 @@ void main() {
   group('accessibility', () {
     testWidgets('the step title is exposed as a header', (tester) async {
       await pumpStep(tester, stepFor(InputType.text));
-      final semantics = tester.getSemantics(find
-          .ancestor(
-            of: find.text('Question text'),
-            matching: find.byType(Semantics),
-          )
-          .first);
+      final semantics = tester.getSemantics(
+        find
+            .ancestor(
+              of: find.text('Question text'),
+              matching: find.byType(Semantics),
+            )
+            .first,
+      );
       expect(semantics.hasFlag(SemanticsFlag.isHeader), isTrue);
     });
 
-    testWidgets('the progress bar announces position and percentage',
-        (tester) async {
+    testWidgets('the progress bar announces position and percentage', (
+      tester,
+    ) async {
       await pumpStep(tester, stepFor(InputType.text));
       expect(
         find.bySemanticsLabel(RegExp(r'Step 1 of 2, \d+ percent complete')),
