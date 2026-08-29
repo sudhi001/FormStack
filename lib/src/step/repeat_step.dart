@@ -27,6 +27,7 @@ import 'package:formstack/src/utils/alignment.dart';
 /// )
 /// ```
 class RepeatStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "RepeatStep";
 
   /// Template steps that are repeated for each entry.
@@ -41,6 +42,7 @@ class RepeatStep extends FormStep {
   /// Label for the "Add" button.
   final String addButtonText;
 
+  /// Called with all results when this step completes the form.
   Function(Map<String, dynamic>)? onFinish;
 
   /// Creates a [RepeatStep].

@@ -9,8 +9,16 @@ import 'package:intl/intl.dart';
 /// [RelevantCondition], result aggregation, and UI rendering callbacks.
 /// Use [FormStack.api().form()] to create instances rather than subclassing directly.
 abstract class FormStackForm {
+  /// Identifier of this form. Generated if not supplied.
   Identifier? id;
+
+  /// Name of the [FormStack] instance that owns this form.
+  ///
+  /// Used to resolve cross-form navigation, where a [RelevantCondition]
+  /// carries a `formName` instead of a step id.
   String fromInstanceName;
+
+  /// Path to a Lottie animation drawn behind every step, or null for none.
   String? backgroundAnimationFile;
 
   /// The ordered steps of this form.
@@ -19,21 +27,52 @@ abstract class FormStackForm {
   /// a step can route elsewhere. Mutating this list invalidates the internal
   /// index automatically on the next lookup.
   List<FormStep> steps;
+
+  /// API keys for the map inputs. Empty when the form uses no map.
   MapKey mapKey;
+
+  /// Alignment of [backgroundAnimationFile] within the step.
   Alignment? backgroundAlignment;
+
+  /// Starting camera position for map inputs.
   LocationWrapper initialLocation;
+
+  /// Legacy accent colour. Prefer the ambient [ThemeData] and [UIStyle].
   Color primaryColor;
+
+  /// When true, the OS back gesture is intercepted rather than popping the
+  /// route, and [onSystemNavigationBackClick] is called instead.
   bool preventSystemBackNavigation;
+
+  /// Called with the step to display next. Set by the rendering widget.
   Function(FormStep)? onUpdate;
+
+  /// Called when the OS back gesture fires and it was not prevented.
   VoidCallback? onSystemNavigationBackClick;
+
+  /// Called to hand rendering over to another form, for cross-form navigation.
   Function(FormStackForm)? onRenderFormStackForm;
+
+  /// Called with the flattened results when the form completes.
   Function(Map<String, dynamic> result)? onFinish;
+
+  /// Called when the user cancels from the first step.
   Function()? onCancel;
+
+  /// Called with the message whenever a step fails validation.
   Function(String)? onValidationError;
+
+  /// Records which step routed to each branch target, so back navigation
+  /// retraces the path actually taken rather than declaration order.
   Map<String, dynamic> relevantStack = {};
+
+  /// The flattened answers, keyed by step id. Refreshed by [generateResult].
   Map<String, dynamic> result = {};
+
+  /// The form that navigated here, for returning from a cross-form branch.
   FormStackForm? previousFormStackForm;
 
+  /// Creates a [FormStackForm] over [steps].
   FormStackForm(
     this.steps, {
     this.id,
@@ -52,10 +91,13 @@ abstract class FormStackForm {
     id ??= FormIdentifier();
   }
 
+  /// Reports a validation failure to [onValidationError].
   void validationError(String error) {
     onValidationError?.call(error);
   }
 
+  /// Clears every answer, timestamp and cached view, returning the form to
+  /// its initial state.
   void clearResult() {
     relevantStack.clear();
     disposeViews();
@@ -207,6 +249,7 @@ abstract class FormStackForm {
     return steps[i - 1];
   }
 
+  /// Navigates back from [currentStep], retracing any branch that was taken.
   void backStep(FormStep? currentStep) {
     FormStep? nextStep;
     final currentStepId = currentStep?.id?.id;
@@ -228,6 +271,11 @@ abstract class FormStackForm {
     }
   }
 
+  /// Navigates forward from [currentStep].
+  ///
+  /// Evaluates the step's [RelevantCondition]s first; the first match wins and
+  /// may route to another step or another form. Falls through to the next step
+  /// in declaration order when none match.
   void nextStep(FormStep? currentStep) {
     FormStep? nextStep;
     if (currentStep?.relevantConditions == null) {
@@ -280,6 +328,7 @@ abstract class FormStackForm {
     }
   }
 
+  /// Rebuilds [result] from the current answers of every step.
   void generateResult() {
     result.clear();
     for (var entry in steps) {
@@ -287,6 +336,8 @@ abstract class FormStackForm {
     }
   }
 
+  /// Folds one step's answer into [result], flattening nested steps and
+  /// formatting dates according to their [DateResultType].
   void addItem(FormStep entry) {
     final resultValue = entry.result;
     if (resultValue != null && resultValue is DateTime) {
@@ -316,6 +367,8 @@ abstract class FormStackForm {
     }
   }
 
+  /// Cancels the form: returns to the first step, or invokes [onCancel] if
+  /// already there.
   void cancelStep(FormStep? currentStep) {
     clearResult();
     if (steps.first == currentStep) {
@@ -325,6 +378,10 @@ abstract class FormStackForm {
     }
   }
 
+  /// Builds the view for [formStep], or the first step when none is given.
+  ///
+  /// Records step timestamps, fires the step lifecycle callbacks, and caches
+  /// the view so navigating back preserves what the user typed.
   Widget render(
     Function(FormStep) onUpdate,
     Function(FormStackForm)? onRenderFormStackForm, {
@@ -392,7 +449,12 @@ abstract class FormStackForm {
   }
 }
 
+/// The concrete [FormStackForm] created by `FormStack.api().form(...)`.
+///
+/// Subclass [FormStackForm] directly only to change navigation or result
+/// aggregation; for ordinary forms this is what you get.
 class FormWizard extends FormStackForm {
+  /// Creates a [FormWizard] over [steps].
   FormWizard(
     super.steps, {
     required super.mapKey,

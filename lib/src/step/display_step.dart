@@ -3,11 +3,24 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/display_step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
+/// A read-only step that presents content rather than collecting an answer.
+///
+/// Renders either an embedded web page or a list of tiles, per
+/// [displayStepType].
 class DisplayStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "DisplayStep";
+
+  /// Page to embed when [displayStepType] is [DisplayStepType.web].
   final String url;
+
+  /// Whether this step renders a web page or a list of tiles.
   final DisplayStepType displayStepType;
+
+  /// Tiles rendered when [displayStepType] is [DisplayStepType.listTile].
   final List<DynamicData> data;
+
+  /// Creates a [DisplayStep].
   DisplayStep({
     super.id,
     this.url = "",
@@ -33,6 +46,7 @@ class DisplayStep extends FormStep {
     return DisplayStepView(formStackForm, this, text, title: title);
   }
 
+  /// Creates a [DisplayStep] from its JSON form.
   factory DisplayStep.from(
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,
@@ -73,4 +87,11 @@ class DisplayStep extends FormStep {
   }
 }
 
-enum DisplayStepType { web, listTile }
+/// What a [DisplayStep] renders.
+enum DisplayStepType {
+  /// An embedded web page loaded from [DisplayStep.url].
+  web,
+
+  /// A list of tiles built from [DisplayStep.data].
+  listTile,
+}

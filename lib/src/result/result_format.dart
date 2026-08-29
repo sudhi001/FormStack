@@ -41,58 +41,132 @@ abstract class ResultFormat {
   /// }
   /// ```
   const ResultFormat();
+
+  /// Accepts anything. Use for steps that collect data but impose no rule.
   factory ResultFormat.none() = _NoneResultType;
+
+  /// Requires a string of exactly [count] characters — PINs, fixed-width codes.
   factory ResultFormat.length(String errorMsg, int count) = _LengthResultType;
+
+  /// Requires any non-null value. The weakest "answer this" rule.
   factory ResultFormat.notNull(String errorMsg) = _NotNullResultType;
+
+  /// Requires a non-empty [String], [Iterable] or [Map].
   factory ResultFormat.notEmpty(String errorMsg) = _NotEmptyResultType;
+
+  /// Requires a string with at least one non-whitespace character.
   factory ResultFormat.notBlank(String errorMsg) = _NotBlankResultType;
+
+  /// Requires a syntactically valid email address.
   factory ResultFormat.email(String errorMsg) = _EmailResultType;
+
+  /// Requires a satisfaction rating to have been chosen.
   factory ResultFormat.smile(String errorMsg) = _SmileResultType;
+
+  /// Requires two or more characters, letters and spaces only.
   factory ResultFormat.name(String errorMsg) = _NameResultType;
+
+  /// Requires 8+ characters with upper, lower, digit and symbol.
   factory ResultFormat.password(String errorMsg) = _PasswordResultType;
+
+  /// Requires a non-empty string.
   factory ResultFormat.text(String errorMsg) = _TextResultType;
+
+  /// Requires a string of digits.
   factory ResultFormat.number(String errorMsg) = _NumberResultType;
+
+  /// Validates against the FormStack expression grammar. See [ExpressionLanguage].
   factory ResultFormat.expression(String expression) = _ExpressionResultType;
+
+  /// Requires a [DateTime]. [format] is the pattern used when exporting it.
   factory ResultFormat.date(String errorMsg, String format) = DateResultType;
+
+  /// Requires a [DateTime] within [minDate] and [maxDate], either of which may be null for an open bound.
   factory ResultFormat.dateRange(
     String errorMsg,
     String format, {
     DateTime? minDate,
     DateTime? maxDate,
   }) = _DateRangeResultType;
+
+  /// Requires exactly one option to be selected.
   factory ResultFormat.singleChoice(String errorMsg) = _SingleChoiceResultType;
+
+  /// Requires at least one option to be selected.
   factory ResultFormat.multipleChoice(String errorMsg) =
       _MultipleChoiceResultType;
+
+  /// Requires a location to have been picked.
   factory ResultFormat.location(String errorMsg) = _GeoLocationResultType;
+
+  /// Requires an E.164-shaped phone number, for example `+14155552671`.
   factory ResultFormat.phone(String errorMsg) = _PhoneResultType;
+
+  /// Requires an `http` or `https` URL.
   factory ResultFormat.url(String errorMsg) = _URLResultType;
+
+  /// Requires a 13-19 digit card number that passes the Luhn checksum.
   factory ResultFormat.creditCard(String errorMsg) = _CreditCardResultType;
+
+  /// Requires a US Social Security Number, with or without dashes.
   factory ResultFormat.ssn(String errorMsg) = _SSNResultType;
+
+  /// Requires a US ZIP code, five digits or ZIP+4.
   factory ResultFormat.zipCode(String errorMsg) = _ZipCodeResultType;
+
+  /// Requires an integer between 0 and 150.
   factory ResultFormat.age(String errorMsg) = _AgeResultType;
+
+  /// Requires a number between 0 and 100.
   factory ResultFormat.percentage(String errorMsg) = _PercentageResultType;
+
+  /// Validates with your own predicate over the string form of the answer.
   factory ResultFormat.custom(
     String errorMsg,
     bool Function(String) validator,
   ) = _CustomResultType;
+
+  /// Requires a number greater than or equal to [min].
   factory ResultFormat.min(String errorMsg, num min) = _MinResultType;
+
+  /// Requires a number less than or equal to [max].
   factory ResultFormat.max(String errorMsg, num max) = _MaxResultType;
+
+  /// Requires a number within [min] and [max], both inclusive.
   factory ResultFormat.range(String errorMsg, num min, num max) =
       _RangeResultType;
+
+  /// Requires a string of at least [min] characters.
   factory ResultFormat.minLength(String errorMsg, int min) =
       _MinLengthResultType;
+
+  /// Requires a string of at most [max] characters.
   factory ResultFormat.maxLength(String errorMsg, int max) =
       _MaxLengthResultType;
+
+  /// Requires the answer to match [regex]. The pattern is compiled once.
   factory ResultFormat.pattern(String errorMsg, String regex) =
       _PatternResultType;
+
+  /// Requires at least [min] options to be selected.
   factory ResultFormat.minSelections(String errorMsg, int min) =
       _MinSelectionsResultType;
+
+  /// Requires at most [max] options to be selected.
   factory ResultFormat.maxSelections(String errorMsg, int max) =
       _MaxSelectionsResultType;
+
+  /// Requires a picked file no larger than [maxBytes].
   factory ResultFormat.fileSize(String errorMsg, int maxBytes) =
       _FileSizeResultType;
+
+  /// Requires an IBAN that passes the mod-97 checksum.
   factory ResultFormat.iban(String errorMsg) = _IBANResultType;
+
+  /// Requires the consent checkbox to be ticked.
   factory ResultFormat.consent(String errorMsg) = _ConsentResultType;
+
+  /// Applies [validators] in order and reports the first failure.
   factory ResultFormat.compose(List<ResultFormat> validators) =
       _CompositeResultType;
 
@@ -151,6 +225,10 @@ abstract class ResultFormat {
 typedef ResultFormatFactory =
     ResultFormat Function(String message, Map<String, dynamic> args);
 
+/// Validator requiring a [DateTime], carrying the [format] used to render it.
+///
+/// Public because [FormStackForm.addItem] inspects it to decide how a date
+/// answer is serialized into the flat result map.
 class DateResultType extends ResultFormat {
   @override
   String get code => 'date';
@@ -158,8 +236,13 @@ class DateResultType extends ResultFormat {
   @override
   Map<String, Object?> get params => {'format': format};
 
+  /// Message shown when the answer is not a date.
   final String errorMsg;
+
+  /// Pattern used to render the date on export.
   final String format;
+
+  /// Creates a [DateResultType].
   DateResultType(this.errorMsg, this.format) : super._();
 
   @override
@@ -499,31 +582,42 @@ final RegExp _zipPattern = RegExp(r'^\d{5}(-\d{4})?$');
 final RegExp _whitespacePattern = RegExp(r'\s');
 final RegExp _ibanPattern = RegExp(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]+$');
 
+/// String predicates backing the built-in validators.
+///
+/// These are exported so a custom [ResultFormat] can reuse the same rules the
+/// library applies, rather than restating a regular expression.
 extension EmailValidator on String {
+  /// Whether this is a syntactically valid email address.
   bool isValidEmail() {
     return _emailPattern.hasMatch(this);
   }
 
+  /// Whether this is two or more characters of letters and spaces.
   bool isValidName() {
     return _namePattern.hasMatch(this) && length >= 2;
   }
 
+  /// Whether this has 8+ characters with upper, lower, digit and symbol.
   bool isValidPassword() {
     return _passwordPattern.hasMatch(this);
   }
 
+  /// Whether this consists only of digits.
   bool isValidNumber() {
     return _digitsPattern.hasMatch(this);
   }
 
+  /// Whether this is an E.164-shaped phone number.
   bool isValidPhoneNumber() {
     return _phonePattern.hasMatch(this);
   }
 
+  /// Whether this is an `http` or `https` URL.
   bool isValidURL() {
     return _urlPattern.hasMatch(this);
   }
 
+  /// Whether this is a 13-19 digit card number passing the Luhn checksum.
   bool isValidCreditCard() {
     // Luhn algorithm for credit card validation
     final String cleaned = replaceAll(_nonDigitPattern, '');
@@ -543,19 +637,23 @@ extension EmailValidator on String {
     return sum % 10 == 0;
   }
 
+  /// Whether this is a US Social Security Number, with or without dashes.
   bool isValidSSN() {
     return _ssnPattern.hasMatch(this);
   }
 
+  /// Whether this is a US ZIP code, five digits or ZIP+4.
   bool isValidZipCode() {
     return _zipPattern.hasMatch(this);
   }
 
+  /// Whether this parses to an integer between 0 and 150.
   bool isValidAge() {
     final int? age = int.tryParse(this);
     return age != null && age >= 0 && age <= 150;
   }
 
+  /// Whether this parses to a number between 0 and 100.
   bool isValidPercentage() {
     final double? percentage = double.tryParse(this);
     return percentage != null && percentage >= 0 && percentage <= 100;
@@ -730,9 +828,15 @@ class _ExpressionResultType extends ResultFormat {
   }
 }
 
+/// Evaluates an [ExpressionLanguage] document against collected results.
+///
+/// Used by `ResultFormat.expression` for cross-field rules such as
+/// "at least one of these fields must be answered".
 class ExpressionValidator {
+  /// Message describing the most recent failure, empty when the last run passed.
   String error = "";
 
+  /// Whether [input] satisfies [expression], a JSON-encoded [ExpressionLanguage].
   bool validate(Map<String, dynamic> input, String expression) {
     final ExpressionLanguage expressionLanguage = ExpressionLanguage.fromJson(
       json.decode(expression),
@@ -758,17 +862,25 @@ class ExpressionValidator {
   }
 }
 
+/// One clause of an [ExpressionLanguage] document: a step [id] and the
+/// [expression] its answer must satisfy.
 class ExpressionObject {
+  /// Identifier of the step whose answer this clause tests.
   String? id;
+
+  /// The condition applied to that answer.
   String? expression;
 
+  /// Creates an [ExpressionObject].
   ExpressionObject({this.id, this.expression});
 
+  /// Creates an [ExpressionObject] from its JSON form.
   ExpressionObject.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     expression = json["expression"];
   }
 
+  /// Converts to a JSON-serializable map.
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
@@ -777,12 +889,21 @@ class ExpressionObject {
   }
 }
 
+/// A cross-field validation document.
+///
+/// Holds a set of clauses joined by OR: the document passes when any clause
+/// does, and [orValidationMessage] is reported when none do.
 class ExpressionLanguage {
+  /// Clauses joined by OR; the document passes when any of them does.
   List<ExpressionObject> or = [];
+
+  /// Message reported when no clause passes.
   String? orValidationMessage;
 
+  /// Creates an [ExpressionLanguage].
   ExpressionLanguage({required this.or});
 
+  /// Creates an [ExpressionLanguage] from its JSON form.
   ExpressionLanguage.fromJson(Map<String, dynamic> json) {
     final clauses = json['or'];
     if (clauses is List) {
@@ -794,6 +915,7 @@ class ExpressionLanguage {
     orValidationMessage = json["orValidationMessage"];
   }
 
+  /// Converts to a JSON-serializable map.
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['or'] = or.map((v) => v.toJson()).toList();
@@ -1074,7 +1196,9 @@ num? _toNum(dynamic input) {
   return null;
 }
 
+/// IBAN checksum validation, separated so it can be reused independently.
 extension IBANValidator on String {
+  /// Whether this is an IBAN passing the mod-97 checksum.
   bool isValidIBAN() {
     final cleaned = replaceAll(_whitespacePattern, '').toUpperCase();
     if (cleaned.length < 15 || cleaned.length > 34) return false;

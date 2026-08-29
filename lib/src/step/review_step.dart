@@ -15,6 +15,7 @@ import 'package:formstack/src/utils/alignment.dart';
 /// )
 /// ```
 class ReviewStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "ReviewStep";
 
   /// Creates a [ReviewStep].

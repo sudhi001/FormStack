@@ -107,6 +107,20 @@ class InputRegistry {
     }
   }
 
+  /// Registers [builder] for [type] only if [type] has no entry yet.
+  ///
+  /// Used to install the library's own input widgets without clobbering an
+  /// override an application registered first. Returns whether it registered.
+  bool registerIfAbsent(
+    String type,
+    InputViewBuilder builder, {
+    DefaultValidatorBuilder? defaultValidator,
+  }) {
+    if (_builders.containsKey(type)) return false;
+    register(type, builder, defaultValidator: defaultValidator);
+    return true;
+  }
+
   /// Removes a registration. Returns whether anything was removed.
   bool unregister(String type) {
     _validators.remove(type);
@@ -122,16 +136,24 @@ class InputRegistry {
   /// Returns the default validator for [type], or null if none was registered.
   ResultFormat? defaultValidatorFor(String type) => _validators[type]?.call();
 
-  /// Builds the view for [step], or returns null when [type] is not registered
-  /// so the caller can fall back to the built-in widgets.
+  /// Builds the view for [step], or returns null when [type] is not registered.
+  ///
+  /// Resolves the step's validator first: the step's own if it declared one,
+  /// otherwise the default registered alongside [type]. A step with neither is
+  /// left without a validator rather than being stamped with
+  /// [ResultFormat.none] — stamping it would make a validator assigned later
+  /// unreachable, and would silently mark the step as always valid.
   FormStepView? build(String type, QuestionStep step, FormStackForm form) {
     final builder = _builders[type];
     if (builder == null) return null;
-    final resolved =
-        step.resultFormat ?? defaultValidatorFor(type) ?? ResultFormat.none();
-    step.resultFormat = resolved;
+    final resolved = step.resultFormat ?? defaultValidatorFor(type);
+    if (resolved != null) step.resultFormat = resolved;
     return builder(
-      InputBuildContext(step: step, form: form, resultFormat: resolved),
+      InputBuildContext(
+        step: step,
+        form: form,
+        resultFormat: resolved ?? ResultFormat.none(),
+      ),
     );
   }
 }

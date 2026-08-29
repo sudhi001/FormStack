@@ -15,7 +15,13 @@ analyzer:
     # An unawaited future in a form submission path loses errors silently.
     discarded_futures: warning
     unawaited_futures: warning
-    # Undocumented public API is a warning, not a build breaker.
+    # Every symbol reachable from package:formstack/formstack.dart is
+    # documented. The findings that remain are all on implementation classes
+    # under lib/src that the barrel does not export, so they never appear in
+    # the published API docs -- the lint cannot tell the difference. Kept at
+    # `info` so a genuinely new undocumented export is still visible without
+    # the known backlog gating every change. To check the surface that
+    # matters, filter the findings to files listed in lib/formstack.dart.
     public_member_api_docs: info
     # Kept on the wire for visibility but not fatal: migrating off cacheExtent
     # and onReorder would raise the minimum Flutter to 3.41, which is far

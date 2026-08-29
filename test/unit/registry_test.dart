@@ -294,4 +294,90 @@ void main() {
       expect(validator.isValid(9), isFalse);
     });
   });
+
+  group('built-in inputs are registered, not switched on', () {
+    test('every InputType except custom resolves to a builder', () {
+      // Building any step installs the built-in set.
+      final step = QuestionStep(
+        id: GenericIdentifier(id: 'q'),
+        inputType: InputType.text,
+      );
+      step.buildView(formWith([step]));
+
+      final missing = InputType.values
+          .where((t) => t != InputType.custom)
+          .where((t) => !InputRegistry.instance.contains(t.name))
+          .map((t) => t.name)
+          .toList();
+      expect(
+        missing,
+        isEmpty,
+        reason: 'these input types have no registered builder',
+      );
+    });
+
+    test('an override registered first survives built-in installation', () {
+      // registerIfAbsent must not clobber an application's own widget, no
+      // matter which type it overrides or when the first form is built.
+      InputRegistry.instance.register(
+        'geoshape',
+        (ctx) => _StubInputView(ctx.form, ctx.step, ctx.text),
+      );
+
+      final step = QuestionStep(
+        id: GenericIdentifier(id: 'q'),
+        inputType: InputType.geoshape,
+      );
+      expect(step.buildView(formWith([step])), isA<_StubInputView>());
+
+      // ...and the rest of the built-ins are still installed alongside it.
+      expect(InputRegistry.instance.contains('email'), isTrue);
+      expect(InputRegistry.instance.contains('slider'), isTrue);
+    });
+
+    test('a step keeps its own validator over the built-in default', () {
+      final step = QuestionStep(
+        id: GenericIdentifier(id: 'q'),
+        inputType: InputType.text,
+        resultFormat: ResultFormat.minLength('too short', 5),
+      );
+      step.buildView(formWith([step]));
+      expect(step.resultFormat!.code, 'minLength');
+    });
+
+    test('a step without a validator gets the built-in default', () {
+      final step = QuestionStep(
+        id: GenericIdentifier(id: 'q'),
+        inputType: InputType.email,
+      );
+      step.buildView(formWith([step]));
+      expect(step.resultFormat!.code, 'email');
+    });
+
+    test('step-dependent defaults read the step', () {
+      final step = QuestionStep(
+        id: GenericIdentifier(id: 'q'),
+        inputType: InputType.rating,
+        ratingCount: 10,
+      );
+      step.buildView(formWith([step]));
+      expect(step.resultFormat!.params, {'min': 1, 'max': 10});
+    });
+
+    test('a custom input without a default validator is left unvalidated', () {
+      // Stamping ResultFormat.none() here would mark the step permanently
+      // valid and make a validator assigned later unreachable.
+      InputRegistry.instance.register(
+        'bare',
+        (ctx) => _StubInputView(ctx.form, ctx.step, ctx.text),
+      );
+      final step = QuestionStep(
+        id: GenericIdentifier(id: 'q'),
+        inputType: InputType.custom,
+        customInputType: 'bare',
+      );
+      step.buildView(formWith([step]));
+      expect(step.resultFormat, isNull);
+    });
+  });
 }

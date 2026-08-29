@@ -1,6 +1,9 @@
 import 'package:uuid/uuid.dart';
 
-var uuid = const Uuid();
+// A package-private generator. This was a public, mutable top-level `uuid`
+// variable exported from the library, which polluted the namespace of every
+// importer with a very collidable name.
+const _uuid = Uuid();
 
 /// Base class for step and form identifiers.
 ///
@@ -12,7 +15,7 @@ abstract class Identifier {
   /// Creates an [Identifier]. Generates a UUID if [id] is null or empty.
   Identifier({this.id}) {
     if (id?.isEmpty ?? true) {
-      id = uuid.v1();
+      id = _uuid.v1();
     }
   }
 

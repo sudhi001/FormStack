@@ -49,6 +49,11 @@ class FormStack {
   static final Map<String, FormStack> _delegate = {};
 
   final Map<String, FormStackForm> _forms = {};
+
+  /// Name of this instance, as passed to [FormStack.api].
+  ///
+  /// Forms record it so cross-form navigation can resolve targets within the
+  /// same instance.
   String instanceName = "";
 
   ///
@@ -252,6 +257,10 @@ class FormStack {
     return this;
   }
 
+  /// Attaches [resultFormat] to the step identified by [identifier].
+  ///
+  /// Useful when the step came from JSON and the validator is easier to
+  /// express in Dart.
   FormStack addResultForm(
     Identifier identifier,
     ResultFormat? resultFormat, {

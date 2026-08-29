@@ -3,18 +3,38 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/completion_step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
+/// Runs just before a form completes, for a final async step such as
+/// posting the results. The returned future is awaited before navigation.
 typedef OnBeforeFinishCallback =
     Future<bool> Function(Map<String, dynamic> result);
 
+/// The final step of a form.
+///
+/// Shows a loading animation while [onBeforeFinishCallback] runs, then a
+/// success or error animation, and hands the collected results to [onFinish].
 class CompletionStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "CompletionStep";
+
+  /// Whether the completion action runs on display rather than on tap.
   final bool? autoTrigger;
+
+  /// Lottie animation shown when the form completes successfully.
   String? successLottieAssetsFilePath;
+
+  /// Lottie animation shown while [onBeforeFinishCallback] runs.
   String? loadingLottieAssetsFilePath;
+
+  /// Lottie animation shown when completion fails.
   String? errorLottieAssetsFilePath;
+
+  /// Async work to run before the form completes, such as submission.
   OnBeforeFinishCallback? onBeforeFinishCallback;
+
+  /// Called with all results when this step completes the form.
   Function(Map<String, dynamic>)? onFinish;
 
+  /// Creates a [CompletionStep].
   CompletionStep({
     super.id,
     super.title,
@@ -55,6 +75,7 @@ class CompletionStep extends FormStep {
     );
   }
 
+  /// Creates a [CompletionStep] from its JSON form.
   factory CompletionStep.from(
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,

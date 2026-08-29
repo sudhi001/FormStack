@@ -38,6 +38,11 @@ Each is a process-wide singleton with `register` / `unregister` / `reset`.
 | `StepRegistry` | step types | JSON `type` |
 | `ValidatorRegistry` | validators | `ResultFormat.fromJson`, JSON `validators` |
 
+Every built-in input is registered through `InputRegistry` too, by
+`BuiltInInputs.ensureRegistered()`, so the library's own widgets and an
+application's resolve by exactly the same path. There is no separate `switch`
+for the built-ins to fall out of step with.
+
 Registering a name that already exists overrides it. That is the supported way
 to replace a built-in — swapping the signature pad for one that meets a
 particular regulatory requirement, say — without forking:
@@ -140,10 +145,7 @@ Recorded here rather than left implicit. Roughly in priority order.
    `BaseStepView` to a `StatefulWidget` whose `State` holds the controllers
    would let the framework own lifetime, delete `maxCachedViews`, and remove
    every `// ignore: must_be_immutable`. It touches every input widget.
-2. **`InputType` is a closed enum with a 35-arm switch.** `InputRegistry`
-   routes around it, but the built-ins should migrate onto the registry so the
-   switch disappears and every input type is uniform.
-3. **Heavy transitive dependencies.** `google_maps_flutter`, `location`,
+2. **Heavy transitive dependencies.** `google_maps_flutter`, `location`,
    `webview_flutter` and `file_picker` are unconditional dependencies, so an
    application using FormStack purely for text and choice inputs still inherits
    map and camera SDKs, their permission declarations and their iOS privacy
@@ -153,20 +155,23 @@ Recorded here rather than left implicit. Roughly in priority order.
    consumers, and the pattern is already proven by `DeviceCapabilities` —
    `barcode` and `audio` reach their platform dependency through a port rather
    than a direct import.
-4. **`FormStack` is doing several jobs** — instance registry, form builder,
+3. **`FormStack` is doing several jobs** — instance registry, form builder,
    statistics, persistence facade. The persistence and statistics APIs would sit
    better on `FormStackForm`.
-5. **Public API documentation is incomplete.** ~460 public members are
-   undocumented, nearly all of them on the internal input widget classes.
-   `public_member_api_docs` is enabled at `info` so the backlog is visible in
-   every analysis run without gating changes.
-6. **`cacheExtent` / `onReorder` deprecations** are left in place deliberately:
+4. **Implementation classes read as public API.** The published surface — every
+   symbol the barrel exports — is fully documented. The ~280 findings that
+   remain are on classes under `lib/src` that are *not* exported (the Google
+   Places DTOs, the input widget views, the map widgets), so they never reach
+   the published API docs. `public_member_api_docs` cannot distinguish the two,
+   so it stays at `info`. The deeper issue is that these classes are `public` in
+   the Dart sense at all; a stricter `src` boundary would remove the ambiguity.
+5. **`cacheExtent` / `onReorder` deprecations** are left in place deliberately:
    migrating raises the minimum Flutter to 3.41, far above the supported floor.
    Revisit when the floor moves.
 
 ## Testing
 
-133 tests, 51% line coverage.
+139 tests, 52% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.

@@ -3,11 +3,18 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/instruction_step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
+/// An informational step: a title, body text and optional media, with no
+/// input to collect.
+///
+/// Typically opens a form to explain what is being asked and why.
 class InstructionStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "InstructionStep";
 
+  /// Bulleted points listed beneath the body text.
   final List<DynamicData>? instructions;
 
+  /// Creates an [InstructionStep].
   InstructionStep({
     super.id,
     super.title = "",
@@ -38,6 +45,7 @@ class InstructionStep extends FormStep {
     return InstructionStepView(formStackForm, this, text, title: title);
   }
 
+  /// Creates an [InstructionStep] from its JSON form.
   factory InstructionStep.from(
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,

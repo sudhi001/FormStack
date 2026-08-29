@@ -3,13 +3,28 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/nested_step_view.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
+/// A step that shows several questions on one screen.
+///
+/// Children render in component-only mode, so they contribute their input
+/// widget without their own scaffold. [validationExpression] adds a rule
+/// across the group, beyond each child's own validator.
 class NestedStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "NestedStep";
+
+  /// The questions shown together on this screen.
   final List<FormStep>? steps;
+
+  /// Cross-field rule applied once every child is individually valid.
   final String validationExpression;
+
+  /// Vertical gap between wrapped rows of children.
   final int verticalPadding;
+
+  /// Called with all results when this step completes the form.
   Function(Map<String, dynamic>)? onFinish;
 
+  /// Creates a [NestedStep].
   NestedStep({
     super.id,
     super.title = "",
@@ -39,6 +54,7 @@ class NestedStep extends FormStep {
     return NestedStepView(formStackForm, this, text, title: title);
   }
 
+  /// Creates a [NestedStep] from its JSON form.
   factory NestedStep.from(
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,

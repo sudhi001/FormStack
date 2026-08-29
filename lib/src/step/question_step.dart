@@ -1,42 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/common_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/survey_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
+import 'package:formstack/src/ui/views/input/built_in_inputs.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
+/// A step that asks the user for one answer.
+///
+/// The [inputType] selects the widget, which is resolved through
+/// [InputRegistry] — see `BuiltInInputs` for the ones shipped with the
+/// library, and [InputType.custom] for your own.
+///
+/// ```dart
+/// QuestionStep(
+///   id: GenericIdentifier(id: "email"),
+///   title: "Your email",
+///   inputType: InputType.email,
+///   resultFormat: ResultFormat.email("Please enter a valid email"),
+/// )
+/// ```
 class QuestionStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "QuestionStep";
+
+  /// Which input widget renders this step.
   final InputType inputType;
+
+  /// Called with the message when this step fails validation.
   Function(String)? onValidationError;
+
+  /// Choices for the selection input types.
   List<Options>? options;
+
+  /// Visible lines for a multi-line text input.
   final int? numberOfLines;
+
+  /// Whether choosing an option advances to the next step immediately.
   final bool? autoTrigger;
+
+  /// Border treatment of the input field.
   final InputStyle inputStyle;
+
+  /// Number of digits in an OTP input.
   final int count;
+
+  /// Maximum number of rows in a dynamic key-value input.
   final int maxCount;
+
+  /// Input mask applied to a number field, for example `###-###`.
   final String? mask;
 
+  /// Called with all results when this step completes the form.
   Function(Map<String, dynamic>)? onFinish;
+
+  /// Height of the map viewport for location inputs.
   final double? maxHeight;
+
+  /// Allowed file extensions for a file input, without the leading dot.
   final List<dynamic>? filter;
+
+  /// How a selected choice is indicated: arrow, tick, toggle or dropdown.
   final SelectionType? selectionType;
+
+  /// Maximum characters accepted, or -1 for no limit.
   final int? lengthLimit;
 
+  /// Horizontal alignment of the entered text.
   final TextAlign textAlign;
 
   // New properties for industry-standard inputs
+  /// Lower bound for slider and numeric inputs.
   final num? minValue;
+
+  /// Upper bound for slider and numeric inputs.
   final num? maxValue;
+
+  /// Increment between slider positions.
   final num? stepValue;
+
+  /// Minimum options the user must select.
   final int? minSelections;
+
+  /// Maximum options the user may select.
   final int? maxSelections;
+
+  /// Text shown beside the consent checkbox.
   final String? consentText;
+
+  /// Symbol prefixed to a currency input, for example `£`.
   final String? currencySymbol;
+
+  /// Default dialling code for a phone input, for example `+44`.
   final String? phoneCountryCode;
+
+  /// Number of stars in a rating input.
   final int? ratingCount;
 
   /// Expression string to auto-calculate this field's value from other results.
@@ -85,6 +140,7 @@ class QuestionStep extends FormStep {
   /// registered override for a built-in type. See [InputRegistry].
   final String? customInputType;
 
+  /// Creates a [QuestionStep].
   QuestionStep({
     super.id,
     this.customInputType,
@@ -154,418 +210,30 @@ class QuestionStep extends FormStep {
     formStackForm.onValidationError = onValidationError;
     formStackForm.onFinish = onFinish;
 
-    // Application-registered inputs take precedence, which is what lets a host
-    // app add new input types or replace a built-in one without forking.
-    final custom = InputRegistry.instance.build(
+    // Built-ins and application-registered inputs resolve through the same
+    // registry, so a step's input type is a lookup rather than a switch arm.
+    // registerIfAbsent means an override installed by the application wins.
+    BuiltInInputs.ensureRegistered();
+    final view = InputRegistry.instance.build(
       inputTypeKey,
       this,
       formStackForm,
     );
-    if (custom != null) return custom;
+    if (view != null) return view;
 
-    if (inputType == InputType.custom) {
-      throw StateError(
-        'QuestionStep "${id?.id}" uses InputType.custom but '
-        '"$inputTypeKey" is not registered. Register it first: '
-        'InputRegistry.instance.register("$inputTypeKey", (ctx) => ...). '
-        'Registered: ${InputRegistry.instance.registered.join(', ')}',
-      );
-    }
-
-    switch (inputType) {
-      case InputType.email:
-        resultFormat =
-            resultFormat ?? ResultFormat.email("Please enter a valid email.");
-        return TextFieldWidgetView.email(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.name:
-        resultFormat =
-            resultFormat ?? ResultFormat.name("Please enter a valid name.");
-        return TextFieldWidgetView.name(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.file:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please select a file.");
-        return TextFieldWidgetView.file(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          filter,
-        );
-      case InputType.password:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.password("Please enter a valid password.");
-        return TextFieldWidgetView.password(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.text:
-        resultFormat =
-            resultFormat ?? ResultFormat.notBlank("Please enter a valid data.");
-        return TextFieldWidgetView.text(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          numberOfLines,
-        );
-      case InputType.number:
-        resultFormat =
-            resultFormat ?? ResultFormat.number("Please enter a valid number.");
-        return TextFieldWidgetView.number(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.date:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.date("Please enter a valid date.", "dd-MM-yyyy");
-        return DateInputWidget.date(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.time:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.date("Please enter a valid time.", "HH:mm:ss");
-        return DateInputWidget.time(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.dateTime:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.date(
-              "Please enter a valid date.",
-              "yyyy-MM-dd'T'HH:mm",
-            );
-        return DateInputWidget.dateTime(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.smile:
-        resultFormat = resultFormat ?? ResultFormat.smile("Please select.");
-        return SmileInputWidget.smile(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.singleChoice:
-        resultFormat =
-            resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        final filteredOptions = _applyChoiceFilter(formStackForm);
-        return ChoiceInputWidget.single(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          filteredOptions,
-          selectionType ?? SelectionType.arrow,
-          autoTrigger ?? false,
-        );
-      case InputType.dropdown:
-        resultFormat =
-            resultFormat ?? ResultFormat.singleChoice("Please select any.");
-        return ChoiceInputWidget.dropdown(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          _applyChoiceFilter(formStackForm),
-          autoTrigger ?? false,
-        );
-      case InputType.multipleChoice:
-        resultFormat =
-            resultFormat ?? ResultFormat.multipleChoice("Please select any.");
-        return ChoiceInputWidget.multiple(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          selectionType ?? SelectionType.tick,
-          _applyChoiceFilter(formStackForm),
-        );
-      case InputType.otp:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.length("Please enter all fields", count);
-        return CommonInputWidget.otp(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          count,
-        );
-      case InputType.dynamicKeyValue:
-        resultFormat =
-            resultFormat ?? ResultFormat.notEmpty("Please add any one");
-        return CommonInputWidget.dynamicKeyValueField(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          maxCount,
-        );
-      case InputType.htmlEditor:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please enter any.");
-        return CommonInputWidget.htmlWidget(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.mapLocation:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please enter any.");
-        return CommonInputWidget.map(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          maxHeight ?? 600,
-        );
-      case InputType.avatar:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please update image.");
-        return CommonInputWidget.avatar(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.banner:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please update image.");
-        return CommonInputWidget.banner(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-
-      // --- New industry-standard input types ---
-      case InputType.slider:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.range(
-              "Please select a value.",
-              minValue ?? 0,
-              maxValue ?? 100,
-            );
-        return SurveyInputWidget.slider(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          minValue,
-          maxValue,
-          stepValue,
-        );
-      case InputType.rating:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.range("Please select a rating.", 1, ratingCount ?? 5);
-        return SurveyInputWidget.rating(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          ratingCount,
-        );
-      case InputType.nps:
-        resultFormat =
-            resultFormat ?? ResultFormat.range("Please select a score.", 0, 10);
-        return SurveyInputWidget.nps(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.consent:
-        resultFormat =
-            resultFormat ?? ResultFormat.consent("You must agree to continue.");
-        return SurveyInputWidget.consent(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          consentText,
-        );
-      case InputType.signature:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.notNull("Please provide your signature.");
-        return SurveyInputWidget.signature(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.ranking:
-        resultFormat =
-            resultFormat ?? ResultFormat.notEmpty("Please rank the items.");
-        return SurveyInputWidget.ranking(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          options,
-        );
-      case InputType.phone:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.phone("Please enter a valid phone number.");
-        return SurveyInputWidget.phone(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          phoneCountryCode,
-        );
-      case InputType.currency:
-        resultFormat =
-            resultFormat ?? ResultFormat.notBlank("Please enter an amount.");
-        return SurveyInputWidget.currency(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          currencySymbol,
-        );
-      case InputType.boolean:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please select Yes or No.");
-        return SurveyInputWidget.boolean(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.imageChoice:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.singleChoice("Please select an option.");
-        return SurveyInputWidget.imageChoice(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-          options,
-          true,
-        );
-      case InputType.hidden:
-        return SurveyInputWidget.hidden(this, formStackForm, text, title);
-      case InputType.calculate:
-        return SurveyInputWidget.calculate(
-          this,
-          formStackForm,
-          text,
-          title,
-          calculateCallback,
-        );
-      case InputType.barcode:
-        resultFormat =
-            resultFormat ??
-            ResultFormat.notBlank("Please scan or enter a code.");
-        return SurveyInputWidget.barcode(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.audio:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please record audio.");
-        return SurveyInputWidget.audio(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.geotrace:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please trace a path.");
-        return SurveyInputWidget.geotrace(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.geoshape:
-        resultFormat =
-            resultFormat ?? ResultFormat.notNull("Please draw a shape.");
-        return SurveyInputWidget.geoshape(
-          this,
-          formStackForm,
-          text,
-          resultFormat!,
-          title,
-        );
-      case InputType.custom:
-        break;
-    }
-    throw UnimplementedError(
-      'No widget is registered for input type "$inputTypeKey" '
-      '(step "${id?.id}").',
+    throw StateError(
+      'No input widget is registered for "$inputTypeKey" (step "${id?.id}"). '
+      'Register one with InputRegistry.instance.register("$inputTypeKey", '
+      '(ctx) => ...). Registered: '
+      '${InputRegistry.instance.registered.join(', ')}',
     );
   }
 
-  /// Applies choiceFilter if defined, filtering options based on current results.
-  List<Options>? _applyChoiceFilter(FormStackForm formStackForm) {
+  /// The options for this step, narrowed by [choiceFilter] when one is set.
+  ///
+  /// Evaluating the filter needs the form's current results, so it cannot be
+  /// resolved when the step is constructed.
+  List<Options>? filteredOptions(FormStackForm formStackForm) {
     if (choiceFilter != null && options != null) {
       formStackForm.generateResult();
       return choiceFilter!(options!, formStackForm.result);
@@ -573,6 +241,10 @@ class QuestionStep extends FormStep {
     return options;
   }
 
+  /// Creates a [QuestionStep] from its JSON form.
+  ///
+  /// Throws [FormatException] for an unknown `inputType` that is also not
+  /// registered with [InputRegistry], or for a malformed `options` entry.
   factory QuestionStep.from(
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,

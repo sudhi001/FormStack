@@ -119,6 +119,7 @@ class ConsentSection {
 /// )
 /// ```
 class ConsentStep extends FormStep {
+  /// The JSON `type` discriminator for this step.
   static const String tag = "ConsentStep";
 
   /// The sections that make up this consent document.
@@ -130,6 +131,7 @@ class ConsentStep extends FormStep {
   /// Agreement text displayed next to the checkbox.
   final String agreementText;
 
+  /// Called with all results when this step completes the form.
   Function(Map<String, dynamic>)? onFinish;
 
   /// Creates a [ConsentStep].

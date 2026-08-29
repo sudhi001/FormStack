@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 ///
 // ignore: must_be_immutable
 abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
+  /// Creates a [BaseStepView].
   BaseStepView(
     super.formStackForm,
     super.formStep,

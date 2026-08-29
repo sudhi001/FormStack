@@ -89,11 +89,12 @@ or JSON are unaffected.
   `borderRadius` and `elementSpacing` now apply to the subtree, with
   `FormStackTheme.of(context)`, `copyWith` and value equality.
 - `FormStackForm.stepAfter` / `stepBefore` for explicit ordered navigation.
-- A test suite — 133 tests, 51% line coverage, from none — covering validators,
+- A test suite — 139 tests, 52% line coverage, from none — covering validators,
   navigation and branching, JSON parsing and its failure modes, the registries,
   persistence, the view-disposal chain, and a smoke test that builds every
-  built-in input type, the theme scope, the device-capability ports, plus a
-  guard that the example app's own JSON assets still parse.
+  built-in input type, the input registry's resolution order, the theme scope,
+  the device-capability ports, plus a guard that the example app's own JSON
+  assets still parse.
 - A CI pipeline covering formatting, analysis with warnings fatal, tests on
   Linux, macOS and Windows, the suite again on the oldest supported Flutter, an
   example build, and pub.dev publish readiness with a `pana` score threshold.
@@ -102,6 +103,11 @@ or JSON are unaffected.
 
 ### Changed
 
+- **Built-in inputs resolve through `InputRegistry` like everything else.**
+  `QuestionStep.buildView` was a 35-arm `switch`, so the library's own widgets
+  and the extension point had different shapes. `BuiltInInputs` registers each
+  built-in with `registerIfAbsent`, `buildView` is a lookup, and an application
+  override installed first is preserved.
 - **`FormStep` no longer extends `LinkedListEntry`.** A step described *what to
   ask* but was also a node in a list, which meant a step definition could
   belong to only one form — sharing one threw at runtime. Ordering now lives in
@@ -142,12 +148,24 @@ or JSON are unaffected.
   web-versus-native branch in the image input unnecessary, so image picking no
   longer reaches for `dart:io`.
 - `UIStyle.maybeFrom` added; `UIStyle.from` is unchanged.
+- **The public top-level `uuid` variable is gone.** `identifiers.dart` exported
+  a mutable top-level `uuid`, so every importer of the library had that very
+  collidable name in scope. It is package-private now.
+- **The published API is fully documented.** Every symbol reachable from
+  `package:formstack/formstack.dart` carries a doc comment, including all 37
+  `ResultFormat` factories, `FormStackForm`, `QuestionStep`, `FormStepView` and
+  every step type.
+- `InputRegistry.build` no longer stamps `ResultFormat.none()` onto a step that
+  declared no validator and whose type registered no default. Doing so marked
+  the step permanently valid and made a validator assigned later unreachable.
 
 ### Migration
 
 - `step.next` / `step.previous` → `form.stepAfter(step)` /
   `form.stepBefore(step)`.
 - `class MyStep extends FormStep<MyStep>` → `class MyStep extends FormStep`.
+- The top-level `uuid` variable is no longer exported; use `package:uuid`
+  directly if you were relying on it.
 - Code that typed a variable as `LinkedList<FormStep>` should use
   `List<FormStep>`.
 - Subclasses of `FormStep` need no changes.
