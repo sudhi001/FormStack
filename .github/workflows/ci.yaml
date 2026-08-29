@@ -60,7 +60,7 @@ jobs:
         with:
           # Must match the floor declared in pubspec.yaml. Guards against
           # silently adopting APIs newer than the package claims to support.
-          flutter-version: '3.27.0'
+          flutter-version: '3.32.0'
           cache: true
       - run: flutter pub get
       - run: flutter analyze --no-fatal-warnings --no-fatal-infos

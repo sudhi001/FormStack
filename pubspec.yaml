@@ -22,12 +22,13 @@ platforms:
   windows:
   linux:
 
-# The declared floor is the real one: the package uses Color.withValues
-# (Flutter 3.27) and PopScope.onPopInvokedWithResult (3.24). The previous
-# ">=1.17.0" claim would have failed to compile on anything near it.
+# The declared floor is one CI actually builds and tests against, in the
+# `min-sdk` job -- an untested floor is a guess. The library's own APIs need
+# Flutter 3.27 (Color.withValues), and the toolchain needs Dart 3.8
+# (flutter_lints 6), so 3.8/3.32 is the lowest verifiable combination.
 environment:
-  sdk: '>=3.6.0 <4.0.0'
-  flutter: '>=3.27.0'
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.32.0'
 
 dependencies:
   flutter:
@@ -52,7 +53,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  test: ^1.25.0
 
 flutter:
   uses-material-design: true

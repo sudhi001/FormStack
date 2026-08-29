@@ -124,10 +124,16 @@ or JSON are unaffected.
 - `ResultFormat.compose` no longer keeps mutable state across calls.
 - The duplicated `inputBorder()` implementation, previously copied into five
   input widgets, is a single `InputStyle.toInputBorder` extension.
-- **SDK floor corrected to Dart 3.6 / Flutter 3.27.** The package declared
+- **SDK floor corrected to Dart 3.8 / Flutter 3.32.** The package declared
   `flutter: ">=1.17.0"` while using `Color.withValues` (3.27) and
   `PopScope.onPopInvokedWithResult` (3.24), so the declared floor could never
-  have compiled.
+  have compiled. The new floor is the lowest combination CI actually builds
+  and tests against, in the `min-sdk` job — an untested floor is a guess.
+- **Removed the root `android/`, `ios/`, `linux/`, `macos/` and `windows/`
+  folders.** This is a pure Dart package with no native code; they were
+  `flutter create` leftovers containing only generated plugin registrants,
+  which `flutter pub get` rewrote on every machine. Platform support is
+  declared in `pubspec.yaml` and is unchanged at 6 of 6.
 - Dropped the unused `http` dependency.
 - Upgraded `file_picker` (10 → 12) and `location` (8 → 10), which were two and
   three major versions behind and caused resolution conflicts for applications
