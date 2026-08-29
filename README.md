@@ -630,6 +630,10 @@ the inputs still render and the form still completes.
 To replace an input entirely rather than just its capture step, register a
 widget with [`InputRegistry`](#custom-input-types).
 
+> A runnable version of everything in this section — a custom input, a named
+> validator, a device capability and a scoped theme — is in the example app
+> under **Extension Points** (`example/lib/extensibility_demo.dart`).
+
 ### Custom step types
 
 ```dart

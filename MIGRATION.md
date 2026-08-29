@@ -244,44 +244,151 @@ FormStack.api().render()
 
 ### From v2.x to v3.x
 
-#### New Features
-- Additional input types (OTP, HTML Editor, Map Location)
-- Enhanced validation options
-- Performance improvements
-- Better memory management
+3.0 fixes a set of defects, opens the library for extension, and makes three
+breaking changes to the step model. Forms built with `FormStack.api().form(...)`
+or loaded from JSON need no changes.
 
-#### Migration Steps
-1. Update dependencies:
+#### Breaking changes
+
+**1. `FormStep` is no longer a linked-list node**
+
+A step described *what to ask* but was also a node in a `LinkedList`, which
+meant one step definition could belong to only one form — sharing one threw at
+runtime. Ordering now lives in the form.
+
+```dart
+// Before
+final next = step.next;
+final previous = step.previous;
+
+// After
+final next = form.stepAfter(step);
+final previous = form.stepBefore(step);
+```
+
+**2. `FormStackForm.steps` is a `List`**
+
+```dart
+// Before
+LinkedList<FormStep> steps = form.steps;
+
+// After
+List<FormStep> steps = form.steps;
+```
+
+**3. `FormStep` no longer takes a type parameter**
+
+It was declared and never used.
+
+```dart
+// Before
+class MyStep extends FormStep<MyStep> { }
+
+// After
+class MyStep extends FormStep { }
+```
+
+**4. The top-level `uuid` variable is no longer exported**
+
+It was a mutable global with a very collidable name in every importer's scope.
+Depend on `package:uuid` directly if you were using it.
+
+#### Behaviour changes to check
+
+These are bug fixes, but they change what your forms accept:
+
+- **`ResultFormat.notEmpty` now works on text.** It previously only recognised
+  `List`, so on a text field it could never pass. If you worked around that
+  with `notBlank`, you can simplify — or leave it, both are correct.
+- **`ResultFormat.notBlank` now trims.** `"   "` used to pass a not-blank
+  check. Answers that are only whitespace are now rejected.
+- **The form-level JSON `theme` now applies.** Every JSON step previously
+  received a default `UIStyle` that blocked it, so a `"theme"` block was
+  silently ignored. If you compensated by styling each step individually, your
+  forms will look the same; if you had a `"theme"` you thought was broken, it
+  works now.
+- **Malformed form definitions throw.** A relevant condition with neither `id`
+  nor `formName`, an option that is not an object, or an unknown validator name
+  now raise a `FormatException` naming the problem, where they used to fail
+  obscurely or silently do nothing.
+
+#### If you subclass `BaseStepView`
+
+Step views are `StatelessWidget`s that hold controllers, so the framework never
+disposes them — the form does. If your view allocates a
+`TextEditingController`, `FocusNode` or listener, override `dispose` and call
+`super.dispose()`:
+
+```dart
+@override
+void dispose() {
+  _controller.dispose();
+  super.dispose();
+}
+```
+
+This was always required; before 3.0 nothing called `dispose` at all, so
+omitting it leaked silently. It is now enforced with `@mustCallSuper`.
+
+#### What you gain
+
+**Validators in JSON.** A JSON step can declare the full validator library,
+which previously required dropping down to Dart:
+
+```json
+{
+  "type": "QuestionStep",
+  "id": "age",
+  "inputType": "number",
+  "validators": [
+    {"type": "notBlank", "message": "Age is required"},
+    {"type": "range", "message": "Must be 18-120", "min": 18, "max": 120}
+  ]
+}
+```
+
+**Custom input types, from Dart and JSON.** Register once, use anywhere:
+
+```dart
+InputRegistry.instance.register(
+  'creditCardScanner',
+  (ctx) => CardScannerView(ctx.form, ctx.step, ctx.text, ctx.resultFormat),
+);
+```
+
+Registering an existing name overrides that built-in everywhere — the supported
+way to replace, say, the signature pad without forking.
+
+**Localizable validation.** `validate()` returns a stable code and the
+constraint parameters, so messages no longer have to be matched as strings:
+
+```dart
+final outcome = ResultFormat.range("Must be 18-120", 18, 120).validate(5);
+outcome.code;    // 'range'
+outcome.params;  // {'min': 18, 'max': 120}
+```
+
+**Working `barcode` and `audio`.** Both were UI scaffolds with nothing behind
+them. Register a capability and they capture for real:
+
+```dart
+DeviceCapabilities.instance
+  ..barcodeScanner = MobileScannerAdapter()
+  ..audioRecorder = RecordAdapter();
+```
+
+**A theme that applies.** `FormStackTheme`'s fields used to be inert. Wrap a
+subtree in `FormStackThemeScope` to set content width, padding and radius.
+
+#### Update the dependency
+
 ```yaml
 dependencies:
   formstack: ^3.0.0
 ```
 
-2. Update validation calls:
-```dart
-// Before
-ResultFormat.email("Invalid email")
-
-// After (same API, enhanced validation)
-ResultFormat.email("Invalid email")
-```
-
-3. Take advantage of new features:
-```dart
-// New input types
-QuestionStep(
-  title: "Enter OTP",
-  inputType: InputType.otp,
-  count: 6,
-  id: GenericIdentifier(id: "otp"),
-)
-
-QuestionStep(
-  title: "Rich Text",
-  inputType: InputType.htmlEditor,
-  id: GenericIdentifier(id: "rich_text"),
-)
-```
+3.0 requires Dart 3.10 / Flutter 3.38.2. The old `">=1.17.0"` constraint was
+never accurate — the package already used APIs from Flutter 3.27.
 
 ## Common Migration Patterns
 

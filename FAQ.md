@@ -41,18 +41,84 @@ FormStack offers multiple customization options:
 - **Display Sizes**: `Display.small`, `Display.normal`, `Display.medium`, `Display.large`, or `Display.extraLarge`
 
 ### Can I create custom input types?
-Yes! You can create custom input types by extending `BaseStepView` and implementing your own input widget.
+Yes. Extend `BaseStepView`, then register it so it is usable by name from both
+Dart and JSON:
+
+```dart
+InputRegistry.instance.register(
+  'creditCardScanner',
+  (ctx) => CardScannerView(ctx.form, ctx.step, ctx.text, ctx.resultFormat),
+  defaultValidator: () => ResultFormat.creditCard('Invalid card'),
+);
+```
+
+```dart
+QuestionStep(
+  inputType: InputType.custom,
+  customInputType: 'creditCardScanner',
+  id: GenericIdentifier(id: 'card'),
+)
+```
+
+Every built-in input is registered the same way, so registering an existing
+name — `'signature'`, say — replaces that built-in everywhere without forking
+the library.
+
+If your view allocates a controller or focus node, override `dispose` and call
+`super.dispose()`: step views are `StatelessWidget`s, so the form releases them
+rather than the framework.
+
+### Can I add my own step types or validators?
+Yes, through the same pattern:
+
+```dart
+StepRegistry.instance.register('PaymentStep', PaymentStep.from);
+ResultFormat.register('nhsNumber', (msg, args) => NhsNumberFormat(msg));
+```
+
+Both become usable from JSON immediately — `{"type": "PaymentStep"}` and
+`{"type": "nhsNumber", "message": "..."}`.
 
 ### How do I handle form validation?
-FormStack includes comprehensive validation:
-```dart
-// Built-in validations
-ResultFormat.email("Please enter a valid email")
-ResultFormat.password("Password must be at least 8 characters")
-ResultFormat.notNull("This field is required")
+FormStack ships 35+ validators, composable and usable from Dart or JSON:
 
-// Custom validation
+```dart
+// Built-in
+ResultFormat.email("Please enter a valid email")
+ResultFormat.range("Must be 18-120", 18, 120)
+
+// Composed -- reports the first failure
+ResultFormat.compose([
+  ResultFormat.notBlank("Required"),
+  ResultFormat.maxLength("Too long", 50),
+])
+
+// Your own predicate
 ResultFormat.custom("Invalid input", (value) => value.length > 5)
+```
+
+In JSON, declare them on the step:
+
+```json
+"validators": [
+  {"type": "notBlank", "message": "Required"},
+  {"type": "maxLength", "message": "Too long", "max": 50}
+]
+```
+
+### How do I localize validation messages?
+`validate()` returns a stable code and the constraint parameters alongside the
+message, so you can translate without matching on strings:
+
+```dart
+final outcome = ResultFormat.range("Must be 18-120", 18, 120).validate(5);
+outcome.code;     // 'range'
+outcome.params;   // {'min': 18, 'max': 120}
+outcome.message;  // the fallback text
+
+String localize(ValidationResult r, FormStackLocale l10n) => r.isValid
+    ? ''
+    : l10n.tf('validation.${r.code}', [...r.params.values.map((v) => '$v')]);
 ```
 
 ### Can I load forms from JSON files?
@@ -75,11 +141,30 @@ Map<String, dynamic> stats = FormStack.api().getFormStats();
 ## Performance Questions
 
 ### Is FormStack memory efficient?
-Yes! FormStack is designed with memory efficiency in mind:
-- Proper disposal of controllers and resources
-- Lazy loading of components
-- Optimized widget rebuilds
-- Form state caching
+Step views are cached so navigating back preserves what the user typed, and the
+cache is bounded — `FormStackForm.maxCachedViews` defaults to 12, and evicted
+views are disposed along with their controllers and focus nodes. Removing the
+form from the widget tree releases the rest.
+
+Before 3.0 nothing disposed step views at all, so a form run leaked one
+controller set per step. If you are on 2.x and running long forms, that is the
+reason to upgrade.
+
+Raise `maxCachedViews` to trade memory for back-navigation fidelity, or set it
+to `0` to disable caching entirely.
+
+### Does FormStack pull in Google Maps and a camera SDK?
+Maps, webview and file-picking are unconditional dependencies today, so yes —
+this is the library's largest outstanding issue and is tracked in
+`ARCHITECTURE.md`.
+
+Barcode scanning and audio recording are not: they reach hardware through
+`DeviceCapabilities`, so an app that never scans or records inherits no
+scanning or recording SDK. Register an adapter to make them functional:
+
+```dart
+DeviceCapabilities.instance.barcodeScanner = MobileScannerAdapter();
+```
 
 ### Does FormStack affect app performance?
 FormStack is optimized for performance and should not significantly impact your app's performance. It uses efficient rendering techniques and proper resource management.

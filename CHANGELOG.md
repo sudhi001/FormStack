@@ -89,7 +89,7 @@ or JSON are unaffected.
   `borderRadius` and `elementSpacing` now apply to the subtree, with
   `FormStackTheme.of(context)`, `copyWith` and value equality.
 - `FormStackForm.stepAfter` / `stepBefore` for explicit ordered navigation.
-- A test suite — 139 tests, 52% line coverage, from none — covering validators,
+- A test suite — 141 tests, 52% line coverage, from none — covering validators,
   navigation and branching, JSON parsing and its failure modes, the registries,
   persistence, the view-disposal chain, and a smoke test that builds every
   built-in input type, the input registry's resolution order, the theme scope,
@@ -100,6 +100,10 @@ or JSON are unaffected.
   example build, and pub.dev publish readiness with a `pana` score threshold.
 - `ARCHITECTURE.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue and pull
   request templates, and Dependabot configuration.
+- An **Extension Points** screen in the example app
+  (`example/lib/extensibility_demo.dart`) showing a registered custom input, a
+  named validator resolved from a JSON spec, a device capability, and a scoped
+  theme — with a test covering the same combination.
 
 ### Changed
 
@@ -158,6 +162,17 @@ or JSON are unaffected.
 - `InputRegistry.build` no longer stamps `ResultFormat.none()` onto a step that
   declared no validator and whose type registered no default. Doing so marked
   the step permanently valid and made a validator assigned later unreachable.
+
+### Documentation
+
+- `MIGRATION.md`'s v2 → v3 section was written speculatively before 3.0 existed
+  and described a release that does not match this one — it listed OTP, HTML
+  and map inputs as new and stated there were no breaking changes. Rewritten
+  against what actually shipped.
+- `FAQ.md` now covers the registries, validators in JSON, localizing validation
+  through `ValidationResult.code`, the disposal contract for custom inputs, the
+  bounded view cache, and which platform SDKs the package does and does not
+  pull in.
 
 ### Migration
 

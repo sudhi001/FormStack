@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'comprehensive_demo.dart';
+import 'extensibility_demo.dart';
 
 void main() {
   runApp(const MainApp());
@@ -139,6 +140,15 @@ class HomeScreen extends StatelessWidget {
                   subtitle:
                       'FormStackLocale with runtime switching, offline save/resume, display step',
                   onTap: () => _navigate(context, const AdvancedFeaturesDemo()),
+                ),
+                _DemoCard(
+                  icon: Icons.extension_outlined,
+                  color: const Color(0xFF7D5260),
+                  title: 'Extension Points',
+                  subtitle:
+                      'Register a custom input, a named validator, a device '
+                      'capability, and scope the theme',
+                  onTap: () => _navigate(context, const ExtensibilityDemo()),
                 ),
                 _DemoCard(
                   icon: Icons.data_object,

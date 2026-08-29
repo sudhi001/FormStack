@@ -171,12 +171,14 @@ Recorded here rather than left implicit. Roughly in priority order.
 
 ## Testing
 
-139 tests, 52% line coverage.
+141 tests, 52% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.
-- `test/integration` — parses the form definitions the example app ships, so
-  real-world usage of cross-form navigation and nested steps stays covered.
+- `test/integration` — parses the form definitions the example app ships, and
+  exercises the extension-point combination its Extension Points screen
+  demonstrates. The example is what users copy from, so it is worth keeping
+  honest.
 - `test/widget` — rendering, navigation, accessibility semantics, the disposal
   chain, and a smoke test that builds every built-in input type. That smoke
   test has already caught a 6px overflow in the signature pad; it is cheap
