@@ -18,8 +18,11 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     return Container(
-      constraints: const BoxConstraints(
-          minWidth: 300, maxWidth: 500, minHeight: 150, maxHeight: 200),
+      // No maxHeight: the pad (150) plus its spacing and Clear button needs
+      // ~206px, so a 200px cap overflowed by 6px on every build. The step
+      // content already scrolls, so the column is free to size itself.
+      constraints:
+          const BoxConstraints(minWidth: 300, maxWidth: 500, minHeight: 150),
       child: StatefulBuilder(builder: (context, setState) {
         return Column(
           mainAxisSize: MainAxisSize.min,

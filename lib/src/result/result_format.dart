@@ -7,8 +7,8 @@ T? cast<T>(dynamic x) => x is T ? x : null;
 
 /// Validation format for form step results.
 ///
-/// Provides 30+ built-in validators via factory constructors, plus
-/// [compose] for chaining multiple validators.
+/// Provides 35+ built-in validators via factory constructors, plus
+/// [ResultFormat.compose] for chaining multiple validators.
 ///
 /// ```dart
 /// // Built-in validators
@@ -89,11 +89,69 @@ abstract class ResultFormat {
   factory ResultFormat.consent(String errorMsg) = _ConsentResultType;
   factory ResultFormat.compose(List<ResultFormat> validators) =
       _CompositeResultType;
+
+  /// Registers a named validator so `"type": "<name>"` can be used in JSON
+  /// forms. See [ValidatorRegistry].
+  static void register(String name, ResultFormatFactory factory) =>
+      ValidatorRegistry.instance.register(name, factory);
+
+  /// Builds a validator from its JSON description.
+  ///
+  /// Accepts either a single object or a list (which is composed):
+  ///
+  /// ```json
+  /// {"type": "email", "message": "Please enter a valid email"}
+  /// [{"type": "notEmpty", "message": "Required"},
+  ///  {"type": "maxLength", "message": "Too long", "max": 50}]
+  /// ```
+  ///
+  /// Returns `null` when [spec] is null. Throws [FormatException] for an
+  /// unknown `type`.
+  static ResultFormat? fromJson(Object? spec) =>
+      ValidatorRegistry.instance.build(spec);
+
+  /// Whether [input] satisfies this constraint.
   bool isValid(dynamic input);
+
+  /// Human-readable message shown when [isValid] returns false.
   String error();
+
+  /// Stable machine-readable identifier for this constraint.
+  ///
+  /// Used as [ValidationResult.code] and as the JSON `type` discriminator.
+  /// Override it in custom subclasses to make failures identifiable without
+  /// string-matching on [error]; the default is `"custom"`.
+  String get code => 'custom';
+
+  /// Constraint parameters surfaced on failure, for message interpolation.
+  ///
+  /// Override to expose bounds — e.g. `{'min': 3}` for a minimum-length rule.
+  Map<String, Object?> get params => const {};
+
+  /// Validates [input], returning the reason for failure alongside the verdict.
+  ///
+  /// Prefer this over [isValid] when the caller needs to localize the message
+  /// or report the failure. The default implementation is expressed in terms of
+  /// [isValid]/[error], so existing subclasses keep working unchanged.
+  ValidationResult validate(dynamic input) => isValid(input)
+      ? const ValidationResult.valid()
+      : ValidationResult.invalid(code, error(), params: params);
 }
 
+/// Builds a [ResultFormat] from its JSON description.
+///
+/// `message` is the caller-supplied error text; `args` carries the remaining
+/// keys of the JSON object (`min`, `max`, `regex`, …).
+typedef ResultFormatFactory = ResultFormat Function(
+    String message, Map<String, dynamic> args);
+
 class DateResultType extends ResultFormat {
+  @override
+  String get code => 'date';
+
+  @override
+  Map<String, Object?> get params => {'format': format};
+
   final String errorMsg;
   final String format;
   DateResultType(this.errorMsg, this.format) : super._();
@@ -110,6 +168,15 @@ class DateResultType extends ResultFormat {
 }
 
 class _DateRangeResultType extends ResultFormat {
+  @override
+  String get code => 'dateRange';
+
+  @override
+  Map<String, Object?> get params => {
+        'minDate': minDate?.toIso8601String(),
+        'maxDate': maxDate?.toIso8601String()
+      };
+
   final String errorMsg;
   final String format;
   final DateTime? minDate;
@@ -133,6 +200,12 @@ class _DateRangeResultType extends ResultFormat {
 }
 
 class _LengthResultType extends ResultFormat {
+  @override
+  String get code => 'length';
+
+  @override
+  Map<String, Object?> get params => {'length': count};
+
   final String errorMsg;
   final int count;
   _LengthResultType(this.errorMsg, this.count) : super._();
@@ -150,13 +223,19 @@ class _LengthResultType extends ResultFormat {
 }
 
 class _NotBlankResultType extends ResultFormat {
+  @override
+  String get code => 'notBlank';
+
   final String errorMsg;
   _NotBlankResultType(this.errorMsg) : super._();
 
+  /// A value is blank when it is null, or a string of only whitespace.
+  ///
+  /// The trim was previously missing, so `"   "` passed a `notBlank` check.
   @override
   bool isValid(dynamic input) {
     final str = cast<String>(input);
-    return str != null && str.isNotEmpty;
+    return str != null && str.trim().isNotEmpty;
   }
 
   @override
@@ -166,13 +245,22 @@ class _NotBlankResultType extends ResultFormat {
 }
 
 class _NotEmptyResultType extends ResultFormat {
+  @override
+  String get code => 'notEmpty';
+
   final String errorMsg;
   _NotEmptyResultType(this.errorMsg) : super._();
 
+  /// Accepts any value that carries a length: a [String], an [Iterable] or a
+  /// [Map]. Previously only [List] was recognised, so this validator could
+  /// never pass on a text field — it silently rejected every string.
   @override
   bool isValid(dynamic input) {
-    final list = cast<List>(input);
-    return list != null && list.isNotEmpty;
+    if (input == null) return false;
+    if (input is String) return input.isNotEmpty;
+    if (input is Iterable) return input.isNotEmpty;
+    if (input is Map) return input.isNotEmpty;
+    return true;
   }
 
   @override
@@ -182,6 +270,9 @@ class _NotEmptyResultType extends ResultFormat {
 }
 
 class _NotNullResultType extends ResultFormat {
+  @override
+  String get code => 'notNull';
+
   final String errorMsg;
   _NotNullResultType(this.errorMsg) : super._();
 
@@ -197,6 +288,9 @@ class _NotNullResultType extends ResultFormat {
 }
 
 class _NoneResultType extends ResultFormat {
+  @override
+  String get code => 'none';
+
   _NoneResultType() : super._();
 
   @override
@@ -211,6 +305,9 @@ class _NoneResultType extends ResultFormat {
 }
 
 class _SmileResultType extends ResultFormat {
+  @override
+  String get code => 'smile';
+
   final String errorMsg;
   _SmileResultType(this.errorMsg) : super._();
 
@@ -226,6 +323,9 @@ class _SmileResultType extends ResultFormat {
 }
 
 class _EmailResultType extends ResultFormat {
+  @override
+  String get code => 'email';
+
   final String errorMsg;
   _EmailResultType(this.errorMsg) : super._();
 
@@ -242,6 +342,9 @@ class _EmailResultType extends ResultFormat {
 }
 
 class _TextResultType extends ResultFormat {
+  @override
+  String get code => 'text';
+
   final String errorMsg;
   _TextResultType(this.errorMsg) : super._();
 
@@ -258,6 +361,9 @@ class _TextResultType extends ResultFormat {
 }
 
 class _PasswordResultType extends ResultFormat {
+  @override
+  String get code => 'password';
+
   final String errorMsg;
   _PasswordResultType(this.errorMsg) : super._();
 
@@ -274,6 +380,9 @@ class _PasswordResultType extends ResultFormat {
 }
 
 class _NameResultType extends ResultFormat {
+  @override
+  String get code => 'name';
+
   final String errorMsg;
   _NameResultType(this.errorMsg) : super._();
 
@@ -290,6 +399,9 @@ class _NameResultType extends ResultFormat {
 }
 
 class _NumberResultType extends ResultFormat {
+  @override
+  String get code => 'number';
+
   final String errorMsg;
   _NumberResultType(this.errorMsg) : super._();
 
@@ -306,6 +418,9 @@ class _NumberResultType extends ResultFormat {
 }
 
 class _GeoLocationResultType extends ResultFormat {
+  @override
+  String get code => 'location';
+
   final String errorMsg;
   _GeoLocationResultType(this.errorMsg) : super._();
   @override
@@ -321,6 +436,9 @@ class _GeoLocationResultType extends ResultFormat {
 }
 
 class _SingleChoiceResultType extends ResultFormat {
+  @override
+  String get code => 'singleChoice';
+
   final String errorMsg;
   _SingleChoiceResultType(this.errorMsg) : super._();
   @override
@@ -336,6 +454,9 @@ class _SingleChoiceResultType extends ResultFormat {
 }
 
 class _MultipleChoiceResultType extends ResultFormat {
+  @override
+  String get code => 'multipleChoice';
+
   final String errorMsg;
   _MultipleChoiceResultType(this.errorMsg) : super._();
   @override
@@ -350,40 +471,53 @@ class _MultipleChoiceResultType extends ResultFormat {
   }
 }
 
+// --- Pre-compiled patterns -------------------------------------------------
+// RegExp construction compiles the pattern; validators run on every keystroke,
+// so the patterns are compiled once at first use rather than per call.
+
+final RegExp _emailPattern = RegExp(
+    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+final RegExp _namePattern = RegExp(r'^[a-zA-Z\s]+$');
+final RegExp _passwordPattern =
+    RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+final RegExp _digitsPattern = RegExp(r'^[0-9]+$');
+final RegExp _phonePattern = RegExp(r'^\+?[1-9]\d{1,14}$');
+final RegExp _urlPattern = RegExp(
+    r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$');
+final RegExp _nonDigitPattern = RegExp(r'\D');
+final RegExp _ssnPattern = RegExp(r'^\d{3}-?\d{2}-?\d{4}$');
+final RegExp _zipPattern = RegExp(r'^\d{5}(-\d{4})?$');
+final RegExp _whitespacePattern = RegExp(r'\s');
+final RegExp _ibanPattern = RegExp(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]+$');
+
 extension EmailValidator on String {
   bool isValidEmail() {
-    return RegExp(
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-        .hasMatch(this);
+    return _emailPattern.hasMatch(this);
   }
 
   bool isValidName() {
-    return RegExp(r'^[a-zA-Z\s]+$').hasMatch(this) && length >= 2;
+    return _namePattern.hasMatch(this) && length >= 2;
   }
 
   bool isValidPassword() {
-    return RegExp(
-            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-        .hasMatch(this);
+    return _passwordPattern.hasMatch(this);
   }
 
   bool isValidNumber() {
-    return RegExp(r'^[0-9]+$').hasMatch(this);
+    return _digitsPattern.hasMatch(this);
   }
 
   bool isValidPhoneNumber() {
-    return RegExp(r'^\+?[1-9]\d{1,14}$').hasMatch(this);
+    return _phonePattern.hasMatch(this);
   }
 
   bool isValidURL() {
-    return RegExp(
-            r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$')
-        .hasMatch(this);
+    return _urlPattern.hasMatch(this);
   }
 
   bool isValidCreditCard() {
     // Luhn algorithm for credit card validation
-    String cleaned = replaceAll(RegExp(r'\D'), '');
+    final String cleaned = replaceAll(_nonDigitPattern, '');
     if (cleaned.length < 13 || cleaned.length > 19) return false;
 
     int sum = 0;
@@ -401,26 +535,29 @@ extension EmailValidator on String {
   }
 
   bool isValidSSN() {
-    return RegExp(r'^\d{3}-?\d{2}-?\d{4}$').hasMatch(this);
+    return _ssnPattern.hasMatch(this);
   }
 
   bool isValidZipCode() {
-    return RegExp(r'^\d{5}(-\d{4})?$').hasMatch(this);
+    return _zipPattern.hasMatch(this);
   }
 
   bool isValidAge() {
-    int? age = int.tryParse(this);
+    final int? age = int.tryParse(this);
     return age != null && age >= 0 && age <= 150;
   }
 
   bool isValidPercentage() {
-    double? percentage = double.tryParse(this);
+    final double? percentage = double.tryParse(this);
     return percentage != null && percentage >= 0 && percentage <= 100;
   }
 }
 
 // Additional validation result types
 class _PhoneResultType extends ResultFormat {
+  @override
+  String get code => 'phone';
+
   final String errorMsg;
   _PhoneResultType(this.errorMsg) : super._();
 
@@ -436,6 +573,9 @@ class _PhoneResultType extends ResultFormat {
 }
 
 class _URLResultType extends ResultFormat {
+  @override
+  String get code => 'url';
+
   final String errorMsg;
   _URLResultType(this.errorMsg) : super._();
 
@@ -451,6 +591,9 @@ class _URLResultType extends ResultFormat {
 }
 
 class _CreditCardResultType extends ResultFormat {
+  @override
+  String get code => 'creditCard';
+
   final String errorMsg;
   _CreditCardResultType(this.errorMsg) : super._();
 
@@ -466,6 +609,9 @@ class _CreditCardResultType extends ResultFormat {
 }
 
 class _SSNResultType extends ResultFormat {
+  @override
+  String get code => 'ssn';
+
   final String errorMsg;
   _SSNResultType(this.errorMsg) : super._();
 
@@ -481,6 +627,9 @@ class _SSNResultType extends ResultFormat {
 }
 
 class _ZipCodeResultType extends ResultFormat {
+  @override
+  String get code => 'zipCode';
+
   final String errorMsg;
   _ZipCodeResultType(this.errorMsg) : super._();
 
@@ -496,6 +645,9 @@ class _ZipCodeResultType extends ResultFormat {
 }
 
 class _AgeResultType extends ResultFormat {
+  @override
+  String get code => 'age';
+
   final String errorMsg;
   _AgeResultType(this.errorMsg) : super._();
 
@@ -511,6 +663,9 @@ class _AgeResultType extends ResultFormat {
 }
 
 class _PercentageResultType extends ResultFormat {
+  @override
+  String get code => 'percentage';
+
   final String errorMsg;
   _PercentageResultType(this.errorMsg) : super._();
 
@@ -526,13 +681,16 @@ class _PercentageResultType extends ResultFormat {
 }
 
 class _CustomResultType extends ResultFormat {
+  @override
+  String get code => 'custom';
+
   final String errorMsg;
   final bool Function(String) validator;
   _CustomResultType(this.errorMsg, this.validator) : super._();
 
   @override
   bool isValid(dynamic input) {
-    String? inputString = cast<String>(input);
+    final String? inputString = cast<String>(input);
     return inputString != null && validator(inputString);
   }
 
@@ -543,6 +701,9 @@ class _CustomResultType extends ResultFormat {
 }
 
 class _ExpressionResultType extends ResultFormat {
+  @override
+  String get code => 'expression';
+
   final String expression;
   final ExpressionValidator expressionValidator = ExpressionValidator();
   _ExpressionResultType(this.expression) : super._();
@@ -564,7 +725,7 @@ class ExpressionValidator {
   String error = "";
 
   bool validate(Map<String, dynamic> input, String expression) {
-    ExpressionLanguage expressionLanguage =
+    final ExpressionLanguage expressionLanguage =
         ExpressionLanguage.fromJson(json.decode(expression));
     bool isOrValid = false;
     if (expressionLanguage.or.isNotEmpty) {
@@ -613,11 +774,12 @@ class ExpressionLanguage {
   ExpressionLanguage({required this.or});
 
   ExpressionLanguage.fromJson(Map<String, dynamic> json) {
-    if (json['or'] != null) {
-      or = [];
-      json['or'].forEach((v) {
-        or.add(ExpressionObject.fromJson(v));
-      });
+    final clauses = json['or'];
+    if (clauses is List) {
+      or = [
+        for (final v in clauses)
+          ExpressionObject.fromJson(Map<String, dynamic>.from(v as Map)),
+      ];
     }
     orValidationMessage = json["orValidationMessage"];
   }
@@ -633,6 +795,12 @@ class ExpressionLanguage {
 // --- New validators ---
 
 class _MinResultType extends ResultFormat {
+  @override
+  String get code => 'min';
+
+  @override
+  Map<String, Object?> get params => {'min': min};
+
   final String errorMsg;
   final num min;
   _MinResultType(this.errorMsg, this.min) : super._();
@@ -648,6 +816,12 @@ class _MinResultType extends ResultFormat {
 }
 
 class _MaxResultType extends ResultFormat {
+  @override
+  String get code => 'max';
+
+  @override
+  Map<String, Object?> get params => {'max': max};
+
   final String errorMsg;
   final num max;
   _MaxResultType(this.errorMsg, this.max) : super._();
@@ -663,6 +837,12 @@ class _MaxResultType extends ResultFormat {
 }
 
 class _RangeResultType extends ResultFormat {
+  @override
+  String get code => 'range';
+
+  @override
+  Map<String, Object?> get params => {'min': min, 'max': max};
+
   final String errorMsg;
   final num min;
   final num max;
@@ -679,6 +859,12 @@ class _RangeResultType extends ResultFormat {
 }
 
 class _MinLengthResultType extends ResultFormat {
+  @override
+  String get code => 'minLength';
+
+  @override
+  Map<String, Object?> get params => {'min': min};
+
   final String errorMsg;
   final int min;
   _MinLengthResultType(this.errorMsg, this.min) : super._();
@@ -694,6 +880,12 @@ class _MinLengthResultType extends ResultFormat {
 }
 
 class _MaxLengthResultType extends ResultFormat {
+  @override
+  String get code => 'maxLength';
+
+  @override
+  Map<String, Object?> get params => {'max': max};
+
   final String errorMsg;
   final int max;
   _MaxLengthResultType(this.errorMsg, this.max) : super._();
@@ -709,6 +901,14 @@ class _MaxLengthResultType extends ResultFormat {
 }
 
 class _PatternResultType extends ResultFormat {
+  @override
+  String get code => 'pattern';
+
+  @override
+  Map<String, Object?> get params => {'regex': regex};
+
+  late final RegExp _compiled = RegExp(regex);
+
   final String errorMsg;
   final String regex;
   _PatternResultType(this.errorMsg, this.regex) : super._();
@@ -716,7 +916,7 @@ class _PatternResultType extends ResultFormat {
   @override
   bool isValid(dynamic input) {
     final str = cast<String>(input);
-    return str != null && RegExp(regex).hasMatch(str);
+    return str != null && _compiled.hasMatch(str);
   }
 
   @override
@@ -724,13 +924,19 @@ class _PatternResultType extends ResultFormat {
 }
 
 class _MinSelectionsResultType extends ResultFormat {
+  @override
+  String get code => 'minSelections';
+
+  @override
+  Map<String, Object?> get params => {'min': min};
+
   final String errorMsg;
   final int min;
   _MinSelectionsResultType(this.errorMsg, this.min) : super._();
 
   @override
   bool isValid(dynamic input) {
-    final list = cast<List>(input);
+    final list = cast<List<dynamic>>(input);
     return list != null && list.length >= min;
   }
 
@@ -739,13 +945,19 @@ class _MinSelectionsResultType extends ResultFormat {
 }
 
 class _MaxSelectionsResultType extends ResultFormat {
+  @override
+  String get code => 'maxSelections';
+
+  @override
+  Map<String, Object?> get params => {'max': max};
+
   final String errorMsg;
   final int max;
   _MaxSelectionsResultType(this.errorMsg, this.max) : super._();
 
   @override
   bool isValid(dynamic input) {
-    final list = cast<List>(input);
+    final list = cast<List<dynamic>>(input);
     return list != null && list.length <= max;
   }
 
@@ -754,6 +966,12 @@ class _MaxSelectionsResultType extends ResultFormat {
 }
 
 class _FileSizeResultType extends ResultFormat {
+  @override
+  String get code => 'fileSize';
+
+  @override
+  Map<String, Object?> get params => {'maxBytes': maxBytes};
+
   final String errorMsg;
   final int maxBytes;
   _FileSizeResultType(this.errorMsg, this.maxBytes) : super._();
@@ -770,6 +988,9 @@ class _FileSizeResultType extends ResultFormat {
 }
 
 class _IBANResultType extends ResultFormat {
+  @override
+  String get code => 'iban';
+
   final String errorMsg;
   _IBANResultType(this.errorMsg) : super._();
 
@@ -783,6 +1004,9 @@ class _IBANResultType extends ResultFormat {
 }
 
 class _ConsentResultType extends ResultFormat {
+  @override
+  String get code => 'consent';
+
   final String errorMsg;
   _ConsentResultType(this.errorMsg) : super._();
 
@@ -796,23 +1020,42 @@ class _ConsentResultType extends ResultFormat {
 }
 
 class _CompositeResultType extends ResultFormat {
+  @override
+  String get code => 'compose';
+
   final List<ResultFormat> validators;
-  String _lastError = "";
+
+  /// Failure of the most recent [isValid] call, or null when it passed.
+  ///
+  /// Kept only so the legacy [error] contract (a no-argument getter) still
+  /// works; [validate] is stateless and should be preferred.
+  ValidationResult? _last;
+
   _CompositeResultType(this.validators) : super._();
 
   @override
-  bool isValid(dynamic input) {
+  bool isValid(dynamic input) => validate(input).isValid;
+
+  @override
+  ValidationResult validate(dynamic input) {
     for (final v in validators) {
-      if (!v.isValid(input)) {
-        _lastError = v.error();
-        return false;
+      final outcome = v.validate(input);
+      if (!outcome.isValid) {
+        _last = outcome;
+        return ValidationResult.invalid(
+          outcome.code,
+          outcome.message,
+          params: outcome.params,
+          children: [outcome],
+        );
       }
     }
-    return true;
+    _last = null;
+    return const ValidationResult.valid();
   }
 
   @override
-  String error() => _lastError;
+  String error() => _last?.message ?? '';
 }
 
 num? _toNum(dynamic input) {
@@ -823,9 +1066,9 @@ num? _toNum(dynamic input) {
 
 extension IBANValidator on String {
   bool isValidIBAN() {
-    final cleaned = replaceAll(RegExp(r'\s'), '').toUpperCase();
+    final cleaned = replaceAll(_whitespacePattern, '').toUpperCase();
     if (cleaned.length < 15 || cleaned.length > 34) return false;
-    if (!RegExp(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]+$').hasMatch(cleaned)) {
+    if (!_ibanPattern.hasMatch(cleaned)) {
       return false;
     }
     // Move first 4 chars to end and convert letters to numbers
@@ -835,7 +1078,7 @@ extension IBANValidator on String {
       return code >= 65 && code <= 90 ? '${code - 55}' : c;
     }).join();
     // Mod 97 check
-    BigInt value = BigInt.parse(numericString);
+    final BigInt value = BigInt.parse(numericString);
     return value % BigInt.from(97) == BigInt.one;
   }
 }

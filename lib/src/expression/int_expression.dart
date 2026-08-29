@@ -5,9 +5,9 @@ class InExpressionEvaluator extends ExpressionEvaluator<int> {
 
   @override
   bool isValid(String condition, int input) {
-    var parts = condition.split(' ');
-    var operator = parts[0];
-    dynamic right = parts.length > 1 ? parts[1] : "";
+    final parts = condition.split(' ');
+    final operator = parts[0];
+    final dynamic right = parts.length > 1 ? parts[1] : "";
 
     switch (operator) {
       case '=':

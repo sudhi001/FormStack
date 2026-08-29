@@ -55,11 +55,12 @@ class Result {
       this.website});
 
   Result.fromJson(Map<String, dynamic> json) {
-    if (json['address_components'] != null) {
-      addressComponents = [];
-      json['address_components'].forEach((v) {
-        addressComponents!.add(AddressComponents.fromJson(v));
-      });
+    final addressComponentsJson = json['address_components'];
+    if (addressComponentsJson is List) {
+      addressComponents = [
+        for (final v in addressComponentsJson)
+          AddressComponents.fromJson(Map<String, dynamic>.from(v as Map)),
+      ];
     }
     adrAddress = json['adr_address'];
     formattedAddress = json['formatted_address'];
@@ -67,16 +68,17 @@ class Result {
         json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
     icon = json['icon'];
     name = json['name'];
-    if (json['photos'] != null) {
-      photos = [];
-      json['photos'].forEach((v) {
-        photos!.add(Photos.fromJson(v));
-      });
+    final photosJson = json['photos'];
+    if (photosJson is List) {
+      photos = [
+        for (final v in photosJson)
+          Photos.fromJson(Map<String, dynamic>.from(v as Map)),
+      ];
     }
     placeId = json['place_id'];
     reference = json['reference'];
     scope = json['scope'];
-    types = json['types'].cast<String>();
+    types = (json['types'] as List?)?.cast<String>();
     url = json['url'];
     utcOffset = json['utc_offset'];
     vicinity = json['vicinity'];
@@ -121,7 +123,7 @@ class AddressComponents {
   AddressComponents.fromJson(Map<String, dynamic> json) {
     longName = json['long_name'];
     shortName = json['short_name'];
-    types = json['types'].cast<String>();
+    types = (json['types'] as List?)?.cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -212,7 +214,7 @@ class Photos {
 
   Photos.fromJson(Map<String, dynamic> json) {
     height = json['height'];
-    htmlAttributions = json['html_attributions'].cast<String>();
+    htmlAttributions = (json['html_attributions'] as List?)?.cast<String>();
     photoReference = json['photo_reference'];
     width = json['width'];
   }

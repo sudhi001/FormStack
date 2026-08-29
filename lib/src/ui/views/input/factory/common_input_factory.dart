@@ -1,7 +1,7 @@
 import 'package:formstack/formstack.dart';
-import 'package:formstack/src/ui/views/input/image_input_field.dart';
 import 'package:formstack/src/ui/views/input/dynamic_key_value_field.dart';
 import 'package:formstack/src/ui/views/input/html_input_field.dart';
+import 'package:formstack/src/ui/views/input/image_input_field.dart';
 import 'package:formstack/src/ui/views/input/map_input_field.dart';
 import 'package:formstack/src/ui/views/input/otp_input_field.dart';
 

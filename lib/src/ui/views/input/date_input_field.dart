@@ -1,10 +1,11 @@
 import 'dart:ui';
-import 'package:intl/intl.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class DateInputWidgetView extends BaseStepView<QuestionStep> {
@@ -21,7 +22,8 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.result != null) {
       if (formStep.result is String) {
         try {
-          DateResultType? dateResultType = cast<DateResultType>(resultFormat);
+          final DateResultType? dateResultType =
+              cast<DateResultType>(resultFormat);
           if (dateResultType != null) {
             return DateFormat(dateResultType.format).parse(formStep.result);
           }
@@ -47,7 +49,7 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
           ),
         ),
         constraints:
-            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 150),
+            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 150),
         child: ScrollConfiguration(
           behavior: MyCustomScrollBehavior(),
           child: CupertinoDatePicker(

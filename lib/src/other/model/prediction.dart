@@ -5,11 +5,12 @@ class PlacesAutocompleteResponse {
   PlacesAutocompleteResponse({this.predictions, this.status});
 
   PlacesAutocompleteResponse.fromJson(Map<String, dynamic> json) {
-    if (json['predictions'] != null) {
-      predictions = [];
-      json['predictions'].forEach((v) {
-        predictions!.add(Prediction.fromJson(v));
-      });
+    final predictionsJson = json['predictions'];
+    if (predictionsJson is List) {
+      predictions = [
+        for (final v in predictionsJson)
+          Prediction.fromJson(Map<String, dynamic>.from(v as Map)),
+      ];
     }
     status = json['status'];
   }
@@ -51,24 +52,27 @@ class Prediction {
   Prediction.fromJson(Map<String, dynamic> json) {
     description = json['description'];
     id = json['id'];
-    if (json['matched_substrings'] != null) {
-      matchedSubstrings = [];
-      json['matched_substrings'].forEach((v) {
-        matchedSubstrings!.add(MatchedSubstrings.fromJson(v));
-      });
+    final matchedSubstringsJson = json['matched_substrings'];
+    if (matchedSubstringsJson is List) {
+      matchedSubstrings = [
+        for (final v in matchedSubstringsJson)
+          MatchedSubstrings.fromJson(Map<String, dynamic>.from(v as Map)),
+      ];
     }
     placeId = json['place_id'];
     reference = json['reference'];
     structuredFormatting = json['structured_formatting'] != null
-        ? StructuredFormatting.fromJson(json['structured_formatting'])
+        ? StructuredFormatting.fromJson(
+            Map<String, dynamic>.from(json['structured_formatting'] as Map))
         : null;
-    if (json['terms'] != null) {
-      terms = [];
-      json['terms'].forEach((v) {
-        terms!.add(Terms.fromJson(v));
-      });
+    final termsJson = json['terms'];
+    if (termsJson is List) {
+      terms = [
+        for (final v in termsJson)
+          Terms.fromJson(Map<String, dynamic>.from(v as Map)),
+      ];
     }
-    types = json['types'].cast<String>();
+    types = (json['types'] as List?)?.cast<String>();
     lat = json['lat'];
     lng = json['lng'];
   }

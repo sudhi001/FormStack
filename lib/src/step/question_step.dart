@@ -3,12 +3,12 @@ import 'package:formstack/formstack.dart';
 import 'package:formstack/src/ui/views/input/factory/choice_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/common_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/date_input_factory.dart';
-import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/smile_input_factory.dart';
 import 'package:formstack/src/ui/views/input/factory/survey_input_factory.dart';
+import 'package:formstack/src/ui/views/input/factory/text_input_factory.dart';
 import 'package:formstack/src/utils/alignment.dart';
 
-class QuestionStep extends FormStep<QuestionStep> {
+class QuestionStep extends FormStep {
   static const String tag = "QuestionStep";
   final InputType inputType;
   Function(String)? onValidationError;
@@ -76,8 +76,15 @@ class QuestionStep extends FormStep<QuestionStep> {
   /// Source ID passed to [optionsProvider] to identify which data set to load.
   final String? optionsSourceId;
 
+  /// Name of an application-supplied input registered with [InputRegistry].
+  ///
+  /// Only consulted when [inputType] is [InputType.custom], or when it names a
+  /// registered override for a built-in type. See [InputRegistry].
+  final String? customInputType;
+
   QuestionStep(
       {super.id,
+      this.customInputType,
       super.title = "",
       required this.inputType,
       super.text,
@@ -134,10 +141,29 @@ class QuestionStep extends FormStep<QuestionStep> {
       this.optionsSourceId})
       : super();
 
+  /// The registry key this step resolves against.
+  ///
+  /// [customInputType] when set, otherwise the [inputType] enum name.
+  String get inputTypeKey => customInputType ?? inputType.name;
+
   @override
   FormStepView buildView(FormStackForm formStackForm) {
     formStackForm.onValidationError = onValidationError;
     formStackForm.onFinish = onFinish;
+
+    // Application-registered inputs take precedence, which is what lets a host
+    // app add new input types or replace a built-in one without forking.
+    final custom =
+        InputRegistry.instance.build(inputTypeKey, this, formStackForm);
+    if (custom != null) return custom;
+
+    if (inputType == InputType.custom) {
+      throw StateError('QuestionStep "${id?.id}" uses InputType.custom but '
+          '"$inputTypeKey" is not registered. Register it first: '
+          'InputRegistry.instance.register("$inputTypeKey", (ctx) => ...). '
+          'Registered: ${InputRegistry.instance.registered.join(', ')}');
+    }
+
     switch (inputType) {
       case InputType.email:
         resultFormat =
@@ -332,9 +358,12 @@ class QuestionStep extends FormStep<QuestionStep> {
             resultFormat ?? ResultFormat.notNull("Please draw a shape.");
         return SurveyInputWidget.geoshape(
             this, formStackForm, text, resultFormat!, title);
-      default:
+      case InputType.custom:
+        break;
     }
-    throw UnimplementedError();
+    throw UnimplementedError(
+        'No widget is registered for input type "$inputTypeKey" '
+        '(step "${id?.id}").');
   }
 
   /// Applies choiceFilter if defined, filtering options based on current results.
@@ -348,14 +377,37 @@ class QuestionStep extends FormStep<QuestionStep> {
 
   factory QuestionStep.from(Map<String, dynamic>? element,
       List<RelevantCondition> relevantConditions) {
-    List<Options> options = [];
-    cast<List>(element?["options"])?.forEach((el) {
-      options.add(Options(el?["key"], el?["title"], subTitle: el?["subTitle"]));
-    });
-    InputType inputType =
-        InputType.values.firstWhere((e) => e.name == element?["inputType"]);
+    final List<Options> options = [];
+    for (final el in cast<List<dynamic>>(element?["options"]) ?? const []) {
+      if (el is! Map) {
+        throw FormatException('Each option must be an object, got: $el');
+      }
+      options.add(Options(
+        (el["key"] ?? '').toString(),
+        (el["title"] ?? '').toString(),
+        subTitle: el["subTitle"]?.toString(),
+        value: el["value"],
+      ));
+    }
+    final rawInputType = (element?["inputType"] ?? "").toString();
+    final matched = InputType.values
+        .where((e) => e.name == rawInputType)
+        .cast<InputType?>()
+        .firstWhere((e) => true, orElse: () => null);
+    // An unrecognised name is not necessarily an error: it may be an input the
+    // host application registered. Only a name that matches neither is fatal.
+    if (matched == null && !InputRegistry.instance.contains(rawInputType)) {
+      throw FormatException(
+          'Unknown inputType "$rawInputType". Built-in types: '
+          '${InputType.values.map((e) => e.name).join(', ')}. '
+          'Custom types must be registered with InputRegistry first.');
+    }
+    final InputType inputType = matched ?? InputType.custom;
     return QuestionStep(
         inputType: inputType,
+        customInputType: matched == null ? rawInputType : null,
+        resultFormat: ResultFormat.fromJson(
+            element?["validators"] ?? element?["validator"]),
         options: options,
         footerBackButton: element?["footerBackButton"] ?? false,
         selectionType: element?["selectionType"] != null
@@ -371,7 +423,7 @@ class QuestionStep extends FormStep<QuestionStep> {
         mask: element?["mask"],
         description: element?["description"],
         textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
-        style: UIStyle.from(element?["style"]),
+        style: UIStyle.maybeFrom(element?["style"]),
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,

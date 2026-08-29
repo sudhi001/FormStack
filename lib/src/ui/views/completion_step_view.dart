@@ -132,7 +132,7 @@ class CompletionStepView extends BaseStepView<CompletionStep> {
   @override
   void requestFocus() {}
   @override
-  resultValue() {
+  DateTime resultValue() {
     return DateTime.now().toUtc();
   }
 

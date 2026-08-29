@@ -30,8 +30,8 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
           children: [
             Flexible(
               child: ListView.builder(
-                shrinkWrap: true,
                 cacheExtent: 300,
+                shrinkWrap: true,
                 itemCount: _repetitions.length,
                 itemBuilder: (context, index) {
                   return _buildRepetitionCard(context, index, setState);

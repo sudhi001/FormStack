@@ -29,7 +29,7 @@ class SmileInputWidgetView extends BaseStepView<QuestionStep> {
           ),
         ),
         constraints:
-            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
+            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: ReviewSlider(

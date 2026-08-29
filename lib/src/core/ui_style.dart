@@ -85,14 +85,29 @@ class UIStyle {
       this.cardBackground,
       this.fontSize});
 
+  /// Creates a [UIStyle] from a JSON map, or returns null when [style] is null.
+  ///
+  /// Step factories must use this rather than [UIStyle.from]: an unstyled step
+  /// has to end up with a null `style` so the form-level `theme` can be
+  /// applied as its default. [UIStyle.from] returns a fully-defaulted style
+  /// for a null map, which silently shadowed the form theme on every
+  /// JSON-defined step.
+  static UIStyle? maybeFrom(Map<String, dynamic>? style) =>
+      style == null ? null : UIStyle.from(style);
+
   /// Creates a [UIStyle] from a JSON map with hex color strings.
+  ///
+  /// A null map yields a style with all defaults. Use [maybeFrom] when a
+  /// missing map should mean "no style of my own".
   factory UIStyle.from(Map<String, dynamic>? style) {
+    double? asDouble(Object? v) =>
+        v is num ? v.toDouble() : (v == null ? null : double.tryParse('$v'));
     return UIStyle(
       HexColor(style?["backgroundColor"] ?? "#000000"),
       HexColor(style?["foregroundColor"] ?? "#FFFFFF"),
       HexColor(style?["borderColor"] ?? "#000000"),
-      (style?["titleBottomPadding"] ?? 7.0).toDouble(),
-      (style?["borderRadius"] ?? 10.0).toDouble(),
+      asDouble(style?["titleBottomPadding"]) ?? 7.0,
+      asDouble(style?["borderRadius"]) ?? 10.0,
       inputBackground: style?["inputBackground"] != null
           ? HexColor(style!["inputBackground"])
           : null,
@@ -109,7 +124,7 @@ class UIStyle {
       cardBackground: style?["cardBackground"] != null
           ? HexColor(style!["cardBackground"])
           : null,
-      fontSize: style?["fontSize"]?.toDouble(),
+      fontSize: asDouble(style?["fontSize"]),
     );
   }
 }

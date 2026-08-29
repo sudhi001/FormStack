@@ -1,5 +1,5 @@
-import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/expression/base_expression.dart';
+import 'package:formstack/src/relevant/relevant_condition.dart';
 
 /// A [RelevantCondition] that evaluates an expression string against the result.
 ///

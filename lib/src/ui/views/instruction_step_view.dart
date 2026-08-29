@@ -49,10 +49,10 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
             ],
             if (hasInstructions)
               ListView.builder(
-                shrinkWrap: true,
                 cacheExtent: 300,
+                shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  DynamicData instruction = formStep.instructions![index];
+                  final DynamicData instruction = formStep.instructions![index];
                   return Center(
                       child: ListTile(
                           title: Text(instruction.title),
@@ -86,7 +86,7 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
   }
 
   @override
-  resultValue() {
+  DateTime resultValue() {
     return DateTime.now().toUtc();
   }
 

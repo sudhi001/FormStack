@@ -25,7 +25,8 @@ class RankingInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 400),
+      constraints:
+          const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 400),
       child: StatefulBuilder(builder: (context, setState) {
         return ReorderableListView.builder(
           shrinkWrap: true,

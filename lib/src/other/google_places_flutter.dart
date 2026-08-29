@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:formstack/src/other/model/prediction.dart';
 import 'package:formstack/src/other/model/place_details.dart';
+import 'package:formstack/src/other/model/prediction.dart';
+import 'package:rxdart/rxdart.dart';
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -73,7 +73,7 @@ class _GooglePlaceAutoCompleteTextFieldState
         decoration: widget.inputDecoration,
         style: widget.textStyle,
         controller: widget.textEditingController,
-        onChanged: (string) => _subject.add(string),
+        onChanged: _subject.add,
       ),
     );
   }

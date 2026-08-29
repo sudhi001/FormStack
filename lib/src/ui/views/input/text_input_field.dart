@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/input_border_style.dart';
 
 // ignore: must_be_immutable
 class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
@@ -22,7 +23,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
 
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  FilePickerResult? fileResult;
+  PlatformFile? pickedFile;
   bool _hasRequestedFocus = false;
   bool _hasRestoredResult = false;
 
@@ -33,7 +34,11 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       _hasRestoredResult = true;
       if (formStep.result != null) {
         if (formStep.inputType == InputType.file) {
-          _controller.text = cast<PlatformFile>(formStep.result)!.name;
+          final restored = cast<PlatformFile>(formStep.result);
+          if (restored != null) {
+            pickedFile = restored;
+            _controller.text = restored.name;
+          }
         } else {
           _controller.text = formStep.result;
         }
@@ -78,11 +83,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
       controller: _controller,
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
-      onTap: formStep.inputType == InputType.file
-          ? () {
-              suffixButtonClick();
-            }
-          : () {},
+      onTap: formStep.inputType == InputType.file ? suffixButtonClick : () {},
       onChanged: (value) {
         formStep.result = value;
       },
@@ -90,8 +91,9 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
           resultFormat.isValid(input ?? '') ? null : validationError(),
       inputFormatters: formatter,
       decoration: InputDecoration(
-          border: inputBorder(),
-          enabledBorder: inputBorder(),
+          border: formStep.inputStyle.toInputBorder(style: formStep.style),
+          enabledBorder:
+              formStep.inputStyle.toInputBorder(style: formStep.style),
           suffixIcon: formStep.inputType == InputType.file
               ? IconButton(
                   focusNode: _focusNode,
@@ -105,20 +107,19 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   void suffixButtonClick() async {
-    if (filter.isEmpty) {
-      fileResult = await FilePicker.platform.pickFiles();
-    } else {
-      fileResult = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: filter.map((item) => item as String).toList());
-    }
+    pickedFile = filter.isEmpty
+        ? await FilePicker.pickFile()
+        : await FilePicker.pickFile(
+            type: FileType.custom,
+            allowedExtensions: filter.map((item) => item as String).toList());
 
-    if (fileResult != null && fileResult!.files.isNotEmpty) {
-      _controller.text = fileResult!.files.single.name;
-      formStep.result = fileResult!.files.single;
+    if (pickedFile != null) {
+      _controller.text = pickedFile!.name;
+      formStep.result = pickedFile;
     } else {
-      _controller.clear();
-      formStep.result = null;
+      // A cancelled pick leaves any previous selection in place rather than
+      // silently clearing the answer the user already gave.
+      if (formStep.result == null) _controller.clear();
     }
   }
 
@@ -129,29 +130,13 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
     super.dispose();
   }
 
-  InputBorder inputBorder() {
-    switch (formStep.inputStyle) {
-      case InputStyle.basic:
-        return InputBorder.none;
-      case InputStyle.outline:
-        return OutlineInputBorder(
-          borderSide:
-              BorderSide(color: formStep.style?.borderColor ?? Colors.white),
-        );
-      case InputStyle.underLined:
-        return const UnderlineInputBorder();
-      default:
-        return InputBorder.none;
-    }
-  }
-
   @override
   bool isValid() {
     if (formStep.isOptional ?? false) {
       return true;
     }
     if (formStep.inputType == InputType.file) {
-      return resultFormat.isValid(fileResult?.files.single);
+      return resultFormat.isValid(pickedFile ?? formStep.result);
     }
     return resultFormat.isValid(_controller.text.trim());
   }
@@ -169,7 +154,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   dynamic resultValue() {
     if (formStep.inputType == InputType.file) {
-      return fileResult?.files.single;
+      return pickedFile ?? formStep.result;
     }
     return _controller.text;
   }

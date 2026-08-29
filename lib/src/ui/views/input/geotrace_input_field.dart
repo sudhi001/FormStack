@@ -234,7 +234,7 @@ class _PointsPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     // Normalize points to fit in canvas
-    final padding = 30.0;
+    const padding = 30.0;
     final lats = points.map((p) => p['lat']!).toList();
     final lngs = points.map((p) => p['lng']!).toList();
     final minLat = lats.reduce((a, b) => a < b ? a : b);

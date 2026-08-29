@@ -162,7 +162,7 @@ class ConsentStep extends FormStep {
   /// Creates a [ConsentStep] from a JSON map.
   factory ConsentStep.from(Map<String, dynamic>? element,
       List<RelevantCondition> relevantConditions) {
-    List<ConsentSection> sections = [];
+    final List<ConsentSection> sections = [];
     if (element?["sections"] != null) {
       for (var s in element!["sections"]) {
         sections.add(ConsentSection.from(s));
@@ -175,7 +175,7 @@ class ConsentStep extends FormStep {
       crossAxisAlignmentContent: crossAlignmentFromString(
               element?["crossAxisAlignmentContent"] ?? "center") ??
           CrossAxisAlignment.center,
-      style: UIStyle.from(element?["style"]),
+      style: UIStyle.maybeFrom(element?["style"]),
       cancellable: element?["cancellable"],
       relevantConditions: relevantConditions,
       backButtonText: element?["backButtonText"],

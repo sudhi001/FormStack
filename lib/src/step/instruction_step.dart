@@ -45,14 +45,14 @@ class InstructionStep extends FormStep {
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
-        style: UIStyle.from(element?["style"]),
+        style: UIStyle.maybeFrom(element?["style"]),
         cancellable: element?["cancellable"],
         relevantConditions: relevantConditions,
         backButtonText: element?["backButtonText"],
         cancelButtonText: element?["cancelButtonText"],
         isOptional: element?["isOptional"],
         instructions: DynamicData.parseDynamicData(
-            cast<List>(element?["instructions"]) ?? []),
+            cast<List<dynamic>>(element?["instructions"]) ?? const []),
         nextButtonText: element?["nextButtonText"],
         text: element?["text"],
         title: element?["title"],

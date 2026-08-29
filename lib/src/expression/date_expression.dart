@@ -12,14 +12,14 @@ class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
 
   @override
   bool isValid(String condition, DateTime input) {
-    var parts = condition.split(' ');
-    var left = parts.isNotEmpty ? parseExpression(parts[0], input) : null;
-    var operator = parts.length == 2
+    final parts = condition.split(' ');
+    final left = parts.isNotEmpty ? parseExpression(parts[0], input) : null;
+    final operator = parts.length == 2
         ? parts[0]
         : parts.length > 1
             ? parts[1]
             : parts[0];
-    var right = parts.length > 2 ? parseExpression(parts[2], input) : null;
+    final right = parts.length > 2 ? parseExpression(parts[2], input) : null;
 
     switch (operator) {
       case '<':
@@ -42,13 +42,13 @@ class DateTimeExpressionEvaluator extends ExpressionEvaluator<DateTime> {
   }
 
   static DateTime? parseExpression(String expression, DateTime date) {
-    String format = "dd-MM-yyyy";
-    var parts = expression.split('(');
-    var functionName = parts[0];
+    const String format = "dd-MM-yyyy";
+    final parts = expression.split('(');
+    final functionName = parts[0];
     if (functionName == "FOR_ALL") {
       return null;
     }
-    var argument = parts[1].substring(0, parts[1].length - 1);
+    final argument = parts[1].substring(0, parts[1].length - 1);
 
     switch (functionName) {
       case 'YEAR':

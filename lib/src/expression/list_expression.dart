@@ -6,20 +6,21 @@ import 'package:formstack/src/expression/base_expression.dart';
 ///operator (e.g.IN,NOT_IN, FOR_ALL), and one expressions,
 //(e.g., IN DEMO  or  NOT_IN DEMO).
 ///
-class ListExpressionEvaluator extends ExpressionEvaluator<List> {
+class ListExpressionEvaluator extends ExpressionEvaluator<List<dynamic>> {
   ListExpressionEvaluator(super.input);
 
   @override
-  bool isValid(String condition, List input) {
-    var parts = condition.split(' ');
-    var operator = parts[0];
-    List right = parts.length > 1 ? parts[1].split(',') : [];
+  bool isValid(String condition, List<dynamic> input) {
+    final parts = condition.split(' ');
+    final operator = parts[0];
+    final List<String> right =
+        parts.length > 1 ? parts[1].split(',') : <String>[];
 
     switch (operator) {
       case 'IN':
         if (input is List<Options>) {
           return right.every((element) =>
-              (input.firstWhereOrNull((e) => e.key == element) != null));
+              input.firstWhereOrNull((e) => e.key == element) != null);
         } else {
           return right.every((element) => input.contains(element));
         }

@@ -26,7 +26,7 @@ class PopStepView extends BaseStepView<PopStep> {
   }
 
   @override
-  resultValue() {
+  Null resultValue() {
     return null;
   }
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -18,7 +17,6 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
       {super.key, super.title});
 
   final FocusNode _focusNode = FocusNode();
-  FilePickerResult? _fileResult;
   String? _value;
 
   String? get value {
@@ -103,60 +101,38 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
 
   void suffixButtonClick(StateSetter setState) async {
     try {
-      if (formStep.filter?.isEmpty ?? true) {
-        _fileResult = await FilePicker.platform.pickFiles();
-      } else {
-        _fileResult = await FilePicker.platform.pickFiles(
-            type: FileType.custom,
-            allowedExtensions:
-                formStep.filter?.map((item) => item as String).toList());
-      }
-      if (_fileResult != null && _fileResult!.files.isNotEmpty) {
-        final file = _fileResult!.files.first;
-        if (kIsWeb) {
-          final bytes = file.bytes;
-          if (bytes != null) {
-            _value = await _bytesToBase64String(bytes);
-            formStep.result = _value;
-          }
-        } else {
-          final path = file.path;
-          if (path != null) {
-            _value = await _fileToBase64String(File(path));
-            formStep.result = _value;
-          }
-        }
-        _fileResult = null;
-      }
+      final hasFilter = !(formStep.filter?.isEmpty ?? true);
+      final file = hasFilter
+          ? await FilePicker.pickFile(
+              type: FileType.custom,
+              allowedExtensions:
+                  formStep.filter!.map((item) => item as String).toList())
+          : await FilePicker.pickFile();
+      if (file == null) return;
+
+      // readAsBytes is implemented on every platform, so this no longer needs
+      // to branch on kIsWeb and reach for dart:io on native.
+      _value = await _bytesToBase64String(await file.readAsBytes());
+      formStep.result = _value;
       setState(() {});
-    } catch (e) {
-      // Handle file picker errors gracefully
-      if (kDebugMode) {
-        print('Error picking file: $e');
-      }
+    } catch (e, stack) {
+      // A cancelled or failed pick must not take the form down with it.
+      FlutterError.reportError(FlutterErrorDetails(
+        exception: e,
+        stack: stack,
+        library: 'formstack',
+        context:
+            ErrorDescription('picking an image for step ${formStep.id?.id}'),
+      ));
     }
   }
 
   Future<String> _bytesToBase64String(List<int> fileBytes) async {
     try {
-      String base64String = base64Encode(fileBytes);
+      final String base64String = base64Encode(fileBytes);
       return base64String;
     } catch (e) {
-      if (kDebugMode) {
-        print('Error encoding bytes to base64: $e');
-      }
-      rethrow;
-    }
-  }
-
-  Future<String> _fileToBase64String(File file) async {
-    try {
-      List<int> fileBytes = await file.readAsBytes();
-      return _bytesToBase64String(fileBytes);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error reading file: $e');
-      }
+      debugPrint('formstack: failed to base64-encode picked image: $e');
       rethrow;
     }
   }
@@ -165,9 +141,7 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     try {
       return base64Decode(base64String);
     } catch (e) {
-      if (kDebugMode) {
-        print('Error decoding base64 string: $e');
-      }
+      debugPrint('formstack: failed to decode base64 image: $e');
       return Uint8List(0);
     }
   }
@@ -204,66 +178,39 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   void dispose() {
     _focusNode.dispose();
-    _fileResult = null;
     _value = null;
     super.dispose();
   }
 
+  // The picked file is base64-encoded into [_value] as soon as it is chosen,
+  // so preview always renders from [_value]; there is no separate
+  // just-picked-file branch to keep in sync.
   Widget _buildSquareImage() {
-    return (_fileResult?.files.isNotEmpty ?? false)
-        ? kIsWeb
-            ? Image.memory(_fileResult!.files.first.bytes!,
-                width: 400,
-                height: 150,
-                fit: BoxFit.cover,
-                cacheWidth: 800,
-                cacheHeight: 300)
-            : Image.file(File(_fileResult!.files.first.path!),
-                width: 400,
-                height: 150,
-                fit: BoxFit.cover,
-                cacheWidth: 800,
-                cacheHeight: 300)
-        : _value != null
-            ? Image.memory(_dataFromBase64String(_value!),
-                width: 400,
-                height: 150,
-                fit: BoxFit.cover,
-                cacheWidth: 800,
-                cacheHeight: 300)
-            : Lottie.asset(
-                'packages/formstack/assets/lottiefiles/placeholder.json',
-                height: 150,
-                width: 400,
-                fit: BoxFit.fitHeight);
+    return _value != null
+        ? Image.memory(_dataFromBase64String(_value!),
+            width: 400,
+            height: 150,
+            fit: BoxFit.cover,
+            cacheWidth: 800,
+            cacheHeight: 300)
+        : Lottie.asset('packages/formstack/assets/lottiefiles/placeholder.json',
+            height: 150, width: 400, fit: BoxFit.fitHeight);
   }
 
   Widget _buildCircleImage() {
-    return (_fileResult?.files.isNotEmpty ?? false)
-        ? kIsWeb
-            ? ClipOval(
-                child: Image.memory(_fileResult!.files.first.bytes!,
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
-                    cacheWidth: 300,
-                    cacheHeight: 300))
-            : ClipOval(
-                child: Image.file(File(_fileResult!.files.first.path!),
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
-                    cacheWidth: 300,
-                    cacheHeight: 300))
-        : _value != null
-            ? ClipOval(
-                child: Image.memory(_dataFromBase64String(_value!),
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
-                    cacheWidth: 300,
-                    cacheHeight: 300))
-            : Lottie.asset('packages/formstack/assets/lottiefiles/avatar.json',
-                height: 200, fit: BoxFit.fill);
+    return _value != null
+        ? ClipOval(
+            child: Image.memory(_dataFromBase64String(_value!),
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+                cacheWidth: 300,
+                cacheHeight: 300))
+        : ClipOval(
+            child: Lottie.asset(
+                'packages/formstack/assets/lottiefiles/placeholder.json',
+                height: 150,
+                width: 150,
+                fit: BoxFit.fitHeight));
   }
 }

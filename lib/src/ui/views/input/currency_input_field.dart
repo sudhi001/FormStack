@@ -33,7 +33,7 @@ class CurrencyInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(minWidth: 200, maxWidth: 500),
+      constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
       child: TextFormField(
         controller: _controller,
         focusNode: _focusNode,

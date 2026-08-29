@@ -15,9 +15,8 @@ class DisplayStepView extends BaseStepView<DisplayStep> {
       case DisplayStepType.listTile:
         return ListTitlesView.buildView(context, formStep);
       case DisplayStepType.web:
-      default:
-        return WebViewBuild.buildView(context, formStep);
     }
+    return WebViewBuild.buildView(context, formStep);
   }
 
   @override
@@ -31,7 +30,7 @@ class DisplayStepView extends BaseStepView<DisplayStep> {
   }
 
   @override
-  resultValue() {
+  DateTime resultValue() {
     return DateTime.now();
   }
 

@@ -31,7 +31,8 @@ class ImageChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 500),
+      constraints:
+          const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 500),
       child: StatefulBuilder(builder: (context, setState) {
         return GridView.builder(
           shrinkWrap: true,

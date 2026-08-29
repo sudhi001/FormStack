@@ -17,10 +17,10 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(maxWidth: 500, maxHeight: 500),
+      constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
       child: ListView.separated(
-        shrinkWrap: true,
         cacheExtent: 300,
+        shrinkWrap: true,
         separatorBuilder: (_, __) => const Divider(height: 1),
         itemCount: results.entries.length,
         itemBuilder: (context, index) {
