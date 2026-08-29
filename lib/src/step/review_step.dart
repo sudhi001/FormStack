@@ -51,7 +51,7 @@ class ReviewStep extends FormStep {
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??
             CrossAxisAlignment.center,
-        style: UIStyle.from(element?["style"]),
+        style: UIStyle.maybeFrom(element?["style"]),
         cancellable: element?["cancellable"],
         relevantConditions: relevantConditions,
         backButtonText: element?["backButtonText"],

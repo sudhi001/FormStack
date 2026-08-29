@@ -1,3 +1,6 @@
+import 'package:formstack/formstack.dart'
+    show InputType, InstructionStep, DisplayStep;
+
 /// A selectable option used in choice-based inputs.
 ///
 /// Used with [InputType.singleChoice], [InputType.multipleChoice],
@@ -79,7 +82,7 @@ class DynamicData {
 
   /// Parses a list of JSON maps into [DynamicData] instances.
   static List<DynamicData> parseDynamicData(List<dynamic> element) {
-    List<DynamicData> data = [];
+    final List<DynamicData> data = [];
     for (var el in element) {
       data.add(DynamicData.from(el));
     }

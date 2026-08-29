@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in FormStack does not behave as documented
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A minimal reproduction is far more useful than a
+        description — it usually turns a week of guessing into an afternoon.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: The smallest form definition (Dart or JSON) that shows the problem.
+      render: dart
+    validations:
+      required: true
+  - type: input
+    id: formstack-version
+    attributes:
+      label: FormStack version
+      placeholder: "3.0.0"
+    validations:
+      required: true
+  - type: textarea
+    id: flutter-doctor
+    attributes:
+      label: Output of `flutter doctor -v`
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: Affected platforms
+      multiple: true
+      options: [Android, iOS, Web, macOS, Windows, Linux]
+    validations:
+      required: true

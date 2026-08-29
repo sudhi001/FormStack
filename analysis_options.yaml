@@ -1,4 +1,75 @@
+# Static analysis configuration for the FormStack package.
+#
+# Baseline is flutter_lints; the additions below target the failure modes that
+# matter for a published library: leaked disposables, silently-swallowed
+# futures, an undocumented public API, and accidental breaking changes to it.
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+analyzer:
+  language:
+    strict-raw-types: true
+  errors:
+    # A library must not leak controllers or notifiers; treat it as fatal.
+    close_sinks: error
+    cancel_subscriptions: error
+    # An unawaited future in a form submission path loses errors silently.
+    discarded_futures: warning
+    unawaited_futures: warning
+    # Undocumented public API is a warning, not a build breaker.
+    public_member_api_docs: info
+    # Kept on the wire for visibility but not fatal: migrating off cacheExtent
+    # and onReorder would raise the minimum Flutter to 3.41, which is far
+    # newer than this package's supported floor. Revisit when the floor moves.
+    deprecated_member_use: info
+    todo: ignore
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - example/**
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+
+linter:
+  rules:
+    # --- Correctness ---
+    always_declare_return_types: true
+    avoid_dynamic_calls: true
+    avoid_slow_async_io: true
+    avoid_type_to_string: true
+    cancel_subscriptions: true
+    close_sinks: true
+    comment_references: true
+    literal_only_boolean_expressions: true
+    no_adjacent_strings_in_list: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    unnecessary_statements: true
+    use_build_context_synchronously: true
+
+    # --- API hygiene for a published package ---
+    public_member_api_docs: true
+    package_api_docs: true
+    avoid_returning_null_for_void: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    unnecessary_lambdas: true
+    use_super_parameters: true
+
+    # --- Performance ---
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_unnecessary_containers: true
+    sized_box_for_whitespace: true
+
+    # --- Readability ---
+    directives_ordering: true
+    require_trailing_commas: false
+    sort_constructors_first: false
+    unnecessary_parenthesis: true

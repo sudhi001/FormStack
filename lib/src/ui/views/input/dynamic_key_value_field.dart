@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/input_border_style.dart';
 
 // ignore: must_be_immutable
 class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
@@ -34,7 +35,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
               )
             : null,
         constraints:
-            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 300),
+            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 300),
         child: StatefulBuilder(builder: (context, setState) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -53,7 +54,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
   }
 
   Widget _generateTextFields(
-      BuildContext context, bool primary, int ind, setState) {
+      BuildContext context, bool primary, int ind, StateSetter setState) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
       Expanded(
           child: _buildTextField(
@@ -85,7 +86,7 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
     _result.clear();
 
     if (formStep.result != null && formStep.result is List) {
-      List<dynamic> resultList = formStep.result as List;
+      final List<dynamic> resultList = formStep.result as List;
       _fieldCount = resultList.isNotEmpty ? resultList.length : 1;
 
       for (var item in resultList) {
@@ -174,24 +175,12 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
             FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z@.]"))
           ],
           decoration: InputDecoration(
-              enabledBorder: inputBorder(),
-              border: inputBorder(),
+              enabledBorder:
+                  formStep.inputStyle.toInputBorder(style: formStep.style),
+              border: formStep.inputStyle.toInputBorder(style: formStep.style),
               labelText: name,
               hintStyle: Theme.of(context).textTheme.bodySmall),
         ));
-  }
-
-  InputBorder inputBorder() {
-    switch (formStep.inputStyle) {
-      case InputStyle.basic:
-        return InputBorder.none;
-      case InputStyle.outline:
-        return const OutlineInputBorder();
-      case InputStyle.underLined:
-        return const UnderlineInputBorder();
-      default:
-        return InputBorder.none;
-    }
   }
 
   @override
@@ -213,8 +202,8 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
               i < _keyControllers.length &&
               i < _valueControllers.length;
           i++) {
-        String key = _keyControllers[i].text.trim();
-        String value = _valueControllers[i].text.trim();
+        final String key = _keyControllers[i].text.trim();
+        final String value = _valueControllers[i].text.trim();
         if (key.isNotEmpty) {
           _result.add(KeyValue(key, value));
         }

@@ -18,7 +18,7 @@ class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(maxWidth: 500, maxHeight: 600),
+      constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
       child: StatefulBuilder(builder: (context, setState) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -27,8 +27,8 @@ class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
             if (formStep.sections.isNotEmpty)
               Flexible(
                 child: ListView.builder(
-                  shrinkWrap: true,
                   cacheExtent: 300,
+                  shrinkWrap: true,
                   itemCount: formStep.sections.length,
                   itemBuilder: (context, index) {
                     return _buildSectionTile(context, formStep.sections[index]);

@@ -86,7 +86,7 @@ class RepeatStep extends FormStep {
           CrossAxisAlignment.center,
       cancellable: element?["cancellable"],
       footerBackButton: element?["footerBackButton"] ?? false,
-      style: UIStyle.from(element?["style"]),
+      style: UIStyle.maybeFrom(element?["style"]),
       relevantConditions: relevantConditions,
       backButtonText: element?["backButtonText"],
       cancelButtonText: element?["cancelButtonText"],

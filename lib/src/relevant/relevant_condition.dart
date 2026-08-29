@@ -1,3 +1,5 @@
+import 'package:formstack/formstack.dart'
+    show QuestionStep, ExpressionRelevant, DynamicConditionalRelevant;
 import 'package:formstack/src/result/identifiers.dart';
 
 /// Base class for conditional navigation between form steps.

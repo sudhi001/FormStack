@@ -15,9 +15,9 @@ class ListTitlesView {
             : null,
         constraints: const BoxConstraints(maxWidth: 300.0),
         child: ListView.separated(
+          cacheExtent: 300,
           padding: EdgeInsets.zero,
           shrinkWrap: true,
-          cacheExtent: 300,
           physics: const ClampingScrollPhysics(),
           separatorBuilder: (context, index) => Divider(
               color: formStep.componentsStyle == ComponentsStyle.minimal

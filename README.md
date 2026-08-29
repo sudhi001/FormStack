@@ -259,8 +259,15 @@ Scaffold(body: FormStack.api().render());
 | `htmlEditor` | Rich text editor | `String` |
 | `hidden` | Hidden data field (no UI, auto-advances) | `dynamic` |
 | `calculate` | Auto-computed from other results | `dynamic` |
-| `barcode` | Barcode/QR scanner with manual fallback | `String` |
-| `audio` | Audio recording with timer | `String` |
+| `barcode` | Barcode/QR scan, with manual entry fallback | `String` |
+| `audio` | Audio recording with timer | `String` (file path) |
+
+> **`barcode` and `audio` need a capability from your app.** FormStack declares
+> no camera or microphone dependency, so an application that never scans or
+> records does not inherit those SDKs. Both inputs work out of the box in
+> degraded form — `barcode` falls back to manual entry, `audio` records only a
+> duration — and become fully functional once you register a capability. See
+> [Device capabilities](#device-capabilities).
 
 ---
 
@@ -475,6 +482,242 @@ ResultFormat.compose([
 ```
 
 ---
+
+---
+
+## Extending FormStack
+
+FormStack resolves input widgets, step types and validators through registries.
+Anything you register is available to Dart-defined *and* JSON-defined forms,
+which means you can add capabilities — or replace built-in ones — without
+forking the library.
+
+### Custom input types
+
+Register a builder, then use it by name:
+
+```dart
+// Once, at start-up.
+InputRegistry.instance.register(
+  'creditCardScanner',
+  (ctx) => CreditCardScannerView(ctx.form, ctx.step, ctx.text, ctx.resultFormat,
+      title: ctx.title),
+  defaultValidator: () => ResultFormat.creditCard('Invalid card number'),
+);
+```
+
+From Dart:
+
+```dart
+QuestionStep(
+  id: GenericIdentifier(id: "card"),
+  inputType: InputType.custom,
+  customInputType: "creditCardScanner",
+  title: "Scan your card",
+)
+```
+
+From JSON — just name it:
+
+```json
+{ "type": "QuestionStep", "id": "card", "inputType": "creditCardScanner" }
+```
+
+A custom input extends `BaseStepView<QuestionStep>` and implements five members:
+
+```dart
+// ignore: must_be_immutable
+class CreditCardScannerView extends BaseStepView<QuestionStep> {
+  CreditCardScannerView(super.form, super.step, super.text, this.resultFormat,
+      {super.title});
+
+  final ResultFormat resultFormat;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget? buildWInputWidget(BuildContext context, QuestionStep formStep) =>
+      TextField(controller: _controller);
+
+  @override
+  bool isValid() => resultFormat.isValid(_controller.text);
+
+  @override
+  String validationError() => resultFormat.error();
+
+  @override
+  dynamic resultValue() => _controller.text;
+
+  @override
+  void clearFocus() {}
+
+  @override
+  void requestFocus() {}
+
+  // Required whenever your view allocates anything disposable.
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+### Replacing a built-in input
+
+Registering an existing name overrides it for every form:
+
+```dart
+// Every `signature` step now uses your pad instead of the built-in canvas.
+InputRegistry.instance.register('signature', (ctx) => CompliantSignaturePad(ctx));
+```
+
+This is also how you make `barcode` and `audio` real — see the note under
+[Media & Files](#media--files).
+
+### Device capabilities
+
+Two inputs need hardware FormStack does not depend on. Supply the capability
+once at start-up and the built-in widgets use it — you keep FormStack's layout,
+validation and result handling and replace only the capture step.
+
+```dart
+void main() {
+  DeviceCapabilities.instance
+    ..barcodeScanner = MobileScannerAdapter()
+    ..audioRecorder = RecordAdapter();
+  runApp(const MyApp());
+}
+```
+
+```dart
+class MobileScannerAdapter implements BarcodeScanner {
+  @override
+  Future<String?> scan(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const MyScannerPage()),
+      );
+}
+
+class RecordAdapter implements AudioRecorder {
+  final _recorder = AudioRecorder();       // from package:record
+  DateTime? _startedAt;
+
+  @override
+  Future<void> start() async {
+    _startedAt = DateTime.now();
+    await _recorder.start(const RecordConfig(), path: await _tempPath());
+  }
+
+  @override
+  Future<AudioRecording?> stop() async {
+    final path = await _recorder.stop();
+    if (path == null) return null;
+    return AudioRecording(
+      path: path,
+      duration: DateTime.now().difference(_startedAt!),
+    );
+  }
+}
+```
+
+Returning null from `scan` or `stop` means the user cancelled and leaves any
+existing answer untouched. Throwing is reported through `FlutterError` rather
+than crashing the form.
+
+With a scanner registered, `InputType.barcode` stores the scanned string; with
+a recorder, `InputType.audio` stores the recording's file path. Without them
+the inputs still render and the form still completes.
+
+To replace an input entirely rather than just its capture step, register a
+widget with [`InputRegistry`](#custom-input-types).
+
+### Custom step types
+
+```dart
+StepRegistry.instance.register(
+  'PaymentStep',
+  (json, conditions) => PaymentStep.from(json, conditions),
+);
+```
+
+`{"type": "PaymentStep", ...}` is then parseable by every JSON loader.
+
+### Custom validators
+
+```dart
+ResultFormat.register(
+  'nhsNumber',
+  (message, args) => NhsNumberFormat(message),
+);
+```
+
+```json
+{"type": "nhsNumber", "message": "Not a valid NHS number"}
+```
+
+---
+
+## Validation in JSON
+
+JSON-defined steps can use the full validator library, not just the default
+implied by `inputType`. Declare `validators` as a single object or a list — a
+list is evaluated in order and reports the first failure:
+
+```json
+{
+  "type": "QuestionStep",
+  "id": "age",
+  "title": "Your age",
+  "inputType": "number",
+  "validators": [
+    {"type": "notBlank", "message": "Age is required"},
+    {"type": "range", "message": "Must be between 18 and 120", "min": 18, "max": 120}
+  ]
+}
+```
+
+Every `ResultFormat` factory has a JSON name. Arguments map to the factory's
+parameters: `min`, `max`, `count`, `maxBytes`, `regex`, `expression`, `format`,
+`minDate`, `maxDate`.
+
+### Structured validation results
+
+`validate()` returns a stable code and the constraint parameters alongside the
+message, so failures can be localized or reported without matching on strings:
+
+```dart
+final outcome = ResultFormat.range("Must be 18-120", 18, 120).validate(5);
+
+outcome.isValid;  // false
+outcome.code;     // 'range'
+outcome.params;   // {'min': 18, 'max': 120}
+outcome.message;  // 'Must be 18-120'
+```
+
+Localize by mapping the code through your own catalogue:
+
+```dart
+String localize(ValidationResult r, FormStackLocale l10n) => r.isValid
+    ? ''
+    : l10n.tf('validation.${r.code}', [...r.params.values.map((v) => '$v')]);
+```
+
+`isValid()` and `error()` continue to work unchanged.
+
+---
+
+## Performance notes
+
+- **Step views are cached and bounded.** `FormStackForm.maxCachedViews`
+  (default 12) caps how many step views are retained, so a long survey does not
+  hold every controller alive. The current step is never evicted. Raise it to
+  trade memory for back-navigation fidelity, or set `0` to disable caching.
+- **Views are disposed with the form.** Removing `FormStack.api().render()`
+  from the tree releases every cached view. If you build custom inputs,
+  override `dispose()` and call `super.dispose()`.
+- **Step lookup is indexed.** `getStep`, `getCurrentIndex` and `progress` are
+  constant-time rather than walking the step list.
+- **Use `form.progress`** rather than calling `getCurrentIndex()` and
+  `getTotalSteps()` separately — it computes both in one pass.
 
 ## Styling
 
@@ -773,7 +1016,11 @@ All step types and properties are supported in JSON. Wrap forms in a named objec
         "inputStyle": "outline",
         "isOptional": false,
         "hint": "John Doe",
-        "helperText": "Enter your legal name"
+        "helperText": "Enter your legal name",
+        "validators": [
+          {"type": "notBlank", "message": "Name is required"},
+          {"type": "minLength", "message": "Too short", "min": 2}
+        ]
       },
       {
         "type": "QuestionStep",
@@ -901,9 +1148,11 @@ flutter run
 
 ---
 
-## Extensibility
+## Extending by Subclassing
 
-FormStack is designed for extension at every layer, following Apple ResearchKit's architecture.
+The [registries](#extending-formstack) are the way to make an extension
+available to JSON forms and to override built-ins. When you only need a
+one-off used from Dart, you can also pass a subclass directly.
 
 ### Custom Validators
 
@@ -936,10 +1185,12 @@ QuestionStep(
 Extend `BaseStepView` to create custom inputs:
 
 ```dart
+// ignore: must_be_immutable
 class ColorPickerWidget extends BaseStepView<QuestionStep> {
   ColorPickerWidget(super.formStackForm, super.formStep, super.text);
 
   Color _selected = Colors.red;
+  final ValueNotifier<Color> _notifier = ValueNotifier(Colors.red);
 
   @override
   Widget? buildWInputWidget(BuildContext context, QuestionStep formStep) {
@@ -958,6 +1209,14 @@ class ColorPickerWidget extends BaseStepView<QuestionStep> {
   void requestFocus() {}
   @override
   void clearFocus() {}
+
+  // Step views are StatelessWidgets, so the framework never disposes them --
+  // the form does. Release anything disposable here and call super.
+  @override
+  void dispose() {
+    _notifier.dispose();
+    super.dispose();
+  }
 }
 ```
 
@@ -1037,9 +1296,17 @@ lib/
     input_types.dart           # InputType enum (35 values)
     core/
       form_step.dart           # Base FormStep class, enums
-      parser.dart              # JSON parser
+      parser.dart              # JSON parser (registry-driven)
       ui_style.dart            # UIStyle, HexColor
       form_locale.dart         # FormStackLocale (multi-language)
+      form_persistence.dart    # FormPersistence port, in-memory impl
+      external_data.dart       # ExternalDataProvider port
+      registry/
+        input_registry.dart    # Pluggable input widgets
+        step_registry.dart     # Pluggable step types
+        validator_registry.dart # Named validators, JSON validator support
+      validation/
+        validation_result.dart # Structured validation outcome
     step/
       question_step.dart       # QuestionStep (all input types)
       completion_step.dart     # CompletionStep (finish with animation)
@@ -1085,6 +1352,9 @@ lib/
       geotrace_input_field.dart # Geotrace/geoshape map input
       html_input_field.dart    # Rich text editor
 ```
+
+For the layering rationale, the view-ownership rule, and the list of known
+architectural debt, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## License
 

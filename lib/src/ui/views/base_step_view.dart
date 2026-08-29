@@ -16,10 +16,19 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   /// Notifier for error visibility state
   final ValueNotifier<bool> _showErrorNotifier = ValueNotifier<bool>(false);
 
+  /// Notifier for the busy/submitting state of the primary button.
+  final ValueNotifier<bool> _processingNotifier = ValueNotifier<bool>(false);
+
   /// state of error
   bool get showError => _showErrorNotifier.value;
   set showError(bool value) => _showErrorNotifier.value = value;
   bool _hasCheckedError = false;
+  bool _isDisposed = false;
+
+  /// Whether this view has already been disposed.
+  ///
+  /// Guards against the framework and the form both releasing the view.
+  bool get isDisposed => _isDisposed;
 
   /// Build the Widget / Component to render on the basis of FormStep object.
   @override
@@ -58,7 +67,11 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   dynamic resultValue();
 
   /// State of the step is processing or not.
-  bool isProcessing = false;
+  ///
+  /// Backed by a [ValueNotifier] so the footer rebuilds when it changes; a
+  /// plain field could not repaint the button from a `StatelessWidget`.
+  bool get isProcessing => _processingNotifier.value;
+  set isProcessing(bool value) => _processingNotifier.value = value;
 
   /// Build the widget view.
   Widget? buildWInputWidget(BuildContext context, T formStep);
@@ -78,8 +91,12 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   }
 
   @override
+  @mustCallSuper
   void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
     _showErrorNotifier.dispose();
+    _processingNotifier.dispose();
   }
 
   /// Function triggered when the user cancels the step.
@@ -106,8 +123,9 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   /// Set Loading state
   void setLoading(bool isLoading) {
+    if (_isDisposed) return;
     isProcessing = isLoading;
-    onLoading(isProcessing);
+    onLoading(isLoading);
   }
 
   /// onBeforeFinish - To handle the finish action custom functionality
@@ -131,6 +149,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   }
 
   void _checkAndShowDefaultValidationError() {
+    if (_isDisposed) return;
     if (formStep.error != null && !showError) {
       _showErrorNotifier.value = true;
       formStackForm.validationError(formStep.error!);
@@ -140,6 +159,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   /// Show validation error
   void showValidationError() {
+    if (_isDisposed) return;
     if (!showError) {
       _showErrorNotifier.value = true;
     }
@@ -148,6 +168,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
 
   /// Hide validation error
   void hideValidationError() {
+    if (_isDisposed) return;
     if (showError) {
       _showErrorNotifier.value = false;
     }
@@ -174,7 +195,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                     if (formStep.showProgressBar &&
                         !formStep.componentOnly) ...[
                       _buildProgressBar(context),
-                      _divisionPadding(),
+                      _divisionPadding(context: context),
                     ],
                     if (formStep.titleIconAnimationFile != null) ...[
                       Container(
@@ -185,7 +206,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                             maxHeight: formStep.titleIconMaxWidth ?? 300),
                         child: Lottie.asset(formStep.titleIconAnimationFile!),
                       ),
-                      _divisionPadding()
+                      _divisionPadding(context: context)
                     ],
                     if (formStep.titleIconImagePath != null) ...[
                       Container(
@@ -200,7 +221,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                             : Image.asset(formStep.titleIconImagePath!,
                                 fit: BoxFit.contain),
                       ),
-                      _divisionPadding()
+                      _divisionPadding(context: context)
                     ],
                     if (title != null && title!.isNotEmpty) ...[
                       Semantics(
@@ -213,14 +234,14 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                             child:
                                 Text(title ?? "", style: _titleStyle(context))),
                       ),
-                      _divisionPadding()
+                      _divisionPadding(context: context)
                     ],
                     if (text != null && text!.isNotEmpty) ...[
                       Container(
                           constraints: BoxConstraints(maxWidth: maxWidth),
                           child:
                               Text(text ?? "", style: _subtitleStyle(context))),
-                      _divisionPadding(),
+                      _divisionPadding(context: context),
                     ],
                     if (formStep.helperText?.isNotEmpty ?? false) ...[
                       Container(
@@ -234,7 +255,7 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                                         .colorScheme
                                         .onSurfaceVariant)),
                       ),
-                      _divisionPadding(),
+                      _divisionPadding(context: context),
                     ],
                     if (inputWidget != null) ...[
                       Semantics(
@@ -360,8 +381,8 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     final btnHeight = FormStackTheme.responsiveButtonHeight(context);
     final padding = FormStackTheme.responsivePadding(context);
     final maxWidth = FormStackTheme.responsiveMaxWidth(context);
-    final borderRadius =
-        BorderRadius.circular(formStep.style?.borderRadius ?? 8);
+    final borderRadius = BorderRadius.circular(
+        formStep.style?.borderRadius ?? FormStackTheme.radius(context));
 
     return SafeArea(
       child: Padding(
@@ -410,41 +431,44 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                   child: Semantics(
                     button: true,
                     label: formStep.nextButtonText ?? "Next",
-                    child: ElevatedButton(
-                      onPressed: isProcessing ? null : onNextButtonClick,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: formStep.style?.backgroundColor ??
-                            Theme.of(context).colorScheme.primary,
-                        foregroundColor: formStep.style?.foregroundColor ??
-                            Theme.of(context).colorScheme.onPrimary,
-                        disabledBackgroundColor: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.5),
-                        shape:
-                            RoundedRectangleBorder(borderRadius: borderRadius),
-                        minimumSize: Size(0, btnHeight),
-                        maximumSize: Size(double.infinity, btnHeight + 10),
-                      ),
-                      child: isProcessing
-                          ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: formStep.style?.foregroundColor ??
-                                    Theme.of(context).colorScheme.onPrimary,
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: _processingNotifier,
+                      builder: (context, isProcessing, _) => ElevatedButton(
+                        onPressed: isProcessing ? null : onNextButtonClick,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: formStep.style?.backgroundColor ??
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor: formStep.style?.foregroundColor ??
+                              Theme.of(context).colorScheme.onPrimary,
+                          disabledBackgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.5),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: borderRadius),
+                          minimumSize: Size(0, btnHeight),
+                          maximumSize: Size(double.infinity, btnHeight + 10),
+                        ),
+                        child: isProcessing
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: formStep.style?.foregroundColor ??
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(formStep.nextButtonText ?? "Next"),
+                                  const SizedBox(width: 6),
+                                  const Icon(Icons.arrow_forward, size: 18),
+                                ],
                               ),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(formStep.nextButtonText ?? "Next"),
-                                const SizedBox(width: 6),
-                                const Icon(Icons.arrow_forward, size: 18),
-                              ],
-                            ),
+                      ),
                     ),
                   ),
                 ),
@@ -456,36 +480,39 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
     );
   }
 
-  Widget _divisionPadding() {
-    return SizedBox(height: formStep.display == Display.small ? 4 : 8);
+  Widget _divisionPadding({BuildContext? context}) {
+    final spacing = context == null ? 8.0 : FormStackTheme.spacing(context);
+    return SizedBox(
+        height: formStep.display == Display.small ? spacing / 2 : spacing);
   }
 
   Widget _buildProgressBar(BuildContext context) {
-    final progress = formStackForm.getProgress();
-    final currentIndex = formStackForm.getCurrentIndex();
-    final totalSteps = formStackForm.getTotalSteps();
-    if (totalSteps <= 1) return const SizedBox.shrink();
+    // One snapshot, one index pass — the previous code indexed the step list
+    // twice on every build.
+    final progress = formStackForm.progress;
+    if (!progress.isMeaningful) return const SizedBox.shrink();
+    final captionStyle = Theme.of(context)
+        .textTheme
+        .bodySmall
+        ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
     return Semantics(
-      label:
-          "Step ${currentIndex + 1} of $totalSteps, ${(progress * 100).toInt()} percent complete",
+      label: "Step ${progress.step} of ${progress.total}, "
+          "${progress.percent} percent complete",
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Step ${currentIndex + 1} of $totalSteps',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant)),
-              Text('${(progress * 100).toInt()}%',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant)),
+              Text('Step ${progress.step} of ${progress.total}',
+                  style: captionStyle),
+              Text('${progress.percent}%', style: captionStyle),
             ],
           ),
           const SizedBox(height: 4),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: progress,
+              value: progress.fraction,
               minHeight: 4,
               backgroundColor:
                   Theme.of(context).colorScheme.surfaceContainerHighest,

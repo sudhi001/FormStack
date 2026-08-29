@@ -3,12 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
 
 /// Barcode/QR code input field.
-/// Shows a text field with a scan button. On platforms with camera access,
-/// the scan button opens a scanner. The scanned value populates the field.
 ///
-/// Note: Actual camera scanning requires the `mobile_scanner` package
-/// to be added by the consuming app. This widget provides the UI scaffold
-/// and falls back to manual text entry.
+/// Uses [DeviceCapabilities.barcodeScanner] when the application has supplied
+/// one, and falls back to a manual-entry dialog when it has not. FormStack
+/// declares no camera dependency of its own, so an application that never
+/// scans anything does not inherit a scanning SDK.
 // ignore: must_be_immutable
 class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
@@ -31,7 +30,7 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(minWidth: 200, maxWidth: 500),
+      constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
       child: StatefulBuilder(builder: (context, setState) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -40,11 +39,8 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: formStep.disabled
-                    ? null
-                    : () {
-                        _showScanDialog(context, setState);
-                      },
+                onPressed:
+                    formStep.disabled ? null : () => _scan(context, setState),
                 icon: const Icon(Icons.qr_code_scanner, size: 28),
                 label: Text(
                     _controller.text.isEmpty ? "Tap to Scan" : "Scan Again"),
@@ -108,6 +104,31 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
         );
       }),
     );
+  }
+
+  /// Scans with the registered [BarcodeScanner], or prompts for manual entry.
+  Future<void> _scan(BuildContext context, StateSetter setState) async {
+    final scanner = DeviceCapabilities.instance.barcodeScanner;
+    if (scanner == null) {
+      _showScanDialog(context, setState);
+      return;
+    }
+    try {
+      final scanned = await scanner.scan(context);
+      // A cancelled scan keeps whatever the user had already entered.
+      if (scanned == null) return;
+      _controller.text = scanned;
+      formStep.result = scanned;
+      setState(() {});
+    } catch (e, stack) {
+      FlutterError.reportError(FlutterErrorDetails(
+        exception: e,
+        stack: stack,
+        library: 'formstack',
+        context:
+            ErrorDescription('scanning a barcode for step ${formStep.id?.id}'),
+      ));
+    }
   }
 
   void _showScanDialog(BuildContext context, StateSetter setState) {

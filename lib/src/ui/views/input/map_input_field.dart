@@ -31,19 +31,6 @@ class MapWidgetView extends BaseStepView<QuestionStep> {
             (p0) => {formStep.result = p0}));
   }
 
-  InputBorder inputBorder() {
-    switch (formStep.inputStyle) {
-      case InputStyle.basic:
-        return InputBorder.none;
-      case InputStyle.outline:
-        return const OutlineInputBorder();
-      case InputStyle.underLined:
-        return const UnderlineInputBorder();
-      default:
-        return InputBorder.none;
-    }
-  }
-
   @override
   bool isValid() {
     return resultFormat.isValid(formStep.result);

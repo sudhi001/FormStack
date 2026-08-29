@@ -42,6 +42,9 @@ class _FormStackViewState extends State<FormStackView> {
   void dispose() {
     _isDisposed = true;
     _backgroundWidget = null;
+    // Release every cached step view: without this each step's
+    // TextEditingController, FocusNode and ValueNotifier outlives the form.
+    _formStackForm.disposeViews();
     super.dispose();
   }
 

@@ -36,7 +36,8 @@ class DisplayStep extends FormStep {
   factory DisplayStep.from(Map<String, dynamic>? element,
       List<RelevantCondition> relevantConditions) {
     return DisplayStep(
-        data: DynamicData.parseDynamicData(cast<List>(element?["data"]) ?? []),
+        data: DynamicData.parseDynamicData(
+            cast<List<dynamic>>(element?["data"]) ?? const []),
         componentsStyle: element?["componentsStyle"] != null
             ? ComponentsStyle.values
                 .firstWhere((e) => e.name == element?["componentsStyle"])
@@ -45,7 +46,7 @@ class DisplayStep extends FormStep {
             ? DisplayStepType.values
                 .firstWhere((e) => e.name == element?["displayStepType"])
             : DisplayStepType.web,
-        style: UIStyle.from(element?["style"]),
+        style: UIStyle.maybeFrom(element?["style"]),
         cancellable: element?["cancellable"],
         crossAxisAlignmentContent: crossAlignmentFromString(
                 element?["crossAxisAlignmentContent"] ?? "center") ??

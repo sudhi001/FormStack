@@ -26,7 +26,7 @@ class CalculateInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(minWidth: 200, maxWidth: 500),
+      constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest,

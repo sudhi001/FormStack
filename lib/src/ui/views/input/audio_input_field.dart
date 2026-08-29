@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:formstack/formstack.dart';
 
 /// Audio recording input field.
-/// Provides record/stop/playback controls and stores the recording status.
 ///
-/// Note: Actual audio recording requires platform-specific packages
-/// (e.g., `record` or `audio_recorder`). This widget provides the UI scaffold.
-/// The result is a timestamp string indicating recording was completed.
+/// Uses [DeviceCapabilities.audioRecorder] when the application has supplied
+/// one, in which case the result is the recorded file's path. Without a
+/// recorder the widget still runs its timer and stores a duration marker, so
+/// the form remains usable, but no audio is captured. FormStack declares no
+/// microphone dependency of its own.
 // ignore: must_be_immutable
 class AudioInputWidgetView extends BaseStepView<QuestionStep> {
   final ResultFormat resultFormat;
@@ -30,7 +31,7 @@ class AudioInputWidgetView extends BaseStepView<QuestionStep> {
     }
 
     return Container(
-      constraints: BoxConstraints(minWidth: 200, maxWidth: 500),
+      constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
       child: StatefulBuilder(builder: (context, setState) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -145,7 +146,14 @@ class AudioInputWidgetView extends BaseStepView<QuestionStep> {
     );
   }
 
-  void _startRecording(StateSetter setState) {
+  Future<void> _startRecording(StateSetter setState) async {
+    final recorder = DeviceCapabilities.instance.audioRecorder;
+    try {
+      await recorder?.start();
+    } catch (e, stack) {
+      _report(e, stack, 'starting an audio recording');
+      return;
+    }
     _isRecording = true;
     _recordingDurationSeconds = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -155,14 +163,37 @@ class AudioInputWidgetView extends BaseStepView<QuestionStep> {
     });
   }
 
-  void _stopRecording(StateSetter setState) {
+  Future<void> _stopRecording(StateSetter setState) async {
     _isRecording = false;
-    _hasRecording = true;
     _timer?.cancel();
     _timer = null;
-    // Store recording timestamp as result
-    formStep.result =
-        "audio_${DateTime.now().toUtc().toIso8601String()}_${_recordingDurationSeconds}s";
+
+    final recorder = DeviceCapabilities.instance.audioRecorder;
+    if (recorder == null) {
+      // No recorder registered: nothing was captured, so record only that the
+      // step was completed and how long it ran. See [DeviceCapabilities].
+      _hasRecording = true;
+      formStep.result =
+          "audio_${DateTime.now().toUtc().toIso8601String()}_${_recordingDurationSeconds}s";
+      return;
+    }
+    try {
+      final recording = await recorder.stop();
+      _hasRecording = recording != null;
+      formStep.result = recording?.path;
+      setState(() {});
+    } catch (e, stack) {
+      _report(e, stack, 'stopping an audio recording');
+    }
+  }
+
+  void _report(Object error, StackTrace stack, String what) {
+    FlutterError.reportError(FlutterErrorDetails(
+      exception: error,
+      stack: stack,
+      library: 'formstack',
+      context: ErrorDescription('$what for step ${formStep.id?.id}'),
+    ));
   }
 
   String _formatDuration(int seconds) {

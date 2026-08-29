@@ -1,10 +1,11 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:formstack/formstack.dart'
+    show QuestionStep, InstructionStep, CompletionStep, NestedStep, DisplayStep;
 import 'package:formstack/src/core/ui_style.dart';
+import 'package:formstack/src/formstack_form.dart';
 import 'package:formstack/src/relevant/relevant_condition.dart';
 import 'package:formstack/src/result/identifiers.dart';
 import 'package:formstack/src/result/result_format.dart';
-import 'package:formstack/src/formstack_form.dart';
 import 'package:formstack/src/ui/views/step_view.dart';
 
 /// Base class for all form steps.
@@ -12,7 +13,14 @@ import 'package:formstack/src/ui/views/step_view.dart';
 /// Subclasses include [QuestionStep], [InstructionStep], [CompletionStep],
 /// [NestedStep], [DisplayStep], and `PopStep`. Each step holds its
 /// configuration, result value, validation, and navigation properties.
-abstract class FormStep<T> extends LinkedListEntry<FormStep> {
+///
+/// A step describes *what to ask*; it deliberately knows nothing about its
+/// position in a form. Ordering lives in [FormStackForm.steps], which means a
+/// step definition can be shared between forms and reordered without being
+/// unlinked first.
+/// The type parameter was removed in 3.0: it was declared but never used, and
+/// its only effect was to make every reference to `FormStep` a raw type.
+abstract class FormStep {
   /// Whether this step can be skipped without validation.
   bool? isOptional;
 

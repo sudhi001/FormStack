@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest a capability FormStack does not have
+labels: [enhancement, triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to build that FormStack makes hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Can a registry solve it today?
+      description: |
+        `InputRegistry`, `StepRegistry` and `ValidatorRegistry` let you add
+        input types, step types and validators without changing the library.
+        If you have tried one, say what was missing — that is usually the real
+        feature request.

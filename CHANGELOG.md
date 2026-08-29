@@ -5,6 +5,148 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.0.0
+
+A correctness, extensibility and packaging release. The breaking changes are
+confined to the step model; forms defined through `FormStack.api().form(...)`
+or JSON are unaffected.
+
+### Fixed
+
+- **Step views were never disposed.** Every step view is a `StatelessWidget`
+  holding a `TextEditingController`, `FocusNode` and `ValueNotifier`, and
+  nothing in the framework releases those. `FormStackView` now disposes the
+  form's cached views when it is removed from the tree, and `FormStackForm`
+  disposes views it evicts. A form run no longer leaks one controller set per
+  step. Covered by a regression test.
+- **The view cache was unbounded.** `FormStackForm.maxCachedViews` (default 12)
+  now caps retained step views; the current step is never evicted. A
+  hundred-step survey previously held every view for the lifetime of the form.
+- **The "submitting" spinner never appeared.** `isProcessing` was a plain field
+  on a `StatelessWidget`, so changing it could not repaint. It is now backed by
+  a `ValueNotifier` and the primary button listens to it, which also means the
+  button is genuinely disabled during an async `onBeforeFinish`.
+- **JSON parse errors were swallowed.** `ParserUtils.buildFormFromJson` was an
+  `async void` method, so its `FormatException`s escaped to the zone instead of
+  reaching the caller — `loadFromAsset` reported success on a malformed file.
+  It is synchronous again and errors propagate.
+- **`ResultFormat.notEmpty` rejected every string.** It only recognised `List`,
+  so `notEmpty` on a text field could never pass. It now accepts `String`,
+  `Iterable` and `Map`. This is a widening: nothing that passed before fails.
+- **`ResultFormat.notBlank` accepted whitespace.** `"   "` passed a `notBlank`
+  check because the value was never trimmed. It now trims, matching the
+  conventional meaning of "blank".
+- **The form-level JSON `theme` never applied.** Every step parsed from JSON
+  received a fully-defaulted `UIStyle`, so `step.style ??= formTheme` never
+  fired and the documented `"theme"` key was silently ignored. Step factories
+  now use `UIStyle.maybeFrom`, which returns null for an absent style.
+- **Malformed form definitions failed obscurely.** A relevant condition without
+  an `id` or `expression`, an option that is not an object, or a
+  `relevantConditions` value that is not a list produced a `NoSuchMethodError`
+  on a dynamic call or a condition that could never match. Each is now a
+  `FormatException` naming what is wrong.
+- Numeric values in a JSON `theme` written as strings (`"borderRadius": "12"`)
+  are coerced rather than discarded.
+- Two `Future`s returned from inside `try` blocks were not awaited, so their
+  errors bypassed the surrounding `catch`.
+- A failed or cancelled image pick no longer clears an answer the user had
+  already given, and reports through `FlutterError` rather than `print`.
+- **The signature pad overflowed its container by 6 pixels on every build.**
+  Its wrapper capped height at 200px while the canvas, spacing and Clear button
+  needed ~206px. Found by the new input smoke tests.
+
+### Added
+
+- **`InputRegistry`** — register application-defined input types, or override a
+  built-in one, without forking the library. Reachable from Dart via
+  `InputType.custom` + `QuestionStep.customInputType`, and from JSON by naming
+  the registered type directly in `inputType`.
+- **`StepRegistry`** — the JSON parser resolves step types through a registry
+  instead of a hard-coded `if`/`else` chain, so a new step type is a
+  registration rather than a change to the parser.
+- **`ValidatorRegistry` and validators in JSON** — a JSON-defined step can now
+  declare `"validators"`, unlocking the full validator library to JSON forms.
+  Previously a JSON form could only get the default validator implied by its
+  `inputType`; anything more required dropping down to Dart. Applications can
+  register their own named validators.
+- **`ValidationResult` and `ResultFormat.validate()`** — validation returns a
+  stable `code` plus constraint `params` alongside the message, so failures can
+  be localized or reported without string-matching. `isValid`/`error` still
+  work; the new method is expressed in terms of them.
+- **`FormProgress`** — position, total and percentage as one value object,
+  computed in a single pass.
+- **`DeviceCapabilities`** — `BarcodeScanner` and `AudioRecorder` ports that
+  make `InputType.barcode` and `InputType.audio` genuinely functional. Both
+  previously rendered a UI scaffold with nothing behind it, because the library
+  declares no camera or microphone dependency. Register an adapter backed by
+  the package of your choice and the built-in widgets use it, keeping
+  FormStack's layout, validation and result handling. Without one, `barcode`
+  falls back to manual entry and `audio` records a duration marker, so an app
+  that collects only text and choices still inherits no hardware SDK.
+- **`FormStackThemeScope`** — `FormStackTheme`'s instance fields were inert:
+  every call site used the static helpers with hard-coded defaults, so
+  constructing one had no effect. `maxContentWidth`, `contentPadding`,
+  `borderRadius` and `elementSpacing` now apply to the subtree, with
+  `FormStackTheme.of(context)`, `copyWith` and value equality.
+- `FormStackForm.stepAfter` / `stepBefore` for explicit ordered navigation.
+- A test suite — 133 tests, 51% line coverage, from none — covering validators,
+  navigation and branching, JSON parsing and its failure modes, the registries,
+  persistence, the view-disposal chain, and a smoke test that builds every
+  built-in input type, the theme scope, the device-capability ports, plus a
+  guard that the example app's own JSON assets still parse.
+- A CI pipeline covering formatting, analysis with warnings fatal, tests on
+  Linux, macOS and Windows, the suite again on the oldest supported Flutter, an
+  example build, and pub.dev publish readiness with a `pana` score threshold.
+- `ARCHITECTURE.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue and pull
+  request templates, and Dependabot configuration.
+
+### Changed
+
+- **`FormStep` no longer extends `LinkedListEntry`.** A step described *what to
+  ask* but was also a node in a list, which meant a step definition could
+  belong to only one form — sharing one threw at runtime. Ordering now lives in
+  the form. This also unblocked the Dart 3 migration: `LinkedListEntry` is
+  `base`, which would otherwise have forced `base` onto every step subclass
+  including application-defined ones.
+- **`FormStackForm.steps` is `List<FormStep>`** rather than
+  `LinkedList<FormStep>`.
+- **`FormStep` no longer takes a type parameter.** `T` was declared and never
+  used; its only effect was to make every reference to `FormStep` a raw type.
+  With it gone, `strict-raw-types` is enabled and the package is free of raw
+  types.
+- JSON decoding in the parser, the step factories and the Google Places models
+  is typed rather than reaching through `dynamic`, so malformed input produces
+  a `FormatException` instead of a `NoSuchMethodError`.
+- `getStep` and `getCurrentIndex` are backed by an index instead of walking the
+  step list. The progress bar previously indexed the list twice per build.
+- Validator regular expressions are compiled once rather than on every
+  keystroke.
+- `ResultFormat.compose` no longer keeps mutable state across calls.
+- The duplicated `inputBorder()` implementation, previously copied into five
+  input widgets, is a single `InputStyle.toInputBorder` extension.
+- **SDK floor corrected to Dart 3.6 / Flutter 3.27.** The package declared
+  `flutter: ">=1.17.0"` while using `Color.withValues` (3.27) and
+  `PopScope.onPopInvokedWithResult` (3.24), so the declared floor could never
+  have compiled.
+- Dropped the unused `http` dependency.
+- Upgraded `file_picker` (10 → 12) and `location` (8 → 10), which were two and
+  three major versions behind and caused resolution conflicts for applications
+  using either package directly. The `file_picker` 12 API made the
+  web-versus-native branch in the image input unnecessary, so image picking no
+  longer reaches for `dart:io`.
+- `UIStyle.maybeFrom` added; `UIStyle.from` is unchanged.
+
+### Migration
+
+- `step.next` / `step.previous` → `form.stepAfter(step)` /
+  `form.stepBefore(step)`.
+- `class MyStep extends FormStep<MyStep>` → `class MyStep extends FormStep`.
+- Code that typed a variable as `LinkedList<FormStep>` should use
+  `List<FormStep>`.
+- Subclasses of `FormStep` need no changes.
+- Review any use of `notBlank`, which now rejects whitespace-only input, and of
+  `notEmpty` on text fields, which now works.
+
 ## [2.5.0] - 2026-04-02
 
 ### Added

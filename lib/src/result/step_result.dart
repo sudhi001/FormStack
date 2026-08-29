@@ -73,7 +73,7 @@ class StepResult {
     if (v is List<Options>) return v.map((o) => o.toJson()).toList();
     if (v is List<KeyValue>) return v.map((kv) => kv.toJson()).toList();
     if (v is Map) return v;
-    if (v is List) return v.map((e) => _serializeValue(e)).toList();
+    if (v is List) return v.map(_serializeValue).toList();
     return v;
   }
 }

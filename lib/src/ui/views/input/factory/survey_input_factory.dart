@@ -3,17 +3,17 @@ import 'package:formstack/src/ui/views/input/audio_input_field.dart';
 import 'package:formstack/src/ui/views/input/barcode_input_field.dart';
 import 'package:formstack/src/ui/views/input/boolean_input_field.dart';
 import 'package:formstack/src/ui/views/input/calculate_input_field.dart';
+import 'package:formstack/src/ui/views/input/consent_input_field.dart';
+import 'package:formstack/src/ui/views/input/currency_input_field.dart';
+import 'package:formstack/src/ui/views/input/geotrace_input_field.dart';
 import 'package:formstack/src/ui/views/input/hidden_input_field.dart';
 import 'package:formstack/src/ui/views/input/image_choice_input_field.dart';
-import 'package:formstack/src/ui/views/input/geotrace_input_field.dart';
-import 'package:formstack/src/ui/views/input/slider_input_field.dart';
-import 'package:formstack/src/ui/views/input/rating_input_field.dart';
 import 'package:formstack/src/ui/views/input/nps_input_field.dart';
-import 'package:formstack/src/ui/views/input/consent_input_field.dart';
-import 'package:formstack/src/ui/views/input/signature_input_field.dart';
-import 'package:formstack/src/ui/views/input/ranking_input_field.dart';
 import 'package:formstack/src/ui/views/input/phone_input_field.dart';
-import 'package:formstack/src/ui/views/input/currency_input_field.dart';
+import 'package:formstack/src/ui/views/input/ranking_input_field.dart';
+import 'package:formstack/src/ui/views/input/rating_input_field.dart';
+import 'package:formstack/src/ui/views/input/signature_input_field.dart';
+import 'package:formstack/src/ui/views/input/slider_input_field.dart';
 
 /// Factory for survey and industry-standard input widgets
 class SurveyInputWidget {

@@ -84,7 +84,7 @@ class WebMapState extends State<WebMap> {
   }
 
   void _goToTheLake() async {
-    var location = lo.Location();
+    final location = lo.Location();
     var serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
@@ -99,11 +99,11 @@ class WebMapState extends State<WebMap> {
         return null;
       }
     }
-    var locationData = await location.getLocation();
+    final locationData = await location.getLocation();
     if (locationData.latitude != 0) {
       setState(() {
-        currentLat =
-            LatLng(locationData.latitude ?? 0.0, locationData.longitude ?? 0.0);
+        // location 10 made these non-nullable.
+        currentLat = LatLng(locationData.latitude, locationData.longitude);
         widget.onChange.call(getUserLocation());
       });
     }

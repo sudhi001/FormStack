@@ -1,3 +1,9 @@
+import 'package:formstack/src/core/form_step.dart' show FormStep;
+import 'package:formstack/src/core/registry/input_registry.dart'
+    show InputRegistry;
+import 'package:formstack/src/result/common_result.dart' show Options;
+import 'package:formstack/src/step/question_step.dart' show QuestionStep;
+
 /// All supported input types for [QuestionStep].
 ///
 /// Each value maps to a specific input widget with appropriate
@@ -109,4 +115,19 @@ enum InputType {
 
   /// Draw a polygon/shape on a map. Returns list of lat/lng coordinates forming a closed area.
   geoshape,
+
+  /// An application-supplied input, resolved through [InputRegistry].
+  ///
+  /// Pair with [QuestionStep.customInputType] naming the registered builder:
+  ///
+  /// ```dart
+  /// InputRegistry.instance.register('creditCardScanner', (ctx) => ...);
+  ///
+  /// QuestionStep(
+  ///   inputType: InputType.custom,
+  ///   customInputType: 'creditCardScanner',
+  ///   id: GenericIdentifier(id: 'card'),
+  /// );
+  /// ```
+  custom,
 }

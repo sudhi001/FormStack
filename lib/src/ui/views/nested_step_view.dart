@@ -17,7 +17,7 @@ class NestedStepView extends BaseStepView<NestedStep> {
     if (!_isInitialized && formStep.steps != null) {
       _components.clear();
       for (var element in formStep.steps!) {
-        FormStep questions = element;
+        final FormStep questions = element;
         questions.componentOnly = true;
         _components.add(questions.buildView(formStackForm) as BaseStepView);
       }

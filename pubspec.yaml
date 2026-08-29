@@ -1,6 +1,6 @@
 name: formstack
 description: A cross-platform ResearchKit and ODK alternative for Flutter. Build dynamic forms and surveys with 35 input types, 35+ validators, repeat groups, offline save, and multi-language.
-version: 2.5.0
+version: 3.0.0
 homepage: https://github.com/sudhi001/FormStack
 repository: https://github.com/sudhi001/FormStack
 issue_tracker: https://github.com/sudhi001/FormStack/issues
@@ -22,9 +22,12 @@ platforms:
   windows:
   linux:
 
+# The declared floor is the real one: the package uses Color.withValues
+# (Flutter 3.27) and PopScope.onPopInvokedWithResult (3.24). The previous
+# ">=1.17.0" claim would have failed to compile on anything near it.
 environment:
-  sdk: '>=2.19.6 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.6.0 <4.0.0'
+  flutter: '>=3.27.0'
 
 dependencies:
   flutter:
@@ -38,18 +41,18 @@ dependencies:
   reviews_slider: ^2.0.0
   lottie: ^3.3.2
   collection: ^1.19.1
-  file_picker: ^10.3.10
+  file_picker: ^12.1.2
   google_maps_flutter_web: ^0.6.2
   google_maps_flutter: ^2.17.0
-  location: ^8.0.1
+  location: ^10.0.2
   google_maps: ^8.2.0
-  http: ^1.6.0
   mask_text_input_formatter: ^2.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  test: ^1.25.0
 
 flutter:
   uses-material-design: true

@@ -12,7 +12,7 @@ abstract class ExpressionEvaluator<T> {
       return DateTimeExpressionEvaluator(cast<DateTime>(input)!)
           as ExpressionEvaluator<T>;
     } else if (input is List) {
-      return ListExpressionEvaluator(cast<List>(input)!)
+      return ListExpressionEvaluator(cast<List<dynamic>>(input)!)
           as ExpressionEvaluator<T>;
     } else if (input is String) {
       return StringExpressionEvaluator(cast<String>(input)!)

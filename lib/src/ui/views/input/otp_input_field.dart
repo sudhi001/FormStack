@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
+import 'package:formstack/src/ui/views/input/input_border_style.dart';
 
 // ignore: must_be_immutable
 class OTPInputWidgetView extends BaseStepView<QuestionStep> {
@@ -25,7 +26,7 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
     // Restore result into verification code only once during init
     if (formStep.result != null && _verificationCode.every((c) => c == "")) {
       if (formStep.result is int) {
-        var iStr = formStep.result.toString().split('');
+        final iStr = formStep.result.toString().split('');
         for (int i = 0; i < iStr.length && i < count; i++) {
           _verificationCode[i] = iStr[i];
           _textControllers[i]?.text = iStr[i];
@@ -41,7 +42,7 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
           ),
         ),
         constraints:
-            BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
+            const BoxConstraints(minWidth: 200, maxWidth: 500, maxHeight: 200),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: _buildTextFields(context),
@@ -57,7 +58,7 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   Widget _buildTextFields(BuildContext context) {
-    List<Widget> textFields = List.generate(
+    final List<Widget> textFields = List.generate(
         count, (int i) => _buildTextField(context: context, index: i));
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,25 +115,13 @@ class OTPInputWidgetView extends BaseStepView<QuestionStep> {
             LengthLimitingTextInputFormatter(1)
           ],
           decoration: InputDecoration(
-              enabledBorder: inputBorder(),
-              border: inputBorder(),
+              enabledBorder:
+                  formStep.inputStyle.toInputBorder(style: formStep.style),
+              border: formStep.inputStyle.toInputBorder(style: formStep.style),
               hintText: formStep.hint,
               labelText: formStep.label,
               hintStyle: Theme.of(context).textTheme.bodySmall),
         ));
-  }
-
-  InputBorder inputBorder() {
-    switch (formStep.inputStyle) {
-      case InputStyle.basic:
-        return InputBorder.none;
-      case InputStyle.outline:
-        return const OutlineInputBorder();
-      case InputStyle.underLined:
-        return const UnderlineInputBorder();
-      default:
-        return InputBorder.none;
-    }
   }
 
   @override
