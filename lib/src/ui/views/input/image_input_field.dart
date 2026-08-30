@@ -160,12 +160,26 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     }
   }
 
+  /// The most recently decoded image, keyed by the base64 it came from.
+  ///
+  /// [Image.memory] keys its cache entry on the `Uint8List` instance, so
+  /// decoding afresh on every build produced a new key each time: Flutter
+  /// re-decoded the image, cached it again, and evicted other entries. Holding
+  /// the decoded bytes keeps one cache entry per image.
+  String? _decodedFrom;
+  Uint8List? _decodedBytes;
+
   Uint8List _dataFromBase64String(String base64String) {
+    if (_decodedFrom == base64String && _decodedBytes != null) {
+      return _decodedBytes!;
+    }
     try {
-      return base64Decode(base64String);
+      _decodedFrom = base64String;
+      return _decodedBytes = base64Decode(base64String);
     } catch (e) {
       debugPrint('formstack: failed to decode base64 image: $e');
-      return Uint8List(0);
+      _decodedFrom = null;
+      return _decodedBytes = Uint8List(0);
     }
   }
 
@@ -201,6 +215,8 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _decodedBytes = null;
+    _decodedFrom = null;
     _value = null;
     super.dispose();
   }
@@ -212,6 +228,7 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
     return _value != null
         ? Image.memory(
             _dataFromBase64String(_value!),
+            errorBuilder: (context, error, stack) => const SizedBox.shrink(),
             width: 400,
             height: 150,
             fit: BoxFit.cover,
@@ -231,6 +248,7 @@ class ImageInputWidgetView extends BaseStepView<QuestionStep> {
         ? ClipOval(
             child: Image.memory(
               _dataFromBase64String(_value!),
+              errorBuilder: (context, error, stack) => const SizedBox.shrink(),
               width: 150,
               height: 150,
               fit: BoxFit.cover,

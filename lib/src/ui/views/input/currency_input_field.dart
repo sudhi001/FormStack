@@ -34,6 +34,7 @@ class CurrencyInputWidgetView extends BaseStepView<QuestionStep> {
     if (!_hasRequestedFocus) {
       _hasRequestedFocus = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (isDisposed) return;
         _focusNode.requestFocus();
       });
     }

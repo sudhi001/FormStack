@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -35,6 +36,16 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
 
   /// The signature captured before this view was built, if any.
   String? get previousSignature => _strokes.isEmpty ? _signatureBase64 : null;
+
+  /// Decoded form of [previousSignature], held so the build path does not
+  /// decode on every frame and hand [Image.memory] a fresh cache key.
+  Uint8List? _previousBytes;
+
+  Uint8List? get _previousImage {
+    final encoded = previousSignature;
+    if (encoded == null) return null;
+    return _previousBytes ??= base64Decode(encoded);
+  }
 
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
@@ -86,12 +97,30 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
                         : (details) {
                             _captureSignature();
                           },
-                    child: CustomPaint(
-                      painter: _SignaturePainter(
-                        _strokes,
-                        FormStackTheme.canvasStrokeColor(context),
-                      ),
-                      size: Size.infinite,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // A signature restored from the step is shown as the
+                        // captured image: only the PNG is stored, not the
+                        // strokes that produced it.
+                        if (_previousImage != null)
+                          Image.memory(
+                            _previousImage!,
+                            fit: BoxFit.contain,
+                            // A stored signature can be truncated or not an
+                            // image at all; show an empty pad rather than
+                            // failing the whole step.
+                            errorBuilder: (context, error, stack) =>
+                                const SizedBox.shrink(),
+                          ),
+                        CustomPaint(
+                          painter: _SignaturePainter(
+                            _strokes,
+                            FormStackTheme.canvasStrokeColor(context),
+                          ),
+                          size: Size.infinite,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -106,6 +135,7 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
                           setState(() {
                             _strokes.clear();
                             _signatureBase64 = null;
+                            _previousBytes = null;
                             formStep.result = null;
                           });
                         },

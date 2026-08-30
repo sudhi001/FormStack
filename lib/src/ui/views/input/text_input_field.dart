@@ -54,6 +54,9 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
     if (!_hasRequestedFocus && formStep.inputType != InputType.file) {
       _hasRequestedFocus = true;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        // The view can be disposed before the frame lands -- an auto-advancing
+        // step, or a fast tap -- and focusing a disposed FocusNode throws.
+        if (isDisposed) return;
         _focusNode.requestFocus();
       });
     }

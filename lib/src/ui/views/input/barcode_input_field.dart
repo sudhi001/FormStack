@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:formstack/src/ui/views/input/dialog_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
 
@@ -151,7 +152,10 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
     showDialog<void>(
       context: context,
       builder: (ctx) {
-        final scanController = TextEditingController();
+        // The text lives here rather than in a controller created inside this
+        // builder: the builder runs on every rebuild of the dialog route, so
+        // that leaked a controller per rebuild rather than per dialog.
+        var scanned = '';
         return AlertDialog(
           title: const Text("Scan Barcode"),
           content: Column(
@@ -182,13 +186,10 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: scanController,
+              DialogTextField(
                 autofocus: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Enter code manually",
-                ),
+                labelText: "Enter code manually",
+                onChanged: (value) => scanned = value,
               ),
             ],
           ),
@@ -199,10 +200,10 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
             ),
             FilledButton(
               onPressed: () {
-                if (scanController.text.isNotEmpty) {
+                if (scanned.isNotEmpty) {
                   setState(() {
-                    _controller.text = scanController.text;
-                    formStep.result = scanController.text;
+                    _controller.text = scanned;
+                    formStep.result = scanned;
                   });
                 }
                 Navigator.pop(ctx);

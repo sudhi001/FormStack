@@ -174,6 +174,51 @@ Recorded here rather than left implicit. Roughly in priority order.
    migrating raises the minimum Flutter to 3.41, far above the supported floor.
    Revisit when the floor moves.
 
+## Memory
+
+Three shapes in this codebase make leaks easy to write and hard to see, so each
+has a rule and a test in `test/unit/resource_hygiene_test.dart`.
+
+**Step views hold controllers as fields.** They are released by
+`FormStepView`'s `State` when the view leaves the tree, which only happens if
+the subclass overrides `dispose()`. The test asserts that every file declaring
+a `TextEditingController`, `FocusNode`, `AnimationController`,
+`ScrollController`, `ValueNotifier` or `OverlayEntry` field also declares a
+`dispose()` that releases it.
+
+**Dialog builders re-run.** A `TextEditingController` constructed inside a
+`showDialog` builder is never disposed *and* is reallocated on every rebuild of
+the dialog route, so the leak is per rebuild rather than per dialog. Use
+`DialogTextField`, which ties the controller to an element the framework
+disposes. The test forbids constructing one inside a dialog.
+
+**Platform-backed controllers must not be built in `build()`.** A
+`WebViewController` created in a build path spawns another native web view and
+another network load on every rebuild. It belongs in a `State`.
+
+Two adjacent rules, same file:
+
+- **Decoded image bytes are held, not re-decoded.** `Image.memory` keys its
+  cache entry on the `Uint8List` instance, so decoding base64 afresh each build
+  hands it a new key: Flutter re-decodes the image, caches it again, and evicts
+  other entries. Both image inputs hold the decoded bytes.
+- **Post-frame callbacks check `isDisposed`.** A view can be disposed before
+  the frame it scheduled work for — an auto-advancing step, or a fast tap — and
+  focusing a disposed `FocusNode` throws. This became reachable in 3.1, where
+  disposal is prompt rather than deferred to a cache eviction.
+
+### Retention that is deliberate
+
+`FormStack` keeps its instances in a static map, and each holds its forms,
+their steps, and every answer collected. Nothing evicts them: a form stays
+addressable by name for the life of the process.
+
+That is the API's shape — `FormStack.api().render()` resolves a form by name
+from anywhere — but it means answers persist after the form is finished,
+including image and signature inputs, which store base64 and can be megabytes
+each. An application that collects images across many forms should call
+`FormStack.clearForms(name: ...)` when a submission completes.
+
 ## Strictness
 
 The package builds with `strict-casts`, `strict-inference` and
@@ -189,7 +234,7 @@ error deeper in a widget. It coerces the shapes JSON authors actually write —
 
 ## Testing
 
-174 tests, 54% line coverage.
+190 tests, 54% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.

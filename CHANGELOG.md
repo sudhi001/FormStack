@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.1.1
+
+A memory audit of the library, and the leaks it found.
+
+### Fixed
+
+- **A `WebViewController` was created on every rebuild.** `DisplayStep`'s web
+  view built its controller in a static method called straight from `build()`,
+  so each rebuild spawned another native web view and issued another
+  `loadRequest` — repeated network loads, and a platform view leaked per
+  rebuild. It now lives in a `State` and navigates in place when the URL
+  changes.
+- **Dialogs leaked a text controller per rebuild.** The barcode scanner's
+  manual-entry dialog constructed a `TextEditingController` inside its
+  `showDialog` builder, which Flutter re-invokes on every rebuild of the dialog
+  route; the geotrace coordinate dialog leaked two per point added. Both use
+  the new `DialogTextField`, which ties the controller to an element the
+  framework disposes.
+- **Base64 images were decoded on every build.** `Image.memory` keys its cache
+  entry on the `Uint8List` instance, so decoding afresh each build handed it a
+  new key: Flutter re-decoded the image, cached it again, and evicted other
+  entries. The image and signature inputs hold their decoded bytes.
+- **Post-frame focus callbacks could touch a disposed `FocusNode`.** The text,
+  currency, phone, nested and hidden inputs scheduled work for the next frame
+  without checking whether the view had gone. 3.1 made disposal prompt rather
+  than deferred to a cache eviction, so this became reachable — an
+  auto-advancing step or a fast tap was enough.
+- An unreadable stored image or signature no longer fails the whole step; the
+  input renders empty.
+
+### Added
+
+- `test/unit/resource_hygiene_test.dart` — source-level rules for the leak
+  shapes this codebase is prone to: every disposable field must be released,
+  no controller may be constructed inside a dialog builder, platform-backed
+  controllers must not be built in a build path, and image bytes must be held
+  rather than re-decoded. There is no way to observe a leaked
+  `TextEditingController` from a widget test, so these read the source. Each
+  rule was verified to fail against the defect it guards.
+- `DialogTextField`, a text field that owns and disposes its own controller.
+
+### Notes
+
+`FormStack` holds its forms in a static registry, so a form and every answer it
+collected — including base64 image and signature data — stay in memory until
+cleared. That is the API's shape rather than a defect, but it is now documented
+in `ARCHITECTURE.md` and the FAQ, with the advice to call
+`FormStack.clearForms(name: ...)` once a submission has been sent.
+
 ## 3.1.0
 
 Moves step-view lifetime into the widget tree, which is the root cause behind

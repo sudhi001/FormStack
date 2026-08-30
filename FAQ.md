@@ -154,6 +154,13 @@ controller set per step; 3.0 fixed that with a bounded cache and 3.1 moved
 ownership to the framework. If you are on 2.x and running long forms, that is
 the reason to upgrade.
 
+One thing to be aware of: `FormStack` holds its forms in a static registry, so
+a form and everything it collected stay in memory until you clear them. That is
+what lets `FormStack.api().render()` resolve a form by name from anywhere, but
+image and signature answers are stored as base64 and can be megabytes each. If
+you collect images across many forms, call `FormStack.clearForms(name: ...)`
+once a submission has been sent.
+
 ### Does FormStack pull in Google Maps and a camera SDK?
 Maps, webview and file-picking are unconditional dependencies today, so yes for
 those — this is the library's largest outstanding issue and is tracked in

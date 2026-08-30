@@ -35,7 +35,10 @@ const _answers = <InputType, Object>{
   InputType.smile: 3,
   InputType.consent: true,
   InputType.boolean: true,
-  InputType.signature: 'iVBORw0KGgo=',
+  // A real 1x1 PNG: the signature view decodes what it restores, so a
+  // placeholder string would only exercise the error path.
+  InputType.signature:
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
 };
 
 QuestionStep stepFor(InputType type, {Object? answer}) => QuestionStep(

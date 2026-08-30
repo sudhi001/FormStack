@@ -34,6 +34,9 @@ class NestedStepView extends BaseStepView<NestedStep> {
     if (!_hasRequestedFocus) {
       _hasRequestedFocus = true;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        // Cascades into the children's focus nodes, which are disposed with
+        // this view.
+        if (isDisposed) return;
         requestFocus();
       });
     }

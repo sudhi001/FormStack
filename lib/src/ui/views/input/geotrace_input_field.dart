@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:formstack/src/ui/views/input/dialog_text_field.dart';
 import 'package:formstack/formstack.dart';
 
 /// Geotrace input - trace a path/line on a map.
@@ -165,8 +166,10 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
   }
 
   void _addPointDialog(BuildContext context, StateSetter setState) {
-    final latController = TextEditingController();
-    final lngController = TextEditingController();
+    // The text lives here rather than in controllers created alongside the
+    // dialog: those were never disposed, leaking two per point added.
+    var latText = '';
+    var lngText = '';
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -174,26 +177,21 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: latController,
+            DialogTextField(
+              labelText: "Latitude",
+              autofocus: true,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Latitude",
-              ),
+              onChanged: (value) => latText = value,
             ),
             const SizedBox(height: 12),
-            TextField(
-              controller: lngController,
+            DialogTextField(
+              labelText: "Longitude",
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Longitude",
-              ),
+              onChanged: (value) => lngText = value,
             ),
           ],
         ),
@@ -204,8 +202,8 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
           ),
           FilledButton(
             onPressed: () {
-              final lat = double.tryParse(latController.text);
-              final lng = double.tryParse(lngController.text);
+              final lat = double.tryParse(latText);
+              final lng = double.tryParse(lngText);
               if (lat != null && lng != null) {
                 setState(() {
                   _points.add({'lat': lat, 'lng': lng});

@@ -17,6 +17,7 @@ class HiddenInputWidgetView extends BaseStepView<QuestionStep> {
   Widget? buildWInputWidget(BuildContext context, QuestionStep formStep) {
     // Auto-advance hidden fields immediately
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isDisposed) return;
       onNextButtonClick();
     });
     return const SizedBox.shrink();
