@@ -16,9 +16,13 @@ class PopStepView extends BaseStepView<PopStep> {
   @override
   Widget? buildWInputWidget(BuildContext context, PopStep formStep) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Navigator.pop(context);
+      // The view can be gone before the frame lands, and a form rendered at
+      // the root of the app has nothing to pop -- both threw.
+      if (isDisposed || !context.mounted) return;
+      final navigator = Navigator.maybeOf(context);
+      if (navigator?.canPop() ?? false) navigator!.pop();
     });
-    return Container();
+    return const SizedBox.shrink();
   }
 
   @override

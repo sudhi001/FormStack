@@ -241,7 +241,7 @@ error deeper in a widget. It coerces the shapes JSON authors actually write —
 
 ## Testing
 
-214 tests, 58% line coverage.
+256 tests, 67% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.
@@ -256,6 +256,11 @@ error deeper in a widget. It coerces the shapes JSON authors actually write —
 
 The disposal test is the one to keep honest: it was verified to fail when the
 `disposeViews()` call is removed.
+
+The five files without coverage — the Google Maps widgets, the map input, the
+web view and the HTML editor — are backed by platform views that a widget test
+cannot instantiate. Covering them needs an integration test on a device, not a
+better unit test.
 
 CI runs formatting, analysis with warnings fatal, the suite on Linux, macOS and
 Windows, the suite again on the oldest supported Flutter, an example build, and

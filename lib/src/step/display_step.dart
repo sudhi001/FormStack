@@ -56,16 +56,12 @@ class DisplayStep extends FormStep {
       data: DynamicData.parseDynamicData(
         cast<List<dynamic>>(element?["data"]) ?? const [],
       ),
-      componentsStyle: json.string('componentsStyle') != null
-          ? ComponentsStyle.values.firstWhere(
-              (e) => e.name == json.string('componentsStyle'),
-            )
-          : ComponentsStyle.minimal,
-      displayStepType: json.string('displayStepType') != null
-          ? DisplayStepType.values.firstWhere(
-              (e) => e.name == json.string('displayStepType'),
-            )
-          : DisplayStepType.web,
+      componentsStyle:
+          json.enumValue('componentsStyle', ComponentsStyle.values) ??
+          ComponentsStyle.minimal,
+      displayStepType:
+          json.enumValue('displayStepType', DisplayStepType.values) ??
+          DisplayStepType.web,
       style: UIStyle.maybeFrom(json.map('style')),
       cancellable: json.boolean('cancellable'),
       crossAxisAlignmentContent:
@@ -74,12 +70,12 @@ class DisplayStep extends FormStep {
           ) ??
           CrossAxisAlignment.center,
       relevantConditions: relevantConditions,
-      backButtonText: json.string('backButtonText'),
-      cancelButtonText: json.string('cancelButtonText'),
+      backButtonText: json.string('backButtonText') ?? "Back",
+      cancelButtonText: json.string('cancelButtonText') ?? "Cancel",
       isOptional: json.boolean('isOptional'),
       text: json.string('text'),
       title: json.string('title'),
-      nextButtonText: json.string('nextButtonText'),
+      nextButtonText: json.string('nextButtonText') ?? "Start",
       url: json.string('url') ?? "",
       titleIconAnimationFile: json.string('titleIconAnimationFile'),
       titleIconMaxWidth: json.decimal('titleIconMaxWidth'),

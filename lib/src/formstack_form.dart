@@ -253,7 +253,7 @@ abstract class FormStackForm {
     if (nextStep != null) {
       onUpdate?.call(nextStep);
     } else {
-      onFinish?.call(result);
+      finish();
     }
   }
 
@@ -291,30 +291,38 @@ abstract class FormStackForm {
           nextFormStack.previousFormStackForm = this;
           onRenderFormStackForm?.call(nextFormStack);
           return;
-        } else {
-          nextStep = stepAfter(currentStep);
-          nextStep?.previousStep = currentStep;
         }
+        nextStep = stepAfter(currentStep);
+        nextStep?.previousStep = currentStep;
       } else {
         nextStep = stepAfter(currentStep);
         nextStep?.previousStep = currentStep;
-        if (nextStep == null) {
-          onFinish?.call(result);
-          clearResult();
-        }
       }
     }
 
     if (nextStep != null) {
       onUpdate?.call(nextStep);
-    } else {
-      onUpdate?.call(steps.first);
-      onFinish?.call(result);
-      clearResult();
+      return;
     }
+    finish();
   }
 
-  /// Rebuilds [result] from the current answers of every step.
+  /// Reports the collected answers and returns the form to its first step.
+  ///
+  /// The callback is captured before navigating and the results are copied,
+  /// because rendering a step reassigns [onFinish] from that step: resetting
+  /// to the first step first replaced the callback with whatever that step
+  /// carried — usually null — so a form beginning with a [QuestionStep] never
+  /// reported its results at all. The unmatched-condition path also fired the
+  /// callback a second time, after [clearResult] had emptied the answers.
+  void finish() {
+    final callback = onFinish;
+    final collected = Map<String, dynamic>.of(result);
+    clearResult();
+    onUpdate?.call(steps.first);
+    callback?.call(collected);
+  }
+
   void generateResult() {
     result.clear();
     for (var entry in steps) {

@@ -84,9 +84,7 @@ class RepeatStep extends FormStep {
   ) {
     final json = JsonReader(element, context: 'RepeatStep');
     return RepeatStep(
-      display: json.string('display') != null
-          ? Display.values.firstWhere((e) => e.name == json.string('display'))
-          : Display.normal,
+      display: json.enumValue('display', Display.values) ?? Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
             json.string('crossAxisAlignmentContent') ?? "center",
@@ -96,11 +94,11 @@ class RepeatStep extends FormStep {
       footerBackButton: json.boolean('footerBackButton') ?? false,
       style: UIStyle.maybeFrom(json.map('style')),
       relevantConditions: relevantConditions,
-      backButtonText: json.string('backButtonText'),
-      cancelButtonText: json.string('cancelButtonText'),
+      backButtonText: json.string('backButtonText') ?? "Back",
+      cancelButtonText: json.string('cancelButtonText') ?? "Cancel",
       isOptional: json.boolean('isOptional'),
       steps: steps,
-      nextButtonText: json.string('nextButtonText'),
+      nextButtonText: json.string('nextButtonText') ?? "Next",
       text: json.string('text'),
       title: json.string('title'),
       titleIconAnimationFile: json.string('titleIconAnimationFile'),

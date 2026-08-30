@@ -23,6 +23,9 @@ class DynamicConditionalRelevant extends RelevantCondition {
 
   @override
   bool isValid(dynamic result) {
-    return _isValidCallBack!.call(result);
+    // The callback is nullable, and force-unwrapping it turned a condition
+    // built without one into a null-check crash during navigation. A condition
+    // that cannot decide simply does not match.
+    return _isValidCallBack?.call(result) ?? false;
   }
 }

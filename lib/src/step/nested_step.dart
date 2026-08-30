@@ -62,9 +62,7 @@ class NestedStep extends FormStep {
   ) {
     final json = JsonReader(element, context: 'NestedStep');
     return NestedStep(
-      display: json.string('display') != null
-          ? Display.values.firstWhere((e) => e.name == json.string('display'))
-          : Display.normal,
+      display: json.enumValue('display', Display.values) ?? Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
             json.string('crossAxisAlignmentContent') ?? "center",
@@ -74,11 +72,11 @@ class NestedStep extends FormStep {
       footerBackButton: json.boolean('footerBackButton') ?? false,
       style: UIStyle.maybeFrom(json.map('style')),
       relevantConditions: relevantConditions,
-      backButtonText: json.string('backButtonText'),
-      cancelButtonText: json.string('cancelButtonText'),
+      backButtonText: json.string('backButtonText') ?? "Back",
+      cancelButtonText: json.string('cancelButtonText') ?? "Cancel",
       isOptional: json.boolean('isOptional'),
       steps: steps,
-      nextButtonText: json.string('nextButtonText'),
+      nextButtonText: json.string('nextButtonText') ?? "Start",
       text: json.string('text'),
       verticalPadding: json.integer('verticalPadding') ?? 0,
       validationExpression: json.string('validationExpression') ?? "",

@@ -15,9 +15,9 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
   @override
   Widget? buildWInputWidget(BuildContext context, ReviewStep formStep) {
     formStackForm.generateResult();
-    final results = formStackForm.result;
+    final reviewable = _reviewableAnswers();
 
-    if (results.isEmpty) {
+    if (reviewable.isEmpty) {
       return const Center(child: Text("No answers to review."));
     }
 
@@ -27,13 +27,28 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
         cacheExtent: 300,
         shrinkWrap: true,
         separatorBuilder: (_, __) => const Divider(height: 1),
-        itemCount: results.entries.length,
+        itemCount: reviewable.length,
         itemBuilder: (context, index) {
-          final entry = results.entries.elementAt(index);
+          final entry = reviewable[index];
           return _buildResultTile(context, entry.key, entry.value);
         },
       ),
     );
+  }
+
+  /// The entries worth showing on a review screen.
+  ///
+  /// The flat result map carries one entry per step, including the steps that
+  /// never ask anything — the review step itself, instructions, the completion
+  /// step — so an unfiltered list rendered them all as "Not provided".
+  /// Answers nested inside a group are kept: they have no top-level step, and
+  /// they are exactly what the user came to check.
+  List<MapEntry<String, dynamic>> _reviewableAnswers() {
+    return formStackForm.result.entries.where((entry) {
+      final step = formStackForm.getStep(entry.key);
+      if (step == null) return true;
+      return step is QuestionStep || step is RepeatStep;
+    }).toList();
   }
 
   Widget _buildResultTile(BuildContext context, String key, dynamic value) {

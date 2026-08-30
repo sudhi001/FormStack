@@ -236,4 +236,73 @@ void main() {
       expect(FormStack.formByInstaceAndName(formName: 'second'), isNotNull);
     });
   });
+
+  group('completion reporting', () {
+    test('a form starting with a question still reports its results', () {
+      // Reaching the end reset the form to its first step before firing the
+      // callback -- and rendering a step reassigns onFinish from that step, so
+      // a leading QuestionStep (carrying no callback of its own) nulled it and
+      // the results were silently dropped.
+      final first = question('a');
+      final form = buildForm([first, question('b')]);
+      Map<String, dynamic>? reported;
+      // Rendering each step is what reassigns the form's onFinish, so the
+      // callback must be built the way the real view layer does.
+      form.onUpdate = (step) {
+        step.buildView(form);
+      };
+      form.onFinish = (result) => reported = Map.of(result);
+
+      first.result = 'answered';
+      form.getStep('b')!.result = 'also answered';
+      form.generateResult();
+      form.nextStep(form.getStep('b'));
+
+      expect(reported, isNotNull);
+      expect(reported!['a'], 'answered');
+      expect(reported!['b'], 'also answered');
+    });
+
+    test('the callback fires once when no condition matches', () {
+      // The unmatched-condition path fired onFinish, then fell through and
+      // fired it again -- the second time after clearResult had emptied the
+      // answers.
+      final last = question(
+        'last',
+        conditions: [
+          ExpressionRelevant(
+            expression: '= never',
+            identifier: GenericIdentifier(id: 'nowhere'),
+          ),
+        ],
+      );
+      final form = buildForm([question('first'), last]);
+      final reports = <Map<String, dynamic>>[];
+      form
+        ..onUpdate = (_) {}
+        ..onFinish = (result) => reports.add(Map.of(result));
+
+      last.result = 'something else';
+      form.generateResult();
+      form.nextStep(last);
+
+      expect(reports, hasLength(1));
+      expect(reports.single['last'], 'something else');
+    });
+
+    test('the reported map is a snapshot, not the live one', () {
+      final form = buildForm([question('a')]);
+      Map<String, dynamic>? reported;
+      form
+        ..onUpdate = (_) {}
+        ..onFinish = (result) => reported = result;
+
+      form.getStep('a')!.result = 'x';
+      form.generateResult();
+      form.nextStep(form.getStep('a'));
+
+      // clearResult runs as part of finishing; the caller's map must survive.
+      expect(reported!['a'], 'x');
+    });
+  });
 }

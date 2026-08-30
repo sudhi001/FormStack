@@ -56,6 +56,8 @@ export 'package:formstack/src/step/consent_step.dart';
 export 'package:formstack/src/step/display_step.dart';
 export 'package:formstack/src/step/instruction_step.dart';
 export 'package:formstack/src/step/nested_step.dart';
+// Usable from JSON as {"type": "PopStep"}; it was not reachable from Dart.
+export 'package:formstack/src/step/pop_step.dart';
 export 'package:formstack/src/step/question_step.dart';
 export 'package:formstack/src/step/repeat_step.dart';
 export 'package:formstack/src/step/review_step.dart';

@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.3.0
+
+Covering the untested subsystems, and the bugs that were hiding in them. Test
+coverage went from 58% to 67%; the files with no coverage at all went from 17
+to 5, all of which are backed by platform views.
+
+### Fixed
+
+- **A form beginning with a `QuestionStep` never reported its results.**
+  Reaching the end reset the form to its first step *before* firing the
+  completion callback — and rendering a step reassigns `onFinish` from that
+  step, so a leading question (carrying no callback of its own) replaced it
+  with null. `onFinish` silently never ran and the submission was lost. The
+  callback is now captured before navigating, and receives a copy of the
+  answers rather than the map that is about to be cleared.
+- **The completion callback fired twice when no condition matched.** The
+  unmatched-condition path reported, then fell through and reported again —
+  the second time after the answers had been cleared.
+- **The review step listed every step, including itself.** Instructions, the
+  completion step and the review step all appeared as "Not provided", because
+  the flat result map carries an entry per step rather than per answer.
+- **JSON-defined steps lost their button labels.** An absent `nextButtonText`
+  passed null, wiping the per-type default: a JSON `DisplayStep` showed "Next"
+  where a Dart one showed "Start", a `ReviewStep` "Next" instead of "Submit",
+  a `CompletionStep` "Next" instead of "Finish".
+- **An unknown enum value in JSON threw a bare `StateError`.** `display`,
+  `selectionType`, `componentsStyle`, `inputStyle` and `displayStepType` now
+  report the field, the value and the permitted set.
+- **`DynamicConditionalRelevant` crashed on a null callback.** The parameter is
+  nullable but was force-unwrapped, so a condition built without one threw
+  during navigation instead of simply not matching.
+- **`PopStep` threw at the root of an app**, where there is nothing to pop, and
+  could touch a defunct context if the view was disposed before its frame.
+
+### Added
+
+- `PopStep` is exported. It was usable from JSON as `{"type": "PopStep"}` but
+  unreachable from Dart.
+- Tests for the previously untested subsystems: the expression evaluators,
+  `FormStackLocale`, `StaticDataProvider`, `DynamicConditionalRelevant`, the
+  consent, review, completion, display and pop step views, and the geotrace
+  coordinate input.
+
+### Notes
+
+Five files remain without coverage — the Google Maps widgets, the map input,
+the web view and the HTML editor. All are backed by platform views, which a
+widget test cannot instantiate; they need an integration test on a device.
+
 ## 3.2.0
 
 Conditional navigation was broken for most answer types. This release fixes the

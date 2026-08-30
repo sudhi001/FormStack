@@ -49,9 +49,7 @@ class ReviewStep extends FormStep {
   ) {
     final json = JsonReader(element, context: 'ReviewStep');
     return ReviewStep(
-      display: json.string('display') != null
-          ? Display.values.firstWhere((e) => e.name == json.string('display'))
-          : Display.normal,
+      display: json.enumValue('display', Display.values) ?? Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
             json.string('crossAxisAlignmentContent') ?? "center",
@@ -60,10 +58,10 @@ class ReviewStep extends FormStep {
       style: UIStyle.maybeFrom(json.map('style')),
       cancellable: json.boolean('cancellable'),
       relevantConditions: relevantConditions,
-      backButtonText: json.string('backButtonText'),
-      cancelButtonText: json.string('cancelButtonText'),
+      backButtonText: json.string('backButtonText') ?? "Back",
+      cancelButtonText: json.string('cancelButtonText') ?? "Cancel",
       isOptional: json.boolean('isOptional'),
-      nextButtonText: json.string('nextButtonText'),
+      nextButtonText: json.string('nextButtonText') ?? "Submit",
       text: json.string('text'),
       title: json.string('title'),
       titleIconAnimationFile: json.string('titleIconAnimationFile'),

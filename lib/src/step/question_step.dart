@@ -287,11 +287,7 @@ class QuestionStep extends FormStep {
       ),
       options: options,
       footerBackButton: json.boolean('footerBackButton') ?? false,
-      selectionType: json.string('selectionType') != null
-          ? SelectionType.values.firstWhere(
-              (e) => e.name == json.string('selectionType'),
-            )
-          : null,
+      selectionType: json.enumValue('selectionType', SelectionType.values),
       filter: json.list('filter'),
       lengthLimit: json.integer('lengthLimit') ?? -1,
       count: json.integer('count') ?? 4,
@@ -307,23 +303,16 @@ class QuestionStep extends FormStep {
             json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      display: json.string('display') != null
-          ? Display.values.firstWhere((e) => e.name == json.string('display'))
-          : Display.normal,
+      display: json.enumValue('display', Display.values) ?? Display.normal,
       relevantConditions: relevantConditions,
       cancellable: json.boolean('cancellable'),
       hint: json.string('hint'),
       label: json.string('label'),
-      componentsStyle: json.string('componentsStyle') != null
-          ? ComponentsStyle.values.firstWhere(
-              (e) => e.name == json.string('componentsStyle'),
-            )
-          : ComponentsStyle.minimal,
-      inputStyle: json.string('inputStyle') != null
-          ? InputStyle.values.firstWhere(
-              (e) => e.name == json.string('inputStyle'),
-            )
-          : InputStyle.basic,
+      componentsStyle:
+          json.enumValue('componentsStyle', ComponentsStyle.values) ??
+          ComponentsStyle.minimal,
+      inputStyle:
+          json.enumValue('inputStyle', InputStyle.values) ?? InputStyle.basic,
       autoTrigger: json.boolean('autoTrigger') ?? false,
       backButtonText: json.string('backButtonText'),
       cancelButtonText: json.string('cancelButtonText'),
