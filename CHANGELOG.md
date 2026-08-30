@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.2.0
+
+Conditional navigation was broken for most answer types. This release fixes the
+expression evaluators, a regression shipped in 3.1, and the silent loss of date
+answers.
+
+### Fixed
+
+- **Numeric conditions never matched.** The operand was compared as a string
+  against a number, so `= 5` on a rating, slider, NPS or OTP answer was always
+  false and `!= 5` always true. Comparison is numeric, and `<`, `<=`, `>` and
+  `>=` are supported.
+- **Decimal answers matched every condition.** Dispatch tested `is int`, so a
+  slider's `double` fell through to the catch-all evaluator.
+- **Boolean and other answers matched every condition.** The catch-all
+  evaluator returned `true` unconditionally, so a boolean question always took
+  its first branch and could never reach its "no" path.
+- **`NOT_IN` meant "not all of these".** `NOT_IN a,b` matched a selection
+  containing `a`, because it negated "every one is present" rather than "any
+  one is present". It also compared `Options` objects against strings, so on a
+  multiple-choice answer it matched whatever was selected.
+- **Operands containing spaces were truncated.** Conditions were split on every
+  space, so `= New York` compared against `"New"` and never matched.
+- **`< DAY(01-01-2025)` threw.** The two-term date form parsed the operator as
+  a date expression and raised a `RangeError` before comparing anything. A bare
+  date operand — `< 01-01-2025` — threw for the same reason.
+- **Date answers were dropped from results.** `generateResult` only recorded a
+  `DateTime` when the step carried a `DateResultType`, so with any other
+  validator — or none — the answer was missing from `exportAsJson`, from saved
+  drafts, and from the map handed to `onFinish`. Dates are now always recorded,
+  formatted when the step says how and ISO-8601 otherwise.
+- **Container steps disposed their children twice.** Introduced in 3.1: nested
+  and repeat steps build child views into the tree, so the framework disposes
+  each as it unmounts, but they also cascaded from their own `dispose()`. Any
+  form containing a `NestedStep` or `RepeatStep` asserted with "A
+  TextEditingController was used after being disposed" when it was torn down.
+- **Restoring a draft threw on a repeat group.** A JSON round-trip widens the
+  element type, which the unchecked cast on resume rejected. Rating and NPS
+  inputs likewise assumed `int` where a restored draft can hold a double or a
+  numeric string.
+
+### Changed
+
+- Unknown operators now raise `ArgumentError` consistently across every answer
+  type, rather than silently matching.
+
+### Added
+
+- `test/unit/expression_test.dart` covers every operator against every answer
+  type; each case was checked against the behaviour before the fix.
+- `test/integration/draft_restore_test.dart` round-trips a form through JSON
+  and rebuilds each restored step, which is what surfaced the container
+  double-dispose.
+
 ## 3.1.1
 
 A memory audit of the library, and the leaks it found.

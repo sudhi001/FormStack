@@ -17,9 +17,10 @@ abstract class ExpressionEvaluator<T> {
     } else if (input is String) {
       return StringExpressionEvaluator(cast<String>(input)!)
           as ExpressionEvaluator<T>;
-    } else if (input is int) {
-      return InExpressionEvaluator(_intOrStringValue(input))
-          as ExpressionEvaluator<T>;
+    } else if (input is num) {
+      // `is int` left doubles to the common evaluator, which matched
+      // everything -- a slider or rating answer could not be branched on.
+      return InExpressionEvaluator(input) as ExpressionEvaluator<T>;
     } else {
       return CommonExpressionEvaluator(input) as ExpressionEvaluator<T>;
     }
@@ -28,10 +29,4 @@ abstract class ExpressionEvaluator<T> {
   bool isValid(String condition, T input);
 
   bool evaluate(String condition) => isValid(condition, input);
-}
-
-int _intOrStringValue(dynamic o) {
-  if (o is int) return o;
-  if (o is num) return o.toInt();
-  return int.tryParse(o.toString()) ?? 0;
 }

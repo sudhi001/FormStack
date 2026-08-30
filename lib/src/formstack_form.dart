@@ -325,36 +325,43 @@ abstract class FormStackForm {
   /// Folds one step's answer into [result], flattening nested steps and
   /// formatting dates according to their [DateResultType].
   void addItem(FormStep entry) {
-    final resultValue = entry.result;
-    if (resultValue != null && resultValue is DateTime) {
-      if (entry.resultFormat != null) {
-        final dateResultType = cast<DateResultType>(entry.resultFormat);
-        if (dateResultType != null) {
-          final formattedDate = DateFormat(
-            dateResultType.format,
-          ).format(resultValue);
-          final entryId = entry.id?.id;
-          if (entryId != null) {
-            result.putIfAbsent(entryId, () => formattedDate);
-          }
-        }
-      }
-    } else if (entry is NestedStep) {
+    // A NestedStep contributes its children, not itself.
+    if (entry is NestedStep) {
       for (final FormStep child in entry.steps ?? const <FormStep>[]) {
         addItem(child);
       }
-    } else if (resultValue != null && resultValue is Map) {
-      result.addAll(resultValue as Map<String, dynamic>);
-    } else {
-      final entryId = entry.id?.id;
-      if (entryId != null) {
-        result.putIfAbsent(entryId, () => resultValue);
-      }
+      return;
     }
+
+    final entryId = entry.id?.id;
+    if (entryId == null) return;
+    final resultValue = entry.result;
+
+    if (resultValue is DateTime) {
+      // Formatted when the step declares how, ISO-8601 otherwise. The date
+      // used to be dropped entirely unless a DateResultType was attached, so
+      // it was missing from exportAsJson, from saved drafts and from the map
+      // handed to onFinish -- silently, and only for date answers.
+      final format = cast<DateResultType>(entry.resultFormat)?.format;
+      result.putIfAbsent(
+        entryId,
+        () => format == null
+            ? resultValue.toIso8601String()
+            : DateFormat(format).format(resultValue),
+      );
+      return;
+    }
+
+    // A step whose answer is itself a map of answers -- a repeat group, or a
+    // nested step rendered as a component -- merges into the result.
+    if (resultValue is Map) {
+      result.addAll(Map<String, dynamic>.from(resultValue));
+      return;
+    }
+
+    result.putIfAbsent(entryId, () => resultValue);
   }
 
-  /// Cancels the form: returns to the first step, or invokes [onCancel] if
-  /// already there.
   void cancelStep(FormStep? currentStep) {
     clearResult();
     if (steps.first == currentStep) {

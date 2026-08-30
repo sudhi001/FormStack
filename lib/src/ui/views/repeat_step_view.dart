@@ -19,10 +19,21 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
   Widget? buildWInputWidget(BuildContext context, RepeatStep formStep) {
     if (!_isInitialized) {
       // Initialize with existing results or minimum repetitions
-      final existingResults = formStep.result as List<Map<String, dynamic>>?;
-      final initialCount = existingResults?.length ?? formStep.minRepeat;
+      // A restored draft arrives as List<dynamic> of Map<String, dynamic>
+      // rather than the List<Map<String, dynamic>> resultValue() produces, so
+      // an unchecked cast here threw on resume.
+      final saved = formStep.result;
+      final existingResults = saved is List
+          ? saved
+                .whereType<Map<dynamic, dynamic>>()
+                .map(Map<String, dynamic>.from)
+                .toList()
+          : const <Map<String, dynamic>>[];
+      final initialCount = existingResults.isEmpty
+          ? formStep.minRepeat
+          : existingResults.length;
       for (int i = 0; i < initialCount; i++) {
-        _addRepetition(existingResults?[i]);
+        _addRepetition(i < existingResults.length ? existingResults[i] : null);
       }
       _isInitialized = true;
     }
@@ -193,11 +204,9 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
 
   @override
   void dispose() {
-    for (var rep in _repetitions) {
-      for (var component in rep) {
-        component.dispose();
-      }
-    }
+    // The repetition views are in the widget tree, so the framework disposes
+    // each as it unmounts. Cascading here as well disposed them twice, which
+    // trips "A TextEditingController was used after being disposed".
     _repetitions.clear();
     super.dispose();
   }

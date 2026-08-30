@@ -22,7 +22,12 @@ class RatingInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (!_isInitialized) {
-      _selectedRating = (formStep.result as int?) ?? 0;
+      final saved = formStep.result;
+      _selectedRating = saved is int
+          ? saved
+          : saved is num
+          ? saved.toInt()
+          : int.tryParse('$saved') ?? 0;
       _isInitialized = true;
     }
 

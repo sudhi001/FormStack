@@ -105,9 +105,8 @@ class NestedStepView extends BaseStepView<NestedStep> {
 
   @override
   void dispose() {
-    for (var component in _components) {
-      component.dispose();
-    }
+    // The child views are in the widget tree, so the framework disposes each
+    // as it unmounts; cascading here as well disposed them twice.
     _components.clear();
     _isInitialized = false;
     super.dispose();

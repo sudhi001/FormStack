@@ -104,6 +104,13 @@ Order is a property of the form, not of the step. `FormStackForm.steps` is a
 plain `List`, and `stepAfter` / `stepBefore` resolve neighbours through a
 position index rebuilt only when the list length changes.
 
+Conditions are `<OPERATOR> <operand>`, and the operand is everything after the
+first space — splitting on every space truncated any value containing one. The
+evaluator is chosen by the answer's runtime type: numbers compare numerically,
+selections compare by `Options.key`, dates parse `dd-MM-yyyy`, and everything
+else compares its `toString()`. The catch-all previously returned `true` for
+any condition, which meant a boolean question always took its first branch.
+
 Branching is by `RelevantCondition`. On `nextStep`, each condition on the
 current step is evaluated against the step's result; the first match wins and
 the branch is recorded in `relevantStack` so that back-navigation retraces the
@@ -234,7 +241,7 @@ error deeper in a widget. It coerces the shapes JSON authors actually write —
 
 ## Testing
 
-190 tests, 54% line coverage.
+214 tests, 58% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.

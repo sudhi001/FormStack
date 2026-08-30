@@ -152,4 +152,76 @@ void main() {
     );
     expect(find.text('Step 1 of 3'), findsOneWidget);
   });
+
+  testWidgets('a container step disposes its children exactly once', (
+    tester,
+  ) async {
+    // NestedStep and RepeatStep build child views into the tree, so the
+    // framework disposes each as it unmounts. Cascading from the container's
+    // own dispose() as well released them twice, which trips
+    // "A TextEditingController was used after being disposed".
+    FormStack.clearConfiguration();
+    FormStack.api().form(
+      steps: [
+        NestedStep(
+          id: GenericIdentifier(id: 'group'),
+          title: 'Group',
+          isOptional: true,
+          verticalPadding: 8,
+          validationExpression: '',
+          steps: [
+            QuestionStep(
+              id: GenericIdentifier(id: 'first'),
+              inputType: InputType.text,
+              title: 'First',
+              isOptional: true,
+            ),
+            QuestionStep(
+              id: GenericIdentifier(id: 'second'),
+              inputType: InputType.text,
+              title: 'Second',
+              isOptional: true,
+            ),
+          ],
+        ),
+      ],
+      mapKey: MapKey('', '', ''),
+      initialLocation: LocationWrapper(0, 0),
+    );
+
+    await tester.pumpWidget(MaterialApp(home: FormStack.api().render()));
+    await tester.pumpWidget(const MaterialApp(home: SizedBox()));
+
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a repeat step disposes its repetitions exactly once', (
+    tester,
+  ) async {
+    FormStack.clearConfiguration();
+    FormStack.api().form(
+      steps: [
+        RepeatStep(
+          id: GenericIdentifier(id: 'people'),
+          title: 'People',
+          isOptional: true,
+          steps: [
+            QuestionStep(
+              id: GenericIdentifier(id: 'personName'),
+              inputType: InputType.text,
+              title: 'Name',
+              isOptional: true,
+            ),
+          ],
+        ),
+      ],
+      mapKey: MapKey('', '', ''),
+      initialLocation: LocationWrapper(0, 0),
+    );
+
+    await tester.pumpWidget(MaterialApp(home: FormStack.api().render()));
+    await tester.pumpWidget(const MaterialApp(home: SizedBox()));
+
+    expect(tester.takeException(), isNull);
+  });
 }

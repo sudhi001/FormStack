@@ -20,7 +20,13 @@ class NPSInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (!_isInitialized) {
-      _selectedScore = formStep.result as int?;
+      // A restored draft may hold a double or a numeric string.
+      final saved = formStep.result;
+      _selectedScore = saved is int
+          ? saved
+          : saved is num
+          ? saved.toInt()
+          : int.tryParse('$saved');
       _isInitialized = true;
     }
 
