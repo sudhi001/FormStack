@@ -148,7 +148,7 @@ class BarcodeInputWidgetView extends BaseStepView<QuestionStep> {
   void _showScanDialog(BuildContext context, StateSetter setState) {
     // Show a dialog prompting for manual entry or external scanner
     // In a real implementation, this would launch mobile_scanner
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (ctx) {
         final scanController = TextEditingController();

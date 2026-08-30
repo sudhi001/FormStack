@@ -120,7 +120,9 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
                           onPressed: () {
                             setState(() {
                               _points.removeAt(index);
-                              formStep.result = List.from(_points);
+                              formStep.result = List<Map<String, double>>.from(
+                                _points,
+                              );
                             });
                           },
                         ),
@@ -165,7 +167,7 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
   void _addPointDialog(BuildContext context, StateSetter setState) {
     final latController = TextEditingController();
     final lngController = TextEditingController();
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text("Add Coordinate"),
@@ -207,7 +209,7 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
               if (lat != null && lng != null) {
                 setState(() {
                   _points.add({'lat': lat, 'lng': lng});
-                  formStep.result = List.from(_points);
+                  formStep.result = List<Map<String, double>>.from(_points);
                 });
               }
               Navigator.pop(ctx);
@@ -235,7 +237,8 @@ class GeotraceInputWidgetView extends BaseStepView<QuestionStep> {
   void requestFocus() {}
 
   @override
-  dynamic resultValue() => _points.isEmpty ? null : List.from(_points);
+  dynamic resultValue() =>
+      _points.isEmpty ? null : List<Map<String, double>>.from(_points);
 
   @override
   void clearFocus() {}

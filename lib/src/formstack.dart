@@ -206,7 +206,7 @@ class FormStack {
     for (var element in files) {
       try {
         final String data = await rootBundle.loadString(element);
-        final Map<String, dynamic> jsonData = json.decode(data);
+        final jsonData = json.decode(data) as Map<String, dynamic>;
         ParserUtils.buildFormFromJson(
           this,
           jsonData,
@@ -278,7 +278,7 @@ class FormStack {
   /// Add validation error listener
   FormStack addOnValidationError(
     Identifier identifier,
-    Function(String)? onValidationError, {
+    void Function(String)? onValidationError, {
     String? formName = "default",
   }) {
     final FormStackForm? formStack = _forms[formName];
@@ -308,7 +308,7 @@ class FormStack {
   FormStack addCompletionCallback(
     Identifier identifier, {
     String? formName = "default",
-    Function(Map<String, dynamic>)? onFinish,
+    void Function(Map<String, dynamic>)? onFinish,
     OnBeforeFinishCallback? onBeforeFinishCallback,
   }) {
     final FormStackForm? formStack = _forms[formName];

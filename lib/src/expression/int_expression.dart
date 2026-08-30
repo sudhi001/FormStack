@@ -17,7 +17,7 @@ class InExpressionEvaluator extends ExpressionEvaluator<int> {
       case 'FOR_ALL':
         return true;
       case 'IN':
-        return input.toString().contains(right);
+        return input.toString().contains(right.toString());
       default:
         throw ArgumentError('Invalid operator: $operator');
     }

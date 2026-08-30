@@ -43,7 +43,7 @@ class RepeatStep extends FormStep {
   final String addButtonText;
 
   /// Called with all results when this step completes the form.
-  Function(Map<String, dynamic>)? onFinish;
+  void Function(Map<String, dynamic>)? onFinish;
 
   /// Creates a [RepeatStep].
   RepeatStep({
@@ -82,32 +82,33 @@ class RepeatStep extends FormStep {
     List<RelevantCondition> relevantConditions,
     List<FormStep> steps,
   ) {
+    final json = JsonReader(element, context: 'RepeatStep');
     return RepeatStep(
-      display: element?["display"] != null
-          ? Display.values.firstWhere((e) => e.name == element?["display"])
+      display: json.string('display') != null
+          ? Display.values.firstWhere((e) => e.name == json.string('display'))
           : Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      cancellable: element?["cancellable"],
-      footerBackButton: element?["footerBackButton"] ?? false,
-      style: UIStyle.maybeFrom(element?["style"]),
+      cancellable: json.boolean('cancellable'),
+      footerBackButton: json.boolean('footerBackButton') ?? false,
+      style: UIStyle.maybeFrom(json.map('style')),
       relevantConditions: relevantConditions,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
       steps: steps,
-      nextButtonText: element?["nextButtonText"],
-      text: element?["text"],
-      title: element?["title"],
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
-      minRepeat: element?["minRepeat"] ?? 1,
-      maxRepeat: element?["maxRepeat"] ?? 10,
-      addButtonText: element?["addButtonText"] ?? "Add Another",
-      id: GenericIdentifier(id: element?["id"]),
+      nextButtonText: json.string('nextButtonText'),
+      text: json.string('text'),
+      title: json.string('title'),
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
+      minRepeat: json.integer('minRepeat') ?? 1,
+      maxRepeat: json.integer('maxRepeat') ?? 10,
+      addButtonText: json.string('addButtonText') ?? "Add Another",
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }

@@ -45,7 +45,7 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
             _controller.text = restored.name;
           }
         } else {
-          _controller.text = formStep.result;
+          _controller.text = formStep.result.toString();
         }
       }
     }

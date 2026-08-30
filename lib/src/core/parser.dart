@@ -26,7 +26,8 @@ class ParserUtils {
       ..registerIfAbsent(ConsentStep.tag, ConsentStep.from)
       ..registerIfAbsent(
         PopStep.tag,
-        (json, conditions) => PopStep(id: GenericIdentifier(id: json['id'])),
+        (json, conditions) =>
+            PopStep(id: GenericIdentifier(id: JsonReader(json).string('id'))),
       )
       ..registerIfAbsent(
         NestedStep.tag,
@@ -61,22 +62,23 @@ class ParserUtils {
     ensureBuiltInStepsRegistered();
     body.forEach((key, value) {
       try {
-        final definition = value is Map ? Map<String, dynamic>.from(value) : {};
+        final definition = value is Map
+            ? Map<String, dynamic>.from(value)
+            : <String, dynamic>{};
+        final read = JsonReader(definition, context: 'form "$key"');
         final steps = <FormStep>[];
-        for (final element in (definition['steps'] as List? ?? const [])) {
+        for (final element in read.list('steps')) {
           addFormStep(steps, element);
         }
         formStack.form(
           steps: steps,
           name: key,
           mapKey: mapKey,
-          backgroundAnimationFile: definition['backgroundAnimationFile'],
+          backgroundAnimationFile: read.string('backgroundAnimationFile'),
           backgroundAlignment: alignmentFromString(
-            definition['backgroundAlignment'],
+            read.string('backgroundAlignment'),
           ),
-          defaultStyle: definition['theme'] != null
-              ? UIStyle.from(definition['theme'])
-              : null,
+          defaultStyle: UIStyle.maybeFrom(read.map('theme')),
           initialLocation: locationWrapper,
         );
       } on FormatException {

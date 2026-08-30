@@ -21,7 +21,9 @@ class SmileInputWidgetView extends BaseStepView<QuestionStep> {
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
     if (formStep.result != null) {
-      value = formStep.result;
+      value = formStep.result is int
+          ? formStep.result as int
+          : int.tryParse('${formStep.result}') ?? 2;
     } else {
       value = 2;
     }

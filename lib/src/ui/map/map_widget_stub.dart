@@ -6,7 +6,7 @@ import 'map_widget.dart';
 MapWidget getMapWidget(
   MapKey mapKey,
   LocationWrapper? latLng,
-  Function(LocationWrapper) onChange,
+  void Function(LocationWrapper) onChange,
 ) => throw UnsupportedError(
   'Cannot create a map without dart:html or google_maps_flutter',
 );

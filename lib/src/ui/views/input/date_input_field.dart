@@ -32,7 +32,9 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
             resultFormat,
           );
           if (dateResultType != null) {
-            return DateFormat(dateResultType.format).parse(formStep.result);
+            return DateFormat(
+              dateResultType.format,
+            ).parse(formStep.result.toString());
           }
         } catch (e) {
           // If parsing fails, return current date

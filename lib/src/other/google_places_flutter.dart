@@ -14,7 +14,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   final int debounceTime;
   final bool isLatLngRequired;
   final List<String>? countries;
-  final Function(Prediction)? itmClick;
+  final void Function(Prediction)? itmClick;
   final GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
 
   const GooglePlaceAutoCompleteTextField({

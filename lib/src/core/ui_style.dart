@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:formstack/src/core/json_reader.dart';
 
 /// Visual styling configuration for form steps and input fields.
 ///
@@ -105,33 +106,32 @@ class UIStyle {
   /// A null map yields a style with all defaults. Use [maybeFrom] when a
   /// missing map should mean "no style of my own".
   factory UIStyle.from(Map<String, dynamic>? style) {
-    double? asDouble(Object? v) =>
-        v is num ? v.toDouble() : (v == null ? null : double.tryParse('$v'));
+    final read = JsonReader(style, context: 'UIStyle');
     return UIStyle(
-      HexColor(style?["backgroundColor"] ?? "#000000"),
-      HexColor(style?["foregroundColor"] ?? "#FFFFFF"),
-      HexColor(style?["borderColor"] ?? "#000000"),
-      asDouble(style?["titleBottomPadding"]) ?? 7.0,
-      asDouble(style?["borderRadius"]) ?? 10.0,
-      inputBackground: style?["inputBackground"] != null
-          ? HexColor(style!["inputBackground"])
+      HexColor(read.string('backgroundColor') ?? "#000000"),
+      HexColor(read.string('foregroundColor') ?? "#FFFFFF"),
+      HexColor(read.string('borderColor') ?? "#000000"),
+      read.decimal('titleBottomPadding') ?? 7.0,
+      read.decimal('borderRadius') ?? 10.0,
+      inputBackground: read.has('inputBackground')
+          ? HexColor(read.string('inputBackground')!)
           : null,
-      inputTextColor: style?["inputTextColor"] != null
-          ? HexColor(style!["inputTextColor"])
+      inputTextColor: read.has('inputTextColor')
+          ? HexColor(read.string('inputTextColor')!)
           : null,
-      titleColor: style?["titleColor"] != null
-          ? HexColor(style!["titleColor"])
+      titleColor: read.has('titleColor')
+          ? HexColor(read.string('titleColor')!)
           : null,
-      subtitleColor: style?["subtitleColor"] != null
-          ? HexColor(style!["subtitleColor"])
+      subtitleColor: read.has('subtitleColor')
+          ? HexColor(read.string('subtitleColor')!)
           : null,
-      iconColor: style?["iconColor"] != null
-          ? HexColor(style!["iconColor"])
+      iconColor: read.has('iconColor')
+          ? HexColor(read.string('iconColor')!)
           : null,
-      cardBackground: style?["cardBackground"] != null
-          ? HexColor(style!["cardBackground"])
+      cardBackground: read.has('cardBackground')
+          ? HexColor(read.string('cardBackground')!)
           : null,
-      fontSize: asDouble(style?["fontSize"]),
+      fontSize: read.decimal('fontSize'),
     );
   }
 }

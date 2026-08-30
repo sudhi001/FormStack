@@ -25,7 +25,7 @@ class QuestionStep extends FormStep {
   final InputType inputType;
 
   /// Called with the message when this step fails validation.
-  Function(String)? onValidationError;
+  void Function(String)? onValidationError;
 
   /// Choices for the selection input types.
   List<Options>? options;
@@ -49,7 +49,7 @@ class QuestionStep extends FormStep {
   final String? mask;
 
   /// Called with all results when this step completes the form.
-  Function(Map<String, dynamic>)? onFinish;
+  void Function(Map<String, dynamic>)? onFinish;
 
   /// Height of the map viewport for location inputs.
   final double? maxHeight;
@@ -249,6 +249,7 @@ class QuestionStep extends FormStep {
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,
   ) {
+    final json = JsonReader(element, context: 'QuestionStep');
     final List<Options> options = [];
     for (final el in cast<List<dynamic>>(element?["options"]) ?? const []) {
       if (el is! Map) {
@@ -263,7 +264,7 @@ class QuestionStep extends FormStep {
         ),
       );
     }
-    final rawInputType = (element?["inputType"] ?? "").toString();
+    final rawInputType = (json.string('inputType') ?? "").toString();
     final matched = InputType.values
         .where((e) => e.name == rawInputType)
         .cast<InputType?>()
@@ -285,68 +286,68 @@ class QuestionStep extends FormStep {
         element?["validators"] ?? element?["validator"],
       ),
       options: options,
-      footerBackButton: element?["footerBackButton"] ?? false,
-      selectionType: element?["selectionType"] != null
+      footerBackButton: json.boolean('footerBackButton') ?? false,
+      selectionType: json.string('selectionType') != null
           ? SelectionType.values.firstWhere(
-              (e) => e.name == element?["selectionType"],
+              (e) => e.name == json.string('selectionType'),
             )
           : null,
-      filter: element?["filter"] ?? [],
-      lengthLimit: element?["lengthLimit"] ?? -1,
-      count: element?["count"] ?? 4,
-      disabled: element?["disabled"] ?? false,
-      maxHeight: element?["maxHeight"] ?? 600,
-      maxCount: element?["maxCount"] ?? 100,
-      mask: element?["mask"],
-      description: element?["description"],
-      textAlign: textAlignmentFromString(element?["textAlign"] ?? ""),
-      style: UIStyle.maybeFrom(element?["style"]),
+      filter: json.list('filter'),
+      lengthLimit: json.integer('lengthLimit') ?? -1,
+      count: json.integer('count') ?? 4,
+      disabled: json.boolean('disabled') ?? false,
+      maxHeight: json.decimal('maxHeight') ?? 600,
+      maxCount: json.integer('maxCount') ?? 100,
+      mask: json.string('mask'),
+      description: json.string('description'),
+      textAlign: textAlignmentFromString(json.string('textAlign') ?? ""),
+      style: UIStyle.maybeFrom(json.map('style')),
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      display: element?["display"] != null
-          ? Display.values.firstWhere((e) => e.name == element?["display"])
+      display: json.string('display') != null
+          ? Display.values.firstWhere((e) => e.name == json.string('display'))
           : Display.normal,
       relevantConditions: relevantConditions,
-      cancellable: element?["cancellable"],
-      hint: element?["hint"],
-      label: element?["label"],
-      componentsStyle: element?["componentsStyle"] != null
+      cancellable: json.boolean('cancellable'),
+      hint: json.string('hint'),
+      label: json.string('label'),
+      componentsStyle: json.string('componentsStyle') != null
           ? ComponentsStyle.values.firstWhere(
-              (e) => e.name == element?["componentsStyle"],
+              (e) => e.name == json.string('componentsStyle'),
             )
           : ComponentsStyle.minimal,
-      inputStyle: element?["inputStyle"] != null
+      inputStyle: json.string('inputStyle') != null
           ? InputStyle.values.firstWhere(
-              (e) => e.name == element?["inputStyle"],
+              (e) => e.name == json.string('inputStyle'),
             )
           : InputStyle.basic,
-      autoTrigger: element?["autoTrigger"] ?? false,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
-      nextButtonText: element?["nextButtonText"],
-      numberOfLines: element?["numberOfLines"],
-      text: element?["text"],
-      width: element?["width"],
-      title: element?["title"],
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
-      helperText: element?["helperText"],
+      autoTrigger: json.boolean('autoTrigger') ?? false,
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
+      nextButtonText: json.string('nextButtonText'),
+      numberOfLines: json.integer('numberOfLines'),
+      text: json.string('text'),
+      width: json.decimal('width'),
+      title: json.string('title'),
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
+      helperText: json.string('helperText'),
       defaultValue: element?["defaultValue"],
-      semanticLabel: element?["semanticLabel"],
-      minValue: element?["minValue"],
-      maxValue: element?["maxValue"],
-      stepValue: element?["stepValue"],
-      minSelections: element?["minSelections"],
-      maxSelections: element?["maxSelections"],
-      consentText: element?["consentText"],
-      currencySymbol: element?["currencySymbol"],
-      phoneCountryCode: element?["phoneCountryCode"],
-      ratingCount: element?["ratingCount"],
-      id: GenericIdentifier(id: element?["id"]),
+      semanticLabel: json.string('semanticLabel'),
+      minValue: json.number('minValue'),
+      maxValue: json.number('maxValue'),
+      stepValue: json.number('stepValue'),
+      minSelections: json.integer('minSelections'),
+      maxSelections: json.integer('maxSelections'),
+      consentText: json.string('consentText'),
+      currencySymbol: json.string('currencySymbol'),
+      phoneCountryCode: json.string('phoneCountryCode'),
+      ratingCount: json.integer('ratingCount'),
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }

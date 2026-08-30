@@ -47,28 +47,29 @@ class ReviewStep extends FormStep {
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,
   ) {
+    final json = JsonReader(element, context: 'ReviewStep');
     return ReviewStep(
-      display: element?["display"] != null
-          ? Display.values.firstWhere((e) => e.name == element?["display"])
+      display: json.string('display') != null
+          ? Display.values.firstWhere((e) => e.name == json.string('display'))
           : Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      style: UIStyle.maybeFrom(element?["style"]),
-      cancellable: element?["cancellable"],
+      style: UIStyle.maybeFrom(json.map('style')),
+      cancellable: json.boolean('cancellable'),
       relevantConditions: relevantConditions,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
-      nextButtonText: element?["nextButtonText"],
-      text: element?["text"],
-      title: element?["title"],
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconImagePath: element?["titleIconImagePath"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
-      id: GenericIdentifier(id: element?["id"]),
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
+      nextButtonText: json.string('nextButtonText'),
+      text: json.string('text'),
+      title: json.string('title'),
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconImagePath: json.string('titleIconImagePath'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }

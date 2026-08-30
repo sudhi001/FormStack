@@ -1,3 +1,4 @@
+import 'package:formstack/src/core/json_reader.dart';
 import 'package:formstack/formstack.dart'
     show InputType, InstructionStep, DisplayStep;
 
@@ -23,11 +24,12 @@ class Options {
 
   /// Creates an [Options] from a JSON map.
   factory Options.from(Map<String, dynamic> data) {
+    final read = JsonReader(data, context: 'Options');
     return Options(
-      data["key"],
-      data["title"],
-      subTitle: data["subTitle"],
-      value: data["value"],
+      read.string('key') ?? '',
+      read.string('title') ?? '',
+      subTitle: read.string('subTitle'),
+      value: read.raw('value'),
     );
   }
 
@@ -82,19 +84,20 @@ class DynamicData {
 
   /// Creates a [DynamicData] from a JSON map.
   factory DynamicData.from(Map<String, dynamic> data) {
+    final read = JsonReader(data, context: 'DynamicData');
     return DynamicData(
-      data["title"],
-      subTitle: data["subTitle"],
-      trailing: data["trailing"],
-      leading: data["leading"],
+      read.string('title') ?? '',
+      subTitle: read.string('subTitle'),
+      trailing: read.string('trailing'),
+      leading: read.string('leading'),
     );
   }
 
   /// Parses a list of JSON maps into [DynamicData] instances.
   static List<DynamicData> parseDynamicData(List<dynamic> element) {
     final List<DynamicData> data = [];
-    for (var el in element) {
-      data.add(DynamicData.from(el));
+    for (final el in element) {
+      data.add(DynamicData.from(Map<String, dynamic>.from(el as Map)));
     }
     return data;
   }

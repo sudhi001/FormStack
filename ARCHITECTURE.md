@@ -177,9 +177,22 @@ Recorded here rather than left implicit. Roughly in priority order.
    migrating raises the minimum Flutter to 3.41, far above the supported floor.
    Revisit when the floor moves.
 
+## Strictness
+
+The package builds with `strict-casts`, `strict-inference` and
+`strict-raw-types` all enabled, and analysis is clean at warning level. That
+matters most at the JSON boundary: without `strict-casts`, `json['count']`
+flows into an `int` parameter as an implicit downcast, so a malformed field
+compiles and then throws somewhere else entirely.
+
+`JsonReader` is the boundary. Every JSON factory reads through it, so a wrong
+type is a `FormatException` naming the field and the step rather than a cast
+error deeper in a widget. It coerces the shapes JSON authors actually write —
+`"6"` for a number, `4` for a string — and rejects the ones that are mistakes.
+
 ## Testing
 
-146 tests, 52% line coverage.
+155 tests, 52% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.

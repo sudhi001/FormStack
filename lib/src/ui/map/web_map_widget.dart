@@ -10,13 +10,13 @@ import 'map_widget.dart';
 MapWidget getMapWidget(
   MapKey mapKey,
   LocationWrapper? latLng,
-  Function(LocationWrapper) onChange,
+  void Function(LocationWrapper) onChange,
 ) => WebMap(mapKey, latLng, onChange);
 
 class WebMap extends StatefulWidget implements MapWidget {
   final LocationWrapper? latLng;
   final MapKey mapKey;
-  final Function(LocationWrapper) onChange;
+  final void Function(LocationWrapper) onChange;
   const WebMap(this.mapKey, this.latLng, this.onChange, {super.key});
 
   @override

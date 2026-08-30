@@ -39,7 +39,7 @@ class MapWidgetView extends BaseStepView<QuestionStep> {
       child: MapWidget(
         formStackForm.mapKey,
         formStackForm.initialLocation,
-        (p0) => {formStep.result = p0},
+        (location) => formStep.result = location,
       ),
     );
   }

@@ -16,10 +16,10 @@ class DynamicConditionalRelevant extends RelevantCondition {
   DynamicConditionalRelevant({
     required super.identifier,
     super.formName,
-    required Function(dynamic)? isValidCallBack,
+    required bool Function(dynamic)? isValidCallBack,
   }) : _isValidCallBack = isValidCallBack;
 
-  final Function(dynamic)? _isValidCallBack;
+  final bool Function(dynamic)? _isValidCallBack;
 
   @override
   bool isValid(dynamic result) {

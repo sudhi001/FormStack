@@ -12,7 +12,7 @@ class PlacesAutocompleteResponse {
           Prediction.fromJson(Map<String, dynamic>.from(v as Map)),
       ];
     }
-    status = json['status'];
+    status = json['status']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -51,8 +51,8 @@ class Prediction {
   });
 
   Prediction.fromJson(Map<String, dynamic> json) {
-    description = json['description'];
-    id = json['id'];
+    description = json['description']?.toString();
+    id = json['id']?.toString();
     final matchedSubstringsJson = json['matched_substrings'];
     if (matchedSubstringsJson is List) {
       matchedSubstrings = [
@@ -60,8 +60,8 @@ class Prediction {
           MatchedSubstrings.fromJson(Map<String, dynamic>.from(v as Map)),
       ];
     }
-    placeId = json['place_id'];
-    reference = json['reference'];
+    placeId = json['place_id']?.toString();
+    reference = json['reference']?.toString();
     structuredFormatting = json['structured_formatting'] != null
         ? StructuredFormatting.fromJson(
             Map<String, dynamic>.from(json['structured_formatting'] as Map),
@@ -75,8 +75,8 @@ class Prediction {
       ];
     }
     types = (json['types'] as List?)?.cast<String>();
-    lat = json['lat'];
-    lng = json['lng'];
+    lat = json['lat']?.toString();
+    lng = json['lng']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -111,8 +111,12 @@ class MatchedSubstrings {
   MatchedSubstrings({this.length, this.offset});
 
   MatchedSubstrings.fromJson(Map<String, dynamic> json) {
-    length = json['length'];
-    offset = json['offset'];
+    length = json['length'] is num
+        ? (json['length'] as num).toInt()
+        : int.tryParse('${json['length']}');
+    offset = json['offset'] is num
+        ? (json['offset'] as num).toInt()
+        : int.tryParse('${json['offset']}');
   }
 
   Map<String, dynamic> toJson() {
@@ -131,9 +135,9 @@ class StructuredFormatting {
   StructuredFormatting({this.mainText, this.secondaryText});
 
   StructuredFormatting.fromJson(Map<String, dynamic> json) {
-    mainText = json['main_text'];
+    mainText = json['main_text']?.toString();
 
-    secondaryText = json['secondary_text'];
+    secondaryText = json['secondary_text']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -151,8 +155,10 @@ class Terms {
   Terms({this.offset, this.value});
 
   Terms.fromJson(Map<String, dynamic> json) {
-    offset = json['offset'];
-    value = json['value'];
+    offset = json['offset'] is num
+        ? (json['offset'] as num).toInt()
+        : int.tryParse('${json['offset']}');
+    value = json['value']?.toString();
   }
 
   Map<String, dynamic> toJson() {

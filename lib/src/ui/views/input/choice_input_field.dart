@@ -28,7 +28,9 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
     if (formStep.result != null && formStep.result is List<Options>) {
       return formStep.result as List<Options>;
     } else if (formStep.result != null && formStep.result is List) {
-      return (formStep.result as List).map((e) => Options.from(e)).toList();
+      return (formStep.result as List)
+          .map((e) => Options.from(Map<String, dynamic>.from(e as Map)))
+          .toList();
     } else if (formStep.result != null && formStep.result is String) {
       return formStep.options
               ?.where((element) => element.key == formStep.result)

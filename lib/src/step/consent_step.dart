@@ -58,14 +58,15 @@ class ConsentSection {
 
   /// Creates a [ConsentSection] from a JSON map.
   factory ConsentSection.from(Map<String, dynamic> json) {
+    final read = JsonReader(json, context: 'ConsentSection');
     return ConsentSection(
       type: ConsentSectionType.values.firstWhere(
-        (e) => e.name == json["type"],
+        (e) => e.name == read.string('type'),
         orElse: () => ConsentSectionType.custom,
       ),
-      title: json["title"] ?? "",
-      summary: json["summary"] ?? "",
-      content: json["content"],
+      title: read.string('title') ?? '',
+      summary: read.string('summary') ?? '',
+      content: read.string('content'),
     );
   }
 
@@ -132,7 +133,7 @@ class ConsentStep extends FormStep {
   final String agreementText;
 
   /// Called with all results when this step completes the form.
-  Function(Map<String, dynamic>)? onFinish;
+  void Function(Map<String, dynamic>)? onFinish;
 
   /// Creates a [ConsentStep].
   ConsentStep({
@@ -168,39 +169,40 @@ class ConsentStep extends FormStep {
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,
   ) {
+    final json = JsonReader(element, context: 'ConsentStep');
     final List<ConsentSection> sections = [];
-    if (element?["sections"] != null) {
-      for (var s in element!["sections"]) {
-        sections.add(ConsentSection.from(s));
+    if (json.has('sections')) {
+      for (final s in json.list('sections')) {
+        sections.add(ConsentSection.from(Map<String, dynamic>.from(s as Map)));
       }
     }
     return ConsentStep(
-      display: element?["display"] != null
-          ? Display.values.firstWhere((e) => e.name == element?["display"])
+      display: json.string('display') != null
+          ? Display.values.firstWhere((e) => e.name == json.string('display'))
           : Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      style: UIStyle.maybeFrom(element?["style"]),
-      cancellable: element?["cancellable"],
+      style: UIStyle.maybeFrom(json.map('style')),
+      cancellable: json.boolean('cancellable'),
       relevantConditions: relevantConditions,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
-      nextButtonText: element?["nextButtonText"] ?? "Agree",
-      text: element?["text"],
-      title: element?["title"],
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconImagePath: element?["titleIconImagePath"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
+      nextButtonText: json.string('nextButtonText') ?? "Agree",
+      text: json.string('text'),
+      title: json.string('title'),
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconImagePath: json.string('titleIconImagePath'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
       sections: sections,
-      requiresSignature: element?["requiresSignature"] ?? false,
+      requiresSignature: json.boolean('requiresSignature') ?? false,
       agreementText:
-          element?["agreementText"] ??
+          json.string('agreementText') ??
           "I have read and agree to the terms above",
-      id: GenericIdentifier(id: element?["id"]),
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }

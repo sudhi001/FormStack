@@ -40,6 +40,9 @@ or JSON are unaffected.
   received a fully-defaulted `UIStyle`, so `step.style ??= formTheme` never
   fired and the documented `"theme"` key was silently ignored. Step factories
   now use `UIStyle.maybeFrom`, which returns null for an absent style.
+- **A map location callback was an accidental set literal.** The `onChange`
+  handler was written `(p0) => {formStep.result = p0}`, which builds a `Set`
+  containing the assignment's value rather than a block. It worked by accident.
 - **The Places autocomplete built its URLs by string interpolation.** The
   search text went into the query unescaped, so an `&` or `=` in what the user
   typed rewrote the request — appending or replacing parameters, including the
@@ -94,7 +97,7 @@ or JSON are unaffected.
   `borderRadius` and `elementSpacing` now apply to the subtree, with
   `FormStackTheme.of(context)`, `copyWith` and value equality.
 - `FormStackForm.stepAfter` / `stepBefore` for explicit ordered navigation.
-- A test suite — 146 tests, 52% line coverage, from none — covering validators,
+- A test suite — 155 tests, 52% line coverage, from none — covering validators,
   navigation and branching, JSON parsing and its failure modes, the registries,
   persistence, the view-disposal chain, and a smoke test that builds every
   built-in input type, the input registry's resolution order, the theme scope,
@@ -112,6 +115,20 @@ or JSON are unaffected.
 
 ### Changed
 
+- **The package builds under Dart's full strictness set** — `strict-casts`,
+  `strict-inference` and `strict-raw-types` are all enabled, and analysis is
+  clean. Turning them on surfaced 251 findings, nearly all implicit downcasts
+  from `dynamic` where JSON crossed into typed code: they compiled, then threw
+  at the point of use rather than at the malformed field.
+- **`JsonReader` types the parsing boundary.** Every JSON factory reads through
+  typed accessors that name the field and the step in their error, so
+  `{"count": "many"}` reports *`QuestionStep: "count" should be a number, got
+  "many"`* instead of failing later as a cast error. Numeric strings and
+  stringified numbers — the shapes people actually write — are coerced rather
+  than rejected, and an unknown enum name lists the permitted values.
+- **Callback types declare their return type.** `Function(String)?` and friends
+  were bare function types that inferred `dynamic`; they are now
+  `void Function(String)?`.
 - **Built-in inputs resolve through `InputRegistry` like everything else.**
   `QuestionStep.buildView` was a 35-arm `switch`, so the library's own widgets
   and the extension point had different shapes. `BuiltInInputs` registers each
@@ -172,6 +189,13 @@ or JSON are unaffected.
 - `InputRegistry.build` no longer stamps `ResultFormat.none()` onto a step that
   declared no validator and whose type registered no default. Doing so marked
   the step permanently valid and made a validator assigned later unreachable.
+
+### Tooling
+
+- CI actions updated to current majors: `actions/checkout` v4 → v7 (v4 pins
+  Node 20, which the runners now force onto Node 24 with a deprecation notice
+  on every job), `codecov/codecov-action` v4 → v5, and
+  `subosito/flutter-action` pinned to `v2.23.0`.
 
 ### Documentation
 

@@ -21,7 +21,7 @@ class StringExpressionEvaluator extends ExpressionEvaluator<String> {
       case 'FOR_ALL':
         return true;
       case 'IN':
-        return input.contains(right);
+        return input.contains(right.toString());
       default:
         throw ArgumentError('Invalid operator: $operator');
     }

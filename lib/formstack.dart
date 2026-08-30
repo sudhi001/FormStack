@@ -33,6 +33,7 @@ export 'package:formstack/src/core/form_locale.dart';
 export 'package:formstack/src/core/form_persistence.dart';
 export 'package:formstack/src/core/form_step.dart';
 export 'package:formstack/src/core/form_theme.dart';
+export 'package:formstack/src/core/json_reader.dart';
 export 'package:formstack/src/core/parser.dart';
 export 'package:formstack/src/core/registry/input_registry.dart';
 export 'package:formstack/src/core/registry/step_registry.dart';

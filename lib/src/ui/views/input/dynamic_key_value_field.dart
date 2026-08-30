@@ -122,7 +122,12 @@ class DynamicKeyValueWidgetView extends BaseStepView<QuestionStep> {
 
       for (var item in resultList) {
         if (item is Map) {
-          _result.add(KeyValue(item["key"] ?? "", item["value"] ?? ""));
+          _result.add(
+            KeyValue(
+              item["key"]?.toString() ?? "",
+              item["value"]?.toString() ?? "",
+            ),
+          );
         } else if (item is KeyValue) {
           _result.add(item);
         }

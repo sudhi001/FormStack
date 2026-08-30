@@ -45,22 +45,22 @@ abstract class FormStackForm {
   bool preventSystemBackNavigation;
 
   /// Called with the step to display next. Set by the rendering widget.
-  Function(FormStep)? onUpdate;
+  void Function(FormStep)? onUpdate;
 
   /// Called when the OS back gesture fires and it was not prevented.
   VoidCallback? onSystemNavigationBackClick;
 
   /// Called to hand rendering over to another form, for cross-form navigation.
-  Function(FormStackForm)? onRenderFormStackForm;
+  void Function(FormStackForm)? onRenderFormStackForm;
 
   /// Called with the flattened results when the form completes.
-  Function(Map<String, dynamic> result)? onFinish;
+  void Function(Map<String, dynamic> result)? onFinish;
 
   /// Called when the user cancels from the first step.
-  Function()? onCancel;
+  void Function()? onCancel;
 
   /// Called with the message whenever a step fails validation.
-  Function(String)? onValidationError;
+  void Function(String)? onValidationError;
 
   /// Records which step routed to each branch target, so back navigation
   /// retraces the path actually taken rather than declaration order.
@@ -354,7 +354,7 @@ abstract class FormStackForm {
         }
       }
     } else if (entry is NestedStep) {
-      for (var child in entry.steps ?? []) {
+      for (final FormStep child in entry.steps ?? const <FormStep>[]) {
         addItem(child);
       }
     } else if (resultValue != null && resultValue is Map) {
@@ -383,8 +383,8 @@ abstract class FormStackForm {
   /// Records step timestamps, fires the step lifecycle callbacks, and caches
   /// the view so navigating back preserves what the user typed.
   Widget render(
-    Function(FormStep) onUpdate,
-    Function(FormStackForm)? onRenderFormStackForm, {
+    void Function(FormStep) onUpdate,
+    void Function(FormStackForm)? onRenderFormStackForm, {
     FormStep? formStep,
   }) {
     this.onUpdate = onUpdate;

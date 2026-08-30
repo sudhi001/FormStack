@@ -7,6 +7,11 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   language:
+    # The full strictness set. strict-casts forbids implicit downcasts from
+    # dynamic, which matters most where JSON crosses into typed code;
+    # strict-inference rejects types the analyzer could only guess at.
+    strict-casts: true
+    strict-inference: true
     strict-raw-types: true
   errors:
     # A library must not leak controllers or notifiers; treat it as fatal.

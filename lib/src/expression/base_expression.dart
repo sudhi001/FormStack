@@ -31,6 +31,7 @@ abstract class ExpressionEvaluator<T> {
 }
 
 int _intOrStringValue(dynamic o) {
-  if (o is String) o = int.tryParse(o);
-  return o ?? 0;
+  if (o is int) return o;
+  if (o is num) return o.toInt();
+  return int.tryParse(o.toString()) ?? 0;
 }

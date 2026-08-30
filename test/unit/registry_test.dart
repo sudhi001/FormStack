@@ -193,14 +193,14 @@ void main() {
 
   group('StepRegistry', () {
     test('an application step type becomes parseable from JSON', () async {
-      StepRegistry.instance.register(
-        'AuditStep',
-        (json, conditions) => DisplayStep(
-          id: GenericIdentifier(id: json['id']),
-          title: json['title'],
+      StepRegistry.instance.register('AuditStep', (json, conditions) {
+        final read = JsonReader(json, context: 'AuditStep');
+        return DisplayStep(
+          id: GenericIdentifier(id: read.string('id')),
+          title: read.string('title'),
           relevantConditions: conditions,
-        ),
-      );
+        );
+      });
 
       await FormStack.api().buildFormFromJsonString(
         '{"default":{"steps":[{"type":"AuditStep","id":"audit","title":"Audit"}]}}',

@@ -14,6 +14,6 @@ abstract class MapWidget extends StatefulWidget {
   factory MapWidget(
     MapKey mapKey,
     LocationWrapper? latLng,
-    Function(LocationWrapper) onChange,
+    void Function(LocationWrapper) onChange,
   ) => getMapWidget(mapKey, latLng, onChange);
 }

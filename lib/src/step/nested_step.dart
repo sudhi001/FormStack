@@ -22,7 +22,7 @@ class NestedStep extends FormStep {
   final int verticalPadding;
 
   /// Called with all results when this step completes the form.
-  Function(Map<String, dynamic>)? onFinish;
+  void Function(Map<String, dynamic>)? onFinish;
 
   /// Creates a [NestedStep].
   NestedStep({
@@ -60,31 +60,32 @@ class NestedStep extends FormStep {
     List<RelevantCondition> relevantConditions,
     List<FormStep> steps,
   ) {
+    final json = JsonReader(element, context: 'NestedStep');
     return NestedStep(
-      display: element?["display"] != null
-          ? Display.values.firstWhere((e) => e.name == element?["display"])
+      display: json.string('display') != null
+          ? Display.values.firstWhere((e) => e.name == json.string('display'))
           : Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      cancellable: element?["cancellable"],
-      footerBackButton: element?["footerBackButton"] ?? false,
-      style: UIStyle.maybeFrom(element?["style"]),
+      cancellable: json.boolean('cancellable'),
+      footerBackButton: json.boolean('footerBackButton') ?? false,
+      style: UIStyle.maybeFrom(json.map('style')),
       relevantConditions: relevantConditions,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
       steps: steps,
-      nextButtonText: element?["nextButtonText"],
-      text: element?["text"],
-      verticalPadding: element?["verticalPadding"] ?? 0,
-      validationExpression: element?["validationExpression"] ?? "",
-      title: element?["title"],
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
-      id: GenericIdentifier(id: element?["id"]),
+      nextButtonText: json.string('nextButtonText'),
+      text: json.string('text'),
+      verticalPadding: json.integer('verticalPadding') ?? 0,
+      validationExpression: json.string('validationExpression') ?? "",
+      title: json.string('title'),
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }

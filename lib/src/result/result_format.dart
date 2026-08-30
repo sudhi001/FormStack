@@ -839,7 +839,7 @@ class ExpressionValidator {
   /// Whether [input] satisfies [expression], a JSON-encoded [ExpressionLanguage].
   bool validate(Map<String, dynamic> input, String expression) {
     final ExpressionLanguage expressionLanguage = ExpressionLanguage.fromJson(
-      json.decode(expression),
+      json.decode(expression) as Map<String, dynamic>,
     );
     bool isOrValid = false;
     if (expressionLanguage.or.isNotEmpty) {
@@ -876,8 +876,8 @@ class ExpressionObject {
 
   /// Creates an [ExpressionObject] from its JSON form.
   ExpressionObject.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    expression = json["expression"];
+    id = json["id"]?.toString();
+    expression = json["expression"]?.toString();
   }
 
   /// Converts to a JSON-serializable map.
@@ -912,7 +912,7 @@ class ExpressionLanguage {
           ExpressionObject.fromJson(Map<String, dynamic>.from(v as Map)),
       ];
     }
-    orValidationMessage = json["orValidationMessage"];
+    orValidationMessage = json["orValidationMessage"]?.toString();
   }
 
   /// Converts to a JSON-serializable map.

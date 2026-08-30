@@ -51,38 +51,39 @@ class DisplayStep extends FormStep {
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,
   ) {
+    final json = JsonReader(element, context: 'DisplayStep');
     return DisplayStep(
       data: DynamicData.parseDynamicData(
         cast<List<dynamic>>(element?["data"]) ?? const [],
       ),
-      componentsStyle: element?["componentsStyle"] != null
+      componentsStyle: json.string('componentsStyle') != null
           ? ComponentsStyle.values.firstWhere(
-              (e) => e.name == element?["componentsStyle"],
+              (e) => e.name == json.string('componentsStyle'),
             )
           : ComponentsStyle.minimal,
-      displayStepType: element?["displayStepType"] != null
+      displayStepType: json.string('displayStepType') != null
           ? DisplayStepType.values.firstWhere(
-              (e) => e.name == element?["displayStepType"],
+              (e) => e.name == json.string('displayStepType'),
             )
           : DisplayStepType.web,
-      style: UIStyle.maybeFrom(element?["style"]),
-      cancellable: element?["cancellable"],
+      style: UIStyle.maybeFrom(json.map('style')),
+      cancellable: json.boolean('cancellable'),
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
       relevantConditions: relevantConditions,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
-      text: element?["text"],
-      title: element?["title"],
-      nextButtonText: element?["nextButtonText"],
-      url: element?["url"] ?? "",
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
-      id: GenericIdentifier(id: element?["id"]),
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
+      text: json.string('text'),
+      title: json.string('title'),
+      nextButtonText: json.string('nextButtonText'),
+      url: json.string('url') ?? "",
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }

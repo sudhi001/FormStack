@@ -32,7 +32,7 @@ class CompletionStep extends FormStep {
   OnBeforeFinishCallback? onBeforeFinishCallback;
 
   /// Called with all results when this step completes the form.
-  Function(Map<String, dynamic>)? onFinish;
+  void Function(Map<String, dynamic>)? onFinish;
 
   /// Creates a [CompletionStep].
   CompletionStep({
@@ -80,31 +80,32 @@ class CompletionStep extends FormStep {
     Map<String, dynamic>? element,
     List<RelevantCondition> relevantConditions,
   ) {
+    final json = JsonReader(element, context: 'CompletionStep');
     return CompletionStep(
-      display: element?["display"] != null
-          ? Display.values.firstWhere((e) => e.name == element?["display"])
+      display: json.string('display') != null
+          ? Display.values.firstWhere((e) => e.name == json.string('display'))
           : Display.normal,
       crossAxisAlignmentContent:
           crossAlignmentFromString(
-            element?["crossAxisAlignmentContent"] ?? "center",
+            json.string('crossAxisAlignmentContent') ?? "center",
           ) ??
           CrossAxisAlignment.center,
-      cancellable: element?["cancellable"],
-      autoTrigger: element?["autoTrigger"] ?? false,
-      style: UIStyle.maybeFrom(element?["style"]),
+      cancellable: json.boolean('cancellable'),
+      autoTrigger: json.boolean('autoTrigger') ?? false,
+      style: UIStyle.maybeFrom(json.map('style')),
       relevantConditions: relevantConditions,
-      backButtonText: element?["backButtonText"],
-      cancelButtonText: element?["cancelButtonText"],
-      isOptional: element?["isOptional"],
-      nextButtonText: element?["nextButtonText"],
-      successLottieAssetsFilePath: element?["successLottieAssetsFilePath"],
-      loadingLottieAssetsFilePath: element?["loadingLottieAssetsFilePath"],
-      errorLottieAssetsFilePath: element?["errorLottieAssetsFilePath"],
-      text: element?["text"],
-      title: element?["title"],
-      titleIconAnimationFile: element?["titleIconAnimationFile"],
-      titleIconMaxWidth: element?["titleIconMaxWidth"],
-      id: GenericIdentifier(id: element?["id"]),
+      backButtonText: json.string('backButtonText'),
+      cancelButtonText: json.string('cancelButtonText'),
+      isOptional: json.boolean('isOptional'),
+      nextButtonText: json.string('nextButtonText'),
+      successLottieAssetsFilePath: json.string('successLottieAssetsFilePath'),
+      loadingLottieAssetsFilePath: json.string('loadingLottieAssetsFilePath'),
+      errorLottieAssetsFilePath: json.string('errorLottieAssetsFilePath'),
+      text: json.string('text'),
+      title: json.string('title'),
+      titleIconAnimationFile: json.string('titleIconAnimationFile'),
+      titleIconMaxWidth: json.decimal('titleIconMaxWidth'),
+      id: GenericIdentifier(id: json.string('id')),
     );
   }
 }
