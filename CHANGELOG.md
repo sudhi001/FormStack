@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.1.0
+
+Moves step-view lifetime into the widget tree, which is the root cause behind
+the disposal bug 3.0 patched over. No breaking changes: the `InputRegistry`
+contract, `FormStepView` and `BaseStepView` all keep their shape, and the 30
+built-in inputs needed no edits.
+
+### Changed
+
+- **`FormStepView` is a `StatefulWidget`.** It was a `StatelessWidget` holding
+  controllers, which has no disposal lifecycle at all — so `dispose()` was only
+  ever called by `FormStackForm`'s own bookkeeping, and only for views it
+  happened to be holding. Its `State` now builds the view and disposes it when
+  it leaves the tree. Because the state stays on the widget, every existing
+  subclass compiles unchanged.
+- **Step subtrees are keyed by step.** Consecutive steps commonly use the same
+  view class; without a differing key Flutter reconciles them onto one element,
+  reuses the `State`, and never disposes the outgoing view — leaking its
+  controllers and carrying the previous step's focus into the next step.
+- **The view cache is gone.** `FormStackForm` keeps a reference to the view for
+  the step on screen and nothing more. A retained view would be reused after
+  the framework had disposed it, so the cache and framework ownership cannot
+  coexist. Answers are unaffected: they live on `formStep.result`, which is
+  written before every navigation.
+
+### Fixed
+
+- **A captured signature was lost on back navigation.** `InputType.signature`
+  never restored from `formStep.result`, so the answer survived only as long as
+  the view cache happened to hold the view. It now restores and shows the
+  captured image. This was already reachable in 3.0 by setting
+  `maxCachedViews: 0`, which the docs suggested.
+
+### Deprecated
+
+- `FormStackForm.maxCachedViews`, `clearViewCache()` and `disposeViews()` are
+  no-ops and will be removed in 4.0. Nothing is retained to bound, clear or
+  dispose. Existing calls are harmless.
+
+### Added
+
+- A round-trip test over every buildable input type: set an answer, navigate
+  away, navigate back, advance, and assert the answer survived. An input that
+  fails to restore reports an empty `resultValue()` on the way forward and
+  destroys what the user entered — exactly what the cache was hiding. Verified
+  to fail when signature restoration is removed.
+
 ## 3.0.0
 
 A correctness, extensibility and packaging release. The breaking changes are
@@ -97,7 +144,7 @@ or JSON are unaffected.
   `borderRadius` and `elementSpacing` now apply to the subtree, with
   `FormStackTheme.of(context)`, `copyWith` and value equality.
 - `FormStackForm.stepAfter` / `stepBefore` for explicit ordered navigation.
-- A test suite — 155 tests, 52% line coverage, from none — covering validators,
+- A test suite — 155 tests, from none — covering validators,
   navigation and branching, JSON parsing and its failure modes, the registries,
   persistence, the view-disposal chain, and a smoke test that builds every
   built-in input type, the input registry's resolution order, the theme scope,

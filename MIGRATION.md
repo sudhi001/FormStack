@@ -390,6 +390,36 @@ dependencies:
 3.0 requires Dart 3.10 / Flutter 3.38.2. The old `">=1.17.0"` constraint was
 never accurate — the package already used APIs from Flutter 3.27.
 
+### From v3.0 to v3.1
+
+No breaking changes. Step views moved into the widget tree, which fixes the
+root cause behind 3.0's disposal work.
+
+**If you wrote a custom input**, nothing changes to compile — but check one
+thing: your view is now rebuilt when the user navigates back to its step, so it
+must restore what it shows from `formStep.result` rather than relying on its
+own fields surviving.
+
+```dart
+@override
+Widget? buildWInputWidget(BuildContext context, QuestionStep formStep) {
+  // Restore once, from the model.
+  if (!_restored) {
+    _restored = true;
+    _controller.text = formStep.result?.toString() ?? '';
+  }
+  return TextField(controller: _controller);
+}
+```
+
+Previously a view cache hid this: an input that failed to restore kept working
+until the cache evicted it. If you had set `maxCachedViews: 0`, you were already
+seeing the difference.
+
+**Deprecated, and now no-ops:** `FormStackForm.maxCachedViews`,
+`clearViewCache()` and `disposeViews()`. Nothing is retained to bound, clear or
+dispose. Remove the calls at your convenience; they are removed in 4.0.
+
 ## Common Migration Patterns
 
 ### State Management Integration

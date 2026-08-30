@@ -99,31 +99,38 @@ void main() {
     expect(disposed, contains('a'));
   });
 
-  testWidgets('the view cache is bounded and evicts the oldest view', (
+  testWidgets('navigating away disposes the view that left the tree', (
     tester,
   ) async {
+    // The framework owns step-view lifetime now: leaving the tree disposes.
+    await tester.pumpWidget(hostFor([trackedStep('a'), trackedStep('b')]));
+    final form = FormStack.formByInstaceAndName()!;
+
+    form.nextStep(form.getStep('a'));
+    await tester.pumpAndSettle();
+
+    expect(disposed, contains('a'));
+    expect(disposed, isNot(contains('b')));
+  });
+
+  testWidgets('a long form retains only the view on screen', (tester) async {
+    // Previously every visited step's controllers were held by a cache until
+    // it evicted them; now each is released as soon as its step is left.
     final steps = List.generate(6, (i) => trackedStep('s$i'));
     await tester.pumpWidget(hostFor(steps));
     final form = FormStack.formByInstaceAndName()!;
-    form.maxCachedViews = 2;
 
     for (var i = 0; i < 5; i++) {
       form.nextStep(form.getStep('s$i'));
-      await tester.pump();
+      await tester.pumpAndSettle();
     }
 
-    // Early steps must have been released rather than retained for the whole
-    // run; the current step must not be.
-    expect(disposed, contains('s0'));
+    expect(disposed, containsAll(['s0', 's1', 's2', 's3', 's4']));
     expect(disposed, isNot(contains('s5')));
   });
 
-  testWidgets('disposing twice is harmless', (tester) async {
+  testWidgets('a view is disposed exactly once', (tester) async {
     await tester.pumpWidget(hostFor([trackedStep('a')]));
-    final form = FormStack.formByInstaceAndName()!;
-
-    form.disposeViews();
-    form.disposeViews();
     await tester.pumpWidget(const MaterialApp(home: SizedBox()));
 
     expect(disposed.where((id) => id == 'a'), hasLength(1));

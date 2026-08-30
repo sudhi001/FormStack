@@ -19,9 +19,26 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
 
   final List<List<Offset>> _strokes = [];
   String? _signatureBase64;
+  bool _restored = false;
+
+  /// Recovers a previously captured signature from the step.
+  ///
+  /// Only the rendered PNG is stored, not the strokes, so returning to this
+  /// step shows the captured image rather than a redrawn path. Without this
+  /// the signature was silently lost whenever the view was rebuilt.
+  void _restore() {
+    if (_restored) return;
+    _restored = true;
+    final saved = formStep.result;
+    if (saved is String && saved.isNotEmpty) _signatureBase64 = saved;
+  }
+
+  /// The signature captured before this view was built, if any.
+  String? get previousSignature => _strokes.isEmpty ? _signatureBase64 : null;
 
   @override
   Widget buildWInputWidget(BuildContext context, QuestionStep formStep) {
+    _restore();
     return Container(
       // No maxHeight: the pad (150) plus its spacing and Clear button needs
       // ~206px, so a 200px cap overflowed by 6px on every build. The step

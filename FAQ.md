@@ -141,17 +141,18 @@ Map<String, dynamic> stats = FormStack.api().getFormStats();
 ## Performance Questions
 
 ### Is FormStack memory efficient?
-Step views are cached so navigating back preserves what the user typed, and the
-cache is bounded — `FormStackForm.maxCachedViews` defaults to 12, and evicted
-views are disposed along with their controllers and focus nodes. Removing the
-form from the widget tree releases the rest.
+Step views are owned by the widget tree, so leaving a step disposes its view
+and releases its controllers and focus nodes. A hundred-step survey holds one
+view at a time, not a hundred.
+
+Answers are unaffected — they live on the step, not the view, and are written
+back before every navigation. Navigating back rebuilds the view and restores
+what it shows from there.
 
 Before 3.0 nothing disposed step views at all, so a form run leaked one
-controller set per step. If you are on 2.x and running long forms, that is the
-reason to upgrade.
-
-Raise `maxCachedViews` to trade memory for back-navigation fidelity, or set it
-to `0` to disable caching entirely.
+controller set per step; 3.0 fixed that with a bounded cache and 3.1 moved
+ownership to the framework. If you are on 2.x and running long forms, that is
+the reason to upgrade.
 
 ### Does FormStack pull in Google Maps and a camera SDK?
 Maps, webview and file-picking are unconditional dependencies today, so yes for

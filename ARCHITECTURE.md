@@ -70,31 +70,33 @@ unusable.
 
 ## Step lifecycle and view ownership
 
-This is the subtlest part of the codebase and the source of its worst historical
-bug, so it is worth stating plainly.
+Step views hold mutable state — controllers, focus nodes, notifiers — as fields
+on the widget rather than in a `State`. That is not the Flutter idiom, and it is
+deliberate: it keeps `isValid`, `resultValue` and `buildWInputWidget` readable
+as plain methods on one object instead of split across a widget/state pair.
 
-Step views are `StatelessWidget`s that hold mutable state — controllers, focus
-nodes, notifiers. That is not the Flutter idiom, and it has a consequence: the
-framework will never call `dispose()` on them, because `StatelessWidget` has no
-disposal lifecycle. Anything those views allocate leaks unless something else
-releases it.
+`FormStepView` is a `StatefulWidget` whose `State` exists purely to own
+lifetime: it builds through `buildWithFrom` and calls `dispose()` when the view
+leaves the tree. So the framework releases the controllers at the right moment
+while the ergonomics stay.
 
-The ownership rule is therefore explicit:
+Two details make this work:
 
-- `FormStackForm` owns the cached step views. It disposes a view when it evicts
-  it from the cache (`maxCachedViews`, default 12) and when `disposeViews()` is
-  called.
-- `FormStackView` — a real `StatefulWidget` — calls `disposeViews()` from its
-  own `dispose()`. This is the only thing tying view lifetime to the widget
-  tree.
-- `BaseStepView.dispose()` is `@mustCallSuper` and idempotent. Container views
-  such as `NestedStepView` cascade disposal to their children.
+- **Subtrees are keyed by step.** Consecutive steps commonly use the same view
+  class. Without a differing key Flutter reconciles them onto a single element,
+  reuses the `State`, and never disposes the outgoing view.
+- **There is no view cache.** `FormStackForm` holds a reference to the view for
+  the step on screen and nothing else. A cache and framework ownership cannot
+  coexist: a retained view would be reused after disposal.
 
-Any new step view that allocates a disposable must override `dispose()` and call
-`super.dispose()`. `test/widget/lifecycle_test.dart` guards the chain.
+The consequence is that **a view is rebuilt when the user navigates back to its
+step**, so every input must restore what it shows from `formStep.result`. The
+answer is written back before every navigation, so the model is the source of
+truth. `test/widget/state_roundtrip_test.dart` asserts this for every input
+type; it is the test that makes the absent cache safe.
 
-The long-term fix is to make step views stateful and let the framework own this;
-see *Known debt* below.
+Any new step view that allocates a disposable must override `dispose()` and
+call `super.dispose()`, and must tolerate being called twice.
 
 ## Navigation
 
@@ -140,12 +142,7 @@ optionality as a `TaskResult` — the shape ResearchKit consumers expect — and
 
 Recorded here rather than left implicit. Roughly in priority order.
 
-1. **Step views should be stateful.** The `StatelessWidget`-with-mutable-state
-   pattern is why the manual disposal chain above exists at all. Converting
-   `BaseStepView` to a `StatefulWidget` whose `State` holds the controllers
-   would let the framework own lifetime, delete `maxCachedViews`, and remove
-   every `// ignore: must_be_immutable`. It touches every input widget.
-2. **Heavy transitive dependencies.** `dio` and `rxdart` are gone — they backed
+1. **Heavy transitive dependencies.** `dio` and `rxdart` are gone — they backed
    a single file and were replaced by `http` and a `Timer`. What remains is
    harder: `google_maps_flutter`, `location`,
    `webview_flutter` and `file_picker` are unconditional dependencies, so an
@@ -163,17 +160,17 @@ Recorded here rather than left implicit. Roughly in priority order.
    sibling package. `formstack_maps` has to be published *before* the core can
    drop the dependency and the example can reference it. That is why this is
    two releases rather than one commit.
-3. **`FormStack` is doing several jobs** — instance registry, form builder,
+2. **`FormStack` is doing several jobs** — instance registry, form builder,
    statistics, persistence facade. The persistence and statistics APIs would sit
    better on `FormStackForm`.
-4. **Implementation classes read as public API.** The published surface — every
+3. **Implementation classes read as public API.** The published surface — every
    symbol the barrel exports — is fully documented. The ~280 findings that
    remain are on classes under `lib/src` that are *not* exported (the Google
    Places DTOs, the input widget views, the map widgets), so they never reach
    the published API docs. `public_member_api_docs` cannot distinguish the two,
    so it stays at `info`. The deeper issue is that these classes are `public` in
    the Dart sense at all; a stricter `src` boundary would remove the ambiguity.
-5. **`cacheExtent` / `onReorder` deprecations** are left in place deliberately:
+4. **`cacheExtent` / `onReorder` deprecations** are left in place deliberately:
    migrating raises the minimum Flutter to 3.41, far above the supported floor.
    Revisit when the floor moves.
 
@@ -192,7 +189,7 @@ error deeper in a widget. It coerces the shapes JSON authors actually write —
 
 ## Testing
 
-155 tests, 52% line coverage.
+174 tests, 54% line coverage.
 
 - `test/unit` — validators, navigation and branching, JSON parsing and its
   failure modes, the registries, persistence and statistics.

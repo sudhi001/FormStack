@@ -100,7 +100,6 @@ abstract class FormStackForm {
   /// its initial state.
   void clearResult() {
     relevantStack.clear();
-    disposeViews();
     for (var entry in steps) {
       entry.result = null;
       entry.startTime = null;
@@ -119,55 +118,42 @@ abstract class FormStackForm {
   /// The step currently rendered on screen, or null before the first render.
   FormStep? get currentStep => _currentStep;
 
-  /// Cached step views to prevent state loss on back navigation.
+  /// The view for the step currently on screen.
   ///
-  /// Insertion-ordered so the least-recently-created entry can be evicted
-  /// once [maxCachedViews] is exceeded. Evicted views are disposed, which
-  /// releases their `TextEditingController`s, `FocusNode`s and listeners.
-  final Map<String, FormStepView> _viewCache = {};
+  /// A single entry rather than a cache: [FormStepView] is a `StatefulWidget`
+  /// whose `State` disposes it when it leaves the tree, so a view retained
+  /// after being replaced would be reused after disposal. Holding only the
+  /// current one keeps the framework's lifetime and this reference in step.
+  ///
+  /// Navigating back therefore builds a fresh view, which restores what it
+  /// shows from `formStep.result` — the answer is written back to the step
+  /// before every navigation, so the model is the source of truth.
+  FormStepView? _currentView;
+
+  /// The step [_currentView] was built for.
+  FormStep? _viewStep;
 
   /// Upper bound on retained step views.
-  ///
-  /// Long forms (hundreds of steps) would otherwise hold every controller
-  /// and focus node alive for the lifetime of the form. Set to `0` to
-  /// disable caching entirely, or a larger value to trade memory for
-  /// back-navigation fidelity.
-  int maxCachedViews = 12;
+  @Deprecated(
+    'Views are owned by the widget tree and released by the framework, so '
+    'nothing is retained to bound. This has no effect and will be removed in '
+    '4.0.',
+  )
+  int maxCachedViews = 0;
 
-  /// Clears the view cache, disposing every cached view.
-  ///
-  /// Forces widgets to rebuild on the next render.
-  void clearViewCache() => disposeViews();
+  /// Discards the current view so the next render rebuilds it.
+  @Deprecated(
+    'Views are rebuilt per navigation and disposed by the framework. This has '
+    'no effect and will be removed in 4.0.',
+  )
+  void clearViewCache() {}
 
-  /// Disposes every cached step view and empties the cache.
-  ///
-  /// Called by `FormStackView.dispose`; safe to call more than once.
-  void disposeViews() {
-    for (final view in _viewCache.values) {
-      view.dispose();
-    }
-    _viewCache.clear();
-  }
-
-  /// Evicts cached views beyond [maxCachedViews], never evicting [keep].
-  void _evictStaleViews(String keep) {
-    if (maxCachedViews <= 0) {
-      for (final entry in _viewCache.entries.toList()) {
-        if (entry.key == keep) continue;
-        entry.value.dispose();
-        _viewCache.remove(entry.key);
-      }
-      return;
-    }
-    while (_viewCache.length > maxCachedViews) {
-      final victim = _viewCache.keys.firstWhere(
-        (k) => k != keep,
-        orElse: () => keep,
-      );
-      if (victim == keep) return;
-      _viewCache.remove(victim)?.dispose();
-    }
-  }
+  /// Formerly disposed the cached views.
+  @Deprecated(
+    'The framework disposes step views when they leave the tree. This has no '
+    'effect and will be removed in 4.0.',
+  )
+  void disposeViews() {}
 
   // --- Step index -----------------------------------------------------------
   //
@@ -403,11 +389,21 @@ abstract class FormStackForm {
       step.startTime = DateTime.now().toUtc();
       step.onStepWillPresent?.call(step);
     }
-    // Cache step views to prevent state loss on navigation.
-    final stepId = step.id?.id ?? '';
-    final view = _viewCache.putIfAbsent(stepId, () => step.buildView(this));
-    _evictStaleViews(stepId);
-    return view;
+    // One view per step occupancy. Rebuilding on every call would discard
+    // half-typed input whenever an unrelated rebuild reached the form, so the
+    // view is kept for as long as its step is the one on screen.
+    if (_currentView == null || !identical(_viewStep, step)) {
+      _viewStep = step;
+      _currentView = step.buildView(this);
+    }
+    // Keyed by step, because consecutive steps commonly use the same view
+    // class: without a differing key Flutter reconciles them onto one element,
+    // reuses the State, and never disposes the outgoing view -- leaking its
+    // controllers and carrying the previous step's focus into the next one.
+    return KeyedSubtree(
+      key: ValueKey<String>('formstack.step.${step.id?.id}'),
+      child: _currentView!,
+    );
   }
 
   /// Retrieves a step by its identifier string.

@@ -7,12 +7,27 @@ import 'package:formstack/formstack.dart';
 /// title, progress bar, footer buttons and error display, leaving you the input
 /// widget and four small methods.
 ///
-/// These views are `StatelessWidget`s that hold mutable state, so the framework
-/// never disposes them — [FormStackForm] does, when it evicts the view from its
-/// cache or the form leaves the tree. Any subclass that allocates a
-/// `TextEditingController`, `FocusNode` or listener must override [dispose] and
-/// call `super.dispose()`.
-abstract class FormStepView<T extends FormStep> extends StatelessWidget {
+/// ## Lifetime
+///
+/// This is a [StatefulWidget] whose [State] exists only to own the view's
+/// lifetime: it builds through [buildWithFrom] and calls [dispose] when the
+/// view leaves the tree. Subclasses therefore keep their controllers and
+/// notifiers as fields on the widget — unusual for Flutter, but it is what
+/// makes [isValid], [resultValue] and the rest readable as plain methods — and
+/// the framework still releases them at the right moment.
+///
+/// Before 3.1 this was a `StatelessWidget`, which has no disposal lifecycle at
+/// all, so [dispose] was only ever called by [FormStackForm]'s own bookkeeping.
+/// Any subclass that allocates a `TextEditingController`, `FocusNode` or
+/// listener must override [dispose] and call `super.dispose()`.
+///
+/// ## State and back navigation
+///
+/// A view is rebuilt from scratch when the user navigates back to its step, so
+/// it must restore what it shows from `formStep.result` rather than relying on
+/// its own fields surviving. The answer is written back to the step before
+/// every navigation, so the model is always the source of truth.
+abstract class FormStepView<T extends FormStep> extends StatefulWidget {
   /// Heading shown above the input.
   final String? title;
 
@@ -45,7 +60,8 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
 
   /// Releases anything this view allocated.
   ///
-  /// Called by [FormStackForm]; overrides must call `super.dispose()`.
+  /// Called by the framework when the view leaves the tree. Overrides must
+  /// call `super.dispose()`, and must tolerate being called twice.
   void dispose();
 
   /// Abandons the form, or returns to the first step.
@@ -65,7 +81,22 @@ abstract class FormStepView<T extends FormStep> extends StatelessWidget {
   Future<bool> onBeforeFinish(Map<String, dynamic> result);
 
   @override
-  Widget build(BuildContext context) {
-    return buildWithFrom(context, formStep);
+  State<FormStepView<T>> createState() => _FormStepViewLifetime<T>();
+}
+
+/// Owns the lifetime of a [FormStepView].
+///
+/// Deliberately holds no state of its own: the view's fields are the state,
+/// and this exists so the framework calls [FormStepView.dispose] when the view
+/// is removed from the tree.
+class _FormStepViewLifetime<T extends FormStep> extends State<FormStepView<T>> {
+  @override
+  Widget build(BuildContext context) =>
+      widget.buildWithFrom(context, widget.formStep);
+
+  @override
+  void dispose() {
+    widget.dispose();
+    super.dispose();
   }
 }

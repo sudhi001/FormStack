@@ -711,13 +711,13 @@ String localize(ValidationResult r, FormStackLocale l10n) => r.isValid
 
 ## Performance notes
 
-- **Step views are cached and bounded.** `FormStackForm.maxCachedViews`
-  (default 12) caps how many step views are retained, so a long survey does not
-  hold every controller alive. The current step is never evicted. Raise it to
-  trade memory for back-navigation fidelity, or set `0` to disable caching.
-- **Views are disposed with the form.** Removing `FormStack.api().render()`
-  from the tree releases every cached view. If you build custom inputs,
-  override `dispose()` and call `super.dispose()`.
+- **Only the step on screen is retained.** Step views are owned by the widget
+  tree: leaving a step disposes its view and releases its controllers, so a
+  hundred-step survey holds one view, not a hundred. If you build custom
+  inputs, override `dispose()` and call `super.dispose()`.
+- **Restore from the step, not from your own fields.** A view is rebuilt when
+  the user navigates back, so read the previous answer from `formStep.result`
+  in `buildWInputWidget`. The answer is written back before every navigation.
 - **Step lookup is indexed.** `getStep`, `getCurrentIndex` and `progress` are
   constant-time rather than walking the step list.
 - **Use `form.progress`** rather than calling `getCurrentIndex()` and
