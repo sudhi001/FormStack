@@ -53,6 +53,24 @@ class _FormStackViewState extends State<FormStackView> {
       return const SizedBox.shrink();
     }
 
+    // Measure the space this form was actually given and publish it, so the
+    // responsive helpers size against the container rather than the window. A
+    // form in a 600px dialog on a 1500px monitor was taking every desktop
+    // branch; one in a narrow panel took none of them.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final available = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.of(context).size.width;
+        return FormStackAvailableWidth(
+          width: available,
+          child: _buildForm(context),
+        );
+      },
+    );
+  }
+
+  Widget _buildForm(BuildContext context) {
     return PopScope(
       canPop: !_formStackForm.preventSystemBackNavigation,
       onPopInvokedWithResult: (didPop, result) {

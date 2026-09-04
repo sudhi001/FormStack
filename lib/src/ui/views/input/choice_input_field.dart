@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:formstack/formstack.dart';
 
@@ -114,7 +115,7 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
             );
           }
           return ListView.separated(
-            cacheExtent: 300,
+            scrollCacheExtent: const ScrollCacheExtent.pixels(300),
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),

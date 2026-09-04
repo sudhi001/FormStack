@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:formstack/formstack.dart';
 
 class ListTitlesView {
@@ -14,7 +15,7 @@ class ListTitlesView {
           : null,
       constraints: const BoxConstraints(maxWidth: 300.0),
       child: ListView.separated(
-        cacheExtent: 300,
+        scrollCacheExtent: const ScrollCacheExtent.pixels(300),
         padding: EdgeInsets.zero,
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),

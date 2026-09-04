@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:formstack/formstack.dart';
 
 /// View that displays all form results for review before final submission.
@@ -24,7 +25,7 @@ class ReviewStepView extends BaseStepView<ReviewStep> {
     return Container(
       constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
       child: ListView.separated(
-        cacheExtent: 300,
+        scrollCacheExtent: const ScrollCacheExtent.pixels(300),
         shrinkWrap: true,
         separatorBuilder: (_, __) => const Divider(height: 1),
         itemCount: reviewable.length,

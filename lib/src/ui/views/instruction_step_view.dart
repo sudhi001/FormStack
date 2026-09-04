@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:formstack/formstack.dart';
 
 // ignore: must_be_immutable
@@ -59,7 +60,7 @@ class InstructionStepView extends BaseStepView<InstructionStep> {
           ],
           if (hasInstructions)
             ListView.builder(
-              cacheExtent: 300,
+              scrollCacheExtent: const ScrollCacheExtent.pixels(300),
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 final DynamicData instruction = formStep.instructions![index];

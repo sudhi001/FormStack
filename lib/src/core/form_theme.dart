@@ -97,7 +97,7 @@ class FormStackTheme {
   ///
   /// [maxWidth] overrides the scoped value for a single call.
   static double responsiveMaxWidth(BuildContext context, {double? maxWidth}) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = FormStackAvailableWidth.of(context);
     if (screenWidth < 600) return screenWidth;
     return maxWidth ?? of(context).maxContentWidth;
   }
@@ -105,7 +105,7 @@ class FormStackTheme {
   /// Responsive input width based on screen size.
   static double responsiveInputWidth(BuildContext context, {double? maxWidth}) {
     final theme = of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = FormStackAvailableWidth.of(context);
     if (screenWidth < 600) return screenWidth - theme.contentPadding * 2;
     return maxWidth ?? theme.inputMaxWidth;
   }
@@ -116,7 +116,7 @@ class FormStackTheme {
   /// returning fixed values, so a custom padding is honoured everywhere.
   static double responsivePadding(BuildContext context) {
     final padding = of(context).contentPadding;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = FormStackAvailableWidth.of(context);
     if (screenWidth < 400) return padding * 0.6;
     if (screenWidth < 600) return padding * 0.8;
     return padding;
@@ -132,7 +132,7 @@ class FormStackTheme {
 
   /// Responsive icon size based on screen size.
   static double responsiveIconSize(BuildContext context, {double base = 40}) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = FormStackAvailableWidth.of(context);
     if (screenWidth < 400) return base * 0.75;
     if (screenWidth > 1200) return base * 1.25;
     return base;
@@ -140,7 +140,7 @@ class FormStackTheme {
 
   /// Responsive button height based on screen size.
   static double responsiveButtonHeight(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = FormStackAvailableWidth.of(context);
     if (screenWidth < 400) return 44;
     return 50;
   }
@@ -247,4 +247,39 @@ class FormStackThemeScope extends InheritedWidget {
   @override
   bool updateShouldNotify(FormStackThemeScope oldWidget) =>
       oldWidget.theme != theme;
+}
+
+/// The width available to the form, as measured where it is mounted.
+///
+/// Every responsive decision below used to read
+/// `MediaQuery.of(context).size.width`, which is the width of the *window* —
+/// not of the space the form was handed. A form inside a 600px dialog on a
+/// 1500px monitor therefore took every "desktop" branch and sized its inputs
+/// for a viewport it did not have, and the same form inside a narrow side panel
+/// would do the reverse.
+///
+/// [FormStackView] publishes the real constraint here. The helpers prefer it and
+/// fall back to the window when a form is mounted outside one, so nothing that
+/// worked before changes.
+class FormStackAvailableWidth extends InheritedWidget {
+  /// The maximum width the form may occupy.
+  final double width;
+
+  /// Creates a [FormStackAvailableWidth].
+  const FormStackAvailableWidth({
+    required this.width,
+    required super.child,
+    super.key,
+  });
+
+  /// The available width, or the window width when unscoped.
+  static double of(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<FormStackAvailableWidth>()
+          ?.width ??
+      MediaQuery.of(context).size.width;
+
+  @override
+  bool updateShouldNotify(FormStackAvailableWidth oldWidget) =>
+      oldWidget.width != width;
 }

@@ -41,9 +41,12 @@ class RankingInputWidgetView extends BaseStepView<QuestionStep> {
           return ReorderableListView.builder(
             shrinkWrap: true,
             itemCount: _rankedOptions.length,
-            onReorder: (oldIndex, newIndex) {
+            onReorderItem: (oldIndex, newIndex) {
               setState(() {
-                if (newIndex > oldIndex) newIndex--;
+                // `onReorderItem` reports newIndex already adjusted for the item
+                // lifted out at oldIndex — that adjustment is why it replaced
+                // `onReorder`. The decrement that belonged with the old callback
+                // would now overshoot every downward drag by one.
                 final item = _rankedOptions.removeAt(oldIndex);
                 _rankedOptions.insert(newIndex, item);
                 formStep.result = _rankedOptions;

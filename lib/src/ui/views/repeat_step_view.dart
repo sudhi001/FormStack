@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:formstack/formstack.dart';
 
 /// View for RepeatStep - renders child steps N times with add/remove controls.
@@ -47,7 +48,7 @@ class RepeatStepView extends BaseStepView<RepeatStep> {
             children: [
               Flexible(
                 child: ListView.builder(
-                  cacheExtent: 300,
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(300),
                   shrinkWrap: true,
                   itemCount: _repetitions.length,
                   itemBuilder: (context, index) {

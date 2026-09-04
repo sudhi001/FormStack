@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:formstack/formstack.dart';
 
 /// View for the structured consent document step.
@@ -33,7 +34,7 @@ class ConsentStepViewWidget extends BaseStepView<ConsentStep> {
               if (formStep.sections.isNotEmpty)
                 Flexible(
                   child: ListView.builder(
-                    cacheExtent: 300,
+                    scrollCacheExtent: const ScrollCacheExtent.pixels(300),
                     shrinkWrap: true,
                     itemCount: formStep.sections.length,
                     itemBuilder: (context, index) {
