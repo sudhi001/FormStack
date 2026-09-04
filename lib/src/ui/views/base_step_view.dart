@@ -219,8 +219,16 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: Padding(
+                // The content margin belongs to the outermost step only.
+                //
+                // Every step applies this padding, including the ones that a
+                // NestedStep or RepeatStep renders as components inside
+                // itself — so it compounded once per level of nesting. A field
+                // on its own sat at 20 and the same field inside a row sat at
+                // 40, which is what makes a form look ragged down the page,
+                // and a second level of nesting doubled it again.
                 padding: EdgeInsets.symmetric(
-                  horizontal: padding,
+                  horizontal: formStep.componentOnly ? 0 : padding,
                   vertical: padding * 0.75,
                 ),
                 child: Column(
