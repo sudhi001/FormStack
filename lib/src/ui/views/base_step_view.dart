@@ -182,6 +182,23 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   }
 
   /// Create the component widget - centered with responsive max width
+  /// Where the content block sits within the width available to it.
+  ///
+  /// Directional, so "start" is the left edge in English and the right
+  /// edge in Arabic.
+  AlignmentGeometry get _blockAlignment {
+    switch (formStep.crossAxisAlignmentContent) {
+      case CrossAxisAlignment.start:
+        return AlignmentDirectional.topStart;
+      case CrossAxisAlignment.end:
+        return AlignmentDirectional.topEnd;
+      case CrossAxisAlignment.center:
+      case CrossAxisAlignment.baseline:
+      case CrossAxisAlignment.stretch:
+        return Alignment.topCenter;
+    }
+  }
+
   Widget _createComponent(BuildContext context, Widget? inputWidget) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -189,7 +206,16 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
         final maxWidth = FormStackTheme.responsiveMaxWidth(context);
         return SingleChildScrollView(
           child: Align(
-            alignment: Alignment.topCenter,
+            // Follows the step's own alignment rather than always centring.
+            //
+            // Centring the content block caps line length on a wide screen,
+            // which is right for a step that fills the viewport. It is wrong for
+            // a component inside a nested row: each is centred in its own slot,
+            // so a full-width field and a pair of half-width fields end up with
+            // different left edges and the form stops lining up down the page.
+            // `crossAxisAlignmentContent` said "start" and had no way to be
+            // heard, because it only reached the Column *inside* this box.
+            alignment: _blockAlignment,
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: Padding(
