@@ -70,9 +70,12 @@ class TextFieldInputWidgetView extends BaseStepView<QuestionStep> {
               ),
             )
           : null,
-      constraints: const BoxConstraints(
-        minWidth: 300,
-        maxWidth: 400,
+      // Was a hardcoded maxWidth of 400, which no container could influence:
+      // in a 600 dialog the field stopped 160px short of the progress bar above
+      // it. minWidth drops with it — 300 is wider than half of a narrow dialog,
+      // so two half-width fields could not share a row without overflowing.
+      constraints: BoxConstraints(
+        maxWidth: FormStackTheme.responsiveInputWidth(context),
         minHeight: 50,
       ),
       child: _buildComponent(context),

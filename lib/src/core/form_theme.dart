@@ -102,12 +102,23 @@ class FormStackTheme {
     return maxWidth ?? of(context).maxContentWidth;
   }
 
-  /// Responsive input width based on screen size.
+  /// The width an input should take: the content width, capped by the theme.
+  ///
+  /// This used to return a flat [FormStackTheme.inputMaxWidth] on anything at
+  /// least 600 wide, which meant an input could not reach the edge of the
+  /// content area it sits in. A form's progress bar and headings *do* span that
+  /// area, so the fields stopped short of them and the form read as though it
+  /// were pushed to one side.
+  ///
+  /// Filling the content width and capping it keeps both behaviours: a field
+  /// lines up with everything else in the block, and still does not run to
+  /// absurd line lengths on a wide monitor.
   static double responsiveInputWidth(BuildContext context, {double? maxWidth}) {
     final theme = of(context);
-    final screenWidth = FormStackAvailableWidth.of(context);
-    if (screenWidth < 600) return screenWidth - theme.contentPadding * 2;
-    return maxWidth ?? theme.inputMaxWidth;
+    final available = FormStackAvailableWidth.of(context);
+    final content = available - responsivePadding(context) * 2;
+    final cap = maxWidth ?? theme.inputMaxWidth;
+    return content < cap ? content : cap;
   }
 
   /// Responsive padding based on screen size.
