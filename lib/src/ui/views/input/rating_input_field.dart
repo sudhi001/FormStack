@@ -50,7 +50,10 @@ class RatingInputWidgetView extends BaseStepView<QuestionStep> {
                         });
                       },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  // A 40px star gave a 40px-tall tap area. The horizontal
+                  // padding already brought the width to 48; this brings the
+                  // height to the same guideline minimum.
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                   child: Icon(
                     starIndex <= _selectedRating
                         ? Icons.star_rounded

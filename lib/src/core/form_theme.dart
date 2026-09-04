@@ -138,6 +138,17 @@ class FormStackTheme {
     return base;
   }
 
+  /// The smallest a tappable control may be, in logical pixels.
+  ///
+  /// WCAG 2.5.8 asks for 24x24 at AA and 44x44 at AAA; Material asks for 48dp.
+  /// 44 is the figure that satisfies the accessibility guideline everywhere and
+  /// still lets an eleven-point NPS scale fit the 500px input width without
+  /// wrapping mid-scale, which is its own usability problem.
+  ///
+  /// Note this does not shrink on small screens. A narrow display is where a
+  /// target is hardest to hit, not easiest.
+  static const double minTouchTarget = 44;
+
   /// Responsive button height based on screen size.
   static double responsiveButtonHeight(BuildContext context) {
     final screenWidth = FormStackAvailableWidth.of(context);

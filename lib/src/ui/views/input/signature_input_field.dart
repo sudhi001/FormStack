@@ -127,7 +127,10 @@ class SignatureInputWidgetView extends BaseStepView<QuestionStep> {
               ),
               const SizedBox(height: 8),
               Align(
-                alignment: Alignment.centerRight,
+                // Directional: in Arabic or Hebrew the Clear action belongs at
+                // the trailing edge, which is the left. `centerRight` pins it to
+                // the right in every locale.
+                alignment: AlignmentDirectional.centerEnd,
                 child: TextButton.icon(
                   onPressed: formStep.disabled
                       ? null

@@ -61,8 +61,10 @@ class NPSInputWidgetView extends BaseStepView<QuestionStep> {
                     );
                   }
                   return SizedBox(
-                    width: 40,
-                    height: 40,
+                    // WCAG 2.5.8 asks 44 at AAA; 40 was under it, and an
+                    // eleven-point scale is exactly where a small target hurts.
+                    width: FormStackTheme.minTouchTarget,
+                    height: FormStackTheme.minTouchTarget,
                     child: Material(
                       color: bgColor,
                       borderRadius: BorderRadius.circular(8),

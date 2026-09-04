@@ -389,6 +389,15 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
                       label: "Cancel form",
                       child: TextButton(
                         onPressed: onCancel,
+                        // A bare TextButton is about 40px tall, under the 44 the
+                        // rest of this form holds to — and it sits in the app bar,
+                        // where a miss dismisses the form.
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(
+                            FormStackTheme.minTouchTarget,
+                            FormStackTheme.minTouchTarget,
+                          ),
+                        ),
                         child: Text(formStep.cancelButtonText ?? "Cancel"),
                       ),
                     ),
