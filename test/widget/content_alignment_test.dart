@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formstack/formstack.dart';
 
-/// A step's content block honours `crossAxisAlignmentContent`.
+/// Two separate questions, kept separate.
 ///
-/// The block was always `Alignment.topCenter`, and the step's own alignment
-/// only reached the Column *inside* it — so a form asking for "start" still
-/// centred every component. Inside a nested row that means each field is
-/// centred in its own slot, and a full-width field above a pair of half-width
-/// fields ends up with two different left edges. The form stops lining up, and
-/// nothing available to the form's author could change it.
+///  * where the *content block* sits in the available width — always centred,
+///    so a capped-width form has balanced gutters rather than all the leftover
+///    width dead on one side;
+///  * where *children* sit inside that block — `crossAxisAlignmentContent`.
+///
+/// Driving both from one property meant a form asking for "start" was pinned to
+/// the leading edge of its container, which is what made a wide dialog look
+/// half empty. Start-aligning children inside a centred block is what actually
+/// gives a form one shared left edge down the page.
 ///
 /// Each case is its own test on purpose: `FormStackView` keeps its form in
 /// State, so rebuilding within one test reuses the first one and both
@@ -46,29 +49,37 @@ void main() {
   AlignmentGeometry outerAlignment(WidgetTester tester) =>
       (find.byType(Align).evaluate().first.widget as Align).alignment;
 
-  testWidgets('start puts the content at the leading edge', (tester) async {
+  // 1200 wide, capped at maxContentWidth, plus one content padding.
+  const blockContentEdge = 320.0;
+
+  testWidgets('the block is centred even when children start-align',
+      (tester) async {
     final left = await titleLeft(tester, CrossAxisAlignment.start);
-    expect(outerAlignment(tester), AlignmentDirectional.topStart);
-    // The content padding, and nothing more.
-    expect(left, lessThan(100), reason: 'a start-aligned step must not be centred');
+    expect(outerAlignment(tester), Alignment.topCenter,
+        reason: 'the block placement is not the child alignment');
+    expect(left, closeTo(blockContentEdge, 0.5),
+        reason: 'start puts children at the leading edge *of the block*');
   });
 
-  testWidgets('center remains the default behaviour', (tester) async {
+  testWidgets('the block is centred when children centre too', (tester) async {
     final left = await titleLeft(tester, CrossAxisAlignment.center);
     expect(outerAlignment(tester), Alignment.topCenter);
-    // Forms that never set this keep exactly the layout they had.
-    expect(left, greaterThan(300), reason: 'centring is what an unset step did');
+    // A narrow title centred inside the block sits well past its leading edge.
+    expect(left, greaterThan(blockContentEdge + 50),
+        reason: 'centring is what an unset step did, and still does');
   });
 
-  testWidgets('end aligns to the trailing edge', (tester) async {
-    await titleLeft(tester, CrossAxisAlignment.end);
-    // Directional, so this is the right edge in English and the left in Arabic.
-    expect(outerAlignment(tester), AlignmentDirectional.topEnd);
-  });
-
-  testWidgets('stretch keeps centring, since the child fills anyway',
+  testWidgets('end sends children to the trailing edge of the block',
       (tester) async {
-    await titleLeft(tester, CrossAxisAlignment.stretch);
+    final left = await titleLeft(tester, CrossAxisAlignment.end);
     expect(outerAlignment(tester), Alignment.topCenter);
+    expect(left, greaterThan(blockContentEdge + 50));
+  });
+
+  testWidgets('stretch fills the block, so children start at its edge',
+      (tester) async {
+    final left = await titleLeft(tester, CrossAxisAlignment.stretch);
+    expect(outerAlignment(tester), Alignment.topCenter);
+    expect(left, closeTo(blockContentEdge, 0.5));
   });
 }

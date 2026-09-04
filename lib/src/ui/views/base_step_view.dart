@@ -182,180 +182,164 @@ abstract class BaseStepView<T extends FormStep> extends FormStepView<T> {
   }
 
   /// Create the component widget - centered with responsive max width
-  /// Where the content block sits within the width available to it.
-  ///
-  /// Directional, so "start" is the left edge in English and the right
-  /// edge in Arabic.
-  AlignmentGeometry get _blockAlignment {
-    switch (formStep.crossAxisAlignmentContent) {
-      case CrossAxisAlignment.start:
-        return AlignmentDirectional.topStart;
-      case CrossAxisAlignment.end:
-        return AlignmentDirectional.topEnd;
-      case CrossAxisAlignment.center:
-      case CrossAxisAlignment.baseline:
-      case CrossAxisAlignment.stretch:
-        return Alignment.topCenter;
-    }
-  }
 
   Widget _createComponent(BuildContext context, Widget? inputWidget) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final padding = FormStackTheme.responsivePadding(context);
         final maxWidth = FormStackTheme.responsiveMaxWidth(context);
+        // The Column is the step's own content. Everything wrapped around it
+        // below is page chrome, and page chrome belongs to the outermost step.
+        final content = Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: formStep.crossAxisAlignmentContent,
+          children: [
+            if (formStep.showProgressBar && !formStep.componentOnly) ...[
+              _buildProgressBar(context),
+              _divisionPadding(context: context),
+            ],
+            if (formStep.titleIconAnimationFile != null) ...[
+              Container(
+                constraints: BoxConstraints(
+                  minWidth: 75,
+                  maxWidth: formStep.titleIconMaxWidth ?? 300,
+                  minHeight: 50,
+                  maxHeight: formStep.titleIconMaxWidth ?? 300,
+                ),
+                child: Lottie.asset(formStep.titleIconAnimationFile!),
+              ),
+              _divisionPadding(context: context),
+            ],
+            if (formStep.titleIconImagePath != null) ...[
+              Container(
+                constraints: BoxConstraints(
+                  minWidth: 75,
+                  maxWidth: formStep.titleIconMaxWidth ?? 300,
+                  minHeight: 50,
+                  maxHeight: formStep.titleIconMaxWidth ?? 300,
+                ),
+                child: formStep.titleIconImagePath!.startsWith('http')
+                    ? Image.network(
+                        formStep.titleIconImagePath!,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        formStep.titleIconImagePath!,
+                        fit: BoxFit.contain,
+                      ),
+              ),
+              _divisionPadding(context: context),
+            ],
+            if (title != null && title!.isNotEmpty) ...[
+              Semantics(
+                header: true,
+                child: Container(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  padding: EdgeInsets.only(
+                    bottom: formStep.style?.titleBottomPadding ?? 0,
+                  ),
+                  child: Text(title ?? "", style: _titleStyle(context)),
+                ),
+              ),
+              _divisionPadding(context: context),
+            ],
+            if (text != null && text!.isNotEmpty) ...[
+              Container(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: Text(text ?? "", style: _subtitleStyle(context)),
+              ),
+              _divisionPadding(context: context),
+            ],
+            if (formStep.helperText?.isNotEmpty ?? false) ...[
+              Container(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: Text(
+                  formStep.helperText!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              _divisionPadding(context: context),
+            ],
+            if (inputWidget != null) ...[
+              Semantics(
+                label: formStep.semanticLabel ?? formStep.title,
+                child: IgnorePointer(
+                  ignoring: formStep.disabled,
+                  child: inputWidget,
+                ),
+              ),
+            ],
+            ValueListenableBuilder<bool>(
+              valueListenable: _showErrorNotifier,
+              builder: (context, isError, _) {
+                return isError
+                    ? Semantics(
+                        liveRegion: true,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            validationError(),
+                            style: Theme.of(context).textTheme.bodySmall!.apply(
+                              color: FormStackTheme.errorColor(context),
+                            ),
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink();
+              },
+            ),
+            if (formStep.description?.isNotEmpty ?? false)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  formStep.description ?? "",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+          ],
+        );
+
+        // A step rendered inside another step is content, not a page.
+        //
+        // NestedStep and RepeatStep render their children through this same
+        // method, so each child used to re-apply the whole page treatment: its
+        // own scroll view, its own alignment, its own max-width cap and its own
+        // page padding. Every one of those compounds with nesting depth.
+        //
+        // The vertical padding was the visible half — roughly 30px added per
+        // level, which is why rows drifted more than 100px apart instead of
+        // sitting in a rhythm. The max-width cap is the other half: a nested
+        // row re-capped its own slot, so the row and the fields inside it
+        // disagreed about how wide the content was allowed to be.
+        //
+        // Nested scroll views are worth avoiding on their own account, too.
+        if (formStep.componentOnly) return content;
+
         return SingleChildScrollView(
           child: Align(
-            // Follows the step's own alignment rather than always centring.
+            // The block is centred; `crossAxisAlignmentContent` governs how
+            // children sit *inside* it, which is a separate question.
             //
-            // Centring the content block caps line length on a wide screen,
-            // which is right for a step that fills the viewport. It is wrong for
-            // a component inside a nested row: each is centred in its own slot,
-            // so a full-width field and a pair of half-width fields end up with
-            // different left edges and the form stops lining up down the page.
-            // `crossAxisAlignmentContent` said "start" and had no way to be
-            // heard, because it only reached the Column *inside* this box.
-            alignment: _blockAlignment,
+            // Tying the two together left a start-aligned form pinned to the
+            // leading edge of a wide container with all the leftover width
+            // dead on the other side. Centring the block and start-aligning
+            // its children gives balanced gutters and one shared left edge,
+            // which is what "aligned" means here. Only the outermost step
+            // reaches this, so there is exactly one block to place.
+            alignment: Alignment.topCenter,
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: Padding(
-                // The content margin belongs to the outermost step only.
-                //
-                // Every step applies this padding, including the ones that a
-                // NestedStep or RepeatStep renders as components inside
-                // itself — so it compounded once per level of nesting. A field
-                // on its own sat at 20 and the same field inside a row sat at
-                // 40, which is what makes a form look ragged down the page,
-                // and a second level of nesting doubled it again.
                 padding: EdgeInsets.symmetric(
-                  horizontal: formStep.componentOnly ? 0 : padding,
+                  horizontal: padding,
                   vertical: padding * 0.75,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: formStep.crossAxisAlignmentContent,
-                  children: [
-                    if (formStep.showProgressBar &&
-                        !formStep.componentOnly) ...[
-                      _buildProgressBar(context),
-                      _divisionPadding(context: context),
-                    ],
-                    if (formStep.titleIconAnimationFile != null) ...[
-                      Container(
-                        constraints: BoxConstraints(
-                          minWidth: 75,
-                          maxWidth: formStep.titleIconMaxWidth ?? 300,
-                          minHeight: 50,
-                          maxHeight: formStep.titleIconMaxWidth ?? 300,
-                        ),
-                        child: Lottie.asset(formStep.titleIconAnimationFile!),
-                      ),
-                      _divisionPadding(context: context),
-                    ],
-                    if (formStep.titleIconImagePath != null) ...[
-                      Container(
-                        constraints: BoxConstraints(
-                          minWidth: 75,
-                          maxWidth: formStep.titleIconMaxWidth ?? 300,
-                          minHeight: 50,
-                          maxHeight: formStep.titleIconMaxWidth ?? 300,
-                        ),
-                        child: formStep.titleIconImagePath!.startsWith('http')
-                            ? Image.network(
-                                formStep.titleIconImagePath!,
-                                fit: BoxFit.contain,
-                              )
-                            : Image.asset(
-                                formStep.titleIconImagePath!,
-                                fit: BoxFit.contain,
-                              ),
-                      ),
-                      _divisionPadding(context: context),
-                    ],
-                    if (title != null && title!.isNotEmpty) ...[
-                      Semantics(
-                        header: true,
-                        child: Container(
-                          constraints: BoxConstraints(maxWidth: maxWidth),
-                          padding: EdgeInsets.only(
-                            bottom: formStep.style?.titleBottomPadding ?? 0,
-                          ),
-                          child: Text(title ?? "", style: _titleStyle(context)),
-                        ),
-                      ),
-                      _divisionPadding(context: context),
-                    ],
-                    if (text != null && text!.isNotEmpty) ...[
-                      Container(
-                        constraints: BoxConstraints(maxWidth: maxWidth),
-                        child: Text(text ?? "", style: _subtitleStyle(context)),
-                      ),
-                      _divisionPadding(context: context),
-                    ],
-                    if (formStep.helperText?.isNotEmpty ?? false) ...[
-                      Container(
-                        constraints: BoxConstraints(maxWidth: maxWidth),
-                        child: Text(
-                          formStep.helperText!,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                        ),
-                      ),
-                      _divisionPadding(context: context),
-                    ],
-                    if (inputWidget != null) ...[
-                      Semantics(
-                        label: formStep.semanticLabel ?? formStep.title,
-                        child: IgnorePointer(
-                          ignoring: formStep.disabled,
-                          child: inputWidget,
-                        ),
-                      ),
-                    ],
-                    ValueListenableBuilder<bool>(
-                      valueListenable: _showErrorNotifier,
-                      builder: (context, isError, _) {
-                        return isError
-                            ? Semantics(
-                                liveRegion: true,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: Text(
-                                    validationError(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .apply(
-                                          color: FormStackTheme.errorColor(
-                                            context,
-                                          ),
-                                        ),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox.shrink();
-                      },
-                    ),
-                    if (formStep.description?.isNotEmpty ?? false)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          formStep.description ?? "",
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                  ],
-                ),
+                child: content,
               ),
             ),
           ),
