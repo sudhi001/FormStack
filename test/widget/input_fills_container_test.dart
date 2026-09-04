@@ -12,7 +12,12 @@ import 'package:formstack/formstack.dart';
 void main() {
   const dialogWidth = 600.0;
 
-  Future<Rect> fieldRect(WidgetTester tester, {FormStackTheme? theme}) async {
+  Future<Rect> fieldRect(
+    WidgetTester tester, {
+    FormStackTheme? theme,
+    InputType inputType = InputType.text,
+    Type widgetType = TextFormField,
+  }) async {
     tester.view.physicalSize = const Size(1450, 900);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
@@ -22,8 +27,11 @@ void main() {
       steps: [
         QuestionStep(
           id: GenericIdentifier(id: 'name'),
-          inputType: InputType.text,
+          inputType: inputType,
           title: 'Name',
+          options: inputType == InputType.dropdown
+              ? [Options('a', 'Option A'), Options('b', 'Option B')]
+              : null,
           crossAxisAlignmentContent: CrossAxisAlignment.start,
         ),
         InstructionStep(id: GenericIdentifier(id: 'end')),
@@ -44,7 +52,7 @@ void main() {
       ),
     ));
     await tester.pumpAndSettle();
-    return tester.getRect(find.byType(TextFormField).first);
+    return tester.getRect(find.byType(widgetType).first);
   }
 
   testWidgets('the cap still applies on a wide container', (tester) async {
@@ -68,5 +76,19 @@ void main() {
     // 600 dialog less one content padding each side.
     expect(rect.width, closeTo(560, 1),
         reason: 'the field fills the content width');
+  });
+
+  testWidgets('a dropdown reaches the same edge as a text field',
+      (tester) async {
+    // The Position dropdown carried its own hardcoded cap of 400, so it sat
+    // visibly short of the text fields above it in the same form.
+    final rect = await fieldRect(
+      tester,
+      theme: const FormStackTheme(inputMaxWidth: 600, maxContentWidth: 600),
+      inputType: InputType.dropdown,
+      widgetType: DropdownButtonHideUnderline,
+    );
+    expect(rect.width, closeTo(560, 1),
+        reason: 'a dropdown fills the content width like any other field');
   });
 }

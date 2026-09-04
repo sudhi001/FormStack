@@ -54,9 +54,12 @@ class ChoiceInputWidgetView extends BaseStepView<QuestionStep> {
               ),
             )
           : null,
-      constraints: const BoxConstraints(
-        minWidth: 300,
-        maxWidth: 400,
+      // Follows the container like the text input does. A dropdown sits
+      // beside text fields in the same form, so a literal cap here left it
+      // visibly short of its neighbours. minWidth: 300 goes for the same
+      // reason — it is wider than half of a narrow dialog.
+      constraints: BoxConstraints(
+        maxWidth: FormStackTheme.responsiveInputWidth(context),
         maxHeight: 600,
       ),
       child: StatefulBuilder(

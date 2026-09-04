@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:formstack/src/core/form_theme.dart';
 import 'package:formstack/src/result/result_format.dart';
 import 'package:formstack/src/step/question_step.dart';
 import 'package:formstack/src/ui/views/base_step_view.dart';
@@ -57,9 +58,10 @@ class DateInputWidgetView extends BaseStepView<QuestionStep> {
           bottom: BorderSide(color: Colors.grey),
         ),
       ),
-      constraints: const BoxConstraints(
+      // Follows the container, as the text and choice inputs do.
+      constraints: BoxConstraints(
         minWidth: 200,
-        maxWidth: 500,
+        maxWidth: FormStackTheme.responsiveInputWidth(context),
         maxHeight: 150,
       ),
       child: ScrollConfiguration(
