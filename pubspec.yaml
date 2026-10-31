@@ -41,7 +41,7 @@ dependencies:
   reviews_slider: ^2.0.0
   lottie: ^3.3.2
   collection: ^1.19.1
-  file_picker: ^12.1.2
+  file_picker: ">=12.1.2 <14.0.0"
   google_maps_flutter_web: ^0.6.2
   google_maps_flutter: ^2.17.0
   location: ^10.0.2
